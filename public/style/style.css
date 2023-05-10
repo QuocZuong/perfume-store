@@ -198,11 +198,20 @@ body {
   transition: border-bottom 0.3s ease-in-out;
 }
 
+.product{
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
 .product .item{
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  width:  1300px;
 }
 
 .product .item .card{
@@ -215,7 +224,7 @@ body {
   text-align:center;
   width: 25%;
   max-width: 250px;
-  min-width: 200px;
+  min-width: 250px;
   height: 380px;
   margin-right: 10px;
   cursor: pointer;
@@ -255,19 +264,22 @@ body {
     margin: 10px 0 20px 0;
 }
 
-.product .btn{
-  text-align: center;
-  border-radius:50%;
-  background-color: #e7e4e4;
-  width: 50px;
-  height: 50px;
-  padding: 5px 15px 0 18px;
+.dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
 }
 
-.product .btn.left{
-  float: left;
-  margin-right: 10px;
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin: 0 5px;
+  background-color: #bbb;
+  cursor: pointer;
 }
-.product .btn.right{
-  float: right;
+
+.dot.active {
+  background-color: #333;
 }
