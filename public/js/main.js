@@ -45,7 +45,7 @@ const updateDots = () => { // function to add effect for dots
     if (index === currentItem) {
       dot.classList.add("active");
     } else {
-      dot.classList.remove("active");
+      dot.classList.remove("active");$
     }
   });
 };
