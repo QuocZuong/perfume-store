@@ -72,10 +72,74 @@ h1{
   cursor: pointer;
 }
 
+.login-form{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.login-form .type{
+  margin: 100px 0 30px 0;
+}
+
+.login-form .type > button{
+  outline: none;
+  background-color: transparent;
+  border: none;
+  font-size: 1.4rem;
+}
+
+.login-form > form{
+  text-align: left;
+}
+
+.login-form > form > input{
+  width: 400px;
+  height: 35px;
+  border: 0.5px solid black;
+  border-radius: 3px;
+  margin-bottom: 15px;
+}
+
+.login-form .type > button:hover{
+  text-decoration: underline;
+  text-decoration-thickness: from-font;
+  transition: text-decoration 0.3s ease-in-out;
+} 
+
+.login-form .sign-in .remember-password{
+  height: 12px;
+  width: 12px;
+  margin-right: 5px;
+}
+
+.login-form .enter{
+  background-color: transparent;
+  border: .5px solid rgb(63, 62, 62);
+  padding: 5px 20px;
+  margin-left: 35%;
+}
+
+.login-form .type > button.active{
+  text-decoration: underline;
+  text-decoration-thickness: from-font;
+  transition: text-decoration 0.3s ease-in-out;
+
+}
+
+.login-form .sign-in{
+}
+
+.login-form .sign-up{
+  display: none;
+}
+
 .register{
   text-align: center;
   position: relative;
-  top: 700px;
+  margin: 200px 0 100px 0;
+
 }
 
 .register h1{
@@ -111,7 +175,7 @@ h1{
 .social{
   text-align: center;
   position: relative;
-  top: 800px;
+  margin-bottom: 70px;
 }
 
 .social a + a{
@@ -125,7 +189,6 @@ h1{
 .footer{
   text-align: center;
   position: relative;
-  top: 880px;
   display: flex;
   background-color: black;
   padding: 70px 0 50px 0;
@@ -179,7 +242,7 @@ h1{
 
 .copyright{
   position: relative;
-  top: 910px;
+  margin-top: 25px;
 }
 
 .copyright p{

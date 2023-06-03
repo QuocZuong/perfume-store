@@ -43,9 +43,36 @@
 
             <div class="row">
                 <div class="col-md-12 login-form">
-                    
+                  <div class="type">
+                    <button type="button" id="signIn">Đăng nhập</button>
+                    <button type="button" id="signUp">Đăng ký</button>
+                  </div>
+              
+                  <form action="" class="sign-in" id="signInForm">
+                    <label for="user">Tên tài khoản hoặc địa chỉ email *</label>
+                    <br>
+                    <input type="text" name="user" id="user-input">
+                    <br>
+                    <label for="password">Mật khẩu *</label>
+                    <br>
+                    <input type="password" name="password" id="password-input">
+                    <br>
+                    <input type="checkbox" name="remember-password" id="remember-password" class="remember-password">
+                    <label for="remember-password">Ghi nhớ mật khẩu</label>
+                    <br>
+                    <button class="enter">Đăng nhập</button>
+                  </form>
+              
+                  <form action="" class="sign-up" id="signUpForm">
+                    <label for="email">Địa chỉ email *</label>
+                    <br>
+                    <input type="text" name="email" id="user-input">
+                    <p>Một mật khẩu sẽ được gửi đến địa chỉ email của bạn.</p>
+                    <br>
+                    <button class="enter">Đăng ký</button>
+                  </form>
                 </div>
-            </div>
+              </div>
 
             <div class="row">
                 <div class="col-md-12 register">
