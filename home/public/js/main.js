@@ -22,7 +22,7 @@ const dragging = (e) => {
 const dragEnd = () => {
   isDragStart = false;
 };
-
+ 
 const updateDots = () => {
   const items = document.querySelectorAll(".item .card");
   const itemWidth = items[0].getBoundingClientRect().width;
