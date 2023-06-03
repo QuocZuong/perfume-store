@@ -197,8 +197,10 @@ h1{
 .main .products{
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  justify-content: center;
   max-width: 1250px;
+  min-width: 300px;
+  min-height: 700px;
 }
 
 .main .products .product{
@@ -238,6 +240,7 @@ h1{
 .main .products .top{
   width: 100%;
   text-align: right;
+  
 }
 
 .main .products .sorting{

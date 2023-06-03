@@ -48,7 +48,7 @@
                    <div class="search-bar">
                     <div class="brand">
                         <h4>THƯƠNG HIỆU</h4>
-                        <input placeholder="Tìm kiếm nhanh" type="text" name="" id="">
+                        <input placeholder="Tìm kiếm nhanh" type="text" name="" id="searchBox">
                         <div class="list-brand">
                             <ul>
                                 <li> <a>mcm</a> </li>
@@ -76,13 +76,13 @@
                     </div>
                     <div class="price">
                         <h4>THEO GIÁ</h4>
-                        <input type="checkbox" name="low" id="low">
+                        <input type="radio" name="priceRange" id="low" value="low">
                         <label for="low">1.500.000 - 3.000.000</label>
                         <br>
-                        <input type="checkbox" name="medium" id="medium">
+                        <input type="radio" name="priceRange" id="medium" value="medium">
                         <label for="medium">3.000.000 - 5.000.000</label>
                         <br>
-                        <input type="checkbox" name="high" id="high">
+                        <input type="radio" name="priceRange" id="high" value="high">
                         <label for="high"> >5.000.000</label>
                     </div>
 
@@ -90,34 +90,34 @@
                    <div class="products" id="products">
                     <div class="top" id="top">
                         <select name="sorting" id="sorting" class="sorting" autofocus onchange="callSorting(this.value)" >
-                            <option value="newest" ><button type="button">Mới nhất</button></option>
-                            <option value="lowToHigh"><button type="button" onclick="sortPriceLowToHigh()">Thứ tự theo giá: thấp đến cao</button></option>
+                            <option value="all" ><button type="button">Tất cả</button></option>
+                            <option value="lowToHigh"><button type="button" >Thứ tự theo giá: thấp đến cao</button></option>
                             <option value="highToLow"><button type="button">Thứ tự theo giá: cao đến thấp</button></option>
                         </select>
                     </div>
                    
                     <div class="product">
-                        <img src="./public/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
-                        <span class="product-brand">Kilian</span>
-                        <span class="product-name">Angels Share</span>
+                        <img src="./public/images/products/Marie-Jeanne-Vetiver-Santal-600x600.png" alt="" class="product-img">
+                        <span class="product-brand">Marie Jeanne</span>
+                        <span class="product-name">Vetiver Santal</span>
                         <span class="product-price">4.000.000 <span>đ</span></span>
                     </div>
                     <div class="product">
-                        <img src="./public/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
-                        <span class="product-brand">Kilian</span>
-                        <span class="product-name">Angels Share</span>
+                        <img src="./public/images/products/Nuoc-hoa-Creed-Aventus-600x600.png" alt="" class="product-img">
+                        <span class="product-brand">Creed</span>
+                        <span class="product-name">Aventus</span>
                         <span class="product-price">3.000.000 <span>đ</span></span>
                     </div>
                     <div class="product">
-                        <img src="./public/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
-                        <span class="product-brand">Kilian</span>
-                        <span class="product-name">Angels Share</span>
+                        <img src="./public/images/products/Nuoc-hoa-Dior-Sauvage-EDT-600x600.png" alt="" class="product-img">
+                        <span class="product-brand">Dior</span>
+                        <span class="product-name">Sauvage</span>
                         <span class="product-price">2.000.000 <span>đ</span></span>
                     </div>
                     <div class="product">
-                        <img src="./public/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
-                        <span class="product-brand">Kilian</span>
-                        <span class="product-name">Angels Share</span>
+                        <img src="./public/images/products/tom-ford-oud-wood-intense-50ml_54f826ba272942a4b87765d1e951285c_master-600x600.png" alt="" class="product-img">
+                        <span class="product-brand">Tom Ford</span>
+                        <span class="product-name">Oud Wood</span>
                         <span class="product-price">2.000.000 <span>đ</span></span>
                     </div>
                     <div class="product">
