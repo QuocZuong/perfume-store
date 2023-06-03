@@ -115,7 +115,7 @@ h1{
 
 }
 
-.nav .account button {
+.nav .account a {
   margin: 0 10px;
   background-color: transparent;
   border: none;
