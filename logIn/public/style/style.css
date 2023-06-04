@@ -36,19 +36,22 @@ h1{
   padding-left: 2rem;
 }
 
-.nav li {
+.nav li a {
   font-size: 1.2rem;
   margin: 0 10px;
   cursor: pointer;
   border-bottom: 1px solid transparent;
   transition: border-bottom 0.3s ease-in-out;
+  color: black;
+  list-style-type: none;
+  text-decoration: none;
 }
 
-.nav li:first-child {
+.nav li a:first-child {
   border-bottom: 1px solid transparent;
 }
 
-.nav li:hover {
+.nav li a:hover {
   border-bottom: 1px solid black;
   transition: border-bottom 0.3s ease-in-out;
 }
