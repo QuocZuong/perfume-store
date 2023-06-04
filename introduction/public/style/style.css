@@ -6,13 +6,12 @@ body {
   text-align: center;
 }
 
-
 .container {
   width: 100vw;
   margin: 0;
 }
 
-h1{
+h1 {
   min-width: 200px;
 }
 
@@ -48,7 +47,6 @@ h1{
   padding: 10px 30px 5px 30px;
   font-size: 1.1rem;
 }
-
 
 .nav {
   display: flex;
@@ -97,7 +95,6 @@ h1{
   display: flex;
   align-items: center;
   padding-right: 2rem;
-
 }
 
 .nav .account a {
@@ -108,26 +105,90 @@ h1{
   cursor: pointer;
 }
 
+.main {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
 
+.main .content {
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
+.main .content > div {
+  margin: 100px 0;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+}
 
-.register{
+.main .content > div .text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: fit-content;
+  max-width: 65%;
+}
+
+.main .content > div .text h4 {
+  font-size: 2.3em;
+  font-weight: 1500;
+}
+
+.main .content > div .text p {
+  width: 80%;
+  font-size: 1.5vw;
+  word-wrap: break-word;
+  text-align: justify;
+
+}
+
+.main .content h1 {
+  margin: 50px 0;
+  font-size: 3.3rem;
+}
+
+.main .content .group img {
+  width: 25%;
+  height: 25%;
+}
+.main .content .story img {
+  width: 40%;
+  height: 30%;
+}
+.main .content .story2 img {
+  width: 40%;
+  height: 30%;
+}
+
+.main .content .thanks {
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.register {
   text-align: center;
   margin: 100px 0 100px 0;
   background-color: #fffcfc;
   padding: 100px 0;
 }
 
-.register h1{
+.register h1 {
   font-size: 3vw;
   min-width: 300px;
 }
 
-.register p{
+.register p {
   font-size: 2vw;
 }
 
-.register input{
+.register input {
   border: none;
   border-bottom: 1px solid black;
   margin-right: 20px;
@@ -135,7 +196,7 @@ h1{
   outline: none;
 }
 
-.register button{
+.register button {
   margin-right: 20px;
   background-color: transparent;
   outline: none;
@@ -144,24 +205,24 @@ h1{
   padding: 7px 70px 1px 70px;
   border-radius: 2px;
 }
-.register button:hover{
-  box-shadow: 0px 2px 3px rgba(0,0,0,0.2);
+.register button:hover {
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
 }
 
-.social{
+.social {
   text-align: center;
   margin-bottom: 50px;
 }
 
-.social a + a{
+.social a + a {
   margin-left: 7px;
 }
 
-.social img{
+.social img {
   height: 32px;
 }
 
-.footer{
+.footer {
   text-align: center;
   display: flex;
   background-color: black;
@@ -169,61 +230,59 @@ h1{
   justify-content: center;
 }
 
-.footer div{
+.footer div {
   text-align: center;
   display: flex;
   justify-content: center;
   flex-direction: column;
 }
 
-.footer div:nth-child(1){
+.footer div:nth-child(1) {
   margin-right: 110px;
   margin-left: 80px;
 }
 
-.footer div:nth-child(2){
+.footer div:nth-child(2) {
   margin-right: 80px;
 }
 
-.footer ul{
+.footer ul {
   padding: 0;
- 
 }
 
-.footer h2{
+.footer h2 {
   color: #fff;
   font-size: 3vw;
-
 }
 
-.footer li{
+.footer li {
   list-style-type: none;
   margin: 5px 0;
 }
 
-.footer a{
+.footer a {
   color: #fff;
   text-decoration: none;
   font-size: 1.5vw;
   width: 100%;
 }
 
-.footer a:hover{
+.footer a:hover {
   text-decoration: underline;
   text-decoration-color: white;
   transition: text-decoration 0.3s ease-in-out;
 }
 
-.copyright{
- margin-top: 25px;
+.copyright {
+  margin-top: 25px;
 }
 
-.copyright p{
+.copyright p {
   font-size: 1.2rem;
 }
 
 @media screen and (max-width: 700px) {
-    h1{
-      font-size: 100px;
-    }
+  h1 {
+    font-size: 100px;
+  }
 }
