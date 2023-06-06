@@ -134,10 +134,14 @@ h1{
   
 }
 
+
 .main .left .list ul li a{
   color: black;
   text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-bottom 0.3s ease-in-out;
 }
+
 
 .main .left .list ul li a:hover{
   border-bottom: 1px solid black;

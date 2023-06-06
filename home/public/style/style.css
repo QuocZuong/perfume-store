@@ -187,6 +187,10 @@ h1{
   font-size: 4vw;
 }
 
+.product .item a{
+  text-decoration: none;
+}
+
 .product .classify button{
   outline:none;
   border: none;
