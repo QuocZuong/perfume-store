@@ -213,12 +213,13 @@
         crossorigin="anonymous"></script>
         <script src="./public/js/main.js"></script>
         <script>
+
                                     let gender = document.querySelectorAll("input[name=Gender]");
                                     for (let i = 0; i < gender.length; i++)
                                     {
                                         gender[i].addEventListener("change", function () {
                                             console.log(this.id);
-                                            location.replace(${pageContext.request.contextPath} + "?filter-gender=" + this.id);
+                                            window.location.replace("shop?filter-gender=" + this.id);
                                         });
                                     }
         </script>
