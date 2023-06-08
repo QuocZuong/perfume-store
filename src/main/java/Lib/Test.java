@@ -20,15 +20,16 @@ public class Test {
       // System.out.println(DataManager.insert("Product", data[i]));
       // }
 
-      // System.out.println(DataManager.select("Product",
-      // ""));
+      System.out.println(DataManager.select("Brand",
+          ""));
+
       // System.out.println(DataManager.delete("Brand", ""));
       // System.out.println(DataManager.delete("Product", ""));
 
-      ProductDAO pd = new ProductDAO();
-      pd.save_Backup_Data();
-      BrandDAO bd = new BrandDAO();
-      bd.save_Backup_Data();
+      // ProductDAO pd = new ProductDAO();
+      // pd.save_Backup_Data();
+      // BrandDAO bd = new BrandDAO();
+      // bd.save_Backup_Data();
     } catch (Exception e) {
       e.printStackTrace();
     }
