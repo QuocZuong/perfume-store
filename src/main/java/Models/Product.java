@@ -1,40 +1,56 @@
 package Models;
 
 public class Product {
-    private String code;
+    private int ID;
     private String name;
-    private String brandCode;
+    private int BrandID;
     private int price;
     private String gender;
     private String smell;
     private int quantity;
-    private int release_Year;
+    private int releaseYear;
     private int volume;
+    private String ImgURL;
     private String description;
 
     public Product() {
     }
 
-    public Product(String code, String name, String brandCode, int price, String gender, String smell, int quantity,
-            int release_Year, int volume, String description) {
-        this.code = code;
+    public Product(String name, int brandID, int price, String gender, String smell, int quantity,
+            int releaseYear, int volume, String imgURL, String description) {
         this.name = name;
-        this.brandCode = brandCode;
+        BrandID = brandID;
         this.price = price;
         this.gender = gender;
         this.smell = smell;
         this.quantity = quantity;
-        this.release_Year = release_Year;
+        this.releaseYear = releaseYear;
         this.volume = volume;
+        ImgURL = imgURL;
         this.description = description;
     }
 
-    public String getCode() {
-        return code;
+    public Product(int iD, String name, int brandID, int price, String gender, String smell, int quantity,
+            int releaseYear, int volume, String imgURL, String description) {
+        ID = iD;
+        this.name = name;
+        BrandID = brandID;
+        this.price = price;
+        this.gender = gender;
+        this.smell = smell;
+        this.quantity = quantity;
+        this.releaseYear = releaseYear;
+        this.volume = volume;
+        ImgURL = imgURL;
+        this.description = description;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int iD) {
+        ID = iD;
     }
 
     public String getName() {
@@ -45,12 +61,12 @@ public class Product {
         this.name = name;
     }
 
-    public String getBrandCode() {
-        return brandCode;
+    public int getBrandID() {
+        return BrandID;
     }
 
-    public void setBrandCode(String brandCode) {
-        this.brandCode = brandCode;
+    public void setBrandID(int brandID) {
+        BrandID = brandID;
     }
 
     public int getPrice() {
@@ -85,12 +101,12 @@ public class Product {
         this.quantity = quantity;
     }
 
-    public int getRelease_Year() {
-        return release_Year;
+    public int getReleaseYear() {
+        return releaseYear;
     }
 
-    public void setRelease_Year(int release_Year) {
-        this.release_Year = release_Year;
+    public void setReleaseYear(int releaseYear) {
+        this.releaseYear = releaseYear;
     }
 
     public int getVolume() {
@@ -101,6 +117,14 @@ public class Product {
         this.volume = volume;
     }
 
+    public String getImgURL() {
+        return ImgURL;
+    }
+
+    public void setImgURL(String imgURL) {
+        ImgURL = imgURL;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -108,4 +132,5 @@ public class Product {
     public void setDescription(String description) {
         this.description = description;
     }
+
 }

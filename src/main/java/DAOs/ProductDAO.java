@@ -98,24 +98,42 @@ public class ProductDAO {
     }
 
     /*
-     * "Code,Name,BrandCode,Price,Gender,Smell,Quantity,ReleaseYear,Volume,Description",
+     * "ID,Name,BrandID,Price,Gender,Smell,Quantity,ReleaseYear,Volume,ImgURL,Description",
      * // Product
      */
-    public int addProduct(Product pd) {
+    private int addProduct(Product pd) {
         int result = 0;
         try {
-            String sql = "INSERT INTO Product VALUES(?,?,?,?,?,?,?,?,?,?)";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setNString(1, pd.getCode());
-            ps.setNString(2, pd.getName());
-            ps.setNString(3, pd.getBrandCode());
-            ps.setInt(4, pd.getPrice());
-            ps.setNString(5, pd.getGender());
-            ps.setNString(6, pd.getSmell());
-            ps.setInt(7, pd.getQuantity());
-            ps.setInt(8, pd.getRelease_Year());
-            ps.setInt(9, pd.getVolume());
+            StringBuilder sql = new StringBuilder("INSERT INTO Product");
+
+            sql.append("(");
+            sql.append("[Name]");
+            sql.append(",[BrandCode]");
+            sql.append(",[Price]");
+            sql.append(",[Gender]");
+            sql.append(",[Smell]");
+            sql.append(",[Quantity]");
+            sql.append(",[ReleaseYear]");
+            sql.append(",[Volume]");
+            sql.append(",[ImgURL]");
+            sql.append(",[Description]");
+            sql.append(")");
+
+            sql.append(" VALUES(?,?,?,?,?,?,?,?,?,?)");
+
+            PreparedStatement ps = conn.prepareStatement(sql.toString());
+
+            ps.setNString(1, pd.getName());
+            ps.setInt(2, pd.getBrandID());
+            ps.setInt(3, pd.getPrice());
+            ps.setNString(4, pd.getGender());
+            ps.setNString(5, pd.getSmell());
+            ps.setInt(6, pd.getQuantity());
+            ps.setInt(7, pd.getReleaseYear());
+            ps.setInt(8, pd.getVolume());
+            ps.setString(9, pd.getImgURL());
             ps.setNString(10, pd.getDescription());
+
             result = ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -126,17 +144,37 @@ public class ProductDAO {
     public int addProduct(String data) {
         int result = 0;
         String datas[] = data.split(DB.DataManager.Separator);
+        BrandDAO brDAO = new BrandDAO();
+        // "NAME~BRANDNAME(string)~PRICE(REAL)~Gender(string)~Smell(String)~Quantity(int)~ReleaseYear(smallint)~Volume(INT)~URL(Srtring)~Description",
+
+        //Check if exist brand name
+        if (!brDAO.isExistedBrandName(datas[1])) {
+            brDAO.addBrand(datas[1]);
+        }
+        int brandID = brDAO.getBrandID(datas[1]);
+
+        String name = datas[0];
+        int price = Integer.parseInt(MoneyToInteger(datas[2]));
+        String gender = datas[3];
+        String smell = datas[4];
+        int quantity = Integer.parseInt(datas[5]);
+        int releaseYear = Integer.parseInt(datas[6]);
+        int volume = Integer.parseInt(datas[7]);
+        String imgURL = datas[8];
+        String description = datas[9];
+
         Product pd = new Product(
-                datas[0],
-                datas[1],
-                datas[2],
-                Integer.parseInt(MoneyToInteger(datas[3])),
-                datas[4],
-                datas[5],
-                Integer.parseInt(datas[6]),
-                Integer.parseInt(datas[7]),
-                Integer.parseInt(datas[8]),
-                datas[9]);
+                name,
+                brandID,
+                price,
+                gender,
+                smell,
+                quantity,
+                releaseYear,
+                volume,
+                imgURL,
+                description);
+
         result = addProduct(pd);
         return result;
     }
@@ -145,8 +183,9 @@ public class ProductDAO {
         ResultSet rs = null;
         String sql = "SELECT * FROM Product";
 
-        try ( OutputStream os = new FileOutputStream(
-                "C:\\Users\\Acer\\OneDrive\\Desktop\\#SU23\\PRJ301\\SQLproject\\SQLproject\\src\\main\\java\\BackUp\\backup_Product_data.txt");  PrintWriter out = new PrintWriter(new OutputStreamWriter(os, "UTF-8"));) {
+        try (OutputStream os = new FileOutputStream(
+                "C:\\Users\\Acer\\OneDrive\\Desktop\\#SU23\\PRJ301\\SQLproject\\SQLproject\\src\\main\\java\\BackUp\\backup_Product_data.txt");
+                PrintWriter out = new PrintWriter(new OutputStreamWriter(os, "UTF-8"));) {
             PreparedStatement ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
             StringBuilder strOUT = new StringBuilder("");

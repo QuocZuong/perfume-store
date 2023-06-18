@@ -13,7 +13,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import DB.DataManager;
-import Models.Brand;
 
 public class BrandDAO {
     private static Connection conn = null;
@@ -25,52 +24,53 @@ public class BrandDAO {
     public ResultSet getAll() {
         ResultSet rs = null;
         String sql = "SELECT * FROM Brand";
+
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
         } catch (SQLException ex) {
             Logger.getLogger(BrandDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         return rs;
     }
 
-    public int addBrand(Brand br) {
+    public int addBrand(String brandName) {
         int result = 0;
+
         try {
-            String sql = "INSERT INTO Brand VALUES(?,?)";
+            String sql = "INSERT INTO Brand([Name]) VALUES(?)";
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setNString(1, br.getCode());
-            ps.setNString(2, br.getName());
+
+            ps.setNString(1, brandName);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return result;
     }
 
-    public int addBrand(String data) {
-        int result = 0;
-        String datas[] = data.split(DataManager.Separator);
-        Brand br = new Brand(datas[0], datas[1]);
-        result = addBrand(br);
-        return result;
-    }
-
-    public String getBrandName(String BrandCode) {
-        String name = null;
+    public int getBrandID(String BrandName) {
+        int id = -1;
         ResultSet rs = null;
+        
         try {
-            String sql = "Select * from Brand Where Code=?";
+            String sql = "Select * from Brand Where [Name]=?";
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, BrandCode);
+            ps.setNString(1, BrandName);
             rs = ps.executeQuery();
             if (rs.next()) {
-                name = rs.getString("Name");
+                id = Integer.parseInt(rs.getString("ID"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return name;
+        return id;
+    }
+
+    public boolean isExistedBrandName(String brandName) {
+        return getBrandID(brandName) != -1;
     }
 
     public void save_Backup_Data() {

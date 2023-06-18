@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
-
 import DAOs.ProductDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,12 +9,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
-import java.io.FileOutputStream;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.io.FileOutputStream;
 
 import DB.DataManager;
 
@@ -109,7 +105,9 @@ public class ImportProduct extends HttpServlet {
         ResultSet rs = null;
         try {
             ProductDAO pd = new ProductDAO();
-            pd.addProduct(data.toString());
+
+
+            // pd.addProduct(data.toString());
             rs = pd.getAll();
         } catch (Exception ex) {
             Logger.getLogger(ImportProduct.class.getName()).log(Level.SEVERE, null, ex);
