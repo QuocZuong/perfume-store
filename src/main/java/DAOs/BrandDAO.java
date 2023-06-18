@@ -43,6 +43,7 @@ public class BrandDAO {
             PreparedStatement ps = conn.prepareStatement(sql);
 
             ps.setNString(1, brandName);
+            result = ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -67,6 +68,25 @@ public class BrandDAO {
         }
 
         return id;
+    }
+
+    public String getBrandName(int brandID) {
+        String name = null;
+        ResultSet rs = null;
+        
+        try {
+            String sql = "Select * from Brand Where [id]=?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, brandID);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                name = rs.getString("Name");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return name;
     }
 
     public boolean isExistedBrandName(String brandName) {

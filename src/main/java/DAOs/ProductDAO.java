@@ -108,7 +108,7 @@ public class ProductDAO {
 
             sql.append("(");
             sql.append("[Name]");
-            sql.append(",[BrandCode]");
+            sql.append(",[BrandID]");
             sql.append(",[Price]");
             sql.append(",[Gender]");
             sql.append(",[Smell]");
