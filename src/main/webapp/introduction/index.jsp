@@ -1,9 +1,3 @@
-<%-- 
-    Document   : newjsp
-    Created on : Jun 19, 2023, 7:49:43 PM
-    Author     : Acer
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -34,17 +28,16 @@
                     <ul>
                         <li><a href="${pageContext.request.contextPath}/index.html">trang chủ</a></li>
                         <li><a href="${pageContext.request.contextPath}/introduction/index.jsp">giới thiệu</a></li>
-                        <li><a >thương hiệu</a></li>
+                        <li><a href="${pageContext.request.contextPath}/brand/index.jsp">thương hiệu</a></li>
                         <!-- This link to shop servlet file. DO NOT MODIFY the link -->
                         <li><a href="${pageContext.request.contextPath}/shop">sản phẩm</a></li>
                         <li><a href="">blog</a></li>
                     </ul>
-                    <a href="./home/index.html"><img src="./resources/images/icons/icon.webp" alt=""
-                                                     height="64"></a>
+                    <a href="./home/index.html"><img src="../resources/images/icons/icon.webp" alt="" height="64"></a>
                     <div class="account">
-                        <a><img src="./resources/images/icons/search.png" alt=""></a>
-                        <a href="./logIn/index.html"><img src="./resources/images/icons/user.png" alt=""></a>
-                        <a><img src="./resources/images/icons/cart.png" alt=""></a>
+                        <a><img src="../resources/images/icons/search.png" alt=""></a>
+                        <a href="../logIn/index.jsp"><img src="../resources/images/icons/user.png" alt=""></a>
+                        <a><img src="../resources/images/icons/cart.png" alt=""></a>
                     </div>
                 </div>
             </div>

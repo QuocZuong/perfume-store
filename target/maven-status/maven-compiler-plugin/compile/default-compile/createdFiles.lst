@@ -1,9 +1,9 @@
-DAOs\ProductDAO.class
-Models\Product.class
-DB\DataManager.class
+Servlets/shop.class
+DB/DataManager$1.class
 ImportProduct.class
-Servlets\shop.class
-Models\Brand.class
-DB\DataManager$1.class
-Lib\Test.class
-DAOs\BrandDAO.class
+Models/Brand.class
+DAOs/ProductDAO.class
+DB/DataManager.class
+Lib/Test.class
+DAOs/BrandDAO.class
+Models/Product.class
