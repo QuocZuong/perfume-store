@@ -53,9 +53,9 @@ public class shop extends HttpServlet {
         String shop = "shop";
 
         if ((filter = request.getParameter("filter_brand")) != null) {
-            rs = pDAO.getWithCondition(String.format("BrandCode = '%s'", filter));
+            rs = pDAO.getWithCondition(String.format("BrandID = '%s'", filter));
             bdRs = bDao.getAll();
-            shop = request.getParameter("brandName") + "";
+            shop = bDao.getBrandName(Integer.parseInt(request.getParameter("filter_brand")));
         } else {
             rs = pDAO.getAll();
             bdRs = bDao.getAll();
