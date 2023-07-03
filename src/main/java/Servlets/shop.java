@@ -7,7 +7,6 @@ package Servlets;
 import DAOs.BrandDAO;
 import DAOs.ProductDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.ResultSet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -53,15 +52,9 @@ public class shop extends HttpServlet {
         String shop = "shop";
 
         if ((filter = request.getParameter("filter_brand")) != null) {
-<<<<<<< HEAD
-            rs = pDAO.getWithCondition(String.format("BrandCode = '%s'", filter));
-            bdRs = bDao.getAll();
-            shop = request.getParameter("brandName") + "";
-=======
             rs = pDAO.getWithCondition(String.format("BrandID = '%s'", filter));
             bdRs = bDao.getAll();
             shop = bDao.getBrandName(Integer.parseInt(request.getParameter("filter_brand")));
->>>>>>> NetBean
         } else {
             rs = pDAO.getAll();
             bdRs = bDao.getAll();

@@ -41,20 +41,6 @@
             <div class="row">
                 <div class="col-md-12 nav">
                     <ul>
-<<<<<<< HEAD
-                        <li><a href="../index.html">trang chủ</a></li>
-                        <li><a href="../introduction/index.html">giới thiệu</a></li>
-                        <li><a href="">thương hiệu</a></li>
-                        <li><a href="./index.jsp">sản phẩm</a></li>
-                        <li><a href="">blog</a></li>
-                    </ul>
-                    <a href="../home/index.html"><img src="../resources/images/icons/icon.webp" alt=""
-                                                      height="64"></a>
-                    <div class="account">
-                        <a><img src="../resources/images/icons/search.png" alt=""></a>
-                        <a href="../logIn/index.html"><img src="../resources/images/icons/user.png" alt=""></a>
-                        <a><img src="../resources/images/icons/cart.png" alt=""></a>
-=======
                         <li><a href="${pageContext.request.contextPath}/index.html">trang chủ</a></li>
                         <li><a href="${pageContext.request.contextPath}/introduction/index.jsp">giới thiệu</a></li>
                         <li><a href="${pageContext.request.contextPath}/brand/index.jsp">thương hiệu</a></li>
@@ -68,7 +54,6 @@
                         <a><img src="./resources/images/icons/search.png" alt=""></a>
                         <a href="./logIn/index.jsp"><img src="./resources/images/icons/user.png" alt=""></a>
                         <a><img src="./resources/images/icons/cart.png" alt=""></a>
->>>>>>> NetBean
                     </div>
                 </div>
             </div>
@@ -88,11 +73,7 @@
                                             while (rs != null && rs.next()) {
                                         %>
                                         <li> 
-<<<<<<< HEAD
-                                            <a href="shop?filter_brand=<%=rs.getString(1)%>&brandName=<%= rs.getString(2)%>">
-=======
                                             <a href="shop?filter_brand=<%=rs.getInt("ID")%>">
->>>>>>> NetBean
                                                 <%=rs.getString(2)%></a> 
                                         </li>
 
@@ -105,15 +86,6 @@
                             </div>
                             <div class="gender">
                                 <h4>GIỚI TÍNH</h4>
-<<<<<<< HEAD
-                                <input type="checkbox" name="Gender" id="Nam">
-                                <label for="male" value="Male">Nam</label>
-
-                                <input type="checkbox" name="Gender" id="Nữ">
-                                <label for="female" value="Female">Nữ</label>
-
-                                <input type="checkbox" name="Gender" id="Unisex">
-=======
                                 <input type="radio" name="Gender" id="Nam">
                                 <label for="male" value="Male">Nam</label>
 
@@ -121,7 +93,6 @@
                                 <label for="female" value="Female">Nữ</label>
 
                                 <input type="radio" name="Gender" id="Unisex">
->>>>>>> NetBean
                                 <label for="unisex" value="Unisex">Unisex</label>
                             </div>
                             <div class="price">
@@ -151,17 +122,10 @@
                                 while (rs != null && rs.next()) {
                             %>
                             <div class="product">
-<<<<<<< HEAD
-                                <img src="${pageContext.request.contextPath}/img/<%= rs.getString(1)%>.png" alt="" class="product-img">
-                                <span class="product-brand"><%= bdao.getBrandName(rs.getString(3))%></span>
-                                <span class="product-name"><%= rs.getString(2)%></span>
-                                <span class="product-price"><%=  pdao.getPrice(rs.getString(1))%> <span>đ</span></span>
-=======
                                 <img src="<%= rs.getString("ImgURL")%>" alt="" class="product-img">
                                 <span class="product-brand"><%= bdao.getBrandName(rs.getInt("BrandID"))%></span>
                                 <span class="product-name"><%= rs.getString("Name")%></span>
                                 <span class="product-price"><%=  pdao.getPrice(rs.getInt("ID"))%> <span>đ</span></span>
->>>>>>> NetBean
                             </div>
                             <%
                                 }
@@ -196,17 +160,10 @@
 
             <div class="row">
                 <div class="col-md-12 social">
-<<<<<<< HEAD
-                    <a href=""><img src="..//resources/images/icons/instagram.png" alt=""></a>
-                    <a href=""><img src="..//resources/images/icons/facebook.png" alt=""></a>
-                    <a href=""><img src="..//resources/images/icons/youtube.png" alt=""></a>
-                    <a href=""><img src="..//resources/images/icons/location-pin.png" alt=""></a>
-=======
                     <a href=""><img src=".//resources/images/icons/instagram.png" alt=""></a>
                     <a href=""><img src=".//resources/images/icons/facebook.png" alt=""></a>
                     <a href=""><img src=".//resources/images/icons/youtube.png" alt=""></a>
                     <a href=""><img src=".//resources/images/icons/location-pin.png" alt=""></a>
->>>>>>> NetBean
                 </div>
             </div>
 

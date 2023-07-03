@@ -16,9 +16,7 @@ signUp.addEventListener("click", ()=>{
   signUpForm.style.display = "block";
   signIn.classList.remove("active");
   signUp.classList.add("active");
-<<<<<<< HEAD
-})
-=======
+
 })
 
 
@@ -26,4 +24,3 @@ signUp.addEventListener("click", ()=>{
 function generateRandomPassword(){
   return Math.random().toString(36).slice(-8);
 }
->>>>>>> NetBean
