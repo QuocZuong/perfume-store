@@ -86,13 +86,13 @@
                             </div>
                             <div class="gender">
                                 <h4>GIỚI TÍNH</h4>
-                                <input type="checkbox" name="Gender" id="Nam">
+                                <input type="radio" name="Gender" id="Nam">
                                 <label for="male" value="Male">Nam</label>
 
-                                <input type="checkbox" name="Gender" id="Nữ">
+                                <input type="radio" name="Gender" id="Nữ">
                                 <label for="female" value="Female">Nữ</label>
 
-                                <input type="checkbox" name="Gender" id="Unisex">
+                                <input type="radio" name="Gender" id="Unisex">
                                 <label for="unisex" value="Unisex">Unisex</label>
                             </div>
                             <div class="price">

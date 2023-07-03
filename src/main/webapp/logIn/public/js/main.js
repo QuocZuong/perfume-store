@@ -17,3 +17,9 @@ signUp.addEventListener("click", ()=>{
   signIn.classList.remove("active");
   signUp.classList.add("active");
 })
+
+
+
+function generateRandomPassword(){
+  return Math.random().toString(36).slice(-8);
+}
