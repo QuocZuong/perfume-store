@@ -7,10 +7,12 @@ public class DataManager {
 
   public static final String DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
   // public static final String URL =
-  // "jdbc:sqlserver://PODO:1433;databaseName=projectPRJ;user=sa;password=sa;encrypt=true;trustServerCertificate=true;";
-  // jdbc:sqlserver://35.240.240.157:1433;databaseName=projectPRJ;user=chuongHeo;password=heoQuipdeq;encrypt=true;trustServerCertificate=true;
-  // jdbc:sqlserver://35.240.240.157:1433;databaseName=projectPRJ;user=chuongHeo;password=heoQuipdeq;encrypt=true;trustServerCertificate=true;
-  public static final String URL = "jdbc:sqlserver://LAPTOP-CSJAMOBT:1433;databaseName=projectPRJ;user=sa;password=sa;encrypt=true;trustServerCertificate=true;";
+  // PODO:1433;databaseName=projectPRJ;user=sa;password=sa;
+  // 35.240.240.157:1433;databaseName=projectPRJ;user=chuongHeo;password=heoQuipdeq;
+  // 35.240.240.157:1433;databaseName=projectPRJ;user=chuongHeo;password=heoQuipdeq;
+  public static final String dbconfig = "35.240.240.157:1433;databaseName=projectPRJ;user=chuongHeo;password=heoQuipdeq;";
+  public static final String URL = "jdbc:sqlserver://" + dbconfig + "encrypt=true;trustServerCertificate=true;";
+
   private static Connection conn;
 
   // --------------------- Init server and create connection ---------------------

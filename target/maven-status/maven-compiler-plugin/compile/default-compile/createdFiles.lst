@@ -1,9 +1,12 @@
+DB\DataManager.class
+Controllers\ProductController.class
+ImportProduct.class
+Controllers\HomeController.class
+Servlets\shop.class
+Lib\Test.class
 DAOs\ProductDAO.class
 Models\Product.class
-DB\DataManager.class
-ImportProduct.class
-Servlets\shop.class
+Controllers\ResourceController.class
 Models\Brand.class
 DB\DataManager$1.class
-Lib\Test.class
 DAOs\BrandDAO.class

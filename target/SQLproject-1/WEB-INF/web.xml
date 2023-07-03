@@ -8,6 +8,10 @@
         <servlet-name>shop</servlet-name>
         <servlet-class>Servlets.shop</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ProductController</servlet-name>
+        <servlet-class>Controllers.ProductController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ImportProduct</servlet-name>
         <url-pattern>/ImportProduct</url-pattern>
@@ -15,6 +19,32 @@
     <servlet-mapping>
         <servlet-name>shop</servlet-name>
         <url-pattern>/shop</url-pattern>
+    </servlet-mapping>
+    <!--Controller defintion-->
+    <servlet>
+        <servlet-name>HomeController</servlet-name>
+        <servlet-class>Controllers.HomeController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ResourceController</servlet-name>
+        <servlet-class>Controllers.ResourceController</servlet-class>
+    </servlet>
+    <!--Controller mapping-->
+    <servlet-mapping>
+        <servlet-name>HomeController</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>HomeController</servlet-name>
+        <url-pattern>/home/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ResourceController</servlet-name>
+        <url-pattern>/RESOURCES/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProductController</servlet-name>
+        <url-pattern>/Product/*</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
