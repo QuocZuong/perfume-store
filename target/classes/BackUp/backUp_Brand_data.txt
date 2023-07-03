@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 "AZR~Azzaro",
 "BKI~By Kilian",
 "CHL~chloé",
@@ -9,3 +10,16 @@
 "TFD~Tom Ford",
 "YSL~Yves Saint Laurent",
 "ZOO~Zoologist",
+=======
+"AZR~Azzaro",
+"BKI~By Kilian",
+"CHL~chloé",
+"CRD~Creed",
+"DTQ~Diptyque",
+"GIO~Giorgio Armani",
+"LLB~LE LABO",
+"NASO~Nasomatto",
+"TFD~Tom Ford",
+"YSL~Yves Saint Laurent",
+"ZOO~Zoologist",
+>>>>>>> NetBean

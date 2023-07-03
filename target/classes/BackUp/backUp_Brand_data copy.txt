@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // Nhap brand
 "NASO~Nasomatto",
 "ZOO~Zoologist",
@@ -14,4 +15,22 @@
 // Ninja
 "BVL~bvlgari",
 "MFK~maison francis kurkdjian",
+=======
+// Nhap brand
+"NASO~Nasomatto",
+"ZOO~Zoologist",
+"YSL~Yves Saint Laurent",
+"BKI~By Kilian",
+"AZR~Azzaro",
+"CRD~Creed",
+"DTQ~Diptyque",
+"LLB~Le Labo",
+"TFD~Tom Ford"
+"GIO~Giorgio Armani",
+"CHL~chloé",
+
+// Ninja
+"BVL~bvlgari",
+"MFK~maison francis kurkdjian",
+>>>>>>> NetBean
 "XER~xerjoff",

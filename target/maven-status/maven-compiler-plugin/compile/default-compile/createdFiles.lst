@@ -1,0 +1,9 @@
+Servlets/shop.class
+DB/DataManager$1.class
+ImportProduct.class
+Models/Brand.class
+DAOs/ProductDAO.class
+DB/DataManager.class
+Lib/Test.class
+DAOs/BrandDAO.class
+Models/Product.class

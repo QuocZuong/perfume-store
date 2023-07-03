@@ -48,14 +48,24 @@ public class ProductDAO {
         return rs;
     }
 
+<<<<<<< HEAD
     public String getPrice(String code) {
         String price = null;
         String sql = "SELECT Price FROM Product WHERE Code = ?";
+=======
+    public String getPrice(int ID) {
+        String price = null;
+        String sql = "SELECT Price FROM Product WHERE ID = ?";
+>>>>>>> NetBean
         ResultSet rs = null;
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
+<<<<<<< HEAD
             ps.setString(1, code);
+=======
+            ps.setInt(1, ID);
+>>>>>>> NetBean
             rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -183,9 +193,14 @@ public class ProductDAO {
         ResultSet rs = null;
         String sql = "SELECT * FROM Product";
 
+<<<<<<< HEAD
         try (OutputStream os = new FileOutputStream(
                 "C:\\Users\\Acer\\OneDrive\\Desktop\\#SU23\\PRJ301\\SQLproject\\SQLproject\\src\\main\\java\\BackUp\\backup_Product_data.txt");
                 PrintWriter out = new PrintWriter(new OutputStreamWriter(os, "UTF-8"));) {
+=======
+        try ( OutputStream os = new FileOutputStream(
+                "C:\\Users\\Acer\\OneDrive\\Desktop\\#SU23\\PRJ301\\SQLproject\\SQLproject\\src\\main\\java\\BackUp\\backup_Product_data.txt");  PrintWriter out = new PrintWriter(new OutputStreamWriter(os, "UTF-8"));) {
+>>>>>>> NetBean
             PreparedStatement ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
             StringBuilder strOUT = new StringBuilder("");
