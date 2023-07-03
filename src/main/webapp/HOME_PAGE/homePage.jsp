@@ -21,8 +21,8 @@
         <link
             href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond&family=Josefin+Sans:wght@200&family=Josefin+Slab&display=swap"
             rel="stylesheet">
-        <link rel="stylesheet" href="../RESOURCES/home/public/style/style.css">
-        <link rel="icon" href="../RESOURCES/images/icons/icon.webp">
+        <link rel="stylesheet" href="/RESOURCES/home/public/style/style.css">
+        <link rel="icon" href="/RESOURCES/images/icons/icon.webp">
         <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css" rel="stylesheet" type="text/css" />
         <title>Perfume Store</title>
     </head>
@@ -31,7 +31,7 @@
             <div class="row no-gutters">
                 <div class="col-md-12 header">
                     <video id="bg-video" autoplay loop muted>
-                        <source src="../RESOURCES/videos/header.mp4" type="video/mp4">
+                        <source src="/RESOURCES/videos/header.mp4" type="video/mp4">
                     </video>
                     <h1>xxiv store</h1>
                     <h2>You deserve to be happy</h2>
@@ -52,12 +52,12 @@
                         <li><a href="/Product/List">sản phẩm</a></li>
                         <li><a href="">blog</a></li>
                     </ul>
-                    <a href="../RESOURCES/home/index.html"><img src="../RESOURCES/images/icons/icon.webp" alt=""
+                    <a href="/RESOURCES/home/index.html"><img src="/RESOURCES/images/icons/icon.webp" alt=""
                                                                 height="64"></a>
                     <div class="account">
-                        <a><img src="../RESOURCES/images/icons/search.png" alt=""></a>
-                        <a href="./logIn/index.jsp"><img src="../RESOURCES/images/icons/user.png" alt=""></a>
-                        <a><img src="../RESOURCES/images/icons/cart.png" alt=""></a>
+                        <a><img src="/RESOURCES/images/icons/search.png" alt=""></a>
+                        <a href="./logIn/index.jsp"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+                        <a><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
                     </div>
                 </div>
             </div>
@@ -68,35 +68,35 @@
 
                         <div class="logo">
                             <a><img
-                                    src="../RESOURCES/images/brands/159133030_1044233219399119_4321418372070751780_n.png"
+                                    src="/RESOURCES/images/brands/159133030_1044233219399119_4321418372070751780_n.png"
                                     alt=""></a>
                             <a><img
-                                    src="../RESOURCES/images/brands/Hang-nuoc-hoa-Imaginary-Authors.png"
+                                    src="/RESOURCES/images/brands/Hang-nuoc-hoa-Imaginary-Authors.png"
                                     alt=""></a>
                             <a><img
-                                    src="../RESOURCES/images/brands/Hang-nuoc-hoa-Maison-Matine.png"
+                                    src="/RESOURCES/images/brands/Hang-nuoc-hoa-Maison-Matine.png"
                                     alt=""></a>
                             <a><img
-                                    src="../RESOURCES/images//brands/LOrchestre-Parfums.png"
+                                    src="/RESOURCES/images//brands/LOrchestre-Parfums.png"
                                     alt=""></a>
-                            <a><img src="../RESOURCES/images/brands/Nasomatto.png"
+                            <a><img src="/RESOURCES/images/brands/Nasomatto.png"
                                     alt=""></a>
                             <a><img
-                                    src="../RESOURCES/images/brands/nuoc-hoa-by-kilian.png"
+                                    src="/RESOURCES/images/brands/nuoc-hoa-by-kilian.png"
                                     alt="" class="kilian"></a>
-                            <a><img src="../RESOURCES/images/brands/nuoc-hoa-dior.png"
+                            <a><img src="/RESOURCES/images/brands/nuoc-hoa-dior.png"
                                     alt=""></a>
                             <a><img
-                                    src="../RESOURCES/images/brands/nuoc-hoa-le-labo.png"
+                                    src="/RESOURCES/images/brands/nuoc-hoa-le-labo.png"
                                     alt="" class="lelabo"></a>
                             <a><img
-                                    src="../RESOURCES/images/brands/nuoc-hoa-tomford.png"
+                                    src="/RESOURCES/images/brands/nuoc-hoa-tomford.png"
                                     alt="" class="tomford"></a>
-                            <a><img src="../RESOURCES/images/brands/nuoc-hoa-ysl.png"
+                            <a><img src="/RESOURCES/images/brands/nuoc-hoa-ysl.png"
                                     alt=""></a>
-                            <a><img src="../RESOURCES/images/brands/Orto-Parisi.png"
+                            <a><img src="/RESOURCES/images/brands/Orto-Parisi.png"
                                     alt=""></a>
-                            <a><img src="../RESOURCES/images/brands/Zoologist.png"
+                            <a><img src="/RESOURCES/images/brands/Zoologist.png"
                                     alt=""></a>
                             <hr>  
                         </div>
@@ -116,7 +116,7 @@
                     <div class="item">
                         <a href="./logIn/index.html">
                             <div class="card">
-                                <img src="../RESOURCES/images/products/Nuoc-hoa-Creed-Aventus-600x600.png" alt="" class="product-img">
+                                <img src="/RESOURCES/images/products/Nuoc-hoa-Creed-Aventus-600x600.png" alt="" class="product-img">
                                 <span class="product-brand">Creed</span>
                                 <hr>
                                 <span class="product-name">Aventus</span>
@@ -126,7 +126,7 @@
                         <a href="./logIn/index.html">
 
                             <div class="card">
-                                <img src="../RESOURCES/images/products/13-600x600.png" alt="" class="product-img">
+                                <img src="/RESOURCES/images/products/13-600x600.png" alt="" class="product-img">
                                 <span class="product-brand">Lelabo</span>
                                 <hr>
                                 <span class="product-name">Another 13</span>
@@ -136,7 +136,7 @@
 
                         <a href="./logIn/index.html">
                             <div class="card">
-                                <img src="../RESOURCES/images/products/6bb559193c12a192157b071aa6c2f153-600x600.png" alt="" class="product-img">
+                                <img src="/RESOURCES/images/products/6bb559193c12a192157b071aa6c2f153-600x600.png" alt="" class="product-img">
                                 <span class="product-brand">Tom Ford</span>
                                 <hr>
                                 <span class="product-name">Lost Cherry</span>
@@ -147,7 +147,7 @@
                         <a href="./logIn/index.html">
 
                             <div class="card">
-                                <img src="../RESOURCES/images/products/baccarat540-600x600.png" alt="" class="product-img">
+                                <img src="/RESOURCES/images/products/baccarat540-600x600.png" alt="" class="product-img">
                                 <span class="product-brand">Maison Francis Kurkdijian</span>
                                 <hr>
                                 <span class="product-name">Baccarat Rouge 540</span>
@@ -157,7 +157,7 @@
                         <a href="./logIn/index.html">
 
                             <div class="card">
-                                <img src="../RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
+                                <img src="/RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
                                 <span class="product-brand">Kilian</span>
                                 <hr>
                                 <span class="product-name">Angels Share</span>
@@ -167,7 +167,7 @@
                         <a href="./logIn/index.html">
 
                             <div class="card">
-                                <img src="../RESOURCES/images/products/Marie-Jeanne-Vetiver-Santal-600x600.png" alt="" class="product-img">
+                                <img src="/RESOURCES/images/products/Marie-Jeanne-Vetiver-Santal-600x600.png" alt="" class="product-img">
                                 <span class="product-brand">Marie Jeanne</span>
                                 <hr>
                                 <span class="product-name">Vetiver Santal</span>
@@ -177,7 +177,7 @@
                         <a href="./logIn/index.html">
 
                             <div class="card">
-                                <img src="../RESOURCES/images/products/Nuoc-hoa-Dior-Sauvage-EDT-600x600.png" alt="" class="product-img">
+                                <img src="/RESOURCES/images/products/Nuoc-hoa-Dior-Sauvage-EDT-600x600.png" alt="" class="product-img">
                                 <span class="product-brand">Dior</span>
                                 <hr>
                                 <span class="product-name">Sauvage</span>
@@ -187,7 +187,7 @@
                         <a href="./logIn/index.html">
 
                             <div class="card">
-                                <img src="../RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
+                                <img src="/RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
                                 <span class="product-brand">Kilian</span>
                                 <hr>
                                 <span class="product-name">Angels Share</span>
@@ -197,7 +197,7 @@
                         <a href="./logIn/index.html">
 
                             <div class="card">
-                                <img src="../RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
+                                <img src="/RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
                                 <span class="product-brand">Kilian</span>
                                 <hr>
                                 <span class="product-name">Angels Share</span>
@@ -207,7 +207,7 @@
                         <a href="./logIn/index.html">
 
                             <div class="card">
-                                <img src="../RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
+                                <img src="/RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
                                 <span class="product-brand">Kilian</span>
                                 <hr>
                                 <span class="product-name">Angels Share</span>
@@ -217,7 +217,7 @@
                         <a href="./logIn/index.html">
 
                             <div class="card">
-                                <img src="../RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
+                                <img src="/RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
                                 <span class="product-brand">Kilian</span>
                                 <hr>
                                 <span class="product-name">Angels Share</span>
@@ -241,20 +241,20 @@
                 <h1>Tại sao chọn xxiv store</h1>
                 <div class="listReason">
                     <div class="advantage">
-                        <img src="../RESOURCES/images/icons/grommet-icons_shield-security.svg" alt="">
+                        <img src="/RESOURCES/images/icons/grommet-icons_shield-security.svg" alt="">
                         <h4>sản phẩm chính hãng
                         </h4>
                         <p>sản phẩm nước hoa được mua trực tiếp tại các store ở nước ngoài hoặc làm việc trực tiếp với các hãng, cam kết authentic 100%
                         </p>
                     </div>
                     <div class="advantage">
-                        <img src="../RESOURCES/images/icons/free-ship.svg" alt="">
+                        <img src="/RESOURCES/images/icons/free-ship.svg" alt="">
                         <h4>free ship toàn quốc
                         </h4>
                         <p>xxiv áp dụng freeship cho tất cả các khách hàng trên toàn quốc. chúng tôi chưa áp dụng hình thức giao hàng quốc tế tại thời điểm này</p>
                     </div>
                     <div class="advantage">
-                        <img src="../RESOURCES/images/icons/gift.svg" alt="">
+                        <img src="/RESOURCES/images/icons/gift.svg" alt="">
                         <h4>thành viên thân thiết
                         </h4>
                         <p>thành viên vàng sẽ được giảm 5% / đơn hàng. với thành viên bạc khách được giảm 3% / đơn hàng.</p>
@@ -268,13 +268,13 @@
                 <hr>
                 <h1>xxiv store</h1>
                 <div>
-                    <img src="../RESOURCES/images/icons/location-pin.png">
+                    <img src="/RESOURCES/images/icons/location-pin.png">
                     <p>Số 25 Ngõ Thái Hà, Đống Đa, Hà Nội | 525/44 Tô Hiến Thành, P14, Q10, TP. Hồ Chí Minh</p>
                 </div>
                 <div>
-                    <img src="../RESOURCES/images/icons/smartphone.png">
+                    <img src="/RESOURCES/images/icons/smartphone.png">
                     <p>090 721 9889| 093 194 8668</p>
-                    <img src="../RESOURCES/images/icons/email.png" class="mail-icon">
+                    <img src="/RESOURCES/images/icons/email.png" class="mail-icon">
                     <p>xxiv.fragrance@gmail.com</p>
                 </div>
                 <div>
@@ -285,7 +285,7 @@
 
         <div class="row no-gutters">
             <div class="theme ">
-                <img src="../RESOURCES/images/icons/perfumeStore.jpg">
+                <img src="/RESOURCES/images/icons/perfumeStore.jpg">
             </div>
         </div>
 
@@ -302,10 +302,10 @@
 
         <div class="row">
             <div class="col-md-12 social">
-                <a href=""><img src="../RESOURCES/images/icons/instagram.png" alt=""></a>
-                <a href=""><img src="../RESOURCES/images/icons/facebook.png" alt=""></a>
-                <a href=""><img src="../RESOURCES/images/icons/youtube.png" alt=""></a>
-                <a href=""><img src="../RESOURCES/images/icons/location-pin.png" alt=""></a>
+                <a href=""><img src="/RESOURCES/images/icons/instagram.png" alt=""></a>
+                <a href=""><img src="/RESOURCES/images/icons/facebook.png" alt=""></a>
+                <a href=""><img src="/RESOURCES/images/icons/youtube.png" alt=""></a>
+                <a href=""><img src="/RESOURCES/images/icons/location-pin.png" alt=""></a>
             </div>
         </div>
 

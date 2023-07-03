@@ -1,4 +1,14 @@
+
+
+
+<%@page import="java.sql.ResultSet"%>
+<%@page import="DAOs.BrandDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib  uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
+
+
+<%! BrandDAO bDAO = new BrandDAO();%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -15,15 +25,15 @@
         <link
             href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond&family=Josefin+Sans:wght@200&family=Josefin+Slab&display=swap"
             rel="stylesheet">
-        <link rel="stylesheet" href="../RESOURCES/brand/public/style/style.css">
-        <link rel="icon" href="../RESOURCES/images/icons/icon.webp">
+        <link rel="stylesheet" href="/RESOURCES/brand/public/style/style.css">
+        <link rel="icon" href="/RESOURCES/images/icons/icon.webp">
         <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css" rel="stylesheet" type="text/css" />
         <title>Thương hiệu</title>
     </head>
     <body>
         <div class="container-fluid">
 
-      <div class="row">
+            <div class="row">
                 <div class="col-md-12 nav">
                     <ul>
                         <li><a href="/">trang chủ</a></li>
@@ -33,12 +43,12 @@
                         <li><a href="/Product/List">sản phẩm</a></li>
                         <li><a href="">blog</a></li>
                     </ul>
-                    <a href="../RESOURCES/home/index.html"><img src="../RESOURCES/images/icons/icon.webp" alt=""
-                                                                height="64"></a>
+                    <a href="/RESOURCES/home/index.html"><img src="/RESOURCES/images/icons/icon.webp" alt=""
+                                                              height="64"></a>
                     <div class="account">
-                        <a><img src="../RESOURCES/images/icons/search.png" alt=""></a>
-                        <a href="./logIn/index.jsp"><img src="../RESOURCES/images/icons/user.png" alt=""></a>
-                        <a><img src="../RESOURCES/images/icons/cart.png" alt=""></a>
+                        <a><img src="/RESOURCES/images/icons/search.png" alt=""></a>
+                        <a href="./logIn/index.jsp"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+                        <a><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
                     </div>
                 </div>
             </div>
@@ -48,242 +58,36 @@
                 <h1>thương hiệu</h1>
                 <div id="searchBox" class="search-box">
                     <a href="" class="character">ALL BRANDS</a>
-                    <a href="" class="character">A</a>
-                    <a href="" class="character">B</a>
-                    <a href="" class="character">C</a>
-                    <a href="" class="character">D</a>
-                    <a href="" class="character">E</a>
-                    <a href="" class="character">F</a>
-                    <a href="" class="character">G</a>
-                    <a href="" class="character">H</a>
-                    <a href="" class="character">I</a>
-                    <a href="" class="character">J</a>
-                    <a href="" class="character">K</a>
-                    <a href="" class="character">L</a>
-                    <a href="" class="character">M</a>
-                    <a href="" class="character">N</a>
-                    <a href="" class="character">O</a>
-                    <a href="" class="character">P</a>
-                    <a href="" class="character">Q</a>
-                    <a href="" class="character">R</a>
-                    <a href="" class="character">S</a>
-                    <a href="" class="character">T</a>
-                    <a href="" class="character">U</a>
-                    <a href="" class="character">V</a>
-                    <a href="" class="character">W</a>
-                    <a href="" class="character">X</a>
-                    <a href="" class="character">Y</a>
-                    <a href="" class="character">Z</a>
+                    <c:forEach var="i" begin="65" end="90" >
+                        <a href="" class="character">
+                            <%= Character.toChars((Integer) pageContext.getAttribute("i"))%>
+                        </a>
+                    </c:forEach>
                 </div>
 
                 <div class="box-brand" id="boxBrand">
-                    <div class="brands">
-                        <h3>A</h3>
-                        <a href="" class="brand">Maison Francis Kurkdjian</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                    </div>
-                    <div class="brands">
-                        <h3>B</h3>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">L'Occitane en Provence</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                    </div>
-                    <div class="brands">
-                        <h3>C</h3>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                    </div>
-                    <div class="brands">
-                        <h3>D</h3>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                    </div>
-                    <div class="brands">
-                        <h3>E</h3>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                    </div>
-                    <div class="brands">
-                        <h3>F</h3>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                    </div>
-                    <div class="brands">
-                        <h3>G</h3>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                    </div>
-                    <div class="brands">
-                        <h3>H</h3>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                    </div>
-                    <div class="brands">
-                        <h3>I</h3>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                    </div>
-                    <div class="brands">
-                        <h3>J</h3>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                    </div>
-                    <div class="brands">
-                        <h3>K</h3>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                    </div>
-                    <div class="brands">
-                        <h3>L</h3>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                    </div>
-                    <div class="brands">
-                        <h3>M</h3>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                    </div>
-                    <div class="brands">
-                        <h3>N</h3>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                    </div>
-                    <div class="brands">
-                        <h3>O</h3>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                    </div>
-                    <div class="brands">
-                        <h3>P</h3>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                    </div>
-                    <div class="brands">
-                        <h3>R</h3>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                    </div>
-                    <div class="brands">
-                        <h3>S</h3>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                    </div>
-                    <div class="brands">
-                        <h3>T</h3>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                    </div>
-                    <div class="brands">
-                        <h3>V</h3>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                    </div>
-                    <div class="brands">
-                        <h3>X</h3>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                    </div>
-                    <div class="brands">
-                        <h3>Y</h3>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                    </div>
-                    <div class="brands">
-                        <h3>Z</h3>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                        <a href="" class="brand">Acqua di Parma</a>
-                    </div>
+                    <c:forEach var="i" begin="65" end="90">
+                        <%char c = (char) ((Integer) (pageContext.getAttribute("i"))).intValue();
+                            ResultSet rs = bDAO.getBrandNameByAlphabet(c);
+                            boolean hasRow = rs.isBeforeFirst();
+                            pageContext.setAttribute("hasRow", hasRow);
+                        %>
+                        <c:if test="${hasRow}">
+                            <div class="brands">
+                                <h3><%= c%></h3>
+                                <%
+                                    while (rs != null && rs.next()) {
+                                %>
+
+                                <a href="" class="brand"><%= rs.getNString("Name")%></a>
+
+                                <%
+                                    }
+                                %>
+                            </div>
+
+                        </c:if>
+                    </c:forEach> 
                 </div>
 
             </div>
@@ -302,10 +106,10 @@
 
             <div class="row">
                 <div class="col-md-12 social">
-                    <a href=""><img src="../RESOURCES/images/icons/instagram.png" alt=""></a>
-                    <a href=""><img src="../RESOURCES/images/icons/facebook.png" alt=""></a>
-                    <a href=""><img src="../RESOURCES/images/icons/youtube.png" alt=""></a>
-                    <a href=""><img src="../RESOURCES/images/icons/location-pin.png" alt=""></a>
+                    <a href=""><img src="/RESOURCES/images/icons/instagram.png" alt=""></a>
+                    <a href=""><img src="/RESOURCES/images/icons/facebook.png" alt=""></a>
+                    <a href=""><img src="/RESOURCES/images/icons/youtube.png" alt=""></a>
+                    <a href=""><img src="/RESOURCES/images/icons/location-pin.png" alt=""></a>
                 </div>
             </div>
 
@@ -354,6 +158,6 @@
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>
-        <script src="../RESOURCES/brand/public/js/main.js"></script>
+        <script src="/RESOURCES/brand/public/js/main.js"></script>
     </body>
 </html>

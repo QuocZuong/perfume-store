@@ -15,8 +15,8 @@
         <link
             href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond&family=Josefin+Sans:wght@200&family=Josefin+Slab&display=swap"
             rel="stylesheet">
-        <link rel="stylesheet" href="../RESOURCES/introduction/public/style/style.css">
-        <link rel="icon" href="../RESOURCES/images/icons/icon.webp">
+        <link rel="stylesheet" href="/RESOURCES/introduction/public/style/style.css">
+        <link rel="icon" href="/RESOURCES/images/icons/icon.webp">
         <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css" rel="stylesheet" type="text/css" />
         <title>Giới thiệu</title>
     </head>
@@ -35,12 +35,12 @@
                         <li><a href="/Product/List">sản phẩm</a></li>
                         <li><a href="">blog</a></li>
                     </ul>
-                    <a href="../RESOURCES/home/index.html"><img src="../RESOURCES/images/icons/icon.webp" alt=""
+                    <a href="/RESOURCES/home/index.html"><img src="/RESOURCES/images/icons/icon.webp" alt=""
                                                                 height="64"></a>
                     <div class="account">
-                        <a><img src="../RESOURCES/images/icons/search.png" alt=""></a>
-                        <a href="./logIn/index.jsp"><img src="../RESOURCES/images/icons/user.png" alt=""></a>
-                        <a><img src="../RESOURCES/images/icons/cart.png" alt=""></a>
+                        <a><img src="/RESOURCES/images/icons/search.png" alt=""></a>
+                        <a href="./logIn/index.jsp"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+                        <a><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
                     </div>
                 </div>
             </div>
@@ -50,7 +50,7 @@
                 <div class="col-md-12 content">
                     <h1>xxiv team</h1>
                     <div class="row group">
-                        <img src="../RESOURCES/images/icons/brainstorm.png" alt="">
+                        <img src="/RESOURCES/images/icons/brainstorm.png" alt="">
                         <div class="text">
                             <h4>Group 2</h4>
                             <p>tại xxiv chúng mình luôn đặt chất lượng và lòng tin với khách hàng lên hàng đầu. cũng vì một phần có gia đình và bạn bè đang ở pháp, chính tay lựa chọn từ store nên xxiv tự tin 100% hàng chính hãng. bọn mình sẽ không cam kết bán giá rẻ nhất và cạnh tranh với các bên khác mà chỉ cam kết sẽ bán giá tốt nhất chúng mình có thể. những sản phẩm chúng mình tư vấn và giới thiệu đều là các sản phẩm đã trực tiếp sử dụng và trải nghiệm để đưa ra lời khuyên thực tế giúp các khách hàng hài lòng.</p>
@@ -61,11 +61,11 @@
                             <h4>câu chuyện về xxiv store</h4>
                             <p>tại xxiv chúng mình luôn đặt chất lượng và lòng tin với khách hàng lên hàng đầu. cũng vì một phần có gia đình và bạn bè đang ở pháp, chính tay lựa chọn từ store nên xxiv tự tin 100% hàng chính hãng. bọn mình sẽ không cam kết bán giá rẻ nhất và cạnh tranh với các bên khác mà chỉ cam kết sẽ bán giá tốt nhất chúng mình có thể. những sản phẩm chúng mình tư vấn và giới thiệu đều là các sản phẩm đã trực tiếp sử dụng và trải nghiệm để đưa ra lời khuyên thực tế giúp các khách hàng hài lòng.</p>
                         </div>
-                        <img src="../RESOURCES/images/icons/introduce.webp" alt="">
+                        <img src="/RESOURCES/images/icons/introduce.webp" alt="">
 
                     </div>
                     <div class="row story2">
-                        <img src="../RESOURCES/images/icons/introduce2.png" alt="">
+                        <img src="/RESOURCES/images/icons/introduce2.png" alt="">
                         <div class="text">
                             <p>tại xxiv chúng mình luôn đặt chất lượng và lòng tin với khách hàng lên hàng đầu. cũng vì một phần có gia đình và bạn bè đang ở pháp, chính tay lựa chọn từ store nên xxiv tự tin 100% hàng chính hãng. bọn mình sẽ không cam kết bán giá rẻ nhất và cạnh tranh với các bên khác mà chỉ cam kết sẽ bán giá tốt nhất chúng mình có thể. những sản phẩm chúng mình tư vấn và giới thiệu đều là các sản phẩm đã trực tiếp sử dụng và trải nghiệm để đưa ra lời khuyên thực tế giúp các khách hàng hài lòng.</p>
                         </div>
@@ -98,10 +98,10 @@
 
         <div class="row">
             <div class="col-md-12 social">
-                <a href=""><img src="../RESOURCES/images/icons/instagram.png" alt=""></a>
-                <a href=""><img src="../RESOURCES/images/icons/facebook.png" alt=""></a>
-                <a href=""><img src="../RESOURCES/images/icons/youtube.png" alt=""></a>
-                <a href=""><img src="../RESOURCES/images/icons/location-pin.png" alt=""></a>
+                <a href=""><img src="/RESOURCES/images/icons/instagram.png" alt=""></a>
+                <a href=""><img src="/RESOURCES/images/icons/facebook.png" alt=""></a>
+                <a href=""><img src="/RESOURCES/images/icons/youtube.png" alt=""></a>
+                <a href=""><img src="/RESOURCES/images/icons/location-pin.png" alt=""></a>
             </div>
         </div>
 
@@ -148,6 +148,6 @@
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>
-        <script src="../RESOURCES/introduction/public/js/main.js"></script>
+        <script src="/RESOURCES/introduction/public/js/main.js"></script>
     </body>
 </html>

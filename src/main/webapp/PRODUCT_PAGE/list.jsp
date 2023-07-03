@@ -20,8 +20,8 @@
         <link
             href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond&family=Josefin+Sans:wght@200&family=Josefin+Slab&display=swap"
             rel="stylesheet">
-        <link rel="stylesheet" href="../RESOURCES/shop/public/style/style.css" type="text/css">
-        <link rel="icon" href="../RESOURCES/shop/public/images/icon.webp">
+        <link rel="stylesheet" href="/RESOURCES/shop/public/style/style.css" type="text/css">
+        <link rel="icon" href="/RESOURCES/shop/public/images/icon.webp">
         <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css"
               rel="stylesheet" type="text/css" />
 
@@ -48,13 +48,13 @@
                         <li><a href="/Product/List">sản phẩm</a></li>
                         <li><a href="">blog</a></li>
                     </ul>
-                    <a href="../RESOURCES/home/index.html"><img
-                            src="../RESOURCES/images/icons/icon.webp" alt="" height="64"></a>
+                    <a href="/RESOURCES/home/index.html"><img
+                            src="/RESOURCES/images/icons/icon.webp" alt="" height="64"></a>
                     <div class="account">
-                        <a><img src="../RESOURCES/images/icons/search.png" alt=""></a>
-                        <a href="./logIn/index.jsp"><img src="../RESOURCES/images/icons/user.png"
+                        <a><img src="/RESOURCES/images/icons/search.png" alt=""></a>
+                        <a href="./logIn/index.jsp"><img src="/RESOURCES/images/icons/user.png"
                                                          alt=""></a>
-                        <a><img src="../RESOURCES/images/icons/cart.png" alt=""></a>
+                        <a><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
                     </div>
                 </div>
             </div>
@@ -121,17 +121,18 @@
                             </div>
 
                             <% rs = (ResultSet) request.getAttribute("PDResultSet");
+                                int counter = 0;
                                 while (rs != null
-                                        && rs.next()) {%>
+                                        && rs.next() && counter < 10) {%>
 
-                            <a href="/Product/Detail/ID/<%=  rs.getInt("ID") %>">
+                            <a href="/Product/Detail/ID/<%=  rs.getInt("ID")%>">
                                 <div class="product">
-                                    <img src="<%= rs.getString("ImgURL")%>" alt="" class="product-img">
+                                    <img src="<%= rs.getNString("ImgURL")%>" alt="" class="product-img">
                                     <span class="product-brand">
                                         <%= bdao.getBrandName(rs.getInt("BrandID"))%>
                                     </span>
                                     <span class="product-name">
-                                        <%= rs.getString("Name")%>
+                                        <%= rs.getNString("Name")%> 
                                     </span>
                                     <span class="product-price">
                                         <%= pdao.getPrice(rs.getInt("ID"))%> <span>đ</span>
@@ -139,8 +140,11 @@
                                 </div>
                             </a>
 
-                            <% }
-                                rs = null;
+                            <%
+
+                                    counter++;
+                                }
+
                             %>
 
 
@@ -171,10 +175,10 @@
 
             <div class="row">
                 <div class="col-md-12 social">
-                    <a href=""><img src=".//resources/images/icons/instagram.png" alt=""></a>
-                    <a href=""><img src=".//resources/images/icons/facebook.png" alt=""></a>
-                    <a href=""><img src=".//resources/images/icons/youtube.png" alt=""></a>
-                    <a href=""><img src=".//resources/images/icons/location-pin.png" alt=""></a>
+                    <a href=""><img src="/RESOURCES/images/icons/instagram.png" alt=""></a>
+                    <a href=""><img src="/RESOURCES/images/icons/facebook.png" alt=""></a>
+                    <a href=""><img src="/RESOURCES/images/icons/youtube.png" alt=""></a>
+                    <a href=""><img src="/RESOURCES/images/icons/location-pin.png" alt=""></a>
                 </div>
             </div>
 

@@ -26,11 +26,21 @@
             <version>5.0.0</version>
             <scope>provided</scope>
         </dependency>
+        
+        <!--        For sql-->
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
             <version>12.2.0.jre8</version>
         </dependency>
+        
+        <!--        For JSTL-->
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+        
     </dependencies>
 
     <build>

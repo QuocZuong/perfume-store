@@ -54,7 +54,7 @@ public class BrandDAO {
     public int getBrandID(String BrandName) {
         int id = -1;
         ResultSet rs = null;
-        
+
         try {
             String sql = "Select * from Brand Where [Name]=?";
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -73,7 +73,7 @@ public class BrandDAO {
     public String getBrandName(int brandID) {
         String name = null;
         ResultSet rs = null;
-        
+
         try {
             String sql = "Select * from Brand Where [id]=?";
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -87,6 +87,21 @@ public class BrandDAO {
         }
 
         return name;
+    }
+
+    public ResultSet getBrandNameByAlphabet(char a) {
+        ResultSet rs = null;
+        
+        try {
+            String sql = "SELECT * FROM Brand WHERE [Name] LIKE ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setNString(1, a + "%");
+            rs = ps.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return rs;
     }
 
     public boolean isExistedBrandName(String brandName) {

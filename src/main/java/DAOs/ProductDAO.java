@@ -45,18 +45,24 @@ public class ProductDAO {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
             rs = ps.executeQuery();
-            if(rs.next())
-            {
-                pd=new Product();
+            if (rs.next()) {
+                pd = new Product();
                 pd.setID(rs.getInt("ID"));
-                pd.setName(rs.getString("Name"));
+                pd.setName(rs.getNString("Name"));
                 pd.setBrandID(rs.getInt("BrandID"));
                 pd.setPrice(rs.getInt("Price"));
-            
+                pd.setGender(rs.getNString("Gender"));
+                pd.setSmell(rs.getNString("Smell"));
+                pd.setQuantity(rs.getInt("Quantity"));
+                pd.setReleaseYear(rs.getInt("ReleaseYear"));
+                pd.setVolume(rs.getInt("Volume"));
+                pd.setImgURL(rs.getNString("ImgURL"));
+                pd.setDescription(rs.getNString("Description"));
             }
         } catch (SQLException ex) {
             Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
         return pd;
 
     }
