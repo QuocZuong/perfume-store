@@ -123,18 +123,22 @@
                             <% rs = (ResultSet) request.getAttribute("PDResultSet");
                                 while (rs != null
                                         && rs.next()) {%>
-                            <div class="product">
-                                <img src="<%= rs.getString("ImgURL")%>" alt="" class="product-img">
-                                <span class="product-brand">
-                                    <%= bdao.getBrandName(rs.getInt("BrandID"))%>
-                                </span>
-                                <span class="product-name">
-                                    <%= rs.getString("Name")%>
-                                </span>
-                                <span class="product-price">
-                                    <%= pdao.getPrice(rs.getInt("ID"))%> <span>đ</span>
-                                </span>
-                            </div>
+
+                            <a href="/Product/Detail/ID/<%=  rs.getInt("ID") %>">
+                                <div class="product">
+                                    <img src="<%= rs.getString("ImgURL")%>" alt="" class="product-img">
+                                    <span class="product-brand">
+                                        <%= bdao.getBrandName(rs.getInt("BrandID"))%>
+                                    </span>
+                                    <span class="product-name">
+                                        <%= rs.getString("Name")%>
+                                    </span>
+                                    <span class="product-price">
+                                        <%= pdao.getPrice(rs.getInt("ID"))%> <span>đ</span>
+                                    </span>
+                                </div>
+                            </a>
+
                             <% }
                                 rs = null;
                             %>

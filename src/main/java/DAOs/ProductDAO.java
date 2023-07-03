@@ -35,17 +35,30 @@ public class ProductDAO {
         return rs;
     }
 
-    public ResultSet getWithCondition(String Condition) {
+    public Product getProduct(int id) {
         ResultSet rs = null;
-        String sql = "SELECT * FROM Product WHERE " + Condition;
+        String sql = "SELECT * FROM Product WHERE ID = ?";
+
+        Product pd = null;
+
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
             rs = ps.executeQuery();
+            if(rs.next())
+            {
+                pd=new Product();
+                pd.setID(rs.getInt("ID"));
+                pd.setName(rs.getString("Name"));
+                pd.setBrandID(rs.getInt("BrandID"));
+                pd.setPrice(rs.getInt("Price"));
+            
+            }
         } catch (SQLException ex) {
             Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println(ex.getMessage());
         }
-        return rs;
+        return pd;
+
     }
 
     public String getPrice(int ID) {
@@ -147,7 +160,7 @@ public class ProductDAO {
         BrandDAO brDAO = new BrandDAO();
         // "NAME~BRANDNAME(string)~PRICE(REAL)~Gender(string)~Smell(String)~Quantity(int)~ReleaseYear(smallint)~Volume(INT)~URL(Srtring)~Description",
 
-        //Check if exist brand name
+        // Check if exist brand name
         if (!brDAO.isExistedBrandName(datas[1])) {
             brDAO.addBrand(datas[1]);
         }
@@ -183,8 +196,9 @@ public class ProductDAO {
         ResultSet rs = null;
         String sql = "SELECT * FROM Product";
 
-        try ( OutputStream os = new FileOutputStream(
-                "C:\\Users\\Acer\\OneDrive\\Desktop\\#SU23\\PRJ301\\SQLproject\\SQLproject\\src\\main\\java\\BackUp\\backup_Product_data.txt");  PrintWriter out = new PrintWriter(new OutputStreamWriter(os, "UTF-8"));) {
+        try (OutputStream os = new FileOutputStream(
+                "C:\\Users\\Acer\\OneDrive\\Desktop\\#SU23\\PRJ301\\SQLproject\\SQLproject\\src\\main\\java\\BackUp\\backup_Product_data.txt");
+                PrintWriter out = new PrintWriter(new OutputStreamWriter(os, "UTF-8"));) {
             PreparedStatement ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
             StringBuilder strOUT = new StringBuilder("");
