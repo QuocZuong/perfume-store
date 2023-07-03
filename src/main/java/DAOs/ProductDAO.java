@@ -62,9 +62,47 @@ public class ProductDAO {
         } catch (SQLException ex) {
             Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return pd;
 
+    }
+
+    public ResultSet getFilteredProduct(String BrandID, String Gender, String price) {
+        String sql = "SELECT * FROM Product "
+                + "WHERE BrandID LIKE ? "
+                + "AND Gender Like ? "
+                + "AND Price between ? And ?";
+
+        ResultSet rs = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            BrandID = BrandID == null ? "%" : BrandID;
+            Gender = Gender == null ? "%" : Gender;
+
+            ps.setNString(1, BrandID);
+            ps.setNString(2, Gender);
+
+            // Format price range
+            String low = "0";
+            String high = "100000000";
+            if (price != null) {
+                String priceRange[] = price.split("-");
+                low = priceRange[0];
+                high = priceRange[1];
+            }
+
+            ps.setNString(3, low);
+            ps.setNString(4, high);
+
+            // System.out.println(ps.toString());
+            System.out.println(String.format("BrandID: %s, gender: %s, low: %s, high: %s", BrandID, Gender, low, high));
+            
+            rs = ps.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return rs;
     }
 
     public String getPrice(int ID) {

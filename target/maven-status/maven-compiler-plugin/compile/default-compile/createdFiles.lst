@@ -1,0 +1,13 @@
+DB\DataManager.class
+DAOs\UserDAO.class
+Controllers\ProductController.class
+ImportProduct.class
+Controllers\HomeController.class
+Lib\Test.class
+DAOs\ProductDAO.class
+Models\Product.class
+Models\User.class
+Controllers\ResourceController.class
+Models\Brand.class
+DB\DataManager$1.class
+DAOs\BrandDAO.class

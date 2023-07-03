@@ -2,14 +2,13 @@ package DAOs;
 
 import Models.User;
 import java.security.MessageDigest;
-import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.bind.DatatypeConverter;
 
 public class UserDAO {
 
@@ -25,7 +24,8 @@ public class UserDAO {
   /**
    * Gets all the users in the database.
    *
-   * @return A {@code ResultSet} containing all the users in the database. {@code null} if an error occurs.
+   * @return A {@code ResultSet} containing all the users in the database.
+   *         {@code null} if an error occurs.
    */
   public ResultSet getAll() {
     ResultSet rs = null;
@@ -43,11 +43,14 @@ public class UserDAO {
   }
 
   /**
-   * Checks if the provided username and password match a user's information or not.
+   * Checks if the provided username and password match a user's information or
+   * not.
    *
    * @param username the username of the user trying to log in.
-   * @param password the password entered by the user trying to log in. this password must not be hasshed.
-   * @return {@code true} if the username and password match a user's information. {@code false} otherwise.
+   * @param password the password entered by the user trying to log in. this
+   *                 password must not be hasshed.
+   * @return {@code true} if the username and password match a user's information.
+   *         {@code false} otherwise.
    */
   public boolean validateUser(String username, String password) {
     if (username == null || password == null) {
@@ -76,7 +79,8 @@ public class UserDAO {
    * Gets a user from the database.
    *
    * @param username The username of the user to be retrieved.
-   * @return A {@code User} object containing the user's information. {@code null} if an error occurs.
+   * @return A {@code User} object containing the user's information. {@code null}
+   *         if an error occurs.
    */
   public User getUser(String username) {
     if (username == null) {
@@ -92,15 +96,14 @@ public class UserDAO {
       rs = ps.executeQuery();
       if (rs.next()) {
         return new User(
-          rs.getInt("ID"),
-          rs.getNString("Name"),
-          rs.getString("UserName"),
-          rs.getString("Password"),
-          rs.getString("Email"),
-          rs.getString("PhoneNumber"),
-          rs.getNString("Address"),
-          rs.getNString("Role")
-        );
+            rs.getInt("ID"),
+            rs.getNString("Name"),
+            rs.getString("UserName"),
+            rs.getString("Password"),
+            rs.getString("Email"),
+            rs.getString("PhoneNumber"),
+            rs.getNString("Address"),
+            rs.getNString("Role"));
       }
     } catch (SQLException ex) {
       Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -112,15 +115,15 @@ public class UserDAO {
    * Adds a new user to the database.
    *
    * @param us The user to be added.
-   * @return The number of rows affected by the query. {@code 0} if user cannot be added.
+   * @return The number of rows affected by the query. {@code 0} if user cannot be
+   *         added.
    */
   public int addUser(User us) {
     if (us == null) {
       return 0;
     }
 
-    String sql =
-      "INSERT INTO User(Name, UserName, Password, Email, PhoneNumber, Address, Role) VALUES(?, ?, ?, ?, ?, ?, ?)";
+    String sql = "INSERT INTO User(Name, UserName, Password, Email, PhoneNumber, Address, Role) VALUES(?, ?, ?, ?, ?, ?, ?)";
     try {
       PreparedStatement ps = conn.prepareStatement(sql);
       ps.setNString(1, us.getName());
@@ -142,7 +145,8 @@ public class UserDAO {
    * Deletes a user from the database.
    *
    * @param us The user to be deleted.
-   * @return The number of rows affected by the query. {@code 0} if user cannot be deleted, or {@code username} doesn't exist.
+   * @return The number of rows affected by the query. {@code 0} if user cannot be
+   *         deleted, or {@code username} doesn't exist.
    */
   public int deleteUser(String username) {
     if (username == null) {
@@ -191,20 +195,25 @@ public class UserDAO {
    * Gets the MD5 hash of a string.
    *
    * @param str The string to be hashed.
-   * @return The MD5 hash of the string. {@code null} if an error occurs while hashing.
+   * @return The MD5 hash of the string. {@code null} if an error occurs while
+   *         hashing.
    */
   private String getMD5hash(String str) {
-    byte[] bytesOfMessage;
 
+    MessageDigest md = null;
     try {
-      bytesOfMessage = str.getBytes("UTF-8");
-      MessageDigest md = MessageDigest.getInstance("MD5");
-      byte[] bytesOfDigest = md.digest(bytesOfMessage);
-      return DatatypeConverter.printHexBinary(bytesOfDigest).toLowerCase();
-    } catch (Exception ex) {
-      System.out.println(ex.getMessage());
+      md = MessageDigest.getInstance("MD5");
+    } catch (NoSuchAlgorithmException ex) {
+      ex.printStackTrace();
     }
-
-    return null;
+    md.update(str.getBytes());
+    byte[] digest = md.digest();
+    StringBuilder sb = new StringBuilder();
+    for (byte b : digest) {
+      sb.append(String.format("%02x", b & 0xff));
+    }
+    String pwdMD5 = sb.toString();
+    
+    return pwdMD5;
   }
 }
