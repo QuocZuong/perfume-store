@@ -241,6 +241,11 @@ h1{
 .main .products .product img{
   width: 240px;
   height: 260px;
+  transition: transform 2.5s ease;
+}
+
+.main .products .product img:hover{
+    transform: scale(1.05);
 }
 
 .main .products .product .product-brand{
