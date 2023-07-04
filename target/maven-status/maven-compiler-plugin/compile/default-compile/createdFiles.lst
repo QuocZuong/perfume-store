@@ -3,6 +3,7 @@ DAOs\UserDAO.class
 Controllers\ProductController.class
 ImportProduct.class
 Controllers\HomeController.class
+Lib\PasswordGenerator.class
 Models\Cart.class
 Lib\Test.class
 DAOs\CartDAO.class

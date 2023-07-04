@@ -53,7 +53,7 @@
                         <button type="button" id="signUp">Đăng ký</button>
                     </div>
 
-                    <form action="" class="sign-in" id="signInForm">
+                    <form action="LogController" method="post" class="sign-in" id="signInForm">
                         <label for="user">Tên tài khoản hoặc địa chỉ email *</label>
                         <br>
                         <input type="text" name="txtUsername" id="user-input">
@@ -69,7 +69,7 @@
                         <button type="submit" name="submitBtn" value="submitLogin" class="enter">Đăng nhập</button>
                     </form>
 
-                    <form action="" class="sign-up" id="signUpForm">
+                    <form action="LogController" method="post" class="sign-up" id="signUpForm">
                         <label for="email">Địa chỉ email *</label>
                         <br>
                         <input type="text" name="txtEmail" id="user-input">

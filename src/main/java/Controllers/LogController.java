@@ -54,22 +54,22 @@ public class LogController extends HttpServlet {
         
         if (request.getParameter("submitBtn") != null && request.getParameter("submitBtn").equals("submitLogin")) {
             if (login(request, response)) {
-                response.sendRedirect("/Product/List");
 			    System.out.println("Login Successfully. Going to /Product/List");
+                response.sendRedirect("/Product/List");
             } else {
-                response.sendRedirect("/Log/Login");
 			    System.out.println("Login failed. Going to /Log/Login");
+                response.sendRedirect("/Log/Login");
             }
             return;
         }
 
         if (request.getParameter("submitBtn") != null && request.getParameter("submitBtn").equals("submitRegister")) {
             if (register(request, response)) {
-                response.sendRedirect("/Product/List");
                 System.out.println("Register Successfully. Going to /Product/List");
+                response.sendRedirect("/Product/List");
             } else {
-                response.sendRedirect("/Log/Login");
                 System.out.println("Register failed. Going to /Log/Login");
+                response.sendRedirect("/Log/Login");
             }
             return;
         }
@@ -97,7 +97,7 @@ public class LogController extends HttpServlet {
 			Cookie c = new Cookie(isAdmin == true ? "Admin" : "Client", username);
 			c.setMaxAge(3 * 24 * 60 * 60);
 			c.setPath("/");
-
+			request.getSession().setAttribute("userCookie", c);
 			response.addCookie(c);
             return true;
 		}
