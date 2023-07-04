@@ -139,7 +139,6 @@ anchorTags.forEach((anchorTag) => {
       tag.classList.remove("clicked");
     });
     this.classList.add("clicked");
-
     localStorage.setItem("clickedValue", this.getAttribute("href"));
   });
 });
@@ -149,9 +148,13 @@ if (storedClickedValue) {
   anchorTags.forEach((tag) => {
     if (tag.getAttribute("href") === storedClickedValue) {
       tag.classList.add("clicked");
+      
+      tag.scrollIntoView({ behavior: "smooth", block: "center", inline: "start"});
     }
   });
 }
+
+
 
 enableScroll();
 

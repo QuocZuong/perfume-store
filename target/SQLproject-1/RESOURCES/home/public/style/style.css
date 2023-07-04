@@ -1,3 +1,7 @@
+html{
+    scroll-behavior: smooth;
+}
+
 body {
   padding: 0;
   margin: 0;
@@ -6,6 +10,21 @@ body {
   text-align: center;
 }
 
+body::-webkit-scrollbar {
+  width: 10px;
+}
+
+body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
 
 .container {
   width: 100vw;
@@ -375,23 +394,21 @@ h1{
 
 .theme{
   width: 100%;
-  height: 50%;
-  margin-bottom: 50px;
+  height: 30%;
+  margin: 50px 0 50px 0;
   padding: 0;
-  position: absolute;
-
 }
 
 .theme img{
-  object-fit:cover;
+  object-fit: cover;
   width: 100%;
-  height: 100%;
+  height: 700px;
 }
 
 .register{
+  margin: 20px 0;
   text-align: center;
-  position: relative;
-  top: 720px;
+  
 }
 
 .register h1{
@@ -426,8 +443,8 @@ h1{
 
 .social{
   text-align: center;
-  position: relative;
-  top: 800px;
+  margin-top: 30px;
+
 }
 
 .social a + a{
@@ -439,9 +456,8 @@ h1{
 }
 
 .footer{
+  margin-top: 50px;
   text-align: center;
-  position: relative;
-  top: 880px;
   display: flex;
   background-color: black;
   padding: 70px 0 50px 0;
@@ -472,7 +488,6 @@ h1{
 .footer h2{
   color: #fff;
   font-size: 3vw;
-
 }
 
 .footer li{
@@ -494,9 +509,8 @@ h1{
 }
 
 .copyright{
-  position: relative;
-  top: 910px;
-}
+    margin-top: 20px;
+    padding: 10px 0;
 
 .copyright p{
   font-size: 1.2rem;

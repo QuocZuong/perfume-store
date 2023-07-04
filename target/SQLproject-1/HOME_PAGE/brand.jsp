@@ -145,7 +145,7 @@
 
             <div class="row">
                 <div class="col-md-12 copyright">
-                    <p>&copy; xxiv 2023 | all rigth reserved</p>
+                    <p>&copy; xxiv 2023 | all right reserved</p>
                 </div>
             </div>
 

@@ -51,6 +51,7 @@ public class LogController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         if (request.getParameter("submitBtn") != null && request.getParameter("submitBtn").equals("submitLogin")) {
             if (login(request, response)) {
                 response.sendRedirect("/Product/List");
@@ -61,6 +62,7 @@ public class LogController extends HttpServlet {
             }
             return;
         }
+
         if (request.getParameter("submitBtn") != null && request.getParameter("submitBtn").equals("submitRegister")) {
             if (register(request, response)) {
                 response.sendRedirect("/Product/List");

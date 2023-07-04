@@ -188,9 +188,9 @@
         <script>
             let inputQuan = document.querySelector("input[name=ProductQuantity]");
             inputQuan.addEventListener("input", function () {
-                if (inputQuan.value > <%= quantity%>)
+                if (inputQuan.value > <%=quantity%>)
                 {
-                    inputQuan.value = <%= quantity%>;
+                    inputQuan.value = <%=quantity%>;
                 }
 
                 if (inputQuan.value < 1 && inputQuan.value !== "")
@@ -205,5 +205,6 @@
                 }
             });
         </script>
+        <script src="/RESOURCES/product/public/js/main.js"></script>
     </body>
 </html>
