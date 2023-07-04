@@ -87,13 +87,13 @@
                             <form action="" id="searchForm" method="GET">
                                 <div class="gender">
                                     <h4>GIỚI TÍNH</h4>
-                                    <input type="radio" name="Gender" id="Nam" value="Nam" onchange="this.form.submit()">
+                                    <input type="checkbox" name="Gender" id="Nam" value="Nam" onchange="this.form.submit()">
                                     <label for="male" value="Male">Nam</label>
 
-                                    <input type="radio" name="Gender" id="Nữ" value="Nữ" onchange="this.form.submit()">
+                                    <input type="checkbox" name="Gender" id="Nữ" value="Nữ" onchange="this.form.submit()">
                                     <label for="female" value="Female">Nữ</label>
 
-                                    <input type="radio" name="Gender" id="Unisex" value="Unisex" onchange="this.form.submit()">
+                                    <input type="checkbox" name="Gender" id="Unisex" value="Unisex" onchange="this.form.submit()">
                                     <label for="unisex" value="Unisex">Unisex</label>
                                 </div>
                                 <div class="price">
