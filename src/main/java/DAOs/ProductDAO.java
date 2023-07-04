@@ -23,84 +23,12 @@ public class ProductDAO {
         conn = DB.DataManager.getConnection();
     }
 
-    public ResultSet getAll() {
-        ResultSet rs = null;
-        String sql = "SELECT * FROM Product";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            rs = ps.executeQuery();
-        } catch (SQLException ex) {
-            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return rs;
-    }
-
-    public ResultSet getWithCondition(String Condition) {
-        ResultSet rs = null;
-        String sql = "SELECT * FROM Product WHERE " + Condition;
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            rs = ps.executeQuery();
-        } catch (SQLException ex) {
-            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println(ex.getMessage());
-        }
-        return rs;
-    }
-
-    public String getPrice(int ID) {
-        String price = null;
-        String sql = "SELECT Price FROM Product WHERE ID = ?";
-        ResultSet rs = null;
-
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, ID);
-            rs = ps.executeQuery();
-
-            if (rs.next()) {
-                price = IntegerToMoney(rs.getInt("Price"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return price;
-    }
-
-    public static String MoneyToInteger(String moneyInput) {
-        StringBuilder moneyInt = new StringBuilder(moneyInput);
-
-        for (int i = 0; i < moneyInt.length(); i++) {
-            if (moneyInt.charAt(i) == '.') {
-                moneyInt.delete(i, i + 1);
-            }
-        }
-
-        return moneyInt.toString();
-    }
-
-    public static String IntegerToMoney(int integer) {
-        String out = "";
-        String StringDu = "";
-        int du;
-        while (integer / 1000 != 0) {
-            du = integer % 1000;
-            integer = integer / 1000;
-            StringDu = String.valueOf(du);
-            while (StringDu.length() < 3) {
-                StringDu = "0" + StringDu;
-            }
-            out = "." + StringDu + out;
-        }
-        out = integer + "" + out;
-        return out;
-    }
-
+    // CRUD
     /*
      * "ID,Name,BrandID,Price,Gender,Smell,Quantity,ReleaseYear,Volume,ImgURL,Description",
      * // Product
      */
+    /* ------------------------- CREATE SECTION ---------------------------- */
     private int addProduct(Product pd) {
         int result = 0;
         try {
@@ -147,7 +75,7 @@ public class ProductDAO {
         BrandDAO brDAO = new BrandDAO();
         // "NAME~BRANDNAME(string)~PRICE(REAL)~Gender(string)~Smell(String)~Quantity(int)~ReleaseYear(smallint)~Volume(INT)~URL(Srtring)~Description",
 
-        //Check if exist brand name
+        // Check if exist brand name
         if (!brDAO.isExistedBrandName(datas[1])) {
             brDAO.addBrand(datas[1]);
         }
@@ -183,8 +111,9 @@ public class ProductDAO {
         ResultSet rs = null;
         String sql = "SELECT * FROM Product";
 
-        try ( OutputStream os = new FileOutputStream(
-                "C:\\Users\\Acer\\OneDrive\\Desktop\\#SU23\\PRJ301\\SQLproject\\SQLproject\\src\\main\\java\\BackUp\\backup_Product_data.txt");  PrintWriter out = new PrintWriter(new OutputStreamWriter(os, "UTF-8"));) {
+        try (OutputStream os = new FileOutputStream(
+                "C:\\Users\\Acer\\OneDrive\\Desktop\\#SU23\\PRJ301\\SQLproject\\SQLproject\\src\\main\\java\\BackUp\\backup_Product_data.txt");
+                PrintWriter out = new PrintWriter(new OutputStreamWriter(os, "UTF-8"));) {
             PreparedStatement ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
             StringBuilder strOUT = new StringBuilder("");
@@ -214,6 +143,187 @@ public class ProductDAO {
         } catch (IOException io) {
 
         }
+    }
+
+    /* --------------------------- READ SECTION --------------------------- */
+
+    public ResultSet getAll() {
+        ResultSet rs = null;
+        String sql = "SELECT * FROM Product";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rs;
+    }
+
+    public Product getProduct(int id) {
+        ResultSet rs = null;
+        String sql = "SELECT * FROM Product WHERE ID = ?";
+
+        Product pd = null;
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                pd = new Product();
+                pd.setID(rs.getInt("ID"));
+                pd.setName(rs.getNString("Name"));
+                pd.setBrandID(rs.getInt("BrandID"));
+                pd.setPrice(rs.getInt("Price"));
+                pd.setGender(rs.getNString("Gender"));
+                pd.setSmell(rs.getNString("Smell"));
+                pd.setQuantity(rs.getInt("Quantity"));
+                pd.setReleaseYear(rs.getInt("ReleaseYear"));
+                pd.setVolume(rs.getInt("Volume"));
+                pd.setImgURL(rs.getNString("ImgURL"));
+                pd.setDescription(rs.getNString("Description"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return pd;
+
+    }
+
+    public ResultSet getFilteredProduct(String BrandID, String Gender, String price, int page) {
+        String sql = "SELECT * FROM Product\n"
+                + "WHERE BrandID LIKE ?\n"
+                + "AND Gender LIKE ?\n"
+                + "AND Price between ? AND ?\n"
+                + "ORDER BY ID\n"
+                + "OFFSET ? ROWS\n"
+                + "FETCH NEXT ? ROWS ONLY";
+
+        final int ROWS = 20;
+        final int OFFSET = ROWS * (page - 1);
+        ResultSet rs = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            BrandID = BrandID == null ? "%" : BrandID;
+            Gender = Gender == null ? "%" : Gender;
+
+            ps.setNString(1, BrandID);
+            ps.setNString(2, Gender);
+
+            // Format price range
+            String low = "0";
+            String high = "100000000";
+            if (price != null) {
+                String priceRange[] = price.split("-");
+                low = priceRange[0];
+                high = priceRange[1];
+            }
+
+            ps.setNString(3, low);
+            ps.setNString(4, high);
+
+            ps.setInt(5, OFFSET);
+            ps.setInt(6, ROWS);
+
+            rs = ps.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return rs;
+    }
+
+    public String getPrice(int ID) {
+        String price = null;
+        String sql = "SELECT Price FROM Product WHERE ID = ?";
+        ResultSet rs = null;
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, ID);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                price = IntegerToMoney(rs.getInt("Price"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return price;
+    }
+
+    public int GetNumberOfProduct(String BrandID, String Gender, String price, int page) {
+        BrandID = BrandID == null ? "%" : BrandID;
+        Gender = Gender == null ? "%" : Gender;
+        String low = "0";
+        String high = "100000000";
+
+        if (price != null) {
+            String priceRange[] = price.split("-");
+            low = priceRange[0];
+            high = priceRange[1];
+        }
+
+        ResultSet rs = null;
+
+        String sql = "SELECT COUNT(*) AS CountRow FROM Product\n"
+                + "WHERE BrandID LIKE ?\n"
+                + "AND Gender LIKE ?\n"
+                + "AND Price between ? AND ?\n";
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setNString(1, BrandID);
+            ps.setNString(2, Gender);
+            ps.setNString(3, low);
+            ps.setNString(4, high);
+
+            rs = ps.executeQuery();
+            System.out.println(String.format("BrandID: %s, gender: %s, low: %s, high: %s", BrandID, Gender, low, high));
+            if (rs.next()) {
+                return rs.getInt("CountRow");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return -1;
+    }
+
+    /*--------------------------- CONVERSION SECTION --------------------------- */
+
+    public static String MoneyToInteger(String moneyInput) {
+        StringBuilder moneyInt = new StringBuilder(moneyInput);
+
+        for (int i = 0; i < moneyInt.length(); i++) {
+            if (moneyInt.charAt(i) == '.') {
+                moneyInt.delete(i, i + 1);
+            }
+        }
+
+        return moneyInt.toString();
+    }
+
+    public static String IntegerToMoney(int integer) {
+        String out = "";
+        String StringDu = "";
+        int du;
+        while (integer / 1000 != 0) {
+            du = integer % 1000;
+            integer = integer / 1000;
+            StringDu = String.valueOf(du);
+            while (StringDu.length() < 3) {
+                StringDu = "0" + StringDu;
+            }
+            out = "." + StringDu + out;
+        }
+        out = integer + "" + out;
+        return out;
     }
 
 }
