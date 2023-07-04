@@ -13,6 +13,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 public class UserValidation implements Filter {
 
@@ -21,7 +22,7 @@ public class UserValidation implements Filter {
 	// configured. 
 	private FilterConfig filterConfig = null;
 	private boolean debug = true;
-
+	
 	public UserValidation() {
 	}
 
@@ -40,7 +41,10 @@ public class UserValidation implements Filter {
 					throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
-
+		
+		boolean isAdmin = isAdmin(req);
+		boolean isClient = isClient(req);
+		
 		final String URI = req.getRequestURI();
 		final String URL = req.getRequestURL().toString();
 
@@ -54,8 +58,8 @@ public class UserValidation implements Filter {
 
 		// --------------------------SKIP LOGIN IF IS USER----------------------
 		// If in Login page and is an admin or client, go to product list.
-		if (URI.endsWith("/Log/Login")) {
-			if (isAdmin(req) || isClient(req)) {
+		if (URI.startsWith("/Log/Login")) {
+			if (isAdmin || isClient) {
 				res.sendRedirect("/Product/List");
 				return;
 			}
@@ -102,6 +106,7 @@ public class UserValidation implements Filter {
 		if (cookies != null) {
 			for (int i = 0; i < cookies.length; i++) {
 				if (cookies[i].getName().equals("Admin")) {
+					request.getSession().setAttribute("userCookie", cookies[i]);
 					return true;
 				}
 			}
@@ -116,6 +121,8 @@ public class UserValidation implements Filter {
 		if (cookies != null) {
 			for (int i = 0; i < cookies.length; i++) {
 				if (cookies[i].getName().equals("Client")) {
+					cookies[i].setPath("/");
+					request.getSession().setAttribute("userCookie", cookies[i]);
 					return true;
 				}
 			}
