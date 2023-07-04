@@ -61,12 +61,12 @@
                         <li><a href="/Product/List">sản phẩm</a></li>
                         <li><a href="">blog</a></li>
                     </ul>
-                    <a href="/RESOURCES/home/index.html"><img src="/RESOURCES/images/icons/icon.webp" alt=""
-                                                              height="64"></a>
+                    <a href="/"><img src="/RESOURCES/images/icons/icon.webp" alt=""
+                                     height="64"></a>
                     <div class="account">
                         <a><img src="/RESOURCES/images/icons/search.png" alt=""></a>
-                        <a href="./logIn/index.jsp"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
-                        <a><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
+                        <a href="/Log/Login"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+                        <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
                     </div>
                 </div>
             </div>
@@ -92,9 +92,10 @@
                                 <p id="volume">Dung tích</p>
                                 <span><%= volume%>ml</span>
                             </div>
-                            <form action="">
-                                <input type="number" name="" id="" value="1">
-                                <button type="submit">THÊM VÀO GIỎ HÀNG</button>
+                            <form action="/Client/addToCart" method="POST">
+                                <input type="number" name="ProductQuantity" id="" value="1" >
+                                <input type="hidden" name="ProductID" value="<%= id%>">
+                                <button name="btnAddToCart" value="Submit" type="submit">THÊM VÀO GIỎ HÀNG</button>
                             </form>
                         </div>
                     </div>
@@ -183,5 +184,26 @@
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>
+        <!-- This script handle the quantity isn't out of bound -->
+        <script>
+            let inputQuan = document.querySelector("input[name=ProductQuantity]");
+            inputQuan.addEventListener("input", function () {
+                if (inputQuan.value > <%= quantity%>)
+                {
+                    inputQuan.value = <%= quantity%>;
+                }
+
+                if (inputQuan.value < 1 && inputQuan.value !== "")
+                {
+                    inputQuan.value = 1;
+                }
+            });
+            inputQuan.addEventListener("blur", function () {
+                if (inputQuan.value === "")
+                {
+                    inputQuan.value = 1;
+                }
+            });
+        </script>
     </body>
 </html>

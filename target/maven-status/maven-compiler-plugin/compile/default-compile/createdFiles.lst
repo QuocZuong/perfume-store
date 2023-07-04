@@ -3,11 +3,16 @@ DAOs\UserDAO.class
 Controllers\ProductController.class
 ImportProduct.class
 Controllers\HomeController.class
+Models\Cart.class
 Lib\Test.class
+DAOs\CartDAO.class
 DAOs\ProductDAO.class
 Models\Product.class
+Controllers\ClientController.class
+Filters\UserValidation.class
 Models\User.class
 Controllers\ResourceController.class
+Controllers\LogController.class
 Models\Brand.class
 DB\DataManager$1.class
 DAOs\BrandDAO.class

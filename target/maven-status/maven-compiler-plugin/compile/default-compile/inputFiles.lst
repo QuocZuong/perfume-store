@@ -1,5 +1,6 @@
 C:\Users\Acer\OneDrive\Desktop\#SU23\PRJ301\SQLproject\perfume-store\src\main\java\DAOs\BrandDAO.java
 C:\Users\Acer\OneDrive\Desktop\#SU23\PRJ301\SQLproject\perfume-store\src\main\java\DB\DataManager.java
+C:\Users\Acer\OneDrive\Desktop\#SU23\PRJ301\SQLproject\perfume-store\src\main\java\Filters\UserValidation.java
 C:\Users\Acer\OneDrive\Desktop\#SU23\PRJ301\SQLproject\perfume-store\src\main\java\ImportProduct.java
 C:\Users\Acer\OneDrive\Desktop\#SU23\PRJ301\SQLproject\perfume-store\src\main\java\Lib\test2.java
 C:\Users\Acer\OneDrive\Desktop\#SU23\PRJ301\SQLproject\perfume-store\src\main\java\Models\User.java
@@ -7,7 +8,11 @@ C:\Users\Acer\OneDrive\Desktop\#SU23\PRJ301\SQLproject\perfume-store\src\main\ja
 C:\Users\Acer\OneDrive\Desktop\#SU23\PRJ301\SQLproject\perfume-store\src\main\java\Controllers\HomeController.java
 C:\Users\Acer\OneDrive\Desktop\#SU23\PRJ301\SQLproject\perfume-store\src\main\java\Controllers\ResourceController.java
 C:\Users\Acer\OneDrive\Desktop\#SU23\PRJ301\SQLproject\perfume-store\src\main\java\Lib\Test.java
+C:\Users\Acer\OneDrive\Desktop\#SU23\PRJ301\SQLproject\perfume-store\src\main\java\DAOs\CartDAO.java
 C:\Users\Acer\OneDrive\Desktop\#SU23\PRJ301\SQLproject\perfume-store\src\main\java\DAOs\UserDAO.java
+C:\Users\Acer\OneDrive\Desktop\#SU23\PRJ301\SQLproject\perfume-store\src\main\java\Models\Cart.java
+C:\Users\Acer\OneDrive\Desktop\#SU23\PRJ301\SQLproject\perfume-store\src\main\java\Controllers\ClientController.java
 C:\Users\Acer\OneDrive\Desktop\#SU23\PRJ301\SQLproject\perfume-store\src\main\java\DAOs\ProductDAO.java
+C:\Users\Acer\OneDrive\Desktop\#SU23\PRJ301\SQLproject\perfume-store\src\main\java\Controllers\LogController.java
 C:\Users\Acer\OneDrive\Desktop\#SU23\PRJ301\SQLproject\perfume-store\src\main\java\Models\Brand.java
 C:\Users\Acer\OneDrive\Desktop\#SU23\PRJ301\SQLproject\perfume-store\src\main\java\Controllers\ProductController.java

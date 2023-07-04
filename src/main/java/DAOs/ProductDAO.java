@@ -12,8 +12,6 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.management.relation.Role;
-
 import DB.DataManager;
 import Models.Product;
 
@@ -169,8 +167,10 @@ public class ProductDAO {
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
+
             ps.setInt(1, id);
             rs = ps.executeQuery();
+
             if (rs.next()) {
                 pd = new Product();
                 pd.setID(rs.getInt("ID"));
@@ -228,9 +228,6 @@ public class ProductDAO {
             ps.setInt(5, OFFSET);
             ps.setInt(6, ROWS);
 
-            // System.out.println(ps.toString());
-            System.out.println(String.format("BrandID: %s, gender: %s, low: %s, high: %s", BrandID, Gender, low, high));
-
             rs = ps.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -257,6 +254,45 @@ public class ProductDAO {
         }
 
         return price;
+    }
+
+    public int GetNumberOfProduct(String BrandID, String Gender, String price, int page) {
+        BrandID = BrandID == null ? "%" : BrandID;
+        Gender = Gender == null ? "%" : Gender;
+        String low = "0";
+        String high = "100000000";
+
+        if (price != null) {
+            String priceRange[] = price.split("-");
+            low = priceRange[0];
+            high = priceRange[1];
+        }
+
+        ResultSet rs = null;
+
+        String sql = "SELECT COUNT(*) AS CountRow FROM Product\n"
+                + "WHERE BrandID LIKE ?\n"
+                + "AND Gender LIKE ?\n"
+                + "AND Price between ? AND ?\n";
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setNString(1, BrandID);
+            ps.setNString(2, Gender);
+            ps.setNString(3, low);
+            ps.setNString(4, high);
+
+            rs = ps.executeQuery();
+            System.out.println(String.format("BrandID: %s, gender: %s, low: %s, high: %s", BrandID, Gender, low, high));
+            if (rs.next()) {
+                return rs.getInt("CountRow");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return -1;
     }
 
     /*--------------------------- CONVERSION SECTION --------------------------- */

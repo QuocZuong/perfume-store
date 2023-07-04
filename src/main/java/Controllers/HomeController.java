@@ -2,7 +2,6 @@
 package Controllers;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,10 +12,10 @@ public class HomeController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -35,20 +34,21 @@ public class HomeController extends HttpServlet {
             return;
         }
 
-//        if (path.equals("/home/login")) {
-//            request.getRequestDispatcher("/HOME_PAGE/logIn.jsp").forward(request, response);
-//            return;
-//        }
+        // if (path.equals("/home/login")) {
+        // request.getRequestDispatcher("/HOME_PAGE/logIn.jsp").forward(request,
+        // response);
+        // return;
+        // }
         request.getRequestDispatcher("/HOME_PAGE/homePage.jsp").forward(request, response);
     }
 
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

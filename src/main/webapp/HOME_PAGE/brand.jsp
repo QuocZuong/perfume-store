@@ -43,12 +43,12 @@
                         <li><a href="/Product/List">sản phẩm</a></li>
                         <li><a href="">blog</a></li>
                     </ul>
-                    <a href="/RESOURCES/home/index.html"><img src="/RESOURCES/images/icons/icon.webp" alt=""
-                                                              height="64"></a>
+                    <a href="/"><img src="/RESOURCES/images/icons/icon.webp" alt=""
+                                     height="64"></a>
                     <div class="account">
                         <a><img src="/RESOURCES/images/icons/search.png" alt=""></a>
-                        <a href="./logIn/index.jsp"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
-                        <a><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
+                        <a href="/Log/Login"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+                        <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
                     </div>
                 </div>
             </div>

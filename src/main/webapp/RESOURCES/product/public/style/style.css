@@ -126,8 +126,13 @@ h1{
   margin-bottom: 50px;
 }
 
+.main .info{
+    display: flex;
+    align-items: center;
+    margin-top: 50px;
+}
+
 .main .info .left {
-  margin: 0 20px 100px 0;
   margin-left: 20px;
   width: 40%;
   font-size: 1.3rem;
@@ -139,12 +144,12 @@ h1{
   height: 350px;
   max-width: 350px;
   margin-bottom: 30px;
+  margin-top: 30px;
 }
 
 .main .info .right {
   width: 40%;
   max-width: 700px;
-  margin-top: 70px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -200,6 +205,7 @@ content.main .bottom .description{
 
 .main .bottom .description #descriptionTitle{
   font-size: 2.8rem;
+  margin-top: 40px;
 } 
 
 .main .bottom .description label{
@@ -210,7 +216,9 @@ content.main .bottom .description{
   text-align: left;
 }
 
-
+.main .info .right #productName{
+    text-align: left; 
+}
 
 .main .info .right #productPrice{
   margin: 20px 0;

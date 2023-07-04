@@ -1,9 +1,14 @@
 <%-- Document : index.jsp Created on : Jun 7, 2023, 1:34:15 PM Author : Acer --%>
 
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@page import="DAOs.ProductDAO" %>
 <%@page import="DAOs.BrandDAO" %>
 <%@page import="java.sql.ResultSet" %>
-<%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%@page import="jakarta.servlet.http.HttpServletRequest"%>
+<%@page import="jakarta.servlet.http.HttpServletResponse"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,13 +36,19 @@
         <%! ProductDAO pdao = new ProductDAO();%>
         <%! BrandDAO bdao = new BrandDAO();%>
         <%! ResultSet rs = null;%>
-
+        <%! int currentPage, numberOfPage;%>
+        <%
+            currentPage = (int) request.getAttribute("page");
+            numberOfPage = (int) request.getAttribute("numberOfPage");
+        %>
 
     </head>
 
     <body>
-        <div class="container-fluid">
 
+
+        <div class="container-fluid">
+            
             <div class="row">
                 <div class="col-md-12 nav">
                     <ul>
@@ -48,13 +59,12 @@
                         <li><a href="/Product/List">sản phẩm</a></li>
                         <li><a href="">blog</a></li>
                     </ul>
-                    <a href="/RESOURCES/home/index.html"><img
-                            src="/RESOURCES/images/icons/icon.webp" alt="" height="64"></a>
+                    <a href="/"><img src="/RESOURCES/images/icons/icon.webp" alt=""
+                                     height="64"></a>
                     <div class="account">
                         <a><img src="/RESOURCES/images/icons/search.png" alt=""></a>
-                        <a href="./logIn/index.jsp"><img src="/RESOURCES/images/icons/user.png"
-                                                         alt=""></a>
-                        <a><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
+                        <a href="/Log/Login"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+                        <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
                     </div>
                 </div>
             </div>
@@ -149,18 +159,41 @@
                                 }
 
                             %>
-
-
                         </div>
 
                     </div>
-                    <ul class="pagination">
-                        <li class="page-item"><a class="page-link" href="#"></a></li>
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item"><a class="page-link" href="#"></a></li>
-                    </ul>
+                    <!--                    <ul class="pagination">
+                                            <li class="page-item"><a class="page-link" href="#"></a></li>
+                                            <li class="page-item"><a class="page-link" href="#"></a></li>
+                                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                            <li class="page-item"><a class="page-link" href="#"></a></li>
+                                        </ul>-->
+                    <form>
+                        <nav aria-label="...">
+                            <ul class="pagination">
+                                <li class="page-item"><a class="page-link" href="#">Trang dau</a></li>
+                                <li class="page-item"><span class="page-link">Previous</span></li>
+
+                                <c:forEach var="i" begin="${page-2<0?0:page-2}" end="${page+2 +1}">
+                                    <c:choose>
+                                        <c:when test="${i==page}">
+                                            <li class="page-item active"><a href="${currentURL}/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
+                                            </c:when>
+                                            <c:when test="${i>0 && i<=numberOfPage}"> 
+                                            <li class="page-item"><a href="${currentURL}/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
+                                            </c:when>
+                                            <c:otherwise>
+
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
+
+                                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                                <li class="page-item"><a class="page-link" href="#">Trang cuoi</a></li>
+                            </ul>
+                        </nav>
+                    </form>
                 </div>
 
             </div>
@@ -230,7 +263,7 @@
             integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>
         <script src="/RESOURCES/shop/public/js/main.js"></script>
-   
+
 
     </body>
 

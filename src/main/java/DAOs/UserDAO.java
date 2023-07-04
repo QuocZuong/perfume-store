@@ -1,6 +1,7 @@
 package DAOs;
 
 import Models.User;
+import Lib.PasswordGenerator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
@@ -21,6 +22,7 @@ public class UserDAO {
     conn = DB.DataManager.getConnection();
   }
 
+  /* --------------------- CREATE SECTION --------------------- */
   /**
    * Gets all the users in the database.
    *
@@ -43,37 +45,31 @@ public class UserDAO {
   }
 
   /**
-   * Checks if the provided username and password match a user's information or
-   * not.
+   * Gets the MD5 hash of a string.
    *
-   * @param username the username of the user trying to log in.
-   * @param password the password entered by the user trying to log in. this
-   *                 password must not be hasshed.
-   * @return {@code true} if the username and password match a user's information.
-   *         {@code false} otherwise.
+   * @param str The string to be hashed.
+   * @return The MD5 hash of the string. {@code null} if an error occurs while
+   *         hashing.
    */
-  public boolean validateUser(String username, String password) {
-    if (username == null || password == null) {
-      return false;
-    }
-    if (username.length() > 50) {
-      return false;
-    }
+  private String getMD5hash(String str) {
 
-    ResultSet rs = null;
-    String sql = "SELECT * FROM [User] WHERE UserName = ? AND [Password] = ?";
-
+    MessageDigest md = null;
     try {
-      PreparedStatement ps = conn.prepareStatement(sql);
-      ps.setString(1, username);
-      ps.setString(2, getMD5hash(password));
-      rs = ps.executeQuery();
-      return rs.next();
-    } catch (SQLException ex) {
-      Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+      md = MessageDigest.getInstance("MD5");
+    } catch (NoSuchAlgorithmException ex) {
+      ex.printStackTrace();
     }
-    return false;
+    md.update(str.getBytes());
+    byte[] digest = md.digest();
+    StringBuilder sb = new StringBuilder();
+    for (byte b : digest) {
+      sb.append(String.format("%02x", b & 0xff));
+    }
+    String pwdMD5 = sb.toString();
+
+    return pwdMD5;
   }
+  /* --------------------- READ SECTION --------------------- */
 
   /**
    * Gets a user from the database.
@@ -112,35 +108,72 @@ public class UserDAO {
   }
 
   /**
-   * Adds a new user to the database.
-   *
-   * @param us The user to be added.
-   * @return The number of rows affected by the query. {@code 0} if user cannot be
-   *         added.
-   */
-  public int addUser(User us) {
-    if (us == null) {
-      return 0;
+     * Gets a user from the database.
+     *
+     * @param ID The ID of the user to be retrieved.
+     * @return A {@code User} object containing the user's information. {@code null}
+     *         if an error occurs or the user is not found.
+     */
+    public User getUser(int ID) {
+        ResultSet rs = null;
+
+        String sql = "SELECT * FROM [User] WHERE ID = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, ID);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return new User(
+                        rs.getInt("ID"),
+                        rs.getString("Name"),
+                        rs.getString("UserName"),
+                        rs.getString("Password"),
+                        rs.getString("Email"),
+                        rs.getString("PhoneNumber"),
+                        rs.getString("Address"),
+                        rs.getString("Role"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
-    String sql = "INSERT INTO User(Name, UserName, Password, Email, PhoneNumber, Address, Role) VALUES(?, ?, ?, ?, ?, ?, ?)";
-    try {
-      PreparedStatement ps = conn.prepareStatement(sql);
-      ps.setNString(1, us.getName());
-      ps.setString(2, us.getUsername());
-      ps.setString(3, getMD5hash(us.getPassword()));
-      ps.setString(4, us.getEmail());
-      ps.setString(5, us.getPhoneNumber());
-      ps.setNString(6, us.getAddress());
-      ps.setNString(7, us.getRole());
+    /**
+     * Gets a user from the database.
+     *
+     * @param email The email of the user to be retrieved.
+     * @return A {@code User} object containing the user's information. {@code null}
+     *         if an error occurs or the user is not found.
+     */
+    public User getUserByEmail(String email) {
+        ResultSet rs = null;
 
-      return ps.executeUpdate();
-    } catch (SQLException ex) {
-      Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        String sql = "SELECT * FROM [User] WHERE Email = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, email);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return new User(
+                        rs.getInt("ID"),
+                        rs.getString("Name"),
+                        rs.getString("UserName"),
+                        rs.getString("Password"),
+                        rs.getString("Email"),
+                        rs.getString("PhoneNumber"),
+                        rs.getString("Address"),
+                        rs.getString("Role"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return null;
     }
-    return 0;
-  }
 
+  /* --------------------- UPDATE SECTION --------------------- */
+  /*--------------------- DELETE SECTION ---------------------  */
   /**
    * Deletes a user from the database.
    *
@@ -165,6 +198,9 @@ public class UserDAO {
     return 0;
   }
 
+  /*--------------------- VALIDATE SECTION ---------------------  */
+
+  /*--------------------- AUTHORIZATION SECTION ---------------------  */
   /**
    * Checks if a given username is an admin.
    *
@@ -191,29 +227,83 @@ public class UserDAO {
     return false;
   }
 
-  /**
-   * Gets the MD5 hash of a string.
-   *
-   * @param str The string to be hashed.
-   * @return The MD5 hash of the string. {@code null} if an error occurs while
-   *         hashing.
-   */
-  private String getMD5hash(String str) {
+  /*--------------------- AUTHENTICATION SECTION ---------------------  */
+  public boolean login(String username, String password) {
+    if (username == null || password == null) {
+      return false;
+    }
+    if (username.length() > 50) {
+      return false;
+    }
 
-    MessageDigest md = null;
+    ResultSet rs = null;
+    String sql = "SELECT * FROM [User] WHERE UserName = ? AND [Password] = ?";
+
     try {
-      md = MessageDigest.getInstance("MD5");
-    } catch (NoSuchAlgorithmException ex) {
-      ex.printStackTrace();
+      PreparedStatement ps = conn.prepareStatement(sql);
+      ps.setString(1, username);
+      ps.setString(2, getMD5hash(password));
+      rs = ps.executeQuery();
+      return rs.next();
+    } catch (SQLException ex) {
+      Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
     }
-    md.update(str.getBytes());
-    byte[] digest = md.digest();
-    StringBuilder sb = new StringBuilder();
-    for (byte b : digest) {
-      sb.append(String.format("%02x", b & 0xff));
+    return false;
+  }
+
+  public boolean loginWithEmail(String email, String password) {
+    if (email == null || password == null) {
+      return false;
     }
-    String pwdMD5 = sb.toString();
-    
-    return pwdMD5;
+    if (email.length() > 100) {
+      return false;
+    }
+
+    ResultSet rs = null;
+    String sql = "SELECT * FROM [User] WHERE Email = ? AND [Password] = ?";
+
+    try {
+      PreparedStatement ps = conn.prepareStatement(sql);
+      ps.setString(1, email);
+      ps.setString(2, getMD5hash(password));
+      rs = ps.executeQuery();
+      return rs.next();
+    } catch (SQLException ex) {
+      Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return false;
+  }
+
+  public boolean register(String email) {
+    if (getUserByEmail(email) == null) {
+      return false;
+    }
+
+    int result = 0;
+
+    String generatedPassword = PasswordGenerator.generateStrongPassword(12);
+    System.out.println("New password:" + generatedPassword);
+
+    String sql = "Insert into [User] values (?, ?, ?, ?, ?, ?, ?)";
+    String username = email.substring(0, email.indexOf('@'));
+
+    try {
+      PreparedStatement ps = conn.prepareStatement(sql);
+      ps.setString(1, "");
+      ps.setString(2, username);
+      ps.setString(3, getMD5hash(generatedPassword));
+      ps.setString(4, email);
+      ps.setString(5, "");
+      ps.setString(6, "");
+      ps.setString(7, "Client");
+
+      result = ps.executeUpdate();
+      return result > 0;
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    return false;
   }
 }

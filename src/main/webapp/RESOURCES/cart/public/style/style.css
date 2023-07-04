@@ -174,17 +174,17 @@ h1 {
 
 .box .left table tr td:nth-child(3) input {
     padding: 10px 0 10px 15px;
-    width: 100px;
+    width: 100%;
     margin-bottom: 15px;
 }
 
-.box .left table tr td:nth-child(3) button {
+.box .left table tr td:nth-child(3) a {
     background-color: transparent;
     outline: none;
     border: none;
 }
 
-.box .left table tr td:nth-child(3) button img {
+.box .left table tr td:nth-child(3) a img {
     height: 10px;
     width: 10px;
 }
