@@ -129,3 +129,29 @@ function sortPriceHighToLow(){
   })
 }
 
+// keep underline when click on tag a search bar
+const anchorTag =document.querySelector(".list-brand a");
+const anchorTags = document.querySelectorAll(".list-brand a");
+anchorTags.forEach((anchorTag) => {
+  anchorTag.addEventListener("click", function(event) {
+
+    anchorTags.forEach((tag) => {
+      tag.classList.remove("clicked");
+    });
+    this.classList.add("clicked");
+
+    localStorage.setItem("clickedValue", this.getAttribute("href"));
+  });
+});
+
+const storedClickedValue = localStorage.getItem("clickedValue");
+if (storedClickedValue) {
+  anchorTags.forEach((tag) => {
+    if (tag.getAttribute("href") === storedClickedValue) {
+      tag.classList.add("clicked");
+    }
+  });
+}
+
+enableScroll();
+

@@ -52,8 +52,7 @@
                             src="/RESOURCES/images/icons/icon.webp" alt="" height="64"></a>
                     <div class="account">
                         <a><img src="/RESOURCES/images/icons/search.png" alt=""></a>
-                        <a href="./logIn/index.jsp"><img src="/RESOURCES/images/icons/user.png"
-                                                         alt=""></a>
+                        <a href="./logIn/index.jsp"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
                         <a><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
                     </div>
                 </div>
@@ -149,8 +148,6 @@
                                 }
 
                             %>
-
-
                         </div>
 
                     </div>

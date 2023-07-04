@@ -215,7 +215,6 @@
                             </div>
                         </a>
                         <a href="./logIn/index.html">
-
                             <div class="card">
                                 <img src="/RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
                                 <span class="product-brand">Kilian</span>
@@ -223,7 +222,6 @@
                                 <span class="product-name">Angels Share</span>
                                 <span class="product-price">6.000.000 <span>đ</span></span>
                             </div>
-                    </div>
                     </a>
                 </div>
 
@@ -354,6 +352,6 @@
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>
-        <script src="./public/js/main.js"></script>
+        <script src="/RESOURCES/home/public/js/main.js"></script>
     </body>
 </html>
