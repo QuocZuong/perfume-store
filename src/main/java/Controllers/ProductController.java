@@ -14,15 +14,14 @@ public class ProductController extends HttpServlet {
 
     public static final String LIST_URL = "/Product/List";
     public static final String DETAIL_URL = "/Product/Detail";
-    private int count = 0;
 
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -51,16 +50,20 @@ public class ProductController extends HttpServlet {
 
         // Filter
         // Product/List?Gender=Male&priceRange=1500000-3000000
+        // Product/List/page/2
         // Product/List/BrandID/2
         // Product/List/BrandID/1?Gender=Male&priceRange=1500000-3000000
-
+        // Product/List/BrandID/2/page/2
+        // Product/List/BrandID/page/2?Gender=Male&priceRange=1500000-3000000
         if ((path.startsWith(LIST_URL) && (request.getQueryString() != null && !request.getQueryString().isEmpty()))
-                || path.startsWith(LIST_URL + "/BrandID")) {
+                || path.startsWith(LIST_URL + "/BrandID")
+                || path.startsWith(LIST_URL + "/page")) {
             // System.out.println("hello world");
             ProductFilter(request, response);
             request.getRequestDispatcher("/PRODUCT_PAGE/list.jsp").forward(request, response);
             return;
         }
+
         response.sendRedirect(LIST_URL);
     }
 
@@ -82,7 +85,7 @@ public class ProductController extends HttpServlet {
     /**
      * Get the attributes from the request URL then set it to the request.
      * Product/List/BrandID/2?Gender=Male&Price=low
-     * 
+     *
      */
     private void ProductFilter(HttpServletRequest request, HttpServletResponse response) {
         String gender = request.getParameter("Gender");
@@ -92,20 +95,22 @@ public class ProductController extends HttpServlet {
         String data[] = path.split("/");
 
         String brandID = null;
+        int page = 1;
 
         for (int i = 0; i < data.length; i++) {
             if (data[i].equals("BrandID")) {
                 brandID = data[i + 1];
+            } else if (data[i].equals("page")) {
+                page = Integer.parseInt(data[i + 1]);
             }
         }
-        int count = 0;
 
-        System.out.println("Count: " + count++);
-        // System.out.println(String.format("BrandID: %s, gender: %s, price: %s", brandID, gender, price));
-
+        // System.out.println(String.format("BrandID: %s, gender: %s, price: %s",
+        // brandID, gender, price));
         request.setAttribute("BrandID", brandID);
         request.setAttribute("gender", gender);
         request.setAttribute("price", price);
+        request.setAttribute("page", page);
 
         ProductDAO pDAO = new ProductDAO();
         BrandDAO bDao = new BrandDAO();
@@ -115,11 +120,10 @@ public class ProductController extends HttpServlet {
         if (brandID != null && (bDao.getBrandName(Integer.parseInt(brandID)) != null)) {
             shop = bDao.getBrandName(Integer.parseInt(brandID));
         }
-        
-        request.setAttribute("PDResultSet", pDAO.getFilteredProduct(brandID, gender, price));
+
+        request.setAttribute("PDResultSet", pDAO.getFilteredProduct(brandID, gender, price, page));
         request.setAttribute("shopName", shop);
         request.setAttribute("BDResultSet", bdRs);
-
     }
 
     /**
@@ -151,10 +155,10 @@ public class ProductController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
