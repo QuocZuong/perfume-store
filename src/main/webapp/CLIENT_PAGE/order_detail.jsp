@@ -1,10 +1,5 @@
 <%-- Document : newjsp Created on : Jul 5, 2023, 3:27:56 PM Author : Acer --%>
 
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@page import="java.sql.ResultSet"%>
-<%@page import="Models.Order"%>
-<%@page import="java.util.List"%>
-<%@page import="DAOs.OrderDAO"%>
 <%@page import="Models.User"%>
 <%@page import="DAOs.UserDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
@@ -16,9 +11,6 @@
     fullname = user.getName();
     username = user.getUsername();
     email = user.getEmail();
-    OrderDAO od = new OrderDAO();
-    List<Order> orders = od.getOrderByClientId(user.getID());
-
 %>
 
 <!DOCTYPE html>
@@ -36,7 +28,7 @@
         <link
             href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond&family=Josefin+Sans:wght@200&family=Josefin+Slab&display=swap"
             rel="stylesheet">
-        <link rel="stylesheet" href="/RESOURCES/user/public/style/style.css">
+        <link rel="stylesheet" href="/RESOURCES/user/public/style/order_detail_style.css">
         <link rel="icon" href="/RESOURCES/images/icons/icon.webp">
         <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css"
               rel="stylesheet" type="text/css" />
@@ -101,29 +93,25 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Ngày mua hàng</th>
+                                    <th scope="col">Thông tin</th>
+                                    <th scope="col">Sản phẩm</th>
+                                    <th scope="col" class="number">Số lượng</th>
+                                    <th scope="col">Đơn giá</th>
+                                    <th scope="col">Địa chỉ</th>
                                     <th scope="col">Tổng tiền</th>
-                                    <th scope="col"></th>
                                 </tr>
                             </thead>
                             <tbody>
-
+                                
                                 <tr>
-
-                                    <c:if test="<%=orders.size() != 0%>">
-                                        <c:forEach var="i" begin="0" end="<%=orders.size() - 1%>">
-                                            <th scope="row"><%=orders.get((int) pageContext.getAttribute("i")).getID()%></th>
-                                            <td>
-                                                <%=orders.get((int) pageContext.getAttribute("i")).getDate()%>
-                                            </td>
-                                            <td>
-                                                <%=orders.get((int) pageContext.getAttribute("i")).getSum()%>
-                                            </td>
-                                            <td><a href="/Client/Order/Detail/ID/<%=orders.get((int) pageContext.getAttribute("i")).getID()%>" target="_blank">Xem chi tiết</a></td>
-                                        </c:forEach>
-                                    </c:if>
-
-
+                                    <th scope="row">3</th>
+                                    <td>Baccarat Rouge 540 EDP</td>
+                                    <td><img src="/RESOURCES/images/products/baccarat540-600x600.png"></td>
+                                    <td>10000</td>
+                                    <td>6.300.000</td>
+                                    <td>Đầu đường Phạm Thị Ban, cầu Giáo Dẫn 91b Phường Thới An Đông, Quận Bình
+                                        Thủy, Cần Thơ</td>
+                                    <td>63.000.000.000</td>
                                 </tr>
                             </tbody>
                         </table>

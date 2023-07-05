@@ -36,6 +36,27 @@ public class OrderDAO {
         }
         return orders;
     }
+    
+    public List<Order> getOrderByClientId(int id) {
+        List<Order> orders = new ArrayList<>();
+        String sql = "SELECT * FROM [Order] where ID = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Order order = new Order();
+                order.setID(rs.getInt("ID"));
+                order.setClientID(rs.getInt("ClientID"));
+                order.setDate(rs.getDate("Date"));
+                order.setSum(rs.getInt("Sum"));
+                orders.add(order);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return orders;
+    }
 
     public int addOrder(Order order) {
         String sql = "INSERT INTO [Order] (ClientID, Date, Sum) VALUES (?, ?, ?)";
