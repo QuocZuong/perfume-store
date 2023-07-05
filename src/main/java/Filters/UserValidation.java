@@ -48,7 +48,6 @@ public class UserValidation implements Filter {
 		final String URI = req.getRequestURI();
 		final String URL = req.getRequestURL().toString();
 
-		System.out.println("Request URI:" + URI);
 
 		// Send back to Login page to prevent unwanted URL.
 //		if (URL.equals("http://localhost:8080/")) {
@@ -60,7 +59,7 @@ public class UserValidation implements Filter {
 		// If in Login page and is an admin or client, go to product list.
 		if (URI.startsWith("/Log/Login")) {
 			if (isAdmin || isClient) {
-				res.sendRedirect("/Product/List");
+				res.sendRedirect("/Client/User");
 				return;
 			}
 		}

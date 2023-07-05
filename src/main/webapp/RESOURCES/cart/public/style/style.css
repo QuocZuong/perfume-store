@@ -189,6 +189,36 @@ h1 {
     width: 10px;
 }
 
+.box .left form div:has(button) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+    padding-left: 45px;
+}
+
+.box .left form button[type="submit"] {
+    background-color: rgb(255, 255, 255);
+    width: 200px;
+    height: 120px;
+    border: solid 1px rgb(229, 229, 229);
+}
+
+.box .left form button[type="submit"] * {
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.btn-disabled {
+    cursor: not-allowed !important;
+}
+
+.box .left form button.btn-disabled span {
+    font-weight: normal;
+    opacity: 0.7;
+}
+
 .box .right .checkout h2 {
     margin-bottom: 50px;
 }

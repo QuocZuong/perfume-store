@@ -1,5 +1,5 @@
-html{
-    scroll-behavior: smooth;
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -31,7 +31,7 @@ body::-webkit-scrollbar-thumb:hover {
   margin: 0;
 }
 
-h1{
+h1 {
   min-width: 200px;
 }
 
@@ -127,37 +127,39 @@ h1{
   cursor: pointer;
 }
 
-.main{
+.main {
   display: flex;
   margin-top: 100px;
-  
+
 
 }
-.main .left{
+
+.main .left {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   margin-left: 70px;
   width: 20%;
-  text-align: left;  
+  text-align: left;
 }
 
-.main .left h1{
-    font-size: 2rem;
+.main .left h1 {
+  font-size: 2rem;
 }
-.main .left .list ul{
+
+.main .left .list ul {
   font-size: 1.2rem;
   padding: 0;
   margin-top: 40px;
 }
 
-.main .left .list ul li{
+.main .left .list ul li {
   list-style-type: none;
   font-size: 1.5rem;
 }
 
 
-.main .left .list ul li a{
+.main .left .list ul li a {
   color: black;
   text-decoration: none;
   border-bottom: 1px solid transparent;
@@ -166,144 +168,151 @@ h1{
 }
 
 
-.main .left .list ul li a:hover{
+.main .left .list ul li a:hover {
   border-bottom: 1px solid black;
   transition: border-bottom 0.3s ease-in-out;
   font-weight: bold;
 }
 
-.main .right{
+.main .right {
   width: 80%;
   margin-top: 100px;
   max-width: 1500px;
 }
 
-.main .right strong{
+.main .right strong {
   font-family: sans-serif;
   font-weight: 400;
 }
 
-.main .right p{
-    font-size: 1.2rem;
+.main .right p {
+  font-size: 1.2rem;
 }
 
-.main .right p a{
+.main .right p a {
   text-decoration: none;
 }
 
-.main .right .order-page{
-    font-size: 1.2rem;
-    text-align: left;
-    display: none;
+.main .right .order-page {
+  font-size: 1.2rem;
+  text-align: left;
+  display: none;
 }
 
-.main .right .order-page table thead tr th{
-    min-width: 125px;
+.main .right .order-page table thead tr th {
+  min-width: 125px;
 }
 
-.main .right .order-page table thead tr th:first-child{
-    min-width: 35px;
+.main .right .order-page table thead tr th:first-child {
+  min-width: 35px;
 }
 
-.main .right .order-page table tbody tr td{
-    word-break: break-word;
+.main .right .order-page table tbody tr td {
+  word-break: break-word;
 }
 
-.main .right .order-page img{
-    width: 100px;
-    height: 100px;
+.main .right .order-page img {
+  width: 100px;
+  height: 100px;
 }
 
-.main .right .address-page{
-    text-align: left;
-    margin-left: 200px;
-    display: none;
+.main .right .address-page {
+  text-align: left;
+  margin-left: 200px;
+  display: none;
 }
 
-.main .right .address-page .default{
-    width: 50%;
-    display: flex;
-    justify-content: space-between;
+.main .right .address-page .default {
+  width: 50%;
+  display: flex;
+  justify-content: space-between;
 }
 
-.main .right .address-page .default a{
-    text-decoration: none;
-}
-.main .right .address-page .address p{
-    margin: 0;
+.main .right .address-page .default a {
+  text-decoration: none;
 }
 
-.main .right .info-page{
-    display: none;
+.main .right .address-page .address p {
+  margin: 0;
 }
 
-.main .right .info-page form{
-    width:700px;
-    text-align: left;
+.main .right .info-page {
+  display: none;
 }
 
-.main .right .info-page form button{
-    margin-top: 30px;
-    background-color: transparent;
-    padding: 5px 20px 3px 20px;
-    border: 1px solid rgba(0, 0, 0, 0.3);
-    font-size: 1.3rem;
+.main .right .info-page form {
+  width: 700px;
+  text-align: left;
 }
 
-.main .right .info-page form button:hover{
-    border: 1px solid black;
+.main .right .info-page form button {
+  margin-top: 30px;
+  background-color: transparent;
+  padding: 5px 20px 3px 20px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  font-size: 1.3rem;
 }
 
-.main .right .info-page input{
-    height: 40px;
-    border: 1px solid rgba(0, 0, 0, 0.3);
+.main .right .info-page form button:hover {
+  border: 1px solid black;
 }
 
-.main .right .info-page .fullname{
-    display: flex;
-    justify-content: space-between;
+.main .right .info-page input {
+  height: 40px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
 }
 
-.main .right .info-page .fullname div{
-    display: flex;
-    flex-direction: column;
+.main .right .info-page .fullname {
+  display: flex;
+  justify-content: space-between;
 }
 
-.main .right .info-page .fullname div input{
-    width: 320px;
+.main .right .info-page .fullname div {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-.main .right .info-page .display-name{
-    margin: 20px 0;
-    text-align: left;
-    width: 100%;
+.main .right .info-page .fullname div input {
+  width: 100%;
 }
 
-.main .right .info-page .display-name input{
-    width:100%;
-}
-.main .right .info-page .email{
-    margin: 20px 0;
-    text-align: left;
-    width: 100%;
+.main .right .info-page .display-name {
+  margin: 20px 0;
+  text-align: left;
+  width: 100%;
 }
 
-.main .right .info-page .email input{
-    width:100%;
+.main .right .info-page .display-name input {
+  width: 100%;
 }
 
-.main .right .info-page fieldset{
+.main .right .info-page .email {
+  margin: 20px 0;
+  text-align: left;
+  width: 100%;
+}
+
+.main .right .info-page .email input {
+  width: 100%;
+}
+
+.main .right .info-page fieldset {
   border: 1px solid black;
   padding: 10px;
   text-align: left;
 }
 
-.main .right .info-page fieldset legend{
+.main .right .info-page fieldset legend {
+  font-weight: bold;
+  margin-bottom: 10px;
+  float: none;
+  width: 190px;
 }
 
-.main .right .info-page fieldset input{
-    width: 100%;
-    margin-top: 5px;
+.main .right .info-page fieldset input {
+  width: 100%;
+  margin-top: 5px;
 }
 
 .main .right .info-page legend {
@@ -314,33 +323,29 @@ h1{
 
 
 
-.main .right .info-page{
-    
-}
-.main .right .info-page{
-    
-}
-.main .right .info-page{
-    
-}
+.main .right .info-page {}
 
-.register{
+.main .right .info-page {}
+
+.main .right .info-page {}
+
+.register {
   text-align: center;
   margin: 100px 0 100px 0;
   background-color: #fffcfc;
   padding: 100px 0;
 }
 
-.register h1{
+.register h1 {
   font-size: 3vw;
   min-width: 300px;
 }
 
-.register p{
+.register p {
   font-size: 2vw;
 }
 
-.register input{
+.register input {
   border: none;
   border-bottom: 1px solid black;
   margin-right: 20px;
@@ -348,7 +353,7 @@ h1{
   outline: none;
 }
 
-.register button{
+.register button {
   margin-right: 20px;
   background-color: transparent;
   outline: none;
@@ -357,24 +362,25 @@ h1{
   padding: 7px 70px 1px 70px;
   border-radius: 2px;
 }
-.register button:hover{
-  box-shadow: 0px 2px 3px rgba(0,0,0,0.2);
+
+.register button:hover {
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
 }
 
-.social{
+.social {
   text-align: center;
   margin-bottom: 50px;
 }
 
-.social a + a{
+.social a+a {
   margin-left: 7px;
 }
 
-.social img{
+.social img {
   height: 32px;
 }
 
-.footer{
+.footer {
   text-align: center;
   display: flex;
   background-color: black;
@@ -382,61 +388,61 @@ h1{
   justify-content: center;
 }
 
-.footer div{
+.footer div {
   text-align: center;
   display: flex;
   justify-content: center;
   flex-direction: column;
 }
 
-.footer div:nth-child(1){
+.footer div:nth-child(1) {
   margin-right: 110px;
   margin-left: 80px;
 }
 
-.footer div:nth-child(2){
+.footer div:nth-child(2) {
   margin-right: 80px;
 }
 
-.footer ul{
+.footer ul {
   padding: 0;
- 
+
 }
 
-.footer h2{
+.footer h2 {
   color: #fff;
   font-size: 3vw;
 
 }
 
-.footer li{
+.footer li {
   list-style-type: none;
   margin: 5px 0;
 }
 
-.footer a{
+.footer a {
   color: #fff;
   text-decoration: none;
   font-size: 1.5vw;
   width: 100%;
 }
 
-.footer a:hover{
+.footer a:hover {
   text-decoration: underline;
   text-decoration-color: white;
   transition: text-decoration 0.3s ease-in-out;
 }
 
-.copyright{
- margin-top: 25px;
+.copyright {
+  margin-top: 25px;
 }
 
-.copyright p{
+.copyright p {
   font-size: 1.2rem;
 }
 
 @media screen and (max-width: 700px) {
-    h1{
-      font-size: 100px;
-    }
+  h1 {
+    font-size: 100px;
+  }
 }

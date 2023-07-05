@@ -1,4 +1,3 @@
-
 package Controllers;
 
 import DAOs.UserDAO;
@@ -10,7 +9,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class LogController extends HttpServlet {
+
     public static final String LOGIN_URI = "/Log/Login";
+    public static final String LOGOUT_URI = "/Log/Logout";
 
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -25,19 +26,19 @@ public class LogController extends HttpServlet {
             throws ServletException, IOException {
 
         String path = request.getRequestURI();
-        
+
         if (path.startsWith(LOGIN_URI)) {
             request.getRequestDispatcher("/LOGIN_PAGE/logIn.jsp").forward(request, response);
             return;
         }
-
-        if (path.startsWith("/Log/Logout")) {
+            System.out.println("going logout controller");
+        if (path.startsWith(LOGOUT_URI)) {
+            System.out.println("going logout");
             logout(request, response);
-            response.sendRedirect("/Log/Login");
+            response.sendRedirect("/");
             return;
         }
-        
-        response.sendRedirect("/");
+
     }
 
     /**
@@ -51,13 +52,13 @@ public class LogController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         if (request.getParameter("submitBtn") != null && request.getParameter("submitBtn").equals("submitLogin")) {
             if (login(request, response)) {
-			    System.out.println("Login Successfully. Going to /Product/List");
+                System.out.println("Login Successfully. Going to /Product/List");
                 response.sendRedirect("/Product/List");
             } else {
-			    System.out.println("Login failed. Going to /Log/Login");
+                System.out.println("Login failed. Going to /Log/Login");
                 response.sendRedirect("/Log/Login");
             }
             return;
@@ -76,12 +77,12 @@ public class LogController extends HttpServlet {
     }
 
     public boolean login(HttpServletRequest request, HttpServletResponse response) {
-		String us = request.getParameter("txtUsername");
-		String pw = request.getParameter("txtPassword");
-		
-		UserDAO dao = new UserDAO();
+        String us = request.getParameter("txtUsername");
+        String pw = request.getParameter("txtPassword");
 
-		boolean hasUser = false;
+        UserDAO dao = new UserDAO();
+
+        boolean hasUser = false;
         String username = us;
 
         if (us.contains("@")) {
@@ -91,24 +92,24 @@ public class LogController extends HttpServlet {
             hasUser = dao.login(us, pw);
         }
 
-		if (hasUser) {
+        if (hasUser) {
             boolean isAdmin = dao.isAdmin(username);
 
-			Cookie c = new Cookie(isAdmin == true ? "Admin" : "Client", username);
-			c.setMaxAge(3 * 24 * 60 * 60);
-			c.setPath("/");
-			request.getSession().setAttribute("userCookie", c);
-			response.addCookie(c);
+            Cookie c = new Cookie(isAdmin == true ? "Admin" : "Client", username);
+            c.setMaxAge(3 * 24 * 60 * 60);
+            c.setPath("/");
+            request.getSession().setAttribute("userCookie", c);
+            response.addCookie(c);
             return true;
-		}
+        }
 
         return false;
-	}
+    }
 
     public boolean register(HttpServletRequest request, HttpServletResponse response) {
         String email = request.getParameter("txtEmail");
         UserDAO dao = new UserDAO();
-        
+
         if (dao.register(email)) {
             return true;
         }

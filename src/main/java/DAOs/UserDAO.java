@@ -5,6 +5,7 @@ import Lib.PasswordGenerator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,7 +28,7 @@ public class UserDAO {
 	 * Gets all the users in the database.
 	 *
 	 * @return A {@code ResultSet} containing all the users in the database.
-	 * {@code null} if an error occurs.
+	 *         {@code null} if an error occurs.
 	 */
 	public ResultSet getAll() {
 		ResultSet rs = null;
@@ -49,9 +50,9 @@ public class UserDAO {
 	 *
 	 * @param str The string to be hashed.
 	 * @return The MD5 hash of the string. {@code null} if an error occurs while
-	 * hashing.
+	 *         hashing.
 	 */
-	private String getMD5hash(String str) {
+	public String getMD5hash(String str) {
 
 		MessageDigest md = null;
 		try {
@@ -77,7 +78,7 @@ public class UserDAO {
 	 *
 	 * @param username The username of the user to be retrieved.
 	 * @return A {@code User} object containing the user's information.
-	 * {@code null} if an error occurs.
+	 *         {@code null} if an error occurs.
 	 */
 	public User getUser(String username) {
 		if (username == null) {
@@ -93,14 +94,14 @@ public class UserDAO {
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				return new User(
-								rs.getInt("ID"),
-								rs.getNString("Name"),
-								rs.getString("UserName"),
-								rs.getString("Password"),
-								rs.getString("Email"),
-								rs.getString("PhoneNumber"),
-								rs.getNString("Address"),
-								rs.getNString("Role"));
+						rs.getInt("ID"),
+						rs.getNString("Name"),
+						rs.getString("UserName"),
+						rs.getString("Password"),
+						rs.getString("Email"),
+						rs.getString("PhoneNumber"),
+						rs.getNString("Address"),
+						rs.getNString("Role"));
 			}
 		} catch (SQLException ex) {
 			Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -113,7 +114,7 @@ public class UserDAO {
 	 *
 	 * @param ID The ID of the user to be retrieved.
 	 * @return A {@code User} object containing the user's information.
-	 * {@code null} if an error occurs or the user is not found.
+	 *         {@code null} if an error occurs or the user is not found.
 	 */
 	public User getUser(int ID) {
 		ResultSet rs = null;
@@ -125,14 +126,14 @@ public class UserDAO {
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				return new User(
-								rs.getInt("ID"),
-								rs.getString("Name"),
-								rs.getString("UserName"),
-								rs.getString("Password"),
-								rs.getString("Email"),
-								rs.getString("PhoneNumber"),
-								rs.getString("Address"),
-								rs.getString("Role"));
+						rs.getInt("ID"),
+						rs.getString("Name"),
+						rs.getString("UserName"),
+						rs.getString("Password"),
+						rs.getString("Email"),
+						rs.getString("PhoneNumber"),
+						rs.getString("Address"),
+						rs.getString("Role"));
 			}
 		} catch (SQLException ex) {
 			Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -145,7 +146,7 @@ public class UserDAO {
 	 *
 	 * @param email The email of the user to be retrieved.
 	 * @return A {@code User} object containing the user's information.
-	 * {@code null} if an error occurs or the user is not found.
+	 *         {@code null} if an error occurs or the user is not found.
 	 */
 	public User getUserByEmail(String email) {
 		ResultSet rs = null;
@@ -157,14 +158,14 @@ public class UserDAO {
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				return new User(
-								rs.getInt("ID"),
-								rs.getString("Name"),
-								rs.getString("UserName"),
-								rs.getString("Password"),
-								rs.getString("Email"),
-								rs.getString("PhoneNumber"),
-								rs.getString("Address"),
-								rs.getString("Role"));
+						rs.getInt("ID"),
+						rs.getString("Name"),
+						rs.getString("UserName"),
+						rs.getString("Password"),
+						rs.getString("Email"),
+						rs.getString("PhoneNumber"),
+						rs.getString("Address"),
+						rs.getString("Role"));
 			}
 		} catch (SQLException ex) {
 			Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -174,13 +175,31 @@ public class UserDAO {
 	}
 
 	/* --------------------- UPDATE SECTION --------------------- */
- /*--------------------- DELETE SECTION ---------------------  */
+	public int checkout(Integer ClientID, Date Date, Integer Sum) {
+		if (ClientID == null || Date == null || Sum == null) {
+			return 0;
+		}
+		String sql = "INSERT INTO [Order](ClientID, [Date], [Sum]) VALUES (?, ?, ?)";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, ClientID);
+			ps.setDate(2, Date);
+			ps.setInt(3, Sum);
+			return ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+
+	/*--------------------- DELETE SECTION ---------------------  */
 	/**
 	 * Deletes a user from the database.
 	 *
 	 * @param us The user to be deleted.
 	 * @return The number of rows affected by the query. {@code 0} if user cannot
-	 * be deleted, or {@code username} doesn't exist.
+	 *         be deleted, or {@code username} doesn't exist.
 	 */
 	public int deleteUser(String username) {
 		if (username == null) {
@@ -201,7 +220,7 @@ public class UserDAO {
 
 	/*--------------------- VALIDATE SECTION ---------------------  */
 
- /*--------------------- AUTHORIZATION SECTION ---------------------  */
+	/*--------------------- AUTHORIZATION SECTION ---------------------  */
 	/**
 	 * Checks if a given username is an admin.
 	 *
@@ -252,26 +271,81 @@ public class UserDAO {
 		return false;
 	}
 
+	public boolean isExistUsername(String username) {
+
+		ResultSet rs = null;
+		String sql = "SELECT * FROM [User] WHERE UserName = ?";
+
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+
+			ps.setString(1, username);
+
+			rs = ps.executeQuery();
+
+			return rs.next();
+		} catch (SQLException ex) {
+			Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+		}
+
+		return false;
+	}
+
+	public boolean isExistPhone(String phone) {
+		ResultSet rs = null;
+		if (phone == null || phone.equals("")) {
+			return false;
+		}
+		String sql = "SELECT * FROM [User] WHERE PhoneNumber = ?";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setNString(1, phone);
+			rs = ps.executeQuery();
+			return rs.next();
+		} catch (SQLException ex) {
+			Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		return false;
+	}
+
+	public boolean isExistEmail(String email) {
+
+		ResultSet rs = null;
+		String sql = "SELECT * FROM [User] WHERE Email = ?";
+
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+
+			ps.setString(1, email);
+
+			rs = ps.executeQuery();
+
+			return rs.next();
+		} catch (SQLException ex) {
+			Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+		}
+
+		return false;
+	}
+
 	public boolean loginWithEmail(String email, String password) {
-		if (email == null || password == null) {
-			return false;
-		}
-		if (email.length() > 100) {
-			return false;
-		}
 
 		ResultSet rs = null;
 		String sql = "SELECT * FROM [User] WHERE Email = ? AND [Password] = ?";
 
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
+
 			ps.setString(1, email);
 			ps.setString(2, getMD5hash(password));
+
 			rs = ps.executeQuery();
+
 			return rs.next();
 		} catch (SQLException ex) {
 			Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
 		}
+
 		return false;
 	}
 
@@ -303,5 +377,30 @@ public class UserDAO {
 		}
 
 		return false;
+	}
+
+	public int updateUser(User updateUser) {
+		if (updateUser == null) {
+			return 0;
+		}
+		String sql = "UPDATE [User] SET Name=?, Username=?, Password=?, Email=?, PhoneNumber=?, Address=?, Role=?\n"
+				+ "WHERE ID = ?";
+		int kq = 0;
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setNString(1, updateUser.getName());
+			ps.setNString(2, updateUser.getUsername());
+			ps.setNString(3, updateUser.getPassword());
+			ps.setNString(4, updateUser.getEmail());
+			ps.setNString(5, updateUser.getPhoneNumber());
+			ps.setNString(6, updateUser.getAddress());
+			ps.setNString(7, updateUser.getRole());
+			ps.setInt(8, updateUser.getID());
+			return ps.executeUpdate();
+
+		} catch (SQLException ex) {
+			Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		return kq;
 	}
 }
