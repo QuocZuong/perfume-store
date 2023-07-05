@@ -146,9 +146,7 @@
                                     <span><%= pDAO.IntegerToMoney(Total)%><span>₫</span></span>
                                 </div>
                                 <div>
-                                    <a href onclick="window.location.href='/Client/Cart/Checkout'"="/Client/Checkout">
-                                        <button>TIẾN HÀNH THANH TOÁN</button>
-                                    </a>
+                                    <a href="/Client/Cart/Checkout" class="text-decoration-none"><button>TIẾN HÀNH THANH TOÁN</button></a>
                                 </div>
                             </div>
                             <div class="drop-down">

@@ -119,9 +119,11 @@
                 </div>
 
                 <div class="d-flex justify-content-start">
-                  <button type="submit" name="submitBtn" value="submitCheckout"
-                    class="btn rounded-0 mt-3 w-75">ĐẶT HÀNG</button>
+              
+                  <button type="button" name="submitBtn" value="submitCheckout"
+                    class="btn rounded-0 mt-3 w-75">  <a href="/Client/Checkout">ĐẶT HÀNG</a></button>
                 </div>
+                
               </form>
             </div>
           </div>
@@ -133,7 +135,7 @@
 
   <div class="row mt-5">
     <p>Cảm ơn bạn đã đặt hàng tại XXIV STORE. Để hoàn tất đặt hàng bạn vui lòng chuyển khoản
-      trước 100% giá trị đón hàng. Thông tin chuyển khoản sẽ hiện lên khi bạn hoàn tất việc đặt hàng.</p>
+      trước 100% giá trị đón hàng.<br/> Thông tin chuyển khoản sẽ hiện lên khi bạn hoàn tất việc đặt hàng.</p>
   </div>
 
   <div class="row">
