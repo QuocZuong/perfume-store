@@ -137,11 +137,14 @@ h1{
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-left: 150px;
-  width: 25%;
+  margin-left: 70px;
+  width: 20%;
   text-align: left;  
 }
 
+.main .left h1{
+    font-size: 2rem;
+}
 .main .left .list ul{
   font-size: 1.2rem;
   padding: 0;
@@ -150,7 +153,7 @@ h1{
 
 .main .left .list ul li{
   list-style-type: none;
-  
+  font-size: 1.5rem;
 }
 
 
@@ -159,6 +162,7 @@ h1{
   text-decoration: none;
   border-bottom: 1px solid transparent;
   transition: border-bottom 0.3s ease-in-out;
+  cursor: pointer;
 }
 
 
@@ -169,8 +173,9 @@ h1{
 }
 
 .main .right{
-  width: 65%;
+  width: 80%;
   margin-top: 100px;
+  max-width: 1500px;
 }
 
 .main .right strong{
@@ -178,10 +183,146 @@ h1{
   font-weight: 400;
 }
 
+.main .right p{
+    font-size: 1.2rem;
+}
+
 .main .right p a{
   text-decoration: none;
 }
 
+.main .right .order-page{
+    font-size: 1.2rem;
+    text-align: left;
+    display: none;
+}
+
+.main .right .order-page table thead tr th{
+    min-width: 125px;
+}
+
+.main .right .order-page table thead tr th:first-child{
+    min-width: 35px;
+}
+
+.main .right .order-page table tbody tr td{
+    word-break: break-word;
+}
+
+.main .right .order-page img{
+    width: 100px;
+    height: 100px;
+}
+
+.main .right .address-page{
+    text-align: left;
+    margin-left: 200px;
+    display: none;
+}
+
+.main .right .address-page .default{
+    width: 50%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.main .right .address-page .default a{
+    text-decoration: none;
+}
+.main .right .address-page .address p{
+    margin: 0;
+}
+
+.main .right .info-page{
+    display: none;
+}
+
+.main .right .info-page form{
+    width:700px;
+    text-align: left;
+}
+
+.main .right .info-page form button{
+    margin-top: 30px;
+    background-color: transparent;
+    padding: 5px 20px 3px 20px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    font-size: 1.3rem;
+}
+
+.main .right .info-page form button:hover{
+    border: 1px solid black;
+}
+
+.main .right .info-page input{
+    height: 40px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.main .right .info-page .fullname{
+    display: flex;
+    justify-content: space-between;
+}
+
+.main .right .info-page .fullname div{
+    display: flex;
+    flex-direction: column;
+}
+
+.main .right .info-page .fullname div input{
+    width: 320px;
+}
+
+.main .right .info-page .display-name{
+    margin: 20px 0;
+    text-align: left;
+    width: 100%;
+}
+
+.main .right .info-page .display-name input{
+    width:100%;
+}
+.main .right .info-page .email{
+    margin: 20px 0;
+    text-align: left;
+    width: 100%;
+}
+
+.main .right .info-page .email input{
+    width:100%;
+}
+
+.main .right .info-page fieldset{
+  border: 1px solid black;
+  padding: 10px;
+  text-align: left;
+}
+
+.main .right .info-page fieldset legend{
+}
+
+.main .right .info-page fieldset input{
+    width: 100%;
+    margin-top: 5px;
+}
+
+.main .right .info-page legend {
+  font-weight: bold;
+  margin-bottom: 10px;
+  /* Add more styles as desired */
+}
+
+
+
+.main .right .info-page{
+    
+}
+.main .right .info-page{
+    
+}
+.main .right .info-page{
+    
+}
 
 .register{
   text-align: center;
