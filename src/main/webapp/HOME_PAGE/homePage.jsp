@@ -292,8 +292,8 @@
                 <h1>Đăng ký thành viên để nhận khuyến mại</h1>
                 <p>Theo dõi chúng tôi để nhận thêm nhiều ưu đãi</p>
                 <form action="">
-                    <input type="text" name="" id="" placeholder="nhập email">
-                    <button>ĐĂNG KÝ</button>
+                    <input type="text" name="" id="" placeholder="nhập email" required="true">
+                    <button type="button">ĐĂNG KÝ</button>
                 </form>
             </div>
         </div>
