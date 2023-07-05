@@ -4,13 +4,17 @@
     Author     : Acer
 --%>
 
+<%@page import="DAOs.ProductDAO"%>
 <%@page import="DAOs.BrandDAO"%>
 <%@page import="Models.Product"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 
+
+<%! ProductDAO pDAO = new ProductDAO(); %>
+<%! BrandDAO bDao = new BrandDAO();%>
 <%
-    BrandDAO bDao = new BrandDAO();
+
     Product pd = (Product) request.getAttribute("product");
 
     int id = pd.getID();
@@ -73,7 +77,6 @@
 
 
 
-
             <div class="row">
                 <div class="col-md-12 main">
                     <div class="info">
@@ -83,7 +86,7 @@
                         <div class="right">
                             <p id="brandName"><%= brandName%></p>
                             <h1 id="productName"><%= name%></h1>
-                            <span id="productPrice"><%= price%><span>đ</span></span>
+                            <span id="productPrice"><%= pDAO.IntegerToMoney(price)%><span>đ</span></span>
                             <div>
                                 <img src="/RESOURCES/images/icons/sex.png" alt="">
                                 <span id="gender"><%= gender%></span>

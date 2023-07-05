@@ -1,3 +1,4 @@
+<%@page import="DAOs.CartDAO"%>
 <%@page import="DAOs.UserDAO"%>
 <%@page import="DAOs.ProductDAO"%>
 <%@page import="Models.Product"%>
@@ -11,12 +12,13 @@
 <%! List<Cart> listCart = null;%>
 <%! ProductDAO pDAO = new ProductDAO();%>
 <%! UserDAO uDao = new UserDAO();%>
+<%! CartDAO cDAO = new CartDAO(); %>
 <%! int Total;%>
 <%
     Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
     String username = userCookie.getValue();
     int ClientID = uDao.getUser(username).getID();
-    Total = 0;
+    Total = cDAO.getCartTotal(ClientID);
     listCart = (List<Cart>) request.getAttribute("listCart");
 %>
 
@@ -79,50 +81,49 @@
                                 <h1>Sản phẩm đã chọn</h1>
                                 <table>
 
-                                <c:choose>
-                                    <c:when test="<%= listCart.size() > 0%>">
-                                        <c:forEach var="i" begin="0" end="<%= listCart.size() - 1%>">
-                                            <%
-                                                Product p = pDAO.getProduct(listCart.get((int) pageContext.getAttribute("i")).getProductID());
-                                                int sum = listCart.get((int) pageContext.getAttribute("i")).getSum();
-                                                int CartQuan = listCart.get((int) pageContext.getAttribute("i")).getQuantity();
-                                                Total += sum;
-                                            %>
+                                    <c:choose>
+                                        <c:when test="<%= listCart.size() > 0%>">
+                                            <c:forEach var="i" begin="0" end="<%= listCart.size() - 1%>">
+                                                <%
+                                                    Product p = pDAO.getProduct(listCart.get((int) pageContext.getAttribute("i")).getProductID());
+                                                    int sum = listCart.get((int) pageContext.getAttribute("i")).getSum();
+                                                    int CartQuan = listCart.get((int) pageContext.getAttribute("i")).getQuantity();
+                                                %>
+                                                <tr>
+                                                    <td>
+                                                        <a href="/Product/Detail/ID/<%= p.getID()%>">
+                                                            <img src="<%= p.getImgURL()%>"alt=""/>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <a href="/Product/Detail/ID/<%= p.getID()%>">
+                                                            <%= p.getName()%> - <%= p.getVolume()%>ml
+                                                        </a>
+                                                        <span><%= pDAO.IntegerToMoney(p.getPrice())%> <span>₫</span></span>
+                                                        <span>Total: <%= pDAO.IntegerToMoney(sum)%> <span>₫</span></span>
+                                                    </td>
+                                                    <td>
+
+                                                        <input type="hidden" name="<%= "ProductID" + pageContext.getAttribute("i")%>" value="<%= p.getID()%>" />
+                                                        <span class="ProductMaxQuantity" > <%= p.getQuantity()%> </span>     <input type="number" name="<%= "ProductQuan" + pageContext.getAttribute("i")%>" value="<%= CartQuan%>" /> 
+
+                                                        <a href="/Client/Cart/Delete/ProductID/<%= p.getID()%>/ClientID/<%= ClientID%>">
+                                                            <img src="/RESOURCES/images/icons/close.png" alt="" />
+                                                        </a>
+
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
                                             <tr>
-                                                <td>
-                                                    <a href="/Product/Detail/ID/<%= p.getID()%>">
-                                                        <img src="<%= p.getImgURL()%>"alt=""/>
-                                                    </a>
-                                                </td>
-                                                <td>
-                                                    <a href="/Product/Detail/ID/<%= p.getID()%>">
-                                                        <%= p.getName()%> - <%= p.getVolume()%>ml
-                                                    </a>
-                                                    <span><%= pDAO.IntegerToMoney(p.getPrice())%> <span>₫</span></span>
-                                                    <span>Total: <%= pDAO.IntegerToMoney(sum)%> <span>₫</span></span>
-                                                </td>
-                                                <td>
-
-                                                    <input type="hidden" name="<%= "ProductID" + pageContext.getAttribute("i")%>" value="<%= p.getID()%>" />
-                                                    <span class="ProductMaxQuantity" > <%= p.getQuantity()%> </span>     <input type="number" name="<%= "ProductQuan" + pageContext.getAttribute("i")%>" value="<%= CartQuan%>" /> 
-
-                                                    <a href="/Client/Cart/Delete/ProductID/<%= p.getID()%>/ClientID/<%= ClientID%>">
-                                                        <img src="/RESOURCES/images/icons/close.png" alt="" />
-                                                    </a>
-
+                                                <td colspan="3">
+                                                    <h3>Không có sản phẩm nào trong giỏ hàng</h3>
                                                 </td>
                                             </tr>
-                                        </c:forEach>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <tr>
-                                            <td colspan="3">
-                                                <h3>Không có sản phẩm nào trong giỏ hàng</h3>
-                                            </td>
-                                        </tr>
-                                    </c:otherwise>
-                                </c:choose>
-                                
+                                        </c:otherwise>
+                                    </c:choose>
+
                                 </table>
                                 <input type="hidden" name="ListSize" value="<%= listCart.size()%>" />
                                 <div>
@@ -145,7 +146,9 @@
                                     <span><%= pDAO.IntegerToMoney(Total)%><span>₫</span></span>
                                 </div>
                                 <div>
-                                    <button>TIẾN HÀNH THANH TOÁN</button>
+                                    <a href onclick="window.location.href='/Client/Cart/Checkout'"="/Client/Checkout">
+                                        <button>TIẾN HÀNH THANH TOÁN</button>
+                                    </a>
                                 </div>
                             </div>
                             <div class="drop-down">

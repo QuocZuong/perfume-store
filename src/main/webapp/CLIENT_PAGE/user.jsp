@@ -1,5 +1,6 @@
 <%-- Document : newjsp Created on : Jul 5, 2023, 3:27:56 PM Author : Acer --%>
 
+<%@page import="DAOs.ProductDAO"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="Models.Order"%>
@@ -8,8 +9,9 @@
 <%@page import="Models.User"%>
 <%@page import="DAOs.UserDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%! ProductDAO pDAO = new ProductDAO();  %>
 <%! UserDAO usDAO = new UserDAO();%>
-<%!String fullname, username, email;%>
+<%!String fullname, username, email, Tinh = "", QuanHuyen = "", PhuongXa = "";%>
 <%
     Cookie currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
     User user = usDAO.getUser(currentUserCookie.getValue());
@@ -19,6 +21,12 @@
     OrderDAO od = new OrderDAO();
     List<Order> orders = od.getOrderByClientId(user.getID());
 
+    if (user.getAddress() != null && user.getAddress().split(" - ").length == 3) {
+        String Address[] = user.getAddress().split(" - ");
+        Tinh = Address[0];
+        QuanHuyen = Address[1];
+        PhuongXa = Address[2];
+    }
 %>
 
 <!DOCTYPE html>
@@ -47,10 +55,15 @@
 
 
         <div class="container-fluid">
+            <h1><%= user.getID()%></h1>
             <h1><%= user.getName()%></h1>
             <h1><%= user.getUsername()%></h1>
             <h1><%= user.getEmail()%></h1>
             <h1><%= user.getPassword()%></h1>
+            <h1>|<%= Tinh%>|</h1>
+            <h1>|<%= QuanHuyen%>|</h1>
+            <h1>|<%= PhuongXa%>|</h1>
+
             <div class="row">
                 <div class="col-md-12 nav">
                     <ul>
@@ -96,50 +109,76 @@
                         </p>
                     </div>
                     <div class="order-page">
-                        <p>Bạn chưa có đơn hàng nào</p>
-                        <table class="table">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Ngày mua hàng</th>
-                                    <th scope="col">Tổng tiền</th>
-                                    <th scope="col"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                        <c:choose>
+                            <c:when test="<%=orders.size() == 0%>">
+                                <p>Bạn chưa có đơn hàng nào</p>
+                            </c:when>
 
-                                <tr>
-
-                                    <c:if test="<%=orders.size() != 0%>">
-                                        <c:forEach var="i" begin="0" end="<%=orders.size() - 1%>">
-                                            <th scope="row"><%=orders.get((int) pageContext.getAttribute("i")).getID()%></th>
-                                            <td>
-                                                <%=orders.get((int) pageContext.getAttribute("i")).getDate()%>
-                                            </td>
-                                            <td>
-                                                <%=orders.get((int) pageContext.getAttribute("i")).getSum()%>
-                                            </td>
-                                            <td><a href="/Client/Order/Detail/ID/<%=orders.get((int) pageContext.getAttribute("i")).getID()%>" target="_blank">Xem chi tiết</a></td>
-                                        </c:forEach>
-                                    </c:if>
-
-
-                                </tr>
-                            </tbody>
-                        </table>
+                            <c:otherwise>
+                                <table class="table">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Ngày mua hàng</th>
+                                            <th scope="col">Tổng tiền</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <c:if test="<%=orders.size() != 0%>">
+                                                <c:forEach var="i" begin="0" end="<%=orders.size() - 1%>">
+                                                <tr>
+                                                    <th scope="row"><%=orders.get((int) pageContext.getAttribute("i")).getID()%></th>
+                                                    <td><%=orders.get((int) pageContext.getAttribute("i")).getDate()%></td>
+                                                    <td><%=pDAO.IntegerToMoney(orders.get((int) pageContext.getAttribute("i")).getSum())%></td>
+                                                    <td><a href="/Client/Order/Detail/ID/<%=orders.get((int) pageContext.getAttribute("i")).getID()%>" target="_blank">Xem chi tiết</a></td>
+                                                </tr>
+                                            </c:forEach>
+                                        </c:if>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                     <div class="address-page">
                         <p>Các địa chỉ bên dưới mặc định sẽ được sử dụng ở trang thanh toán sản phẩm.</p>
                         <div class="default">
-                            <h3>Địa chỉ giao hàng mặc định</h3><a href="">
-                                <h4>Sửa</h4>
-                            </a>
+
+
+                            <!--                       Add new Form. Maybe Change later-->
+                            <form action="/Client/Update/Address" method="POST">
+                                <h3>Địa chỉ giao hàng mặc định</h3>
+
+                                <div>
+                                    <select id="city">
+                                        <option value="" selected>Chọn tỉnh thành</option>           
+                                    </select>
+
+                                    <select id="district">
+                                        <option value="" selected>Chọn quận huyện</option>
+                                    </select>
+
+                                    <select id="ward">
+                                        <option value="" selected>Chọn phường xã</option>
+                                    </select>
+                                </div>
+                                <div> <input style="width:100%" type="text" name="txtPhoneNumber" id="txtPhoneNumber" value="<%= user.getPhoneNumber()%>"> </div>
+                                <input  type="hidden" name="txtAddress" id="txtAddress" value="" >
+                                <button type="submit" name="btnUpdateAdress" value="Submit"> <h4>Sửa</h4> </button>
+                            </form>
+                            <!--                       Add new Form. Maybe Change later-->
+
+
                         </div>
+
+
+
                         <div class="address">
-                            <p>Quốc Vương</p>
-                            <p>0326344241</p>
-                            <p>Đầu đường Phạm Thị Ban, cầu Giáo Dẫn 91b Phường Thới An Đông, Quận Bình Thủy, Cần Thơ
-                            </p>
+                            <p><%= user.getName()%></p>
+                            <p><%= user.getPhoneNumber()%></p>
+                            <p><%= user.getAddress()%></p>
                         </div>
                     </div>
                     <div class="info-page">
@@ -241,7 +280,87 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
                 integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+
         <script src="/RESOURCES/user/public/js/main.js"></script>
+        <script >
+            const host = "https://provinces.open-api.vn/api/";
+            let City = '<%= Tinh%>';
+            let District = '<%= QuanHuyen%>';
+            let Ward = '<%= PhuongXa%>';
+
+            var callAPI = (api) => {
+                return axios.get(api)
+                        .then((response) => {
+                            renderData(response.data, "city");
+                            if (City !== "")
+                            {
+                                $(`select option[value='` + City + `']`).prop("selected", true);
+                                callApiDistrict(host + "p/" + $("#city").find(':selected').data('id') + "?depth=2");
+                            }
+                        });
+            };
+
+            callAPI('https://provinces.open-api.vn/api/?depth=1');
+            var callApiDistrict = (api) => {
+                return axios.get(api)
+                        .then((response) => {
+                            renderData(response.data.districts, "district");
+                            if (District !== "")
+                            {
+                                $(`select option[value='` + District + `']`).prop("selected", true);
+                                callApiWard(host + "d/" + $("#district").find(':selected').data('id') + "?depth=2");
+                            }
+                        });
+            };
+            var callApiWard = (api) => {
+                return axios.get(api)
+                        .then((response) => {
+                            renderData(response.data.wards, "ward");
+                            if (Ward !== "")
+                            {
+                                $(`select option[value='` + Ward + `']`).prop("selected", true);
+                            }
+                        });
+            };
+
+            var renderData = (array, select) => {
+                let row = ' <option disable value="">Chọn</option>';
+                array.forEach((e) => {
+                    let code = e.code;
+                    let name = e.name;
+                    row += `<option data-id="` + code + `" value="` + name + `">` + name + `</option>`;
+                });
+                document.querySelector("#" + select).innerHTML = row;
+            };
+
+            $("#city").change(() => {
+                callApiDistrict(host + "p/" + $("#city").find(':selected').data('id') + "?depth=2");
+                callApiWard(host + "d/" + $("#district").find(':selected').data('id') + "?depth=2");
+                printResult();
+            });
+            $("#district").change(() => {
+                callApiWard(host + "d/" + $("#district").find(':selected').data('id') + "?depth=2");
+                printResult();
+            });
+            $("#ward").change(() => {
+                printResult();
+            })
+
+            var printResult = () => {
+                if ($("#district").find(':selected').data('id') != "" && $("#city").find(':selected').data('id') != "" &&
+                        $("#ward").find(':selected').data('id') != "") {
+                    let result = $("#city option:selected").text() +
+                            " - " + $("#district option:selected").text() + " - " +
+                            $("#ward option:selected").text();
+                    $("#result").text(result);
+                    $("#txtAddress").val(result);
+                }
+
+            };
+        </script>
     </body>
 
 </html>

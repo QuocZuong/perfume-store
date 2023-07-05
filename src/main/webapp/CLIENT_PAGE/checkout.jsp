@@ -1,0 +1,204 @@
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
+<%@page import="Models.User"%>
+<%@page import="DAOs.UserDAO"%>
+
+<%! UserDAO usDAO = new UserDAO();%>
+
+<%
+    Cookie currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
+    User user = usDAO.getUser(currentUserCookie.getValue());
+    String fullname = user.getName();
+    String username = user.getUsername();
+    String email = user.getEmail();
+    String phone = user.getPhoneNumber();
+    String address = user.getAddress();
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond&family=Josefin+Sans:wght@200&family=Josefin+Slab&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/RESOURCES/checkout/public/style/style.css" />
+  <link rel="icon" href="/RESOURCES/images/icons/icon.webp" />
+  <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css" rel="stylesheet"
+    type="text/css" />
+  <title>Checkout</title>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12 nav">
+        <ul>
+          <li><a href="/">trang chủ</a></li>
+          <li> <a href="/home/introduction">giới thiệu</a></li>
+          <li><a href="/home/brand">thương hiệu</a></li>
+          <!-- This link to shop servlet file. DO NOT MODIFY the link -->
+          <li><a href="/Product/List">sản phẩm</a></li>
+          <li><a href="">blog</a></li>
+        </ul>
+        <a href="/"><img src="/RESOURCES/images/icons/icon.webp" alt="" height="64"></a>
+        <div class="account">
+          <a><img src="/RESOURCES/images/icons/search.png" alt=""></a>
+          <a href="/Log/Login"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+          <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="main">
+        <div class="box">
+
+          <div class="left">
+
+            <h1>Checkout</h1>
+
+            <form action="" method="GET">
+              <div class="mb-2">
+                <span class="me-3">Mua để làm quà</span>
+                <label><input type="radio" name="rdoBuyForGift" value="no" class="form-check-input" checked="">
+                  no</label>
+                <label><input type="radio" name="rdoBuyForGift" value="yes" class="form-check-input ms-3"> yes</label>
+              </div>
+
+              <div class="hidden">
+                <textarea name="txtMessage" cols="130" rows="2" class="border-1" placeholder="lời nhắn"></textarea>
+              </div>
+
+              <hr>
+
+              <div class="d-flex flex-row">
+                <div class="d-flex flex-column col-5">
+                  <label><input type="radio" name="rdoCustomAddress" value="no" class="form-check-input" checked=""> Sử
+                    dụng địa chỉ mặc định</label>
+                  <label><input type="radio" name="rdoCustomAddress" value="yes" class="form-check-input"> Địa chỉ giao
+                    hàng khác</label>
+                </div>
+
+                <div class="d-flex flex-column ms-5">
+                  <label for="txtNote" class="d-block w-100">Ghi chú đơn hàng (tuỳ chọn)</label>
+                  <textarea name="txtNote" cols="60" rows="2" class="border-1"
+                    placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn."></textarea>
+                </div>
+              </div>
+
+            </form>
+          </div>
+
+          <div class="right">
+            <div class="checkout">
+              <form>
+                <h2 class="text-start mb-0">Thông tin thanh toán</h2>
+
+                <div class="d-flex flex-column flex-wrap w-75">
+                  <input type="text" name="txtUsername" value="<%= username%>">
+                  <input type="text" name="txtEmail" value="<%= email%>">
+                  <input type="text" name="txtPhone" value="<%= phone%>">
+                  <input type="text" name="txtAddress" value="<%= address%>">
+                </div>
+
+                <h2 class="text-start mt-2 mb-0 mt-5 hidden" id="header-address">giao đến địa chỉ</h2>
+
+                <div class="d-flex flex-column flex-wrap w-75">
+                  <input type="text" name="txtNewAddress" class="hidden" value="<%= address%>">
+                  <input type="text" name="txtNewEmail" class="hidden" value="<%= email%>">
+                  <input type="text" name="txtNewPhone" class="hidden" value="<%= phone%>">
+                </div>
+
+                <div class="d-flex justify-content-start">
+                  <button type="submit" name="submitBtn" value="submitCheckout"
+                    class="btn rounded-0 mt-3 w-75">ĐẶT HÀNG</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-5">
+    <p>Cảm ơn bạn đã đặt hàng tại XXIV STORE. Để hoàn tất đặt hàng bạn vui lòng chuyển khoản
+      trước 100% giá trị đón hàng. Thông tin chuyển khoản sẽ hiện lên khi bạn hoàn tất việc đặt hàng.</p>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 register">
+      <h1>Đăng ký thành viên để nhận khuyến mại</h1>
+      <p>Theo dõi chúng tôi để nhận thêm nhiều ưu đãi</p>
+      <form action="">
+        <input type="text" name="" id="" placeholder="nhập email" />
+        <button>ĐĂNG KÝ</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 social">
+      <a href=""><img src="/RESOURCES/images/icons/instagram.png" alt="" /></a>
+      <a href=""><img src="/RESOURCES/images/icons/facebook.png" alt="" /></a>
+      <a href=""><img src="/RESOURCES/images/icons/youtube.png" alt="" /></a>
+      <a href=""><img src="/RESOURCES/images/icons/location-pin.png" alt="" /></a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 footer">
+      <div>
+        <h2>xxiv store</h2>
+        <ul>
+          <li><a href="">ưu đãi thành viên</a></li>
+          <li><a href="">tài khoản</a></li>
+          <li><a href="">tuyển dụng</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>chính sách bán hàng</h2>
+        <ul>
+          <li><a href="">phương thức vận chuyển</a></li>
+          <li><a href="">câu hỏi thường gặp</a></li>
+          <li><a href="">điều khoản và điện kiện sử dụng</a></li>
+          <li><a href="">điều khoản và điều kiện bán hàng</a></li>
+          <li><a href="">thông báo pháp lý</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>thông tin chung</h2>
+        <ul>
+          <li><a href="">giới thiệu</a></li>
+          <li><a href="">blog</a></li>
+          <li><a href="">liên hệ</a></li>
+          <li><a href="">sản phẩm</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 copyright">
+      <p>&copy; xxiv 2023 | all right reserved</p>
+    </div>
+  </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+    crossorigin="anonymous"></script>
+  <script src="/RESOURCES/checkout/public/js/main.js"></script>
+</body>
+
+</html>

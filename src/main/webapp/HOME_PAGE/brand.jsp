@@ -67,7 +67,8 @@
 
                 <div class="box-brand" id="boxBrand">
                     <c:forEach var="i" begin="65" end="90">
-                        <%char c = (char) ((Integer) (pageContext.getAttribute("i"))).intValue();
+                        <%
+                            char c = (char) ((Integer) (pageContext.getAttribute("i"))).intValue();
                             ResultSet rs = bDAO.getBrandNameByAlphabet(c);
                             boolean hasRow = rs.isBeforeFirst();
                             pageContext.setAttribute("hasRow", hasRow);

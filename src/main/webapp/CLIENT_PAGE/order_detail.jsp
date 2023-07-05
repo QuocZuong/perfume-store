@@ -1,16 +1,27 @@
 <%-- Document : newjsp Created on : Jul 5, 2023, 3:27:56 PM Author : Acer --%>
 
+<%@page import="DAOs.BrandDAO"%>
+<%@page import="java.sql.ResultSet"%>
+<%@page import="java.util.List"%>
+<%@page import="DAOs.ProductDAO"%>
+<%@page import="Models.Order"%>
 <%@page import="Models.User"%>
 <%@page import="DAOs.UserDAO"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib  uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%! UserDAO usDAO = new UserDAO();%>
 <%!String fullname, username, email;%>
+<%! List<String[]> order;%>
+
 <%
     Cookie currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
     User user = usDAO.getUser(currentUserCookie.getValue());
     fullname = user.getName();
     username = user.getUsername();
     email = user.getEmail();
+    ProductDAO pDAO = new ProductDAO();
+    order = (List<String[]>) (request.getAttribute("OrderDetail"));
 %>
 
 <!DOCTYPE html>
@@ -43,6 +54,7 @@
             <h1><%= user.getUsername()%></h1>
             <h1><%= user.getEmail()%></h1>
             <h1><%= user.getPassword()%></h1>
+            <h1> Order size la <%= order.size()%> </h1>
             <div class="row">
                 <div class="col-md-12 nav">
                     <ul>
@@ -77,18 +89,7 @@
                     </div>
                 </div>
                 <div class="right">
-                    <div class="account-page">
-                        <p>Xin chào <b><strong>quocvuongle.ct</strong></b> (không phải tài khoản
-                            <b><strong>quocvuongle.ct</strong></b>? Hãy <a href="">thoát ra</a> và đăng nhập vào tài
-                            khoản của bạn)</p>
-                        <p>
-                            Từ trang quản lý tài khoản bạn có thể xem <a href="">đơn hàng mới</a>, quản lý <a
-                                href="">địa chỉ giao hàng và thanh toán</a>, và <a href="">sửa mật khẩu và thông tin
-                                tài khoản</a>.
-                        </p>
-                    </div>
                     <div class="order-page">
-                        <p>Bạn chưa có đơn hàng nào</p>
                         <table class="table">
                             <thead class="thead-dark">
                                 <tr>
@@ -102,65 +103,24 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                
-                                <tr>
-                                    <th scope="row">3</th>
-                                    <td>Baccarat Rouge 540 EDP</td>
-                                    <td><img src="/RESOURCES/images/products/baccarat540-600x600.png"></td>
-                                    <td>10000</td>
-                                    <td>6.300.000</td>
-                                    <td>Đầu đường Phạm Thị Ban, cầu Giáo Dẫn 91b Phường Thới An Đông, Quận Bình
-                                        Thủy, Cần Thơ</td>
-                                    <td>63.000.000.000</td>
-                                </tr>
+
+                                <c:if test="<%=  order.size() > 0%>">
+                                    <c:forEach var="i" begin="0" end="<%= order.size() - 1%>">
+                                        <tr>
+                                            <th scope="row"><%=(int) pageContext.getAttribute("i") + 1%></th>
+                                            <td><%= order.get((int) pageContext.getAttribute("i"))[0]%></td>
+                                            <td><img src="<%=order.get((int) pageContext.getAttribute("i"))[1]%>"></td>
+                                            <td><%=order.get((int) pageContext.getAttribute("i"))[2]%></td>
+                                            <td><%=  pDAO.IntegerToMoney(Integer.parseInt(order.get((int) pageContext.getAttribute("i"))[3]))%></td>
+                                            <td><%=order.get((int) pageContext.getAttribute("i"))[4]%></td>
+                                            <td><%=  pDAO.IntegerToMoney(Integer.parseInt(order.get((int) pageContext.getAttribute("i"))[5]))%></td>
+                                        </tr>
+                                    </c:forEach> 
+                                </c:if>
                             </tbody>
                         </table>
                     </div>
-                    <div class="address-page">
-                        <p>Các địa chỉ bên dưới mặc định sẽ được sử dụng ở trang thanh toán sản phẩm.</p>
-                        <div class="default">
-                            <h3>Địa chỉ giao hàng mặc định</h3><a href="">
-                                <h4>Sửa</h4>
-                            </a>
-                        </div>
-                        <div class="address">
-                            <p>Quốc Vương</p>
-                            <p>0326344241</p>
-                            <p>Đầu đường Phạm Thị Ban, cầu Giáo Dẫn 91b Phường Thới An Đông, Quận Bình Thủy, Cần Thơ
-                            </p>
-                        </div>
-                    </div>
-                    <div class="info-page">
-                        <form action="/Client/Update/Info" method="POST">
-                            <div class="fullname">
-                                <div>
-                                    <label>
-                                        Họ & Tên *
-                                    </label>
-                                    <input type="text" value="<%= (fullname == null ? "" : fullname)%>" name="txtFullname">
-                                </div>
-                            </div>
-                            <div class="display-name">
-                                <label>Tên hiển thị *</label>
-                                <input type="text" value="<%= (username == null ? "" : username)%>" name="txtUserName">
-                            </div>
-                            <div class="email">
-                                <label>Địa chỉ email *</label>
-                                <input type="text" value="<%= (email == null ? "" : email)%>" name="txtEmail">
-                            </div>
-                            <fieldset>
-                                <legend>Thay đổi mật khẩu</legend>
-                                <label for="pwdCurrent">Mật khẩu hiện tại (bỏ trống nếu không đổi)</label><br>
-                                <input type="password" id="pwdCurrent" name="pwdCurrent"><br><br>
-                                <label for="pwdNew">Mật khẩu mới (bỏ trống nếu không đổi)</label><br>
-                                <input type="password" id="pwdNew" name="pwdNew"><br><br>
-                                <label for="pwdConfirmNew">Xác nhận mật khẩu mới</label><br>
-                                <input type="password" id="pwdConfirmNew" name="pwdConfirmNew"><br><br>
-                            </fieldset>
-                            <button type="submit" name="btnUpdateInfo" value="Submit">Lưu thay đổi</button>
-                        </form>
 
-                    </div>
                 </div>
             </div>
 
@@ -229,7 +189,6 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
                 integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>
-        <script src="/RESOURCES/user/public/js/main.js"></script>
     </body>
 
 </html>

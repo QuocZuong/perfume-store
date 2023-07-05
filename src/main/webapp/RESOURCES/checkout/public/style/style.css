@@ -1,29 +1,9 @@
-html {
-  scroll-behavior: smooth;
-}
-
 body {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
   font-family: "Josefin Sans", sans-serif;
   text-align: center;
-}
-
-body::-webkit-scrollbar {
-  width: 10px;
-}
-
-body::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-body::-webkit-scrollbar-thumb {
-  background: #888;
-}
-
-body::-webkit-scrollbar-thumb:hover {
-  background: #555;
 }
 
 .container {
@@ -67,7 +47,6 @@ h1 {
   padding: 10px 30px 5px 30px;
   font-size: 1.1rem;
 }
-
 
 .nav {
   display: flex;
@@ -116,7 +95,6 @@ h1 {
   display: flex;
   align-items: center;
   padding-right: 2rem;
-
 }
 
 .nav .account a {
@@ -128,205 +106,207 @@ h1 {
 }
 
 .main {
-  display: flex;
   margin-top: 100px;
-
-
+  display: flex;
+  justify-content: center;
 }
 
-.main .left {
+.box {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  width: 90%;
+}
+
+.box .right {
+  width: 35%;
+}
+
+.box .left {
+  text-align: left;
+  margin-right: 50px;
+  width: 65%;
+}
+
+.box .left img {
+  width: 200px;
+}
+
+.box .left table {
+  width: 100%;
+}
+
+.box .left table tr {
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.box .left table tr td {
+  width: max-content;
+  height: 200px;
+  margin: 20px 10px;
+}
+
+.box .left table tr td:nth-child(2) {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  margin-left: 70px;
-  width: 20%;
-  text-align: left;
-}
-
-.main .left h1 {
-  font-size: 2rem;
-}
-
-.main .left .list ul {
-  font-size: 1.2rem;
-  padding: 0;
-  margin-top: 40px;
-}
-
-.main .left .list ul li {
-  list-style-type: none;
-  font-size: 1.5rem;
-}
-
-
-.main .left .list ul li a {
-  color: black;
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  transition: border-bottom 0.3s ease-in-out;
-  cursor: pointer;
-}
-
-
-.main .left .list ul li a:hover {
-  border-bottom: 1px solid black;
-  transition: border-bottom 0.3s ease-in-out;
-  font-weight: bold;
-}
-
-.main .right {
-  width: 80%;
-  margin-top: 100px;
-  max-width: 1500px;
-}
-
-.main .right strong {
-  font-family: sans-serif;
+  justify-content: center;
+  align-items: center;
+  width: 400px;
   font-weight: 400;
+  font-family: sans-serif;
 }
 
-.main .right p {
-  font-size: 1.2rem;
-}
-
-.main .right p a {
+.box .left table tr td:nth-child(2) a {
+  margin-bottom: 20px;
   text-decoration: none;
+  color: black;
+  font-size: 25px;
 }
 
-.main .right .order-page {
-  font-size: 1.2rem;
-  text-align: left;
+.box span {
+  font-size: 20px;
 }
 
-.main .right .order-page table thead tr th {
-  min-width: 125px;
+.box .left table tr td:nth-child(3) {
+  text-align: right;
+  max-width: 100px;
 }
 
-.main .right .order-page table thead tr th:first-child {
-  min-width: 35px;
+.box .left table tr td:nth-child(3) input {
+  padding: 10px 0 10px 15px;
+  width: 100%;
+  margin-bottom: 15px;
 }
 
-.main .right .order-page table tbody tr td {
-  word-break: break-word;
-}
-
-.main .right .order-page img {
-  width: 100px;
-  height: 100px;
-}
-
-.main .right .address-page {
-  text-align: left;
-  margin-left: 200px;
-  display: none;
-}
-
-.main .right .address-page .default {
-  width: 50%;
-  display: flex;
-  justify-content: space-between;
-}
-
-.main .right .address-page .default a {
-  text-decoration: none;
-}
-
-.main .right .address-page .address p {
-  margin: 0;
-}
-
-.main .right .info-page {
-  display: none;
-}
-
-.main .right .info-page form {
-  width: 700px;
-  text-align: left;
-}
-
-.main .right .info-page form button {
-  margin-top: 30px;
+.box .left table tr td:nth-child(3) a {
   background-color: transparent;
-  padding: 5px 20px 3px 20px;
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  font-size: 1.3rem;
+  outline: none;
+  border: none;
 }
 
-.main .right .info-page form button:hover {
-  border: 1px solid black;
+.box .left table tr td:nth-child(3) a img {
+  height: 10px;
+  width: 10px;
 }
 
-.main .right .info-page input {
+.box .left table tr td.empty-cart {
+  background-color: rgb(248, 248, 248);
+  height: 38px;
+}
+
+.box .left form div:has(button) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+  padding-left: 45px;
+}
+
+.box .left form button[type="submit"] {
+  background-color: rgb(255, 255, 255);
+  width: 200px;
+  height: 120px;
+  border: solid 1px rgb(229, 229, 229);
+}
+
+.box .left form button[type="submit"]:not(.disabled-btn):hover {
+  border-color: black;
+}
+
+.box .left form button[type="submit"] * {
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.hidden {
+  display: none;
+}
+
+.box .left textarea {
+  border-color: rgb(229, 229, 229);
+  outline: none;
+  transition: border-color 0.3s ease;
+  padding-left: 5px;
+}
+
+.box .left textarea::placeholder {
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
+
+.box .left textarea:focus::placeholder {
+  opacity: 0;
+}
+
+.box .left input[type="radio"] {
+  box-shadow: none !important;
+}
+
+.box .left input[type="radio"]:checked {
+  background-color: black;
+  border: none;
+}
+
+.btn-disabled {
+  cursor: not-allowed !important;
+}
+
+.box .left form button.btn-disabled span {
+  font-weight: normal;
+  opacity: 0.7;
+}
+
+.box .right .checkout form input[type="text"] {
+  border-width: 0 0 1px 0;
+  border-color: rgb(204, 204, 204);
+  outline: none;
+  transition: border-color 0.5s ease;
   height: 40px;
-  border: 1px solid rgba(0, 0, 0, 0.3);
 }
 
-.main .right .info-page .fullname {
+.box .right .checkout form input[type="text"]:focus, .box .left textarea:focus {
+  border-color: rgb(30, 135, 240);
+}
+
+
+.box .right .checkout h2 {
+  margin-bottom: 50px;
+}
+
+
+.box .right .checkout div {
   display: flex;
   justify-content: space-between;
+  font-family: sans-serif;
+  color: rgb(102, 102, 102);
 }
 
-.main .right .info-page .fullname div {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
+.box .right .checkout div:nth-child(2) span {
+  font-family: "Josefin Sans", sans-serif;
 }
 
-.main .right .info-page .fullname div input {
-  width: 100%;
+.box .right .checkout div h4 {
+  width: min-content;
 }
 
-.main .right .info-page .display-name {
-  margin: 20px 0;
-  text-align: left;
-  width: 100%;
+.box .right .checkout div:nth-child(5) button {
+  background-color: black;
+  color: white;
+  margin-top: 20px;
+  padding: 10px 20px;
 }
 
-.main .right .info-page .display-name input {
-  width: 100%;
+.box .right .checkout form div input {
+  border: 0px 0px 0px 1;
+  text-indent: 10px;
 }
 
-.main .right .info-page .email {
-  margin: 20px 0;
-  text-align: left;
-  width: 100%;
+.box .right .checkout form button[type="submit"]:hover {
+  background-color: white;
+  color: black;
+  border-color: black;
 }
-
-.main .right .info-page .email input {
-  width: 100%;
-}
-
-.main .right .info-page fieldset {
-  border: 1px solid black;
-  padding: 10px;
-  text-align: left;
-}
-
-.main .right .info-page fieldset legend {
-  font-weight: bold;
-  margin-bottom: 10px;
-  float: none;
-  width: 190px;
-}
-
-.main .right .info-page fieldset input {
-  width: 100%;
-  margin-top: 5px;
-}
-
-.main .right .info-page legend {
-  font-weight: bold;
-  margin-bottom: 10px;
-  /* Add more styles as desired */
-}
-
-
-
-.main .right .info-page {}
-
-.main .right .info-page {}
-
-.main .right .info-page {}
 
 .register {
   text-align: center;
@@ -405,13 +385,11 @@ h1 {
 
 .footer ul {
   padding: 0;
-
 }
 
 .footer h2 {
   color: #fff;
   font-size: 3vw;
-
 }
 
 .footer li {

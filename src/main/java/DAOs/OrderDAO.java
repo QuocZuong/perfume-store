@@ -1,7 +1,9 @@
 package DAOs;
 
 import Models.Order;
+import Models.OrderDetail;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,10 +38,10 @@ public class OrderDAO {
         }
         return orders;
     }
-    
+
     public List<Order> getOrderByClientId(int id) {
         List<Order> orders = new ArrayList<>();
-        String sql = "SELECT * FROM [Order] where ID = ?";
+        String sql = "SELECT * FROM [Order] where ClientID = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
@@ -83,4 +85,73 @@ public class OrderDAO {
         }
         return 0;
     }
+
+    public List<String[]> getOrderDetailByOrderID(int OrderID) {
+        List<String[]> orders = new ArrayList<>();
+        String sql = "SELECT Product.[Name] as ProductName, Product.ImgURL as ProductImgURL, OrderDetail.Quantity as Quantity, OrderDetail.Price as Price, [User].[Address] as ClientAddress, OrderDetail.[Sum] as Total \n"
+                + "FROM Product, [Order], OrderDetail, [User] \n" +
+                "WHERE \n" +
+                "\t[Order].ID = ? AND \r\n" +
+                "\t[Order].ClientID = [User].ID AND \n" +
+                "\tProduct.ID = OrderDetail.ProductID AND \n" +
+                "\t[Order].ID = OrderDetail.OrderID";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, OrderID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String cell[] = new String[6];
+                cell[0] = rs.getNString("ProductName");
+                cell[1] = rs.getNString("ProductImgURL");
+                cell[2] = rs.getInt("Quantity") + ""; // Int
+                cell[3] = rs.getInt("Price") + ""; // Int
+                cell[4] = rs.getNString("ClientAddress");
+                cell[5] = rs.getInt("Total") + ""; // Int
+                orders.add(cell);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return orders;
+    }
+
+    public Order getOrderByOrderId(int id) {
+        String sql = "SELECT * FROM [Order] where ID = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int OrderID = rs.getInt("ID");
+                int ClientID = rs.getInt("ClientID");
+                Date Date = rs.getDate("Date");
+                int Sum = rs.getInt("Sum");
+                return new Order(OrderID, ClientID, Date, Sum);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public OrderDetail getOrderByOrderDetailId(int id) {
+        String sql = "SELECT * FROM [OrderDetail] where OrderID = ?";
+        OrderDetail order = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                order.setOrderID(rs.getInt("OrderID"));
+                order.setOrderID(rs.getInt("ProductID"));
+                order.setOrderID(rs.getInt("Quantity"));
+                order.setOrderID(rs.getInt("Price"));
+                order.setOrderID(rs.getInt("DetailSum"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return order;
+    }
+
 }

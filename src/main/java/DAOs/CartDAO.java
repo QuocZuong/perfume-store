@@ -138,6 +138,43 @@ public class CartDAO {
         return 0;
     }
 
-    
+    public int getCartTotal(int ClientID) {
+        String sql = "SELECT SUM([Sum]) as Total FROM Cart WHERE ClientID = ?";
+        ResultSet rs = null;
+        int total = -1;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, ClientID);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                total = rs.getInt("Total");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CartDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return total;
+    }
+
+    public ArrayList<int[]> getAllCartProductQuantity(int ClientID) {
+        ResultSet rs = null;
+        ArrayList<int[]> out = new ArrayList<>();
+        String sql = "SELECT Cart.ProductID, Cart.Quantity FROM Cart WHERE ClientID = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, ClientID);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int cell[] = new int[2];
+                int ProductID = rs.getInt("ProductID");
+                int Quantity = rs.getInt("Quantity");
+                cell[0] = ProductID;
+                cell[1] = Quantity;
+                out.add(cell);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CartDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return out;
+    }
 
 }

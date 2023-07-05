@@ -1,9 +1,14 @@
 package Controllers;
 
 import java.io.IOException;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
+import DAOs.OrderDAO;
 import DAOs.CartDAO;
+import DAOs.ProductDAO;
 import DAOs.UserDAO;
 import Models.Cart;
 import Models.User;
@@ -20,6 +25,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class ClientController extends HttpServlet {
 
     public static final String CLIENT_CART_URI = "/Client/Cart";
+    public static final String CLIENT_CART_CHECKOUT_URI = "/Client/Cart/Checkout";
     public static final String CLIENT_CART_DELETE_URI = "/Client/Cart/Delete";
     public static final String CLIENT_CART_UPDATE_URI = "/Client/Cart/Update";
     public static final String CLIENT_ADD_TO_CART_URI = "/Client/addToCart";
@@ -27,11 +33,10 @@ public class ClientController extends HttpServlet {
     public static final String CLIENT_UPDATE_INFO_URI = "/Client/Update/Info";
     public static final String CLIENT_UPDATE_ADDRESS_URI = "/Client/Update/Address";
     public static final String CLIENT_CHECKOUT_URI = "/Client/Checkout";
+    public static final String CLIENT_ORDER_DETAIL_URI = "/Client/Order/Detail/ID";
     public static final String BTN_ADD_TO_CART = "btnAddToCart";
     public static final String SUBMIT_VALUE = "Submit";
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
-    // + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -60,6 +65,12 @@ public class ClientController extends HttpServlet {
             return;
         }
 
+        if (path.startsWith(CLIENT_CART_CHECKOUT_URI)) {
+            System.out.println("Going checkout");
+            request.getRequestDispatcher("/CLIENT_PAGE/checkout.jsp").forward(request, response);
+            return;
+        }
+
         if (path.startsWith(CLIENT_CART_URI)) {
             System.out.println("Going cart");
             GetCartProduct(request, response);
@@ -76,6 +87,14 @@ public class ClientController extends HttpServlet {
         if (path.startsWith(CLIENT_CHECKOUT_URI)) {
             System.out.println("Going Checkout");
             ClientCheckout(request, response);
+            response.sendRedirect(CLIENT_CART_URI);
+            return;
+        }
+
+        if (path.startsWith(CLIENT_ORDER_DETAIL_URI)) {
+            System.out.println("Going Order Detail");
+            ClientOrderDetail(request, response);
+            request.getRequestDispatcher("/CLIENT_PAGE/order_detail.jsp").forward(request, response);
             return;
         }
 
@@ -83,14 +102,49 @@ public class ClientController extends HttpServlet {
         response.sendRedirect("/");
     }
 
-    private void ClientCheckout(HttpServletRequest request, HttpServletResponse response) {
+    private void ClientOrderDetail(HttpServletRequest request, HttpServletResponse response) {
+        String path = request.getRequestURI();
+        String[] data = path.split("/");
+        int order_id = Integer.parseInt(data[data.length - 1]);
+        OrderDAO oDAO = new OrderDAO();
+        List<String[]> orderDetail = oDAO.getOrderDetailByOrderID(order_id);
+        request.setAttribute("OrderDetail", orderDetail);
+    }
+
+    private boolean ClientCheckout(HttpServletRequest request, HttpServletResponse response) {
         UserDAO usDAO = new UserDAO();
         CartDAO cDAO = new CartDAO();
+        ProductDAO pDAO = new ProductDAO();
+
         Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
         String username = currentUserCookie.getValue();
         int ClientID = usDAO.getUser(username).getID();
-        
-        // int kq = usDAO.checkout(ClientID, );
+
+        ArrayList<int[]> CartProductQuan = cDAO.getAllCartProductQuantity(ClientID);
+
+        for (int i = 0; i < CartProductQuan.size(); i++) {
+            int ProductID = CartProductQuan.get(i)[0];
+            int Quantity = CartProductQuan.get(i)[1];
+            int StoreQuan = pDAO.getProduct(ProductID).getQuantity();
+            if (StoreQuan < Quantity) {
+                System.out.println("Kho khong du so luong san pham co ID:" + ProductID);
+                return false;
+            }
+        }
+
+        int Total = cDAO.getCartTotal(ClientID);
+
+        String now = new SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date());
+        Date nowDate = Date.valueOf(now);
+        int kq = usDAO.checkout(ClientID, nowDate, Total);
+
+        if (kq == 0) {
+            System.out.println("Khong thanh toan duoc");
+            return false;
+        } else {
+            System.out.println("Thanh toan thanh cong");
+            return true;
+        }
 
     }
 
@@ -117,7 +171,6 @@ public class ClientController extends HttpServlet {
         User user = usDAO.getUser(currentUserCookie.getValue());
 
         // Username, email, phone number is unique
-
         if (currentPassword != null) {
             currentPassword = user.getPassword();
         } else if (!usDAO.login(user.getUsername(), currentPassword)) {
@@ -165,6 +218,30 @@ public class ClientController extends HttpServlet {
     }
 
     private void updateClientAddress(HttpServletRequest request, HttpServletResponse response) {
+        String phoneNumber = request.getParameter("txtPhoneNumber");
+        String newAddress = request.getParameter("txtAddress");
+        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+        UserDAO usDAO = new UserDAO();
+        String username = currentUserCookie.getValue();
+        User UpdateClient = usDAO.getUser(username);
+        System.out.println("User name :" + username);
+        System.out.println("User name :" + UpdateClient.getPhoneNumber());
+        if (!phoneNumber.equals(UpdateClient.getPhoneNumber())) {
+            if (usDAO.isExistPhone(phoneNumber)) {
+                System.out.println("Phone Number is existed. Update Failed");
+                return;
+            }
+        }
+
+        UpdateClient.setAddress(newAddress);
+        UpdateClient.setPhoneNumber(phoneNumber);
+
+        int kq = usDAO.updateUser(UpdateClient);
+        if (kq == 0) {
+            System.out.println("Update address and phone fail");
+        } else {
+            System.out.println("Update address and phone success");
+        }
 
     }
 
@@ -242,10 +319,13 @@ public class ClientController extends HttpServlet {
             }
         }
         if (path.startsWith(CLIENT_UPDATE_ADDRESS_URI)) {
-            System.out.println("Going update address");
-            updateClientAddress(request, response);
-            request.getRequestDispatcher("/CLIENT_PAGE/user.jsp").forward(request, response);
-            return;
+            if (request.getParameter("btnUpdateAdress") != null
+                    && request.getParameter("btnUpdateAdress").equals("Submit")) {
+                System.out.println("Going update address");
+                updateClientAddress(request, response);
+                response.sendRedirect(CLIENT_USER_URI);
+                return;
+            }
         }
     }
 
@@ -274,6 +354,6 @@ public class ClientController extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
+    }
 
 }

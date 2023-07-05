@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -105,6 +106,42 @@ public class ProductDAO {
 
         result = addProduct(pd);
         return result;
+    }
+
+    public List<Product> getProductByOrderID(int id) {
+        ResultSet rs = null;
+        String sql = "SELECT * FROM  Product, OrderDetail WHERE Product.ID = OrderDetail.ProductID";
+
+        List<Product> pdList = null;
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                Product pd = null;
+                pd = new Product();
+                pd.setID(rs.getInt("ID"));
+                pd.setName(rs.getNString("Name"));
+                pd.setBrandID(rs.getInt("BrandID"));
+                pd.setPrice(rs.getInt("Price"));
+                pd.setGender(rs.getNString("Gender"));
+                pd.setSmell(rs.getNString("Smell"));
+                pd.setQuantity(rs.getInt("Quantity"));
+                pd.setReleaseYear(rs.getInt("ReleaseYear"));
+                pd.setVolume(rs.getInt("Volume"));
+                pd.setImgURL(rs.getNString("ImgURL"));
+                pd.setDescription(rs.getNString("Description"));
+                pdList.add(pd);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return pdList;
+
     }
 
     public void save_Backup_Data() {
