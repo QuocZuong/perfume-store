@@ -98,7 +98,7 @@
                             <form action="/Client/addToCart" method="POST">
                                 <input type="number" name="ProductQuantity" id="" value="1" >
                                 <input type="hidden" name="ProductID" value="<%= id%>">
-                                <button name="btnAddToCart" value="Submit" type="submit">THÊM VÀO GIỎ HÀNG</button>
+                                <button name="btnAddToCart" class="btnAddToCart" value="Submit" type="submit">THÊM VÀO GIỎ HÀNG</button>
                             </form>
                         </div>
                     </div>

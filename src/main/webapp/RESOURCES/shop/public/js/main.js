@@ -130,29 +130,46 @@ function sortPriceHighToLow(){
 }
 
 // keep underline when click on tag a search bar
-const anchorTag =document.querySelector(".list-brand a");
 const anchorTags = document.querySelectorAll(".list-brand a");
+const expirationTime = 30 * 1000; // 30 seconds
+
 anchorTags.forEach((anchorTag) => {
   anchorTag.addEventListener("click", function(event) {
-
     anchorTags.forEach((tag) => {
       tag.classList.remove("clicked");
     });
     this.classList.add("clicked");
-    localStorage.setItem("clickedValue", this.getAttribute("href"));
+
+    const expiration = Date.now() + expirationTime;
+    const item = {
+      value: this.getAttribute("href"),
+      expiration: expiration
+    };
+    localStorage.setItem("clickedValue", JSON.stringify(item));
+
+    setTimeout(() => {
+      localStorage.removeItem("clickedValue");
+    }, expirationTime);
   });
 });
 
 const storedClickedValue = localStorage.getItem("clickedValue");
 if (storedClickedValue) {
-  anchorTags.forEach((tag) => {
-    if (tag.getAttribute("href") === storedClickedValue) {
-      tag.classList.add("clicked");
-      
-      tag.scrollIntoView({ behavior: "smooth", block: "center", inline: "start"});
-    }
-  });
+  const item = JSON.parse(storedClickedValue);
+  const currentTime = Date.now();
+  
+  if (currentTime <= item.expiration) {
+    anchorTags.forEach((tag) => {
+      if (tag.getAttribute("href") === item.value) {
+        tag.classList.add("clicked");
+        tag.scrollIntoView({ behavior: "smooth", block: "center", inline: "start" });
+      }
+    });
+  } else {
+    localStorage.removeItem("clickedValue");
+  }
 }
+
 
 
 
