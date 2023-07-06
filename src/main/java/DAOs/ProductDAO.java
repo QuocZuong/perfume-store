@@ -1,7 +1,10 @@
 package DAOs;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -16,6 +19,7 @@ import java.util.logging.Logger;
 
 import DB.DataManager;
 import Models.Product;
+import jakarta.servlet.http.Part;
 
 public class ProductDAO {
 
@@ -109,42 +113,6 @@ public class ProductDAO {
         return result;
     }
 
-    public List<Product> getProductByOrderID(int id) {
-        ResultSet rs = null;
-        String sql = "SELECT * FROM  Product, OrderDetail WHERE Product.ID = OrderDetail.ProductID";
-
-        List<Product> pdList = null;
-
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-
-            ps.setInt(1, id);
-            rs = ps.executeQuery();
-
-            if (rs.next()) {
-                Product pd = null;
-                pd = new Product();
-                pd.setID(rs.getInt("ID"));
-                pd.setName(rs.getNString("Name"));
-                pd.setBrandID(rs.getInt("BrandID"));
-                pd.setPrice(rs.getInt("Price"));
-                pd.setGender(rs.getNString("Gender"));
-                pd.setSmell(rs.getNString("Smell"));
-                pd.setQuantity(rs.getInt("Quantity"));
-                pd.setReleaseYear(rs.getInt("ReleaseYear"));
-                pd.setVolume(rs.getInt("Volume"));
-                pd.setImgURL(rs.getNString("ImgURL"));
-                pd.setDescription(rs.getNString("Description"));
-                pdList.add(pd);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return pdList;
-
-    }
-
     public void save_Backup_Data() {
         ResultSet rs = null;
         String sql = "SELECT * FROM Product";
@@ -193,6 +161,41 @@ public class ProductDAO {
     }
 
     /* --------------------------- READ SECTION --------------------------- */
+    public List<Product> getProductByOrderID(int id) {
+        ResultSet rs = null;
+        String sql = "SELECT * FROM  Product, OrderDetail WHERE Product.ID = OrderDetail.ProductID";
+
+        List<Product> pdList = new LinkedList<>();
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                Product pd = null;
+                pd = new Product();
+                pd.setID(rs.getInt("ID"));
+                pd.setName(rs.getNString("Name"));
+                pd.setBrandID(rs.getInt("BrandID"));
+                pd.setPrice(rs.getInt("Price"));
+                pd.setGender(rs.getNString("Gender"));
+                pd.setSmell(rs.getNString("Smell"));
+                pd.setQuantity(rs.getInt("Quantity"));
+                pd.setReleaseYear(rs.getInt("ReleaseYear"));
+                pd.setVolume(rs.getInt("Volume"));
+                pd.setImgURL(rs.getNString("ImgURL"));
+                pd.setDescription(rs.getNString("Description"));
+                pdList.add(pd);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return pdList;
+
+    }
 
     public ResultSet getAllForAdmin() {
         ResultSet rs = null;
@@ -242,6 +245,7 @@ public class ProductDAO {
                 pd.setVolume(rs.getInt("Volume"));
                 pd.setImgURL(rs.getNString("ImgURL"));
                 pd.setDescription(rs.getNString("Description"));
+                pd.setActive(rs.getBoolean("Active"));
             }
         } catch (SQLException ex) {
             Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -318,6 +322,53 @@ public class ProductDAO {
 
             ps.setInt(5, OFFSET);
             ps.setInt(6, ROWS);
+
+            rs = ps.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return rs;
+    }
+
+    public ResultSet getFilteredProductForAdmin(int page) {
+        String sql = "SELECT * FROM Product\n"
+                + "ORDER BY ID\n"
+                + "OFFSET ? ROWS\n"
+                + "FETCH NEXT ? ROWS ONLY";
+
+        final int ROWS = 20;
+        final int OFFSET = ROWS * (page - 1);
+        ResultSet rs = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, OFFSET);
+            ps.setInt(2, ROWS);
+
+            rs = ps.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return rs;
+    }
+
+    public ResultSet getFilteredProductForAdminSearch(int page, String Search) {
+        String sql = "SELECT * FROM Product\n"
+                + "WHERE ID LIKE ? OR Name LIKE ?\n"
+                + "ORDER BY ID\n"
+                + "OFFSET ? ROWS\n"
+                + "FETCH NEXT ? ROWS ONLY";
+
+        final int ROWS = 20;
+        final int OFFSET = ROWS * (page - 1);
+        ResultSet rs = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, Search);
+            ps.setNString(2, "%" + Search + "%");
+            ps.setInt(3, OFFSET);
+            ps.setInt(4, ROWS);
 
             rs = ps.executeQuery();
         } catch (SQLException e) {
@@ -432,35 +483,84 @@ public class ProductDAO {
     }
 
     /* --------------------------- UPDATE SECTION --------------------------- */
+    public int updateProduct(int productID, String data) {
+        int result = 0;
+        String datas[] = data.split(DB.DataManager.Separator);
+        BrandDAO brDAO = new BrandDAO();
+        // "NAME~BRANDNAME(string)~PRICE(INT)~Gender(string)~Smell(String)~Quantity(int)~ReleaseYear(smallint)~Volume(INT)~URL(Srtring)~Description",
+
+        // Check if exist brand name
+        if (!brDAO.isExistedBrandName(datas[1])) {
+            brDAO.addBrand(datas[1]);
+        }
+        int brandID = brDAO.getBrandID(datas[1]);
+
+        String name = datas[0];
+        int price = Integer.parseInt(MoneyToInteger(datas[2]));
+        String gender = datas[3];
+        String smell = datas[4];
+        int quantity = Integer.parseInt(datas[5]);
+        int releaseYear = Integer.parseInt(datas[6]);
+        int volume = Integer.parseInt(datas[7]);
+        String imgURL = datas[8];
+        String description = datas[9];
+
+        Product pd = new Product(productID,
+                name,
+                brandID,
+                price,
+                gender,
+                smell,
+                quantity,
+                releaseYear,
+                volume,
+                imgURL,
+                description);
+
+        result = updateProduct(pd);
+        return result;
+    }
+
     public int updateProduct(Product product) {
-        String sql = "UPDATE Product SET [Name]=?\n" +
-                "[BrandID]=?, [Price]=?, [Gender]=?,\n" +
-                " [Smell]=?, [Quantity]=?\n" +
-                " [ReleaseYear]=?, [Volume]=?, \n" +
-                " [ImgURL]=?, \n" +
-                " [Description]=?\n" +
-                " WHERE ID = ?";
+        String sql = "UPDATE Product SET [Name]=?,\n"
+                + " [BrandID]=?, [Price]=?, [Gender]=?,\n"
+                + " [Smell]=?, [Quantity]=?,\n"
+                + " [ReleaseYear]=?, [Volume]=?,\n"
+                + " [ImgURL]=?, \n"
+                + " [Description]=?\n"
+                + " WHERE ID = ?";
         int result = 0;
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, product.getName());
+            ps.setNString(1, product.getName());
             ps.setInt(2, product.getBrandID());
             ps.setInt(3, product.getPrice());
-            ps.setString(4, product.getGender());
-            ps.setString(5, product.getSmell());
+            ps.setNString(4, product.getGender());
+            ps.setNString(5, product.getSmell());
             ps.setInt(6, product.getQuantity());
             ps.setInt(7, product.getReleaseYear());
             ps.setInt(8, product.getVolume());
-            ps.setString(9, product.getImgURL());
-            ps.setString(10, product.getDescription());
+            ps.setNString(9, product.getImgURL());
+            ps.setNString(10, product.getDescription());
             ps.setInt(11, product.getID());
             result = ps.executeUpdate();
         } catch (Exception e) {
-            // TODO: handle exception
+            e.printStackTrace();
         }
-
         return result;
+    }
+
+    public int restoreProduct(int ProductID) {
+        String sql = "UPDATE Product SET Active = 1 WHERE ID = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, ProductID);
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     /* --------------------------- DELETE SECTION --------------------------- */
@@ -477,7 +577,6 @@ public class ProductDAO {
     }
 
     /*--------------------------- CONVERSION SECTION --------------------------- */
-
     public static String MoneyToInteger(String moneyInput) {
         StringBuilder moneyInt = new StringBuilder(moneyInput);
 
@@ -505,6 +604,32 @@ public class ProductDAO {
         }
         out = integer + "" + out;
         return out;
+    }
+
+    /*--------------------------- FILE SECTION --------------------------- */
+    public void copyImg(Part imagePart, String Local_destination, String Target_destination, String filename) {
+        File IMG = new File(Target_destination);
+        if (!IMG.exists()) {
+            IMG.mkdir();
+        }
+        try {
+            InputStream imageInputStream = imagePart.getInputStream();
+            OutputStream outputStream = new FileOutputStream(Local_destination + filename);
+            OutputStream outputStreamTarget = new FileOutputStream(Target_destination + filename);
+            byte[] buffer = new byte[1024];
+            int bytes;
+            while ((bytes = imageInputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytes);
+                outputStreamTarget.write(buffer, 0, bytes);
+            }
+            imageInputStream.close();
+            outputStream.close();
+            outputStreamTarget.close();
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
 }

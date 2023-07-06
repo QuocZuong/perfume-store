@@ -68,7 +68,6 @@ h1 {
   font-size: 1.1rem;
 }
 
-
 .nav {
   display: flex;
   justify-content: space-between;
@@ -212,7 +211,7 @@ h1 {
 }
 
 .main .right .order-page table tbody tr td a{
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .main .right .order-page img {
@@ -222,7 +221,6 @@ h1 {
 
 .main .right .address-page {
   text-align: left;
-  margin-left: 200px;
   display: none;
 }
 
@@ -238,6 +236,45 @@ h1 {
 
 .main .right .address-page .address p {
   margin: 0;
+}
+
+.main .right .address-page .default form select {
+  border-color: rgb(222, 226, 230);
+  transition: border-color 0.2s ease;
+}
+
+.main .right .address-page .default form select:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: black;
+}
+
+.main .right .address-page .default form input[type="text"] {
+  height: 40px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  padding-left: .6rem;
+}
+
+.main .right .address-page form {
+  width: 700px;
+  text-align: left;
+}
+
+.main .right .address-page form button h4 {
+  padding-top: .5rem;
+}
+
+.main .right .address-page form button[type="submit"] {
+  margin-top: 20px;
+  background-color: transparent;
+  padding: 5px 20px 3px 20px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  font-size: 1.3rem;
+  transition: background-color 0.3s ease;
+}
+
+.main .right .address-page form button[type="submit"]:hover {
+  border-color: black;
 }
 
 .main .right .info-page {
@@ -327,11 +364,14 @@ h1 {
 
 
 
-.main .right .info-page {}
+.main .right .info-page {
+}
 
-.main .right .info-page {}
+.main .right .info-page {
+}
 
-.main .right .info-page {}
+.main .right .info-page {
+}
 
 .register {
   text-align: center;

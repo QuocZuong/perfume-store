@@ -145,41 +145,38 @@
                     <div class="address-page">
                         <p>Các địa chỉ bên dưới mặc định sẽ được sử dụng ở trang thanh toán sản phẩm.</p>
                         <div class="default">
-
-
-                            <!--                       Add new Form. Maybe Change later-->
+                          
+                            <!-- Add new Form. Maybe Change later-->
                             <form action="/Client/Update/Address" method="POST">
                                 <h3>Địa chỉ giao hàng mặc định</h3>
 
-                                <div>
-                                    <select id="city">
+                                <div class="d-flex flex-column gap-2 mb-2">
+                                    <select id="city" class="form-select">
                                         <option value="" selected>Chọn tỉnh thành</option>           
                                     </select>
 
-                                    <select id="district">
+                                    <select id="district" class="form-select">
                                         <option value="" selected>Chọn quận huyện</option>
                                     </select>
 
-                                    <select id="ward">
+                                    <select id="ward" class="form-select">
                                         <option value="" selected>Chọn phường xã</option>
                                     </select>
+                                  <input style="width:100%" type="text" name="txtPhoneNumber" id="txtPhoneNumber" value="<%= user.getPhoneNumber()%>"> 
                                 </div>
-                                <div> <input style="width:100%" type="text" name="txtPhoneNumber" id="txtPhoneNumber" value="<%= user.getPhoneNumber()%>"> </div>
                                 <input  type="hidden" name="txtAddress" id="txtAddress" value="" >
                                 <button type="submit" name="btnUpdateAdress" value="Submit"> <h4>Sửa</h4> </button>
                             </form>
-                            <!--                       Add new Form. Maybe Change later-->
-
+                            <!--  Add new Form. Maybe Change later-->
 
                         </div>
 
-
-
-                        <div class="address">
+                        <div class="address d-none">
                             <p><%= user.getName()%></p>
                             <p><%= user.getPhoneNumber()%></p>
                             <p><%= user.getAddress()%></p>
                         </div>
+                        
                     </div>
                     <div class="info-page">
                         <form action="/Client/Update/Info" method="POST">

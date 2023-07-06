@@ -12,6 +12,7 @@ public class Product {
     private int volume;
     private String ImgURL;
     private String description;
+    private boolean Active;
 
     public Product() {
     }
@@ -28,6 +29,7 @@ public class Product {
         this.volume = volume;
         ImgURL = imgURL;
         this.description = description;
+        Active = true;
     }
 
     public Product(int iD, String name, int brandID, int price, String gender, String smell, int quantity,
@@ -43,6 +45,23 @@ public class Product {
         this.volume = volume;
         ImgURL = imgURL;
         this.description = description;
+        Active = true;
+    }
+
+    public Product(int iD, String name, int brandID, int price, String gender, String smell, int quantity,
+            int releaseYear, int volume, String imgURL, String description, boolean active) {
+        ID = iD;
+        this.name = name;
+        BrandID = brandID;
+        this.price = price;
+        this.gender = gender;
+        this.smell = smell;
+        this.quantity = quantity;
+        this.releaseYear = releaseYear;
+        this.volume = volume;
+        ImgURL = imgURL;
+        this.description = description;
+        Active = active;
     }
 
     public int getID() {
@@ -131,6 +150,14 @@ public class Product {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isActive() {
+        return Active;
+    }
+
+    public void setActive(boolean active) {
+        Active = active;
     }
 
 }

@@ -29,7 +29,7 @@
         <link rel="icon" href="/RESOURCES/shop/public/images/icon.webp">
         <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css"
               rel="stylesheet" type="text/css" />
-
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
         <title>
             <%= request.getAttribute("shopName")%>
         </title>
@@ -172,9 +172,17 @@
                     <form>
                         <nav aria-label="...">
                             <ul class="pagination">
-                                <li class="page-item"><a class="page-link" href="#">Trang dau</a></li>
-                                <li class="page-item"><span class="page-link">Previous</span></li>
-
+                                <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>">
+                                    <a class="page-link" href="${currentURL}/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link">
+                                        <i class="bi bi-skip-backward"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>">
+                                    <a class="page-link" href="${currentURL}/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link">
+                                        <div style="transform: rotate(180deg);"><i class="bi bi-play"></i></div>
+                                    </a>
+                                </li>
+                               
                                 <c:forEach var="i" begin="${page-2<0?0:page-2}" end="${page+2 +1}">
                                     <c:choose>
                                         <c:when test="${i==page}">
@@ -189,8 +197,16 @@
                                     </c:choose>
                                 </c:forEach>
 
-                                <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                                <li class="page-item"><a class="page-link" href="#">Trang cuoi</a></li>
+                                <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>">
+                                    <a class="page-link" href="${currentURL}/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link">
+                                        <i class="bi bi-play"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>">
+                                    <a class="page-link" href="${currentURL}/page/<%=numberOfPage%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link">
+                                        <div style="transform: rotate(180deg);"><i class="bi bi-skip-backward"></i></div>
+                                    </a>
+                                </li>
                             </ul>
                         </nav>
                     </form>

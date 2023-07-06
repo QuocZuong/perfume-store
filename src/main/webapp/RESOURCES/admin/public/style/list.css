@@ -1,0 +1,36 @@
+td.description .content.hide {
+    position: relative;
+    width: 180px; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  td.description .expand-btn {
+    bottom: 0;
+    right: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+  }
+
+  a{
+    text-decoration: none !important;
+    color: black !important;
+    border: 1px solid black !important;
+    padding: 5px 10px !important;
+  }
+
+
+  .faded{
+    opacity: 0.4;
+  }
+
+
+  /* .rowTable .fade{
+    background: rgba(255,255,255,0.4);
+  } */
+  

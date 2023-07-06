@@ -175,36 +175,6 @@ h1 {
   font-size: 20px;
 }
 
-.box .left h1 {
-}
-
-.box .left table tr td:nth-child(3) {
-  text-align: right;
-  max-width: 100px;
-}
-
-.box .left table tr td:nth-child(3) input {
-  padding: 10px 0 10px 15px;
-  width: 100%;
-  margin-bottom: 15px;
-}
-
-.box .left table tr td:nth-child(3) a {
-  background-color: transparent;
-  outline: none;
-  border: none;
-}
-
-.box .left table tr td:nth-child(3) a img {
-  height: 10px;
-  width: 10px;
-}
-
-.box .left table tr td.empty-cart {
-  background-color: rgb(248, 248, 248);
-  height: 38px;
-}
-
 .box form .left div:has(button) {
   display: flex;
   justify-content: center;
@@ -276,9 +246,8 @@ h1 {
   border-width: 0 0 1px 0;
   border-color: rgb(204, 204, 204);
   outline: none;
-  transition: border-color 0.5s ease;
   height: 40px;
-  transition: background-color 0.3s ease-in-out;
+  transition: border-color 0.4s ease-in-out, background-color 0.3s ease-in-out;
 }
 
 .box form .right .checkout input[type="text"]:focus, .box .left textarea:focus {
@@ -307,11 +276,22 @@ h1 {
   width: min-content;
 }
 
-.box .right .checkout div:nth-child(5) button {
+.box .right .checkout button[type="submit"] {
   background-color: black;
   color: white;
   margin-top: 20px;
   padding: 10px 20px;
+}
+
+.box .right .checkout select{
+  transition: border-color 0.4s ease-in-out;
+}
+
+
+.box .right .checkout select:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: black;
 }
 
 .box form .right .checkout div input {

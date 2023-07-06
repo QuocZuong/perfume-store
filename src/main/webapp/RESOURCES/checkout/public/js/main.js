@@ -6,13 +6,16 @@ const phone = document.querySelector("#phone");
 
 const header = document.querySelector("#header-address");
 const addressInput = document.querySelectorAll("#header-address + div input");
-
-
+const addressSelect = document.querySelectorAll("#header-address + div select");
 
 radioBtns[0].addEventListener('click', function () {
   if (this.checked) {
     header.classList.add('hidden');
+    
     addressInput.forEach(e => {
+      e.classList.add('hidden');
+    });
+    addressSelect.forEach(e => {
       e.classList.add('hidden');
     });
 
@@ -27,7 +30,12 @@ radioBtns[0].addEventListener('click', function () {
 radioBtns[1].addEventListener('click', function () {
   if (this.checked) {
     header.classList.remove('hidden');
+    
     addressInput.forEach(e => {
+      e.classList.remove('hidden');
+    });
+    
+    addressSelect.forEach(e => {
       e.classList.remove('hidden');
     });
 
