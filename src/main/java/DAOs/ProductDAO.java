@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -74,7 +75,7 @@ public class ProductDAO {
         int result = 0;
         String datas[] = data.split(DB.DataManager.Separator);
         BrandDAO brDAO = new BrandDAO();
-        // "NAME~BRANDNAME(string)~PRICE(REAL)~Gender(string)~Smell(String)~Quantity(int)~ReleaseYear(smallint)~Volume(INT)~URL(Srtring)~Description",
+        // "NAME~BRANDNAME(string)~PRICE(INT)~Gender(string)~Smell(String)~Quantity(int)~ReleaseYear(smallint)~Volume(INT)~URL(Srtring)~Description",
 
         // Check if exist brand name
         if (!brDAO.isExistedBrandName(datas[1])) {
@@ -182,9 +183,18 @@ public class ProductDAO {
         }
     }
 
+    public String convertToStringData(String pName, String bName, String pPrice, String Gender, String Smell,
+            String Quantity, String ReleaseYear, String Volume, String ImgURL, String Description) {
+        // "NAME~BRANDNAME(string)~PRICE(INT)~Gender(string)~Smell(String)~Quantity(int)~ReleaseYear(smallint)~Volume(INT)~URL(Srtring)~Description",
+        String sep = DB.DataManager.Separator;
+        String out = pName + sep + bName + sep + pPrice + sep + Gender + sep + Smell + sep + Quantity + sep
+                + ReleaseYear + sep + Volume + sep + ImgURL + sep + Description;
+        return out;
+    }
+
     /* --------------------------- READ SECTION --------------------------- */
 
-    public ResultSet getAll() {
+    public ResultSet getAllForAdmin() {
         ResultSet rs = null;
         String sql = "SELECT * FROM Product";
         try {
@@ -196,9 +206,53 @@ public class ProductDAO {
         return rs;
     }
 
-    public Product getProduct(int id) {
+    public ResultSet getAll() {
+        ResultSet rs = null;
+        String sql = "SELECT * FROM Product WHERE Active = 1";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rs;
+    }
+
+    public Product getProductForAdmin(int id) {
         ResultSet rs = null;
         String sql = "SELECT * FROM Product WHERE ID = ?";
+
+        Product pd = null;
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                pd = new Product();
+                pd.setID(rs.getInt("ID"));
+                pd.setName(rs.getNString("Name"));
+                pd.setBrandID(rs.getInt("BrandID"));
+                pd.setPrice(rs.getInt("Price"));
+                pd.setGender(rs.getNString("Gender"));
+                pd.setSmell(rs.getNString("Smell"));
+                pd.setQuantity(rs.getInt("Quantity"));
+                pd.setReleaseYear(rs.getInt("ReleaseYear"));
+                pd.setVolume(rs.getInt("Volume"));
+                pd.setImgURL(rs.getNString("ImgURL"));
+                pd.setDescription(rs.getNString("Description"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return pd;
+    }
+
+    public Product getProduct(int id) {
+        ResultSet rs = null;
+        String sql = "SELECT * FROM Product WHERE ID = ? And Active = 1";
 
         Product pd = null;
 
@@ -227,7 +281,6 @@ public class ProductDAO {
         }
 
         return pd;
-
     }
 
     public ResultSet getFilteredProduct(String BrandID, String Gender, String price, int page) {
@@ -235,6 +288,7 @@ public class ProductDAO {
                 + "WHERE BrandID LIKE ?\n"
                 + "AND Gender LIKE ?\n"
                 + "AND Price between ? AND ?\n"
+                + "And Active = 1\n"
                 + "ORDER BY ID\n"
                 + "OFFSET ? ROWS\n"
                 + "FETCH NEXT ? ROWS ONLY";
@@ -275,7 +329,7 @@ public class ProductDAO {
 
     public String getPrice(int ID) {
         String price = null;
-        String sql = "SELECT Price FROM Product WHERE ID = ?";
+        String sql = "SELECT Price FROM Product WHERE ID = ? AND Active = 1";
         ResultSet rs = null;
 
         try {
@@ -310,7 +364,8 @@ public class ProductDAO {
         String sql = "SELECT COUNT(*) AS CountRow FROM Product\n"
                 + "WHERE BrandID LIKE ?\n"
                 + "AND Gender LIKE ?\n"
-                + "AND Price between ? AND ?\n";
+                + "AND Price between ? AND ?\n"
+                + "AND Active = 1";
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -330,6 +385,95 @@ public class ProductDAO {
         }
 
         return -1;
+    }
+
+    public List<Product> getAllProductActive() {
+        ResultSet rs = null;
+        List<Product> list = new LinkedList<>();
+        String sql = "SELECT * FROM Product WHERE Active = 1";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Product pd = new Product();
+                pd.setID(rs.getInt("ID"));
+                pd.setName(rs.getNString("Name"));
+                pd.setBrandID(rs.getInt("BrandID"));
+                pd.setPrice(rs.getInt("Price"));
+                pd.setGender(rs.getNString("Gender"));
+                pd.setSmell(rs.getNString("Smell"));
+                pd.setQuantity(rs.getInt("Quantity"));
+                pd.setReleaseYear(rs.getInt("ReleaseYear"));
+                pd.setVolume(rs.getInt("Volume"));
+                pd.setImgURL(rs.getNString("ImgURL"));
+                pd.setDescription(rs.getNString("Description"));
+                list.add(pd);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
+    public int getMaxProductID() {
+        String sql = "SELECT MAX(ID) as maxID FROM PRODUCT";
+        ResultSet rs = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("maxID");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    /* --------------------------- UPDATE SECTION --------------------------- */
+    public int updateProduct(Product product) {
+        String sql = "UPDATE Product SET [Name]=?\n" +
+                "[BrandID]=?, [Price]=?, [Gender]=?,\n" +
+                " [Smell]=?, [Quantity]=?\n" +
+                " [ReleaseYear]=?, [Volume]=?, \n" +
+                " [ImgURL]=?, \n" +
+                " [Description]=?\n" +
+                " WHERE ID = ?";
+        int result = 0;
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, product.getName());
+            ps.setInt(2, product.getBrandID());
+            ps.setInt(3, product.getPrice());
+            ps.setString(4, product.getGender());
+            ps.setString(5, product.getSmell());
+            ps.setInt(6, product.getQuantity());
+            ps.setInt(7, product.getReleaseYear());
+            ps.setInt(8, product.getVolume());
+            ps.setString(9, product.getImgURL());
+            ps.setString(10, product.getDescription());
+            ps.setInt(11, product.getID());
+            result = ps.executeUpdate();
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
+        return result;
+    }
+
+    /* --------------------------- DELETE SECTION --------------------------- */
+    public int deleteProduct(int productId) {
+        String sql = "UPDATE Product SET Active = 0 WHERE ID = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, productId);
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     /*--------------------------- CONVERSION SECTION --------------------------- */

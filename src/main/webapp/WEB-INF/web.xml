@@ -20,6 +20,10 @@
         <servlet-name>LogController</servlet-name>
         <servlet-class>Controllers.LogController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AdminController</servlet-name>
+        <servlet-class>Controllers.AdminController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ImportProduct</servlet-name>
         <url-pattern>/ImportProduct</url-pattern>
@@ -28,7 +32,7 @@
         <servlet-name>shop</servlet-name>
         <url-pattern>/shop</url-pattern>
     </servlet-mapping>
-     <!--Filter defintion-->
+    <!--Filter defintion-->
     <filter>
         <filter-name>UserValidation</filter-name>
         <filter-class>Filters.UserValidation</filter-class>
@@ -70,6 +74,10 @@
     <servlet-mapping>
         <servlet-name>LogController</servlet-name>
         <url-pattern>/Log/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminController</servlet-name>
+        <url-pattern>/Admin/*</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

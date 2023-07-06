@@ -80,11 +80,11 @@
                                 <h4>THƯƠNG HIỆU</h4>
                                 <input placeholder="Tìm kiếm nhanh" type="text" name="" id="searchBox">
                                 <div class="list-brand">
-                                    <ul>
+                                    <ul id="box-brand">
                                         <% rs = (ResultSet) request.getAttribute("BDResultSet");
                                             while (rs != null && rs.next()) {%>
                                         <li>
-                                            <a  href="/Product/List/BrandID/<%=rs.getInt("ID")%>">
+                                            <a  href="/Product/List/BrandID/<%=rs.getInt("ID")%>" class="brandNameForSearch">
                                                 <%=rs.getString(2)%>
                                             </a>
                                         </li>

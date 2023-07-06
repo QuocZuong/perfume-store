@@ -1,5 +1,6 @@
 <%-- Document : newjsp Created on : Jul 5, 2023, 3:27:56 PM Author : Acer --%>
 
+<%@page import="DAOs.OrderDAO"%>
 <%@page import="DAOs.BrandDAO"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.util.List"%>
@@ -13,6 +14,7 @@
 <%! UserDAO usDAO = new UserDAO();%>
 <%!String fullname, username, email;%>
 <%! List<String[]> order;%>
+<%!Order OrderInfor;%>
 
 <%
     Cookie currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
@@ -21,6 +23,7 @@
     username = user.getUsername();
     email = user.getEmail();
     ProductDAO pDAO = new ProductDAO();
+    OrderInfor = (Order) request.getAttribute("OrderInfor");
     order = (List<String[]>) (request.getAttribute("OrderDetail"));
 %>
 
@@ -76,18 +79,6 @@
 
 
             <div class="main">
-                <div class="left">
-                    <h1>Tài khoản của tôi</h1>
-                    <div class="list">
-                        <ul>
-                            <li><a>Trang tài khoản</a></li>
-                            <li><a>Đơn hàng</a></li>
-                            <li><a>Địa chỉ</a></li>
-                            <li><a>Tài khoản</a></li>
-                            <li><a href="/Log/Logout">Đăng xuất</a></li>
-                        </ul>
-                    </div>
-                </div>
                 <div class="right">
                     <div class="order-page">
                         <table class="table">
@@ -98,7 +89,6 @@
                                     <th scope="col">Sản phẩm</th>
                                     <th scope="col" class="number">Số lượng</th>
                                     <th scope="col">Đơn giá</th>
-                                    <th scope="col">Địa chỉ</th>
                                     <th scope="col">Tổng tiền</th>
                                 </tr>
                             </thead>
@@ -112,10 +102,16 @@
                                             <td><img src="<%=order.get((int) pageContext.getAttribute("i"))[1]%>"></td>
                                             <td><%=order.get((int) pageContext.getAttribute("i"))[2]%></td>
                                             <td><%=  pDAO.IntegerToMoney(Integer.parseInt(order.get((int) pageContext.getAttribute("i"))[3]))%></td>
-                                            <td><%=order.get((int) pageContext.getAttribute("i"))[4]%></td>
                                             <td><%=  pDAO.IntegerToMoney(Integer.parseInt(order.get((int) pageContext.getAttribute("i"))[5]))%></td>
                                         </tr>
-                                    </c:forEach> 
+                                    </c:forEach>
+                                    <tr class="bottom-table">
+                                        <td colspan="6">
+                                            <p><img src="/RESOURCES/images/icons/smartphone.png" alt="alt"/><span><%=OrderInfor.getPhoneNumber()%></span></p>
+                                            <p><img src="/RESOURCES/images/icons/location-pin.png" alt="alt"/><span><%=OrderInfor.getAddress()%></span></p>
+                                            <p><img src="/RESOURCES/images/icons/email.png" alt="alt"/><span><%=OrderInfor.getNote()%></span></p>
+                                        </td>
+                                    </tr>
                                 </c:if>
                             </tbody>
                         </table>

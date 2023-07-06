@@ -11,6 +11,7 @@ import DAOs.CartDAO;
 import DAOs.ProductDAO;
 import DAOs.UserDAO;
 import Models.Cart;
+import Models.Order;
 import Models.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -18,12 +19,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-/**
- *
- * @author Acer
- */
 public class ClientController extends HttpServlet {
 
+    // ---------------------------- URI DECLARATION SECTION ----------------------------
     public static final String CLIENT_CART_URI = "/Client/Cart";
     public static final String CLIENT_CART_CHECKOUT_URI = "/Client/Cart/Checkout";
     public static final String CLIENT_CART_DELETE_URI = "/Client/Cart/Delete";
@@ -84,13 +82,6 @@ public class ClientController extends HttpServlet {
             return;
         }
 
-        if (path.startsWith(CLIENT_CHECKOUT_URI)) {
-            System.out.println("Going Checkout");
-            ClientCheckout(request, response);
-            response.sendRedirect(CLIENT_CART_URI);
-            return;
-        }
-
         if (path.startsWith(CLIENT_ORDER_DETAIL_URI)) {
             System.out.println("Going Order Detail");
             ClientOrderDetail(request, response);
@@ -102,13 +93,74 @@ public class ClientController extends HttpServlet {
         response.sendRedirect("/");
     }
 
-    private void ClientOrderDetail(HttpServletRequest request, HttpServletResponse response) {
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request  servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException      if an I/O error occurs
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         String path = request.getRequestURI();
-        String[] data = path.split("/");
-        int order_id = Integer.parseInt(data[data.length - 1]);
-        OrderDAO oDAO = new OrderDAO();
-        List<String[]> orderDetail = oDAO.getOrderDetailByOrderID(order_id);
-        request.setAttribute("OrderDetail", orderDetail);
+        if (path.startsWith(CLIENT_ADD_TO_CART_URI)) {
+            if (request.getParameter(BTN_ADD_TO_CART) != null
+                    && request.getParameter(BTN_ADD_TO_CART).equals(SUBMIT_VALUE)) {
+                PostAddToCart(request, response);
+                int pID = Integer.parseInt(request.getParameter("ProductID"));
+                response.sendRedirect("/Product/Detail/ID/" + pID);
+                return;
+            }
+        }
+
+        if (path.startsWith(CLIENT_UPDATE_INFO_URI)) {
+            if (request.getParameter("btnUpdateInfo") != null
+                    && request.getParameter("btnUpdateInfo").equals("Submit")) {
+                System.out.println("Going update info");
+                updateClientInfomation(request, response);
+                response.sendRedirect(CLIENT_USER_URI);
+                return;
+            }
+        }
+        if (path.startsWith(CLIENT_UPDATE_ADDRESS_URI)) {
+            if (request.getParameter("btnUpdateAdress") != null
+                    && request.getParameter("btnUpdateAdress").equals("Submit")) {
+                System.out.println("Going update address");
+                updateClientAddress(request, response);
+                response.sendRedirect(CLIENT_USER_URI);
+                return;
+            }
+        }
+
+        if (path.startsWith(CLIENT_CHECKOUT_URI)) {
+            if (request.getParameter("btnSubmitCheckOut") != null
+                    && request.getParameter("btnSubmitCheckOut").equals("Submit")) {
+                System.out.println("Going Checkout");
+                ClientCheckout(request, response);
+                response.sendRedirect(CLIENT_CART_URI);
+                return;
+            }
+        }
+    }
+
+    /* CRUD */
+    // ---------------------------- CREATE SECTION ----------------------------
+    private void PostAddToCart(HttpServletRequest request, HttpServletResponse response) {
+        UserDAO uDao = new UserDAO();
+
+        Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
+        String username = userCookie.getValue();
+
+        int pID = Integer.parseInt(request.getParameter("ProductID"));
+        int pQuan = Integer.parseInt(request.getParameter("ProductQuantity"));
+
+        // Assume having client Username and get Client ID from username
+        int ClientID = uDao.getUser(username).getID();
+
+        CartDAO cDAO = new CartDAO();
+        cDAO.addToCart(ClientID, pID, pQuan);
     }
 
     private boolean ClientCheckout(HttpServletRequest request, HttpServletResponse response) {
@@ -119,7 +171,6 @@ public class ClientController extends HttpServlet {
         Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
         String username = currentUserCookie.getValue();
         int ClientID = usDAO.getUser(username).getID();
-
         ArrayList<int[]> CartProductQuan = cDAO.getAllCartProductQuantity(ClientID);
 
         for (int i = 0; i < CartProductQuan.size(); i++) {
@@ -131,13 +182,21 @@ public class ClientController extends HttpServlet {
                 return false;
             }
         }
-
+        String newAddress = request.getParameter("txtNewAddress");
+        String newPhone = request.getParameter("txtNewPhone");
+        String Address = request.getParameter("txtAddress");
+        String Phone = request.getParameter("txtPhone");
+        if (newAddress != null && !newAddress.equals("")) {
+            Address = newAddress;
+        }
+        if (newPhone != null && !newPhone.equals("")) {
+            Phone = newPhone;
+        }
+        String Note = request.getParameter("txtNote");
         int Total = cDAO.getCartTotal(ClientID);
-
         String now = new SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date());
         Date nowDate = Date.valueOf(now);
-        int kq = usDAO.checkout(ClientID, nowDate, Total);
-
+        int kq = usDAO.checkout(ClientID, nowDate, Address, Phone, Note, Total);
         if (kq == 0) {
             System.out.println("Khong thanh toan duoc");
             return false;
@@ -148,6 +207,32 @@ public class ClientController extends HttpServlet {
 
     }
 
+    // ---------------------------- READ SECTION ----------------------------
+    private void GetCartProduct(HttpServletRequest request, HttpServletResponse response) {
+        UserDAO uDao = new UserDAO();
+        CartDAO cDAO = new CartDAO();
+
+        Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
+        String username = userCookie.getValue();
+        int ClientID = uDao.getUser(username).getID();
+
+        List<Cart> listCart = cDAO.getAllClientProduct(ClientID);
+        request.setAttribute("listCart", listCart);
+    }
+
+    private void ClientOrderDetail(HttpServletRequest request, HttpServletResponse response) {
+        String path = request.getRequestURI();
+        String[] data = path.split("/");
+        int order_id = Integer.parseInt(data[data.length - 1]);
+        OrderDAO oDAO = new OrderDAO();
+        List<String[]> orderDetail = oDAO.getOrderDetailByOrderID(order_id);
+        Order OrderInfor = oDAO.getOrderByOrderId(order_id);
+        System.out.println(OrderInfor);
+        request.setAttribute("OrderInfor", OrderInfor);
+        request.setAttribute("OrderDetail", orderDetail);
+    }
+
+    // ---------------------------- UPDATE SECTION ----------------------------
     private void updateClientInfomation(HttpServletRequest request, HttpServletResponse response) {
         /*
          * txtFullname
@@ -245,20 +330,21 @@ public class ClientController extends HttpServlet {
 
     }
 
-    private void GetCartProduct(HttpServletRequest request, HttpServletResponse response) {
-        UserDAO uDao = new UserDAO();
+    private void updateCartProduct(HttpServletRequest request, HttpServletResponse response) {
+        // /Client/Cart/Update?ClientID=1&ProductID0=80&ProductQuan0=5&ProductID1=34&ProductQuan1=9&ListSize=2
         CartDAO cDAO = new CartDAO();
-
-        Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
-        String username = userCookie.getValue();
-        int ClientID = uDao.getUser(username).getID();
-
-        List<Cart> listCart = cDAO.getAllClientProduct(ClientID);
-        request.setAttribute("listCart", listCart);
+        int listSize = Integer.parseInt(request.getParameter("ListSize"));
+        for (int i = 0; i < listSize; i++) {
+            int ClientID = Integer.parseInt(request.getParameter("ClientID"));
+            int ProductID = Integer.parseInt(request.getParameter("ProductID" + i));
+            int ProductQuan = Integer.parseInt(request.getParameter("ProductQuan" + i));
+            cDAO.changeProductQuantity(ClientID, ProductID, ProductQuan);
+        }
     }
 
-    /// /Client/Cart/Delete/ProductID/<%= p.getID()%>/ClientID/<%= ClientID %>
+    // ---------------------------- DELETE SECTION ----------------------------
     private void deleteCartProduct(HttpServletRequest request, HttpServletResponse response) {
+        /// /Client/Cart/Delete/ProductID/<%= p.getID()%>/ClientID/<%= ClientID %>
         CartDAO cDAO = new CartDAO();
 
         int ClientID = -1;
@@ -273,77 +359,6 @@ public class ClientController extends HttpServlet {
             }
         }
         cDAO.deleteCart(ClientID, ProductID);
-    }
-
-    // /Client/Cart/Update?ClientID=1&ProductID0=80&ProductQuan0=5&ProductID1=34&ProductQuan1=9&ListSize=2
-    private void updateCartProduct(HttpServletRequest request, HttpServletResponse response) {
-        CartDAO cDAO = new CartDAO();
-        int listSize = Integer.parseInt(request.getParameter("ListSize"));
-        for (int i = 0; i < listSize; i++) {
-            int ClientID = Integer.parseInt(request.getParameter("ClientID"));
-            int ProductID = Integer.parseInt(request.getParameter("ProductID" + i));
-            int ProductQuan = Integer.parseInt(request.getParameter("ProductQuan" + i));
-            cDAO.changeProductQuantity(ClientID, ProductID, ProductQuan);
-        }
-    }
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request  servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String path = request.getRequestURI();
-        if (path.startsWith(CLIENT_ADD_TO_CART_URI)) {
-            if (request.getParameter(BTN_ADD_TO_CART) != null
-                    && request.getParameter(BTN_ADD_TO_CART).equals(SUBMIT_VALUE)) {
-                PostAddToCart(request, response);
-                int pID = Integer.parseInt(request.getParameter("ProductID"));
-                response.sendRedirect("/Product/Detail/ID/" + pID);
-                return;
-            }
-        }
-
-        if (path.startsWith(CLIENT_UPDATE_INFO_URI)) {
-            if (request.getParameter("btnUpdateInfo") != null
-                    && request.getParameter("btnUpdateInfo").equals("Submit")) {
-                System.out.println("Going update info");
-                updateClientInfomation(request, response);
-                response.sendRedirect(CLIENT_USER_URI);
-                return;
-            }
-        }
-        if (path.startsWith(CLIENT_UPDATE_ADDRESS_URI)) {
-            if (request.getParameter("btnUpdateAdress") != null
-                    && request.getParameter("btnUpdateAdress").equals("Submit")) {
-                System.out.println("Going update address");
-                updateClientAddress(request, response);
-                response.sendRedirect(CLIENT_USER_URI);
-                return;
-            }
-        }
-    }
-
-    private void PostAddToCart(HttpServletRequest request, HttpServletResponse response) {
-        UserDAO uDao = new UserDAO();
-
-        Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
-        String username = userCookie.getValue();
-
-        int pID = Integer.parseInt(request.getParameter("ProductID"));
-        int pQuan = Integer.parseInt(request.getParameter("ProductQuantity"));
-
-        // Assume having client Username and get Client ID from username
-        int ClientID = uDao.getUser(username).getID();
-
-        CartDAO cDAO = new CartDAO();
-        cDAO.addToCart(ClientID, pID, pQuan);
-
     }
 
     /**

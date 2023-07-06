@@ -111,6 +111,13 @@ public class LogController extends HttpServlet {
         UserDAO dao = new UserDAO();
 
         if (dao.register(email)) {
+            String username = dao.getUserByEmail(email).getUsername();
+
+            Cookie c = new Cookie("Client", username);
+            c.setMaxAge(3 * 24 * 60 * 60);
+            c.setPath("/");
+
+            response.addCookie(c);
             return true;
         }
 

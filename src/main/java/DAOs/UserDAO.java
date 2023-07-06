@@ -28,7 +28,7 @@ public class UserDAO {
      * Gets all the users in the database.
      *
      * @return A {@code ResultSet} containing all the users in the database.
-     * {@code null} if an error occurs.
+     *         {@code null} if an error occurs.
      */
     public ResultSet getAll() {
         ResultSet rs = null;
@@ -50,7 +50,7 @@ public class UserDAO {
      *
      * @param str The string to be hashed.
      * @return The MD5 hash of the string. {@code null} if an error occurs while
-     * hashing.
+     *         hashing.
      */
     public String getMD5hash(String str) {
 
@@ -77,7 +77,7 @@ public class UserDAO {
      *
      * @param username The username of the user to be retrieved.
      * @return A {@code User} object containing the user's information.
-     * {@code null} if an error occurs.
+     *         {@code null} if an error occurs.
      */
     public User getUser(String username) {
         if (username == null) {
@@ -113,7 +113,7 @@ public class UserDAO {
      *
      * @param ID The ID of the user to be retrieved.
      * @return A {@code User} object containing the user's information.
-     * {@code null} if an error occurs or the user is not found.
+     *         {@code null} if an error occurs or the user is not found.
      */
     public User getUser(int ID) {
         ResultSet rs = null;
@@ -145,7 +145,7 @@ public class UserDAO {
      *
      * @param email The email of the user to be retrieved.
      * @return A {@code User} object containing the user's information.
-     * {@code null} if an error occurs or the user is not found.
+     *         {@code null} if an error occurs or the user is not found.
      */
     public User getUserByEmail(String email) {
         ResultSet rs = null;
@@ -173,17 +173,49 @@ public class UserDAO {
         return null;
     }
 
+    public int getMaxId() {
+        ResultSet rs = null;
+
+        String sql = "SELECT MAX(ID) AS MaxID FROM [User]";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("MaxID");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return 0;
+    }
+
     /* --------------------- UPDATE SECTION --------------------- */
-    public int checkout(Integer ClientID, Date Date, Integer Sum) {
+    public int checkout(Integer ClientID, Date Date, String Address, String PhoneNumber, String Note, Integer Sum) {
         if (ClientID == null || Date == null || Sum == null) {
             return 0;
         }
-        String sql = "INSERT INTO [Order](ClientID, [Date], [Sum]) VALUES (?, ?, ?)";
+        /*
+         * Attribute:
+         * ID (int) (primary key Indentity (1,1))
+         * ClientID (ID (int) (duplicate) )
+         * Date (Date) not null
+         * Address (nvarchar(500))
+         * PhoneNumber (varchar(10))
+         * Note (nvarchar(500))
+         * Sum (int default 0)
+         */
+
+        String sql = "INSERT INTO [Order](ClientID, [Date], [Address], [PhoneNumber], [Note], [Sum]) VALUES (?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, ClientID);
             ps.setDate(2, Date);
-            ps.setInt(3, Sum);
+            ps.setNString(3, Address);
+            ps.setNString(4, PhoneNumber);
+            ps.setNString(5, Note);
+            ps.setInt(6, Sum);
+
             return ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -191,14 +223,13 @@ public class UserDAO {
         return 0;
     }
 
-
     /*--------------------- DELETE SECTION ---------------------  */
     /**
      * Deletes a user from the database.
      *
      * @param us The user to be deleted.
      * @return The number of rows affected by the query. {@code 0} if user
-     * cannot be deleted, or {@code username} doesn't exist.
+     *         cannot be deleted, or {@code username} doesn't exist.
      */
     public int deleteUser(String username) {
         if (username == null) {
@@ -219,7 +250,7 @@ public class UserDAO {
 
     /*--------------------- VALIDATE SECTION ---------------------  */
 
- /*--------------------- AUTHORIZATION SECTION ---------------------  */
+    /*--------------------- AUTHORIZATION SECTION ---------------------  */
     /**
      * Checks if a given username is an admin.
      *
@@ -353,13 +384,28 @@ public class UserDAO {
             return false;
         }
 
+        String username = email.substring(0, email.indexOf('@'));
+
+        int tempId = 0;
+        int offset = getMaxId();
+
+        if (isExistUsername(username)) {
+            String tempUsername = username + offset;
+
+            while (isExistUsername(tempUsername)) {
+                tempId += offset;
+                tempUsername = username + tempId + "";
+            }
+
+            username = tempUsername;
+        }
+
         int result = 0;
 
         String generatedPassword = PasswordGenerator.generateStrongPassword(12);
         System.out.println("New password:" + generatedPassword);
 
         String sql = "Insert into [User] (UserName,Password, Email, Role) values (?, ?, ?, ?)";
-        String username = email.substring(0, email.indexOf('@'));
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -370,7 +416,6 @@ public class UserDAO {
 
             result = ps.executeUpdate();
             return result > 0;
-
         } catch (Exception e) {
             e.printStackTrace();
         }

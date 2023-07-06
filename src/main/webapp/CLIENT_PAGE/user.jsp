@@ -336,29 +336,41 @@
                 document.querySelector("#" + select).innerHTML = row;
             };
 
+            function resetData(select) {
+                let row = ' <option disable value="">Chọn</option>';
+                document.querySelector("#" + select).innerHTML = row;
+            }
+
+
             $("#city").change(() => {
+                resetData("district");
+                resetData("ward");
                 callApiDistrict(host + "p/" + $("#city").find(':selected').data('id') + "?depth=2");
-                callApiWard(host + "d/" + $("#district").find(':selected').data('id') + "?depth=2");
                 printResult();
             });
             $("#district").change(() => {
+                resetData("ward");
                 callApiWard(host + "d/" + $("#district").find(':selected').data('id') + "?depth=2");
                 printResult();
             });
             $("#ward").change(() => {
                 printResult();
-            })
+            });
 
             var printResult = () => {
                 if ($("#district").find(':selected').data('id') != "" && $("#city").find(':selected').data('id') != "" &&
                         $("#ward").find(':selected').data('id') != "") {
-                    let result = $("#city option:selected").text() +
-                            " - " + $("#district option:selected").text() + " - " +
-                            $("#ward option:selected").text();
+
+                    let city = $("#city option:selected").text();
+                    let district = $("#district option:selected").text();
+                    let ward = $("#ward option:selected").text();
+                    let sp = " - ";
+                    let result = (city === Default ? "" : city);
+                    result += (district === Default ? "" : sp + district);
+                    result += (ward === Default ? "" : sp + ward);
                     $("#result").text(result);
                     $("#txtAddress").val(result);
                 }
-
             };
         </script>
     </body>

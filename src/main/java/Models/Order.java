@@ -6,16 +6,34 @@ public class Order {
   private int ID;
   private int clientID;
   private Date date;
+  private String Address;
+  private String PhoneNumber;
+  private String Note;
   private int sum;
 
   public Order() {
   }
 
-  public Order(int ID, int clientID, Date date, int sum) {
-    this.ID = ID;
+  public Order(int iD, int clientID, Date date, String address, String phoneNumber, String note, int sum) {
+    ID = iD;
     this.clientID = clientID;
     this.date = date;
+    Address = address;
+    PhoneNumber = phoneNumber;
+    Note = note;
     this.sum = sum;
+  }
+
+  public void setPhoneNumber(String phoneNumber) {
+    PhoneNumber = phoneNumber;
+  }
+
+  public String getNote() {
+    return Note;
+  }
+
+  public void setNote(String note) {
+    Note = note;
   }
 
   public int getID() {
@@ -48,5 +66,17 @@ public class Order {
 
   public void setSum(int sum) {
     this.sum = sum;
+  }
+
+  public String getAddress() {
+    return Address;
+  }
+
+  public void setAddress(String address) {
+    Address = address;
+  }
+
+  public String getPhoneNumber() {
+    return PhoneNumber;
   }
 }

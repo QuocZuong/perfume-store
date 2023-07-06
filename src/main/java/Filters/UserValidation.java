@@ -1,5 +1,6 @@
 package Filters;
 
+import DAOs.UserDAO;
 import jakarta.servlet.http.Cookie;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -13,7 +14,6 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 public class UserValidation implements Filter {
 
@@ -22,6 +22,7 @@ public class UserValidation implements Filter {
 	// configured. 
 	private FilterConfig filterConfig = null;
 	private boolean debug = true;
+	private final UserDAO userDAO = new UserDAO();
 	
 	public UserValidation() {
 	}
@@ -42,18 +43,11 @@ public class UserValidation implements Filter {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
 		
-		boolean isAdmin = isAdmin(req);
-		boolean isClient = isClient(req);
+		boolean isAdmin = isAdmin(req, res);
+		boolean isClient = isClient(req, res);
 		
 		final String URI = req.getRequestURI();
 		final String URL = req.getRequestURL().toString();
-
-
-		// Send back to Login page to prevent unwanted URL.
-//		if (URL.equals("http://localhost:8080/")) {
-//			res.sendRedirect("/Log/Login");
-//			return;
-//		}
 
 		// --------------------------SKIP LOGIN IF IS USER----------------------
 		// If in Login page and is an admin or client, go to product list.
@@ -65,14 +59,14 @@ public class UserValidation implements Filter {
 		}
 
 		// --------------------------GO BACK TO LOGIN IF IS NOT USER----------------------
-		// If not in the Login page and not and admin or client, then go back to login page.
-//		if (!URI.endsWith("/Log/Login")) {
-//			if (!isAdmin(req) && !isClient(req)) {
-//				System.out.println("Not admin and not in /Log/Login, so redirect to /Log/Login");
-//				res.sendRedirect("/Log/Login");
-//				return;
-//			}
-//		}
+//		 If not in the Login page and not and admin or client, then go back to login page.
+		if (URI.startsWith("/Client") || URI.startsWith("/Admin")) {
+			if (!isAdmin && !isClient) {
+				System.out.println("Not admin or Client, so redirect to /Log/Login");
+				res.sendRedirect("/Log/Login");
+				return;
+			}
+		}
 
 		Throwable problem = null;
 
@@ -99,12 +93,20 @@ public class UserValidation implements Filter {
 		}
 	}
 
-	public boolean isAdmin(HttpServletRequest request) {
+	public boolean isAdmin(HttpServletRequest request, HttpServletResponse response) {
 		Cookie[] cookies = request.getCookies();
 
 		if (cookies != null) {
 			for (int i = 0; i < cookies.length; i++) {
 				if (cookies[i].getName().equals("Admin")) {
+
+					if (!userDAO.isExistUsername(cookies[i].getValue())) {
+						cookies[i].setMaxAge(0);
+						cookies[i].setPath("/");
+						response.addCookie(cookies[i]);
+						return false;
+					}
+
 					request.getSession().setAttribute("userCookie", cookies[i]);
 					return true;
 				}
@@ -114,12 +116,20 @@ public class UserValidation implements Filter {
 		return false;
 	}
 
-	public boolean isClient(HttpServletRequest request) {
+	public boolean isClient(HttpServletRequest request, HttpServletResponse response) {
 		Cookie[] cookies = request.getCookies();
 
 		if (cookies != null) {
 			for (int i = 0; i < cookies.length; i++) {
 				if (cookies[i].getName().equals("Client")) {
+
+					if (!userDAO.isExistUsername(cookies[i].getValue())) {
+						cookies[i].setMaxAge(0);
+						cookies[i].setPath("/");
+						response.addCookie(cookies[i]);
+						return false;
+					}
+					
 					cookies[i].setPath("/");
 					request.getSession().setAttribute("userCookie", cookies[i]);
 					return true;

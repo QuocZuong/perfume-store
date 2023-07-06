@@ -125,8 +125,11 @@ public class OrderDAO {
                 int OrderID = rs.getInt("ID");
                 int ClientID = rs.getInt("ClientID");
                 Date Date = rs.getDate("Date");
+                String Address = rs.getNString("Address");
+                String PhoneNumber = rs.getString("PhoneNumber");
+                String Note = rs.getNString("Note");
                 int Sum = rs.getInt("Sum");
-                return new Order(OrderID, ClientID, Date, Sum);
+                return new Order(OrderID, ClientID, Date, Address, PhoneNumber, Note, Sum);
             }
         } catch (SQLException ex) {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -136,7 +139,7 @@ public class OrderDAO {
 
     public OrderDetail getOrderByOrderDetailId(int id) {
         String sql = "SELECT * FROM [OrderDetail] where OrderID = ?";
-        OrderDetail order = null;
+        OrderDetail order = new OrderDetail();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
