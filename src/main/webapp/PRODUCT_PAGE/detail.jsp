@@ -6,7 +6,6 @@
 <%! ProductDAO pDAO = new ProductDAO(); %>
 <%! BrandDAO bDao = new BrandDAO();%>
 <%
-
     Product pd = (Product) request.getAttribute("product");
 
     int id = pd.getID();

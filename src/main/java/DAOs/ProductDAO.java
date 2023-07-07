@@ -1,25 +1,24 @@
 package DAOs;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import DB.DataManager;
 import Models.Product;
+import java.util.List;
+import java.sql.ResultSet;
+import java.sql.Connection;
+import java.io.PrintWriter;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.LinkedList;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.io.FileOutputStream;
 import jakarta.servlet.http.Part;
+import java.io.OutputStreamWriter;
+import java.sql.PreparedStatement;
+import java.io.FileNotFoundException;
 
 public class ProductDAO {
 

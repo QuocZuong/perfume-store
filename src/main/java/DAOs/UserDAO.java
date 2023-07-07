@@ -238,6 +238,20 @@ public class UserDAO {
         return -1;
     }
 
+    public ResultSet getAllForAdmin() {
+        ResultSet rs = null;
+        String sql = "SELECT * FROM [User]";
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return rs;
+    }
+
     /* --------------------- UPDATE SECTION --------------------- */
     public int checkout(Integer ClientID, Date Date, String Address, String PhoneNumber, String Note, Integer Sum) {
         if (ClientID == null || Date == null || Sum == null) {

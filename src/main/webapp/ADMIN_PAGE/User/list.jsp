@@ -4,20 +4,22 @@
 <%@page import="DAOs.BrandDAO"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="DAOs.ProductDAO"%>
+<%@page import="Models.User"%>
+<%@page import="DAOs.UserDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib  uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
 
-<%! ProductDAO pDAO = new ProductDAO();%>
+<%! UserDAO uDAO = new UserDAO();%>
 <%! BrandDAO bDAO = new BrandDAO(); %>
 <%! ResultSet rs = null;%>
-<%! ArrayList<Product> listProduct = null; %>
+<%! ArrayList<User> listUser = null; %>
 <%! int currentPage, numberOfPage;%>
 <%! boolean isAdmin;%>
 
 <%
-    rs = pDAO.getAllForAdmin();
-    listProduct = (ArrayList<Product>) request.getAttribute("listProduct");
+    rs = uDAO.getAllForAdmin();
+    listUser = (ArrayList<User>) request.getAttribute("listUser");
     currentPage = (int) request.getAttribute("page");
     numberOfPage = (int) request.getAttribute("numberOfPage");
 %>
@@ -59,22 +61,19 @@
                 <a class="page-link" href="" id="Search" onclick="changeLink();">Search</a>
                     <table class="table" id="table">
                         <thead>
-                            <tr>
-                                <td>Product ID</td>
-                                <td>Product Name</td>
-                                <td>Brand Name</td>
-                                <td>Price</td>
-                                <td>Gender</td>
-                                <td>Smell</td>
-                                <td>Quantity</td>
-                                <td>ReleaseYear</td> 
-                                <td>Volume</td>    
-                                <td>ImgURL</td>    
-                                <td>Description</td>    
-                                <td></td> 
-                                <td></td> 
-                            </tr>
-                        </thead>
+                        <tr>
+                            <td>User ID</td>
+                            <td>Name</td>
+                            <td>Username</td>
+                            <td>Phone Number</td>
+                            <td>Email</td>
+                            <td>Address</td>
+                            <td>Role</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </thead>
+
                         <tbody>
                             <c:if test="<%= (listProduct.size() != 0)%>">
                                 <c:forEach var="i" begin="0" end="<%= listProduct.size() - 1%>">

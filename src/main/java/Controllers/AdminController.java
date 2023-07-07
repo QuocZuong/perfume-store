@@ -213,7 +213,7 @@ public class AdminController extends HttpServlet {
         NumberOfPage = (NumberOfProduct % ROWS == 0 ? NumberOfPage : NumberOfPage + 1);
         request.setAttribute("page", page);
         request.setAttribute("numberOfPage", NumberOfPage);
-        request.setAttribute("listProduct", listProduct);
+        request.setAttribute("listUser", listProduct);
         request.setAttribute("Search", Search);
     }
 
