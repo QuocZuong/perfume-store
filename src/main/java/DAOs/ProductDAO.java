@@ -287,15 +287,29 @@ public class ProductDAO {
         return pd;
     }
 
-    public ResultSet getFilteredProduct(String BrandID, String Gender, String price, int page) {
-        String sql = "SELECT * FROM Product\n"
-                + "WHERE BrandID LIKE ?\n"
-                + "AND Gender LIKE ?\n"
-                + "AND Price between ? AND ?\n"
-                + "And Active = 1\n"
-                + "ORDER BY ID\n"
-                + "OFFSET ? ROWS\n"
-                + "FETCH NEXT ? ROWS ONLY";
+    public ResultSet getFilteredProduct(String BrandID, String Gender, String price, int page, String Search) {
+        String sql = "SELECT \n" +
+                "p.ID,\n" +
+                "p.[Name],\n" +
+                "p.[BrandID],\n" +
+                "p.Price,\n" +
+                "p.Gender,\n" +
+                "p.Quantity,\n" +
+                "p.ReleaseYear,\n" +
+                "p.Volume,\n" +
+                "p.ImgURL,\n" +
+                "p.[Description],\n" +
+                "p.Active\n" +
+                "FROM Product p, Brand b\n" +
+                "WHERE BrandID LIKE ?\n" + // 1
+                "AND Gender LIKE ?\n" + // 2
+                "AND Price between ? AND ?\n" + // 3,4
+                "AND Active = 1\n" +
+                "AND (p.[Name] LIKE ? OR b.[Name] LIKE ?)\n" + // 5, 6
+                "AND p.BrandID = b.ID\n" +
+                "ORDER BY p.ID\n" +
+                "OFFSET ? ROWS\n" + // 7
+                "FETCH NEXT ? ROWS ONLY";// 8
 
         final int ROWS = 20;
         final int OFFSET = ROWS * (page - 1);
@@ -319,10 +333,10 @@ public class ProductDAO {
 
             ps.setNString(3, low);
             ps.setNString(4, high);
-
-            ps.setInt(5, OFFSET);
-            ps.setInt(6, ROWS);
-
+            ps.setNString(5, "%" + Search + "%");
+            ps.setNString(6, "%" + Search + "%");
+            ps.setInt(7, OFFSET);
+            ps.setInt(8, ROWS);
             rs = ps.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -398,7 +412,7 @@ public class ProductDAO {
         return price;
     }
 
-    public int GetNumberOfProduct(String BrandID, String Gender, String price, int page) {
+    public int GetNumberOfProduct(String BrandID, String Gender, String price, String Search) {
         BrandID = BrandID == null ? "%" : BrandID;
         Gender = Gender == null ? "%" : Gender;
         String low = "0";
@@ -412,11 +426,13 @@ public class ProductDAO {
 
         ResultSet rs = null;
 
-        String sql = "SELECT COUNT(*) AS CountRow FROM Product\n"
+        String sql = "SELECT COUNT(*) AS CountRow FROM Product, Brand\n"
                 + "WHERE BrandID LIKE ?\n"
                 + "AND Gender LIKE ?\n"
                 + "AND Price between ? AND ?\n"
-                + "AND Active = 1";
+                + "AND Active = 1\n"
+                + "AND (Product.[Name] LIKE ? OR Brand.[Name] LIKE ?)\n"
+                + "AND Product.BrandID = Brand.ID";
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -425,7 +441,8 @@ public class ProductDAO {
             ps.setNString(2, Gender);
             ps.setNString(3, low);
             ps.setNString(4, high);
-
+            ps.setNString(5, "%" + Search + "%");
+            ps.setNString(6, "%" + Search + "%");
             rs = ps.executeQuery();
             System.out.println(String.format("BrandID: %s, gender: %s, low: %s, high: %s", BrandID, Gender, low, high));
             if (rs.next()) {

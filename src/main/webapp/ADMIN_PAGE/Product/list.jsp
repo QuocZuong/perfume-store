@@ -38,7 +38,7 @@
               integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
               crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css"/>
-        <link rel="stylesheet" href="/RESOURCES/admin/public/style/list.css">
+        <link rel="stylesheet" href="/RESOURCES/admin/product/public/style/list.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
               rel="stylesheet"
               integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
@@ -49,8 +49,6 @@
                 width:50px;
                 height: 50px;
             }
-
-
         </style>
 
 
@@ -108,7 +106,6 @@
                                         </td>
                                     </tr>
 
-
                                 </c:forEach>
                             </c:if>
                         </tbody>
@@ -122,30 +119,30 @@
 
         <nav aria-label="...">
             <ul class="pagination">
-                <li class="page-item"><a class="page-link" href="/Admin/List/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>">Trang dau</a></li>
-                <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>"><a class="page-link" href="/Admin/List/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="/Admin/Product/List/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>">Trang dau</a></li>
+                <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>"><a class="page-link" href="/Admin/Product/List/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>">Previous</a></li>
                     <c:forEach var="i" begin="${page-2<0?0:page-2}" end="${page+2 +1}">
                         <c:choose>
                             <c:when test="${i==page}">
-                            <li class="page-item active"><a href="/Admin/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
+                            <li class="page-item active"><a href="/Admin/Product/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
                             </c:when>
                             <c:when test="${i>0 && i<=numberOfPage}"> 
-                            <li class="page-item"><a href="/Admin/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
+                            <li class="page-item"><a href="/Admin/Product/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
                             </c:when>
                             <c:otherwise>
                             </c:otherwise>
                         </c:choose>
                     </c:forEach>
-                <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>"><a class="page-link" href="/Admin/List/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>">Next</a></li>
-                <li class="page-item"><a class="page-link" href="/Admin/List/page/${numberOfPage}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>">Trang cuoi</a></li>
+                <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>"><a class="page-link" href="/Admin/Product/List/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>">Next</a></li>
+                <li class="page-item"><a class="page-link" href="/Admin/Product/List/page/${numberOfPage}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>">Trang cuoi</a></li>
             </ul>
         </nav>
         <script>
             function changeLink(){
                 let SearchURL = document.getElementById("inputSearch").value;
-                document.getElementById("Search").href = "/Admin/List/page/1?txtSearch="+SearchURL;
+                document.getElementById("Search").href = "/Admin/Product/List/page/1?txtSearch="+SearchURL;
             }
         </script>
-        <script src="/RESOURCES/admin/public/js/list.js"></script>
+        <script src="/RESOURCES/admin/product/public/js/list.js"></script>
     </body>
 </html>

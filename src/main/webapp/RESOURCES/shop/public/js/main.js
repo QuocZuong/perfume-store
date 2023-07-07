@@ -11,9 +11,13 @@ const gender = url.get("Gender");
 const price = url.get("priceRange")
 const initialBrandStorageHTML = brandStorage.innerHTML;
 
+
+
 if (gender) {
     const genderRadio = document.querySelector(`input[name="Gender"][value="${gender}"]`);
-    if (genderRadio) {
+    if (genderRadio && AllgenderRadio) {
+        // Still bug
+        resetGenderCheckBox();
         genderRadio.checked = true;
     }
 }
@@ -21,35 +25,43 @@ if (gender) {
 if (price) {
     const priceRadio = document.querySelector(`input[name="priceRange"][value="${price}"]`);
     if (priceRadio) {
+        resetGenderCheckBox();
         priceRadio.checked = true;
     }
 }
-
+function resetGenderCheckBox() {
+    const AllgenderRadio = document.querySelector(`input[name="Gender"]`);
+    if (AllgenderRadio) {
+        for (let i = 0; i < AllgenderRadio.length; i++) {
+            AllgenderRadio[i].checked = false;
+        }
+    }
+}
 
 function enableScroll() {
-    window.onscroll = function () {};
+    window.onscroll = function () { };
 }
 
 radioButtons.forEach(function (radioButton) {
     radioButton.addEventListener('click', findByPrice);
 });
 
-searchBox.addEventListener("input", function(event) {
-  const value = event.target.value.toLowerCase().trim();
+searchBox.addEventListener("input", function (event) {
+    const value = event.target.value.toLowerCase().trim();
 
-  if (value === "") {
-    brandStorage.innerHTML = initialBrandStorageHTML; 
-  } else {
-    brandStorage.innerHTML = ""; 
+    if (value === "") {
+        brandStorage.innerHTML = initialBrandStorageHTML;
+    } else {
+        brandStorage.innerHTML = "";
 
-    brandNameForSearch.forEach(function(brand) {
-      const brandText = brand.textContent.toLowerCase();
-      if (brandText.includes(value)) {
-        const listItem = brand.closest("li");
-        brandStorage.appendChild(listItem);
-      }
-    });
-  }
+        brandNameForSearch.forEach(function (brand) {
+            const brandText = brand.textContent.toLowerCase();
+            if (brandText.includes(value)) {
+                const listItem = brand.closest("li");
+                brandStorage.appendChild(listItem);
+            }
+        });
+    }
 });
 
 function findByPrice() {
@@ -58,9 +70,9 @@ function findByPrice() {
     products.forEach(function (product) {
         const productPrice = parseFloat(product.querySelector(".product-price").textContent.replace(/\D/g, ''));
         if ((selectedOption === "low" && productPrice >= 1500000 && productPrice <= 3000000)
-                || (selectedOption === "medium" && productPrice >= 3000000 && productPrice <= 5000000)
-                || (selectedOption === "high" && productPrice >= 5000000)
-                ) {
+            || (selectedOption === "medium" && productPrice >= 3000000 && productPrice <= 5000000)
+            || (selectedOption === "high" && productPrice >= 5000000)
+        ) {
             product.style.display = "flex";
         } else {
             product.style.display = "none";
@@ -147,7 +159,7 @@ if (storedClickedValue) {
         anchorTags.forEach((tag) => {
             if (tag.getAttribute("href") === item.value) {
                 tag.classList.add("clicked");
-                tag.scrollIntoView({behavior: "smooth", block: "center", inline: "start"});
+                tag.scrollIntoView({ behavior: "smooth", block: "center", inline: "start" });
             }
         });
     } else {

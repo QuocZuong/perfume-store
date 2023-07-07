@@ -1,4 +1,5 @@
-<%-- Document : index.jsp Created on : Jun 7, 2023, 1:34:15 PM Author : Acer --%>
+
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@page import="DAOs.ProductDAO" %>
@@ -6,8 +7,20 @@
 <%@page import="java.sql.ResultSet" %>
 <%@page import="jakarta.servlet.http.HttpServletRequest"%>
 <%@page import="jakarta.servlet.http.HttpServletResponse"%>
+<%@page import="jakarta.servlet.http.Cookie"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
+
+<%! ProductDAO pdao = new ProductDAO();%>
+<%! BrandDAO bdao = new BrandDAO();%>
+<%! ResultSet rs = null;%>
+<%! int currentPage, numberOfPage;%>
+<%! boolean isAdmin;%>
+<%
+    currentPage = (int) request.getAttribute("page");
+    numberOfPage = (int) request.getAttribute("numberOfPage");
+    isAdmin = (boolean) ((Cookie) request.getSession().getAttribute("userCookie")).getName().equals("Admin");
+%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -33,16 +46,7 @@
         <title>
             <%= request.getAttribute("shopName")%>
         </title>
-        <%! ProductDAO pdao = new ProductDAO();%>
-        <%! BrandDAO bdao = new BrandDAO();%>
-        <%! ResultSet rs = null;%>
-        <%! int currentPage, numberOfPage;%>
-        <%! boolean isAdmin;%>
-        <%
-            currentPage = (int) request.getAttribute("page");
-            numberOfPage = (int) request.getAttribute("numberOfPage");
-            isAdmin = (boolean) ((Cookie) request.getSession().getAttribute("userCookie")).getName().equals("Admin");
-        %>
+
 
     </head>
 
@@ -50,7 +54,7 @@
 
 
         <div class="container-fluid">
-            
+
             <div class="row">
                 <div class="col-md-12 nav">
                     <ul>
@@ -65,8 +69,8 @@
                                      height="64"></a>
                     <input id="inputSearch" type="text" name="txtSearch" value="<%= (request.getParameter("txtSearch") != null ? request.getParameter("txtSearch") : "")%>">
                     <div class="account">
-                        <a><img src="/RESOURCES/images/icons/search.png" alt=""></a>
-                        <a href="<%= isAdmin ? '/Admin/User' : '/Client/User'%>" id="SearchProduct" onclick="changeLink();"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+                        <a href="" id="SearchProduct" onclick="changeLink();"><img src="/RESOURCES/images/icons/search.png" alt=""></a>
+                        <a href="<%= isAdmin ? "/Admin/User" : "/Client/User"%>"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
                         <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
                     </div>
                 </div>
@@ -93,10 +97,12 @@
                                         </li>
 
                                         <% }
-                                            rs = null; %>
+                                            rs = null;%>
                                     </ul>
                                 </div>
                             </div>
+
+                            <!--Filter Form-->
 
                             <form action="" id="searchForm" method="GET">
                                 <div class="gender">
@@ -121,7 +127,9 @@
                                     <input type="radio" name="priceRange" id="high" value="5000000-100000000" onchange="this.form.submit()">
                                     <label for="high"> >5.000.000</label>
                                 </div>
+                                <input type="hidden" name="txtSearch" value="<%= (request.getParameter("txtSearch") != null ? request.getParameter("txtSearch") : "")%>">
                             </form>
+                            <!--Filter Form-->
 
                         </div>
 
@@ -185,7 +193,7 @@
                                         <div style="transform: rotate(180deg);"><i class="bi bi-play"></i></div>
                                     </a>
                                 </li>
-                               
+
                                 <c:forEach var="i" begin="${page-2<0?0:page-2}" end="${page+2 +1}">
                                     <c:choose>
                                         <c:when test="${i==page}">
@@ -276,6 +284,12 @@
             </div>
 
         </div>
+        <script>
+            function changeLink() {
+                let SearchURL = document.getElementById("inputSearch").value;
+                document.getElementById("SearchProduct").href = "${currentURL}/page/1<%= (request.getQueryString() == null ? "?txtSearch=" : "?" + request.getQueryString().replace("&txtSearch=" + request.getParameter("txtSearch"), "") + "&txtSearch=")%>" + SearchURL;
+                    }
+        </script>
 
         <script
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"

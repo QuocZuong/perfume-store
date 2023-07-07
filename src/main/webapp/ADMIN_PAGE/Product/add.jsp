@@ -1,5 +1,3 @@
-
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -19,7 +17,7 @@
               rel="stylesheet" type="text/css" />
 
         <!--Custom Style-->
-        <link rel="stylesheet" href="/RESOURCES/admin/public/style/add.css">
+        <link rel="stylesheet" href="/RESOURCES/admin/product/public/style/add.css">
         <link rel="icon" href="/RESOURCES/images/icons/icon.webp">
 
         <style>
@@ -32,7 +30,7 @@
     <body>
         <div class="container">
             <h1>Add Product</h1>
-            <form action="/Admin/Add" method="POST" enctype="multipart/form-data">
+            <form action="/Admin/Product/Add" method="POST" enctype="multipart/form-data">
                 <div class="name">
                     <label>Product name *</label>
                     <input type="text" name="txtProductName">
@@ -101,7 +99,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 
-        <script src="/RESOURCES/admin/public/js/main.js"></script>
+        <script src="/RESOURCES/admin/product/public/js/main.js"></script>
         <!--Jquery Validation-->
         <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
         <script>

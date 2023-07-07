@@ -46,11 +46,11 @@ public class ProductController extends HttpServlet {
                 || path.startsWith(LIST_URI + "/BrandID")
                 || path.startsWith(LIST_URI + "/page")) {
             ProductFilter(request, response);
-            if ((int) request.getAttribute("page") > (int) request.getAttribute("numberOfPage")) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            } else {
-                request.getRequestDispatcher("/PRODUCT_PAGE/list.jsp").forward(request, response);
-            }
+            // if ((int) request.getAttribute("page") > (int) request.getAttribute("numberOfPage")) {
+            //     response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            // } else {
+            // }
+            request.getRequestDispatcher("/PRODUCT_PAGE/list.jsp").forward(request, response);
             return;
         }
 
@@ -95,11 +95,11 @@ public class ProductController extends HttpServlet {
 
         String gender = request.getParameter("Gender");
         String price = request.getParameter("priceRange");
-
+        String Search = request.getParameter("txtSearch");
         String path = request.getRequestURL().toString();
         String data[] = path.split("/");
         final int ROWS = 20;
-
+        System.out.println("Search la:"+ Search);
         String brandID = null;
         int page = 1;
 
@@ -110,11 +110,13 @@ public class ProductController extends HttpServlet {
                 page = Integer.parseInt(data[i + 1]);
             }
         }
-
-        int NumberOfProduct = pDAO.GetNumberOfProduct(brandID, gender, price, page);
+        if (Search == null || Search.equals("")) {
+            Search = "%";
+        }
+        int NumberOfProduct = pDAO.GetNumberOfProduct(brandID, gender, price, Search);
         int NumberOfPage = NumberOfProduct / ROWS;
         NumberOfPage = (NumberOfProduct % ROWS == 0 ? NumberOfPage : NumberOfPage + 1);
-
+        
         String root = path.replace(request.getRequestURI(), "");
         String currentURL = root + LIST_URI;
         currentURL += (brandID == null ? "" : "/BrandID/" + brandID);
@@ -135,7 +137,7 @@ public class ProductController extends HttpServlet {
         if (brandID != null && (bDao.getBrandName(Integer.parseInt(brandID)) != null)) {
             shop = bDao.getBrandName(Integer.parseInt(brandID));
         }
-        request.setAttribute("PDResultSet", pDAO.getFilteredProduct(brandID, gender, price, page));
+        request.setAttribute("PDResultSet", pDAO.getFilteredProduct(brandID, gender, price, page, Search));
         request.setAttribute("shopName", shop);
         request.setAttribute("BDResultSet", bdRs);
     }

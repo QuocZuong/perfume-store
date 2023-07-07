@@ -1,15 +1,7 @@
-<%-- 
-    Document   : detail
-    Created on : Jul 3, 2023, 3:41:56 PM
-    Author     : Acer
---%>
-
 <%@page import="DAOs.ProductDAO"%>
 <%@page import="DAOs.BrandDAO"%>
 <%@page import="Models.Product"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-
-
 
 <%! ProductDAO pDAO = new ProductDAO(); %>
 <%! BrandDAO bDao = new BrandDAO();%>

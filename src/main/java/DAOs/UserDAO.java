@@ -190,6 +190,54 @@ public class UserDAO {
         return 0;
     }
 
+    public ResultSet getFilteredUserForAdminSearch(int page, String Search) {
+        String sql = "SELECT * FROM [User]\n"
+                + "WHERE ID LIKE ? OR Name LIKE ?\n"
+                + "ORDER BY ID\n"
+                + "OFFSET ? ROWS\n"
+                + "FETCH NEXT ? ROWS ONLY";
+
+        final int ROWS = 20;
+        final int OFFSET = ROWS * (page - 1);
+        ResultSet rs = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, Search);
+            ps.setNString(2, "%" + Search + "%");
+            ps.setInt(3, OFFSET);
+            ps.setInt(4, ROWS);
+
+            rs = ps.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return rs;
+    }
+
+    public int GetNumberOfUserForSearch(String Search) {
+
+        ResultSet rs = null;
+
+        String sql = "SELECT COUNT(*) AS CountRow FROM [User]\n"
+                + "WHERE ID LIKE ?\n"
+                + "OR Name LIKE ?\n";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setString(1, Search);
+            ps.setNString(2, "%" + Search + "%");
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("CountRow");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return -1;
+    }
+
     /* --------------------- UPDATE SECTION --------------------- */
     public int checkout(Integer ClientID, Date Date, String Address, String PhoneNumber, String Note, Integer Sum) {
         if (ClientID == null || Date == null || Sum == null) {

@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import DAOs.ProductDAO;
+import DAOs.UserDAO;
+import Models.User;
 import Models.Product;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -22,15 +24,19 @@ import jakarta.servlet.http.Part;
 public class AdminController extends HttpServlet {
 
     // ----------------------- URI DECLARATION SECTION ----------------------------
-    public static final String ADMIN_USER_URI = "/Admin/User";
-    public static String ADMIN_PRODUCT_LIST_URI = "/Admin/List";
-    public static String ADMIN_PRODUCT_ADD_URI = "/Admin/Add";
-    public static String ADMIN_UPDATE_URI = "/Admin/Update";
-    public static String ADMIN_DELETE_URI = "/Admin/Delete";
-    public static String ADMIN_RESTORE_URI = "/Admin/Restore";
+    public static final String ADMIN_USER_URI = "/Admin";
+    public static final String ADMIN_PRODUCT_LIST_URI = "/Admin/Product/List";
+    public static final String ADMIN_PRODUCT_ADD_URI = "/Admin/Product/Add";
+    public static final String ADMIN_PRODUCT_UPDATE_URI = "/Admin/Product/Update";
+    public static final String ADMIN_PRODUCT_DELETE_URI = "/Admin/Product/Delete";
+    public static final String ADMIN_PRODUCT_RESTORE_URI = "/Admin/Product/Restore";
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
-    // + sign on the left to edit the code.">
+    public static final String ADMIN_USER_LIST_URI = "/Admin/User/List";
+    public static final String ADMIN_USER_ADD_URI = "/Admin/User/Add";
+    public static final String ADMIN_USER_UPDATE_URI = "/Admin/User/Update";
+    public static final String ADMIN_USER_DELETE_URI = "/Admin/User/Delete";
+    public static final String ADMIN_USER_RESTORE_URI = "/Admin/User/Restore";
+
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -43,39 +49,45 @@ public class AdminController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String path = request.getRequestURI();
-        if (path.startsWith(ADMIN_PRODUCT_LIST_URI) || path.startsWith(ADMIN_PRODUCT_LIST_URI + "/page")) {
-            searchProduct(request, response);
-            request.getRequestDispatcher("/ADMIN_PAGE/list.jsp").forward(request, response);
+        if (path.startsWith(ADMIN_USER_URI)) {
+            request.getRequestDispatcher("/ADMIN_PAGE/admin.jsp").forward(request, response);
             return;
         }
-        if (path.startsWith(ADMIN_DELETE_URI)) {
+        if (path.startsWith(ADMIN_PRODUCT_LIST_URI) || path.startsWith(ADMIN_PRODUCT_LIST_URI + "/page")) {
+            searchProduct(request, response);
+            request.getRequestDispatcher("/ADMIN_PAGE/product/list.jsp").forward(request, response);
+            return;
+        }
+        if (path.startsWith(ADMIN_PRODUCT_DELETE_URI)) {
             deleteProduct(request, response);
             response.sendRedirect(ADMIN_PRODUCT_LIST_URI);
             return;
         }
         if (path.startsWith(ADMIN_PRODUCT_ADD_URI)) {
-            request.getRequestDispatcher("/ADMIN_PAGE/add.jsp").forward(request, response);
+            request.getRequestDispatcher("/ADMIN_PAGE/product/add.jsp").forward(request, response);
             return;
         }
-        if (path.startsWith(ADMIN_UPDATE_URI)) {
+        if (path.startsWith(ADMIN_PRODUCT_UPDATE_URI)) {
             if (handleUpdateProduct(request, response)) {
-                request.getRequestDispatcher("/ADMIN_PAGE/update.jsp").forward(request, response);
+                request.getRequestDispatcher("/ADMIN_PAGE/product/update.jsp").forward(request, response);
             } else {
                 response.sendRedirect(ADMIN_PRODUCT_LIST_URI);
             }
             return;
         }
-
-        if (path.startsWith(ADMIN_RESTORE_URI)) {
+        if (path.startsWith(ADMIN_PRODUCT_RESTORE_URI)) {
             restoreProduct(request, response);
             response.sendRedirect(ADMIN_PRODUCT_LIST_URI);
             return;
         }
 
-        if (path.startsWith(ADMIN_USER_URI)) {
-            request.getRequestDispatcher("/ADMIN_PAGE/admin.jsp").forward(request, response);
+        if (path.startsWith(ADMIN_USER_LIST_URI) || path.startsWith(ADMIN_USER_LIST_URI + "/page")) {
+            searchUser(request, response);
+            request.getRequestDispatcher("/ADMIN_PAGE/user/list.jsp").forward(request, response);
             return;
         }
+
+        
 
     }
 
@@ -101,7 +113,7 @@ public class AdminController extends HttpServlet {
             }
             return;
         }
-        if (path.startsWith(ADMIN_UPDATE_URI)) {
+        if (path.startsWith(ADMIN_PRODUCT_UPDATE_URI)) {
             if (request.getParameter("btnUpdateProduct") != null
                     && request.getParameter("btnUpdateProduct").equals("Submit")) {
                 updateProduct(request, response);
@@ -202,6 +214,62 @@ public class AdminController extends HttpServlet {
         request.setAttribute("page", page);
         request.setAttribute("numberOfPage", NumberOfPage);
         request.setAttribute("listProduct", listProduct);
+        request.setAttribute("Search", Search);
+    }
+
+    private void searchUser(HttpServletRequest request, HttpServletResponse response) {
+        String URI = request.getRequestURI();
+        String data[] = URI.split("/");
+        int page = 1;
+        String Search = request.getParameter("txtSearch");
+        UserDAO uDAO = new UserDAO();
+        ResultSet rs = null;
+
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("page")) {
+                page = Integer.parseInt(data[i + 1]);
+            }
+        }
+
+        if (Search == null || Search.equals("")) {
+            Search = "%";
+        }
+
+        rs = uDAO.getFilteredUserForAdminSearch(page, Search);
+        List<User> listUser = new ArrayList<>();
+
+        try {
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String name = rs.getString("Name");
+                String userName = rs.getString("UserName");
+                String password = rs.getString("Password");
+                String phoneNumber = rs.getString("PhoneNumber");
+                String email = rs.getString("Email");
+                String address = rs.getString("Address");
+                String role = rs.getString("Role");
+                boolean active = rs.getBoolean("Active");
+
+                // Create a new User object and add it to the list
+                User user = new User(id, name, userName, password, phoneNumber, email, address, role);
+
+                if (!active) {
+                    user.setActive(false);
+                }
+
+                listUser.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        int NumberOfUser = uDAO.GetNumberOfUserForSearch(Search);
+        final int ROWS = 20;
+        int NumberOfPage = NumberOfUser / ROWS;
+        NumberOfPage = (NumberOfUser % ROWS == 0 ? NumberOfPage : NumberOfPage + 1);
+        request.setAttribute("page", page);
+        request.setAttribute("numberOfPage", NumberOfPage);
+        request.setAttribute("listProduct", listUser);
         request.setAttribute("Search", Search);
     }
 
@@ -320,16 +388,6 @@ public class AdminController extends HttpServlet {
         }
         System.out.println("Delete Product with ID: " + productId + " successfully!");
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
 
 }
 // ---------------------------- TRASH SECTION ----------------------------
