@@ -12,12 +12,42 @@ const price = url.get("priceRange")
 const initialBrandStorageHTML = brandStorage.innerHTML;
 
 
+const AllgenderRadio = document.querySelectorAll(`input[name="Gender"]`);
+const AllPriceRangeRadio = document.querySelectorAll(`input[name="priceRange"]`);
+const searchForm = document.querySelector(`form#searchForm`);
+console.log({ AllgenderRadio });
+
+// Make checkbox function like radio button
+AllgenderRadio.forEach(function (item) {
+    item.addEventListener("change", function () {
+        handleCheckboxChange(item, AllgenderRadio);
+        searchForm.submit();
+    })
+});
+
+AllPriceRangeRadio.forEach(function (item) {
+    console.log(item);
+    item.addEventListener("change", function () {
+        handleCheckboxChange(item, AllPriceRangeRadio);
+        searchForm.submit();
+    })
+});
+
+
+function handleCheckboxChange(checkbox, eleName) {
+    if (checkbox.checked) {
+        eleName.forEach(function (item) {
+            if (item !== checkbox) {
+                item.checked = false;
+            }
+        });
+    }
+}
+// Make checkbox function like radio button
 
 if (gender) {
     const genderRadio = document.querySelector(`input[name="Gender"][value="${gender}"]`);
-    if (genderRadio && AllgenderRadio) {
-        // Still bug
-        resetGenderCheckBox();
+    if (genderRadio) {
         genderRadio.checked = true;
     }
 }
@@ -25,12 +55,10 @@ if (gender) {
 if (price) {
     const priceRadio = document.querySelector(`input[name="priceRange"][value="${price}"]`);
     if (priceRadio) {
-        resetGenderCheckBox();
         priceRadio.checked = true;
     }
 }
 function resetGenderCheckBox() {
-    const AllgenderRadio = document.querySelector(`input[name="Gender"]`);
     if (AllgenderRadio) {
         for (let i = 0; i < AllgenderRadio.length; i++) {
             AllgenderRadio[i].checked = false;
@@ -165,6 +193,42 @@ if (storedClickedValue) {
     } else {
         localStorage.removeItem("clickedValue");
     }
+}
+
+window.addEventListener("load", function () {
+    const spinnerContainer = document.querySelector(".spinner-container");
+    const container = document.querySelector(".container-fluid");
+
+    const hideDelay = 1500;
+
+    setTimeout(function () {
+        spinnerContainer.style.display = "none";
+        container.style.display = "block";
+    }, hideDelay);
+});
+
+//Search box function
+const searchBoxTop = document.querySelector(".searchIcon");
+const searchDiv = document.querySelector(".search-box");
+const closeBtn = document.querySelector(".close-search-box");
+const inputSearch = document.getElementById("inputSearch");
+
+searchBoxTop.addEventListener("click", () => {
+  searchDiv.classList.add("show");
+  setTimeout(() => {
+    inputSearch.focus();
+  }, 100);
+});
+
+closeBtn.addEventListener("click", () => {
+  searchDiv.classList.remove("show");
+});
+
+function handleKeyDown(event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    document.getElementById("SearchProduct").click();
+  }
 }
 
 enableScroll();

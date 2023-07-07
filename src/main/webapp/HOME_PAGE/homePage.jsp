@@ -1,10 +1,6 @@
-<%-- 
-    Document   : newjsp
-    Created on : Jul 3, 2023, 2:01:01 PM
-    Author     : Acer
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="jakarta.servlet.http.Cookie"%>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -56,7 +52,7 @@
                                                                 height="64"></a>
                     <div class="account">
                         <a><img src="/RESOURCES/images/icons/search.png" alt=""></a>
-                        <a href="/Log/Login"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+                        <a href="/Client/User"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
                         <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
                     </div>
                 </div>

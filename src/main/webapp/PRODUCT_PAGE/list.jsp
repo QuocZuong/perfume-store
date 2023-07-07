@@ -1,6 +1,3 @@
-
-
-
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@page import="DAOs.ProductDAO" %>
 <%@page import="DAOs.BrandDAO" %>
@@ -15,11 +12,9 @@
 <%! BrandDAO bdao = new BrandDAO();%>
 <%! ResultSet rs = null;%>
 <%! int currentPage, numberOfPage;%>
-<%! boolean isAdmin;%>
 <%
     currentPage = (int) request.getAttribute("page");
     numberOfPage = (int) request.getAttribute("numberOfPage");
-    isAdmin = (boolean) ((Cookie) request.getSession().getAttribute("userCookie")).getName().equals("Admin");
 %>
 
 <!DOCTYPE html>
@@ -67,12 +62,25 @@
                     </ul>
                     <a href="/"><img src="/RESOURCES/images/icons/icon.webp" alt=""
                                      height="64"></a>
-                    <input id="inputSearch" type="text" name="txtSearch" value="<%= (request.getParameter("txtSearch") != null ? request.getParameter("txtSearch") : "")%>">
+
+                    <!-- This is search function -->                                     
                     <div class="account">
-                        <a href="" id="SearchProduct" onclick="changeLink();"><img src="/RESOURCES/images/icons/search.png" alt=""></a>
-                        <a href="<%= isAdmin ? "/Admin/User" : "/Client/User"%>"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+                        <a class="searchIcon"><img src="/RESOURCES/images/icons/search.png" alt=""></a>
+                        <a href="/Client/User"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
                         <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
                     </div>
+                    <div class="search-box">
+                        <div class="search-box-first">
+                            <a href="" id="SearchProduct" onclick="changeLink()">
+                                <img src="/RESOURCES/images/icons/search.png" alt="">
+                            </a>
+                            <input id="inputSearch" type="text" name="txtSearch" placeholder="Tìm kiếm" value="<%= (request.getParameter("txtSearch") != null ? request.getParameter("txtSearch") : "")%>" autofocus onkeydown="handleKeyDown(event)">
+                        </div>
+                        <button class="close-search-box" type="button">
+                            <img src="/RESOURCES/images/icons/close.png" alt="">
+                        </button>
+                    </div>
+
                 </div>
             </div>
 
@@ -107,27 +115,29 @@
                             <form action="" id="searchForm" method="GET">
                                 <div class="gender">
                                     <h4>GIỚI TÍNH</h4>
-                                    <input type="checkbox" name="Gender" id="Nam" value="Nam" onchange="this.form.submit()">
+                                    <input type="checkbox" name="Gender" id="Nam" value="Nam">
                                     <label for="male" value="Male">Nam</label>
 
-                                    <input type="checkbox" name="Gender" id="Nữ" value="Nữ" onchange="this.form.submit()">
+                                    <input type="checkbox" name="Gender" id="Nữ" value="Nữ">
                                     <label for="female" value="Female">Nữ</label>
 
-                                    <input type="checkbox" name="Gender" id="Unisex" value="Unisex" onchange="this.form.submit()">
+                                    <input type="checkbox" name="Gender" id="Unisex" value="Unisex">
                                     <label for="unisex" value="Unisex">Unisex</label>
                                 </div>
                                 <div class="price">
                                     <h4>THEO GIÁ</h4>
-                                    <input type="radio" name="priceRange" id="low" value="1500000-3000000" onchange="this.form.submit()">
+                                    <input type="checkbox" name="priceRange" id="low" value="1500000-3000000">
                                     <label for="low">1.500.000 - 3.000.000</label>
                                     <br>
-                                    <input type="radio" name="priceRange" id="medium" value="3000000-5000000" onchange="this.form.submit()">
+                                    <input type="checkbox" name="priceRange" id="medium" value="3000000-5000000">
                                     <label for="medium">3.000.000 - 5.000.000</label>
                                     <br>
-                                    <input type="radio" name="priceRange" id="high" value="5000000-100000000" onchange="this.form.submit()">
+                                    <input type="checkbox" name="priceRange" id="high" value="5000000-100000000">
                                     <label for="high"> >5.000.000</label>
                                 </div>
-                                <input type="hidden" name="txtSearch" value="<%= (request.getParameter("txtSearch") != null ? request.getParameter("txtSearch") : "")%>">
+                                <c:if test='<%= request.getParameter("txtSearch") != null%>'>
+                                    <input type="hidden" name="txtSearch"  value="<%= request.getParameter("txtSearch")%>" >
+                                </c:if>
                             </form>
                             <!--Filter Form-->
 
@@ -185,7 +195,7 @@
                             <ul class="pagination">
                                 <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>">
                                     <a class="page-link" href="${currentURL}/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link">
-                                        <i class="bi bi-skip-backward"></i>
+                                        <div><i class="bi bi-skip-backward" id></i></div>
                                     </a>
                                 </li>
                                 <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>">
@@ -215,7 +225,7 @@
                                 </li>
                                 <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>">
                                     <a class="page-link" href="${currentURL}/page/<%=numberOfPage%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link">
-                                        <div style="transform: rotate(180deg);"><i class="bi bi-skip-backward"></i></div>
+                                        <i class="bi bi-skip-forward"></i>
                                     </a>
                                 </li>
                             </ul>
@@ -282,12 +292,26 @@
                     <p>&copy; xxiv 2023 | all right reserved</p>
                 </div>
             </div>
-
         </div>
+
+        <div class="spinner-container">
+            <div class="spinner-border" role="status"></div>
+        </div>
+        <!-- This is funtion search -->
         <script>
             function changeLink() {
                 let SearchURL = document.getElementById("inputSearch").value;
-                document.getElementById("SearchProduct").href = "${currentURL}/page/1<%= (request.getQueryString() == null ? "?txtSearch=" : "?" + request.getQueryString().replace("&txtSearch=" + request.getParameter("txtSearch"), "") + "&txtSearch=")%>" + SearchURL;
+            <%! String searchTxT;%>
+            <%
+                    if (request.getQueryString() != null) {
+                        if (request.getQueryString().startsWith("txtSearch")) {
+                            searchTxT = "txtSearch=";
+                        } else {
+                            searchTxT = "&txtSearch=";
+                        }
+                    }
+            %>
+                document.getElementById("SearchProduct").href = "${currentURL}/page/1<%= (request.getQueryString() == null ? "?txtSearch=" : "?" + request.getQueryString().replace("&txtSearch=" + request.getParameter("txtSearch"), "").replace("txtSearch=" + request.getParameter("txtSearch"), "") + searchTxT)%>" + SearchURL;
                     }
         </script>
 

@@ -32,6 +32,18 @@ body::-webkit-scrollbar-thumb:hover {
     margin: 0;
 }
 
+.container-fluid{
+    display: none;
+}
+
+.spinner-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+}
+
 h1{
     min-width: 200px;
 }
@@ -100,6 +112,76 @@ h1{
     text-decoration: none;
 }
 
+.nav .search-box {
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 98%;
+    background-color: white;
+    border-radius: 20px;
+    
+    opacity: 0;
+    visibility: hidden;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.nav .search-box.show {
+    opacity: 1;
+    visibility: visible;
+    max-height: 500px;
+    transition-delay: 0.07s;
+}
+
+.nav .search-box .search-box-first{
+    font-size: 1.2rem;
+    margin-left: 30px;
+    padding: 5px 20px; 
+    width: 95%;
+    height: 50px;
+    background-color: #ececec;
+    border: none;
+    border-radius: 40px;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav .search-box .search-box-first #SearchProduct{
+    margin: 0;
+}
+
+.nav .search-box #inputSearch{
+    margin-left: 10px;
+    font-size: 1.2rem;
+    width: 100%;
+    height: 50px;
+    background-color: transparent;
+    border: none;
+    border-radius: 40px;
+    outline: none;
+}
+
+.nav .search-box  img{
+    width: 20px;
+    height: 20px;
+}
+
+
+.nav .search-box .search-box-first:hover{
+    background-color:#dfdfdf;
+}
+
+.nav .search-box button{
+    background-color: transparent;
+    outline: none;
+    border: none;
+    margin-right: 30px; 
+}
+
 .nav li a:first-child {
     border-bottom: 1px solid transparent;
 }
@@ -142,6 +224,7 @@ h1{
 
 .content .header-for-shop{
     margin-top: 70px;
+    margin: 70px 0 0 20px;
     font-size: 5vw;
 }
 .main{
@@ -301,18 +384,24 @@ h1{
 }
 
 .content .pagination .page-item{
-
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .content .pagination .page-item .page-link{
     text-align: center;
-    padding: 9px 12px 16px 11px;
-    margin-left: 10px;
+    padding: 8px 15px 15px 14px;
+    margin: 3px;
     color: black;
     border: none;
     border: 1px solid transparent;
     border-radius: 50%;
     width: 40px;
     height: 40px;
+    outline: none;
 }
 .content .pagination .page-item:first-child .page-link{
     background-image: url("/shop/public/images/leftarrow.png");
@@ -328,10 +417,21 @@ h1{
 
 .content .pagination .page-item .page-link.active{
     border: 1px solid black;
+    outline: none;
 }
 
-.content .pagination .page-item .page-link:hover{
+.pagination div{
+    margin-top: 3px;
+    height: 19px;
+}
+
+li.page-item.active{
     border: 1px solid black;
+    border-radius: 50%;
+}
+
+li.page-item.active a{
+    background-color: transparent;
 }
 
 .register{

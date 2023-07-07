@@ -1,4 +1,3 @@
-
 <%@page import="java.util.ArrayList"%>
 <%@page import="Models.Product"%>
 <%@page import="DAOs.BrandDAO"%>
@@ -75,34 +74,26 @@
                     </thead>
 
                         <tbody>
-                            <c:if test="<%= (listProduct.size() != 0)%>">
-                                <c:forEach var="i" begin="0" end="<%= listProduct.size() - 1%>">
+                            <c:if test="<%= (listUser.size() != 0)%>">
+                                <c:forEach var="i" begin="0" end="<%= listUser.size() - 1%>">
                                     <%
-                                        Product pd = listProduct.get((int) pageContext.getAttribute("i"));
+                                        User us = listUser.get((int) pageContext.getAttribute("i"));
                                     %>
                                     <tr class="rowTable  ">
-                                        <td class="<%= pd.isActive() ? " " : "faded"%>" ><%= pd.getID()%></td>
-                                        <td class="<%= pd.isActive() ? " " : "faded"%>"><%= pd.getName()%></td>
-                                        <td class="<%= pd.isActive() ? " " : "faded"%>"><%= bDAO.getBrandName(pd.getBrandID())%></td>
-                                        <td class="<%= pd.isActive() ? " " : "faded"%>"> <%= pDAO.IntegerToMoney(pd.getPrice())%></td>
-                                        <td class="<%= pd.isActive() ? " " : "faded"%>"><%= pd.getGender()%></td>
-                                        <td class="<%= pd.isActive() ? " " : "faded"%>" > <%= pd.getSmell()%></td>
-                                        <td class="<%= pd.isActive() ? " " : "faded"%>"><%= pd.getQuantity()%></td>
-                                        <td class="<%= pd.isActive() ? " " : "faded"%>"><%= pd.getReleaseYear()%></td>
-                                        <td class="<%= pd.isActive() ? " " : "faded"%>"><%= pd.getVolume()%></td>
-                                        <td class="<%= pd.isActive() ? " " : "faded"%>"><img src="<%= pd.getImgURL()%>" alt="<%= pd.getName()%>"/></td>
-                                        <td class="description <%= pd.isActive() ? " " : "faded"%>">
-                                            <div class="content"><%= pd.getDescription()%></div>
-                                            <button class="expand-btn">Xem thêm</button>
+                                        <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getID()%></td>
+                                        <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getName()%></td>
+                                        <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getUsername()%></td>
+                                        <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getPhoneNumber()%></td>
+                                        <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getEmail()%></td>
+                                        <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getAddress()%></td>
+                                        <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getRole()%></td>
+                                        <td class="<%= us.isActive() ? " " : "faded"%>">
+                                            <a href="/Admin/User/Update/ID/<%= us.getID()%>" class="<%= us.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0">Update</a>
                                         </td>
-                                        <td class="<%= pd.isActive() ? " " : "faded"%>">
-                                            <a href="/Admin/Update/ID/<%= pd.getID()%>" class="<%= pd.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0">Update</a>
-                                        </td>
-                                        <td class="buttonStatus  <%= pd.isActive() ? "" : "unfaded"%>">
-                                            <a href="/Admin/<%= pd.isActive() ? "Delete" : "Restore"%>/ID/<%=  pd.getID()%>" class="btn btn-outline-<%= pd.isActive() ? "danger" : "success"%> rounded-0"> <%= pd.isActive() ? "Delete" : "Restore"%></a>
+                                        <td class="buttonStatus <%= us.isActive() ? "" : "unfaded"%>">
+                                            <a href="/Admin/User/<%= us.isActive() ? "Delete" : "Restore"%>/ID/<%=  us.getID()%>" class="btn btn-outline-<%= us.isActive() ? "danger" : "success"%> rounded-0"> <%= us.isActive() ? "Delete" : "Restore"%></a>
                                         </td>
                                     </tr>
-
 
                                 </c:forEach>
                             </c:if>
@@ -116,25 +107,44 @@
         <h1>page:  <%= currentPage%> </h1>
 
         <nav aria-label="...">
-            <ul class="pagination">
-                <li class="page-item"><a class="page-link" href="/Admin/List/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>">Trang dau</a></li>
-                <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>"><a class="page-link" href="/Admin/List/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>">Previous</a></li>
-                    <c:forEach var="i" begin="${page-2<0?0:page-2}" end="${page+2 +1}">
-                        <c:choose>
-                            <c:when test="${i==page}">
-                            <li class="page-item active"><a href="/Admin/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
-                            </c:when>
-                            <c:when test="${i>0 && i<=numberOfPage}"> 
-                            <li class="page-item"><a href="/Admin/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
-                            </c:when>
-                            <c:otherwise>
-                            </c:otherwise>
-                        </c:choose>
-                    </c:forEach>
-                <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>"><a class="page-link" href="/Admin/List/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>">Next</a></li>
-                <li class="page-item"><a class="page-link" href="/Admin/Product/List/page/${numberOfPage}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>">Trang cuoi</a></li>
-            </ul>
-        </nav>
+                            <ul class="pagination">
+                                <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>">
+                                    <a class="page-link" href="${currentURL}/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link">
+                                        <div><i class="bi bi-skip-backward" id></i></div>
+                                    </a>
+                                </li>
+                                <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>">
+                                    <a class="page-link" href="${currentURL}/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link">
+                                        <div style="transform: rotate(180deg);"><i class="bi bi-play"></i></div>
+                                    </a>
+                                </li>
+
+                                <c:forEach var="i" begin="${page-2<0?0:page-2}" end="${page+2 +1}">
+                                    <c:choose>
+                                        <c:when test="${i==page}">
+                                            <li class="page-item active"><a href="${currentURL}/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
+                                            </c:when>
+                                            <c:when test="${i>0 && i<=numberOfPage}"> 
+                                            <li class="page-item"><a href="${currentURL}/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
+                                            </c:when>
+                                            <c:otherwise>
+
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
+
+                                <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>">
+                                    <a class="page-link" href="${currentURL}/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link">
+                                        <i class="bi bi-play"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>">
+                                    <a class="page-link" href="${currentURL}/page/<%=numberOfPage%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link">
+                                        <i class="bi bi-skip-forward"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
         <script>
             function changeLink(){
                 let SearchURL = document.getElementById("inputSearch").value;

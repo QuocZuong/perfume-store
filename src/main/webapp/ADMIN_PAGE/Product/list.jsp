@@ -99,10 +99,10 @@
                                             <button class="expand-btn">Xem thêm</button>
                                         </td>
                                         <td class="<%= pd.isActive() ? " " : "faded"%>">
-                                            <a href="/Admin/Update/ID/<%= pd.getID()%>" class="<%= pd.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0">Update</a>
+                                            <a href="/Admin/Product/Update/ID/<%= pd.getID()%>" class="<%= pd.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0">Update</a>
                                         </td>
                                         <td class="buttonStatus  <%= pd.isActive() ? "" : "unfaded"%>">
-                                            <a href="/Admin/<%= pd.isActive() ? "Delete" : "Restore"%>/ID/<%=  pd.getID()%>" class="btn btn-outline-<%= pd.isActive() ? "danger" : "success"%> rounded-0"> <%= pd.isActive() ? "Delete" : "Restore"%></a>
+                                            <a href="/Admin/Product/<%= pd.isActive() ? "Delete" : "Restore"%>/ID/<%=  pd.getID()%>" class="btn btn-outline-<%= pd.isActive() ? "danger" : "success"%> rounded-0"> <%= pd.isActive() ? "Delete" : "Restore"%></a>
                                         </td>
                                     </tr>
 

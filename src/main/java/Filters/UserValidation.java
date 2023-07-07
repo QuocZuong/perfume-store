@@ -100,7 +100,7 @@ public class UserValidation implements Filter {
 			for (int i = 0; i < cookies.length; i++) {
 				if (cookies[i].getName().equals("Admin")) {
 
-					if (!userDAO.isExistUsername(cookies[i].getValue())) {
+					if (!userDAO.isExistUsername(cookies[i].getValue()) && userDAO.isAdmin(cookies[i].getValue())) {
 						cookies[i].setMaxAge(0);
 						cookies[i].setPath("/");
 						response.addCookie(cookies[i]);
@@ -123,7 +123,7 @@ public class UserValidation implements Filter {
 			for (int i = 0; i < cookies.length; i++) {
 				if (cookies[i].getName().equals("Client")) {
 
-					if (!userDAO.isExistUsername(cookies[i].getValue())) {
+					if (!userDAO.isExistUsername(cookies[i].getValue()) && userDAO.isClient(cookies[i].getValue())) {
 						cookies[i].setMaxAge(0);
 						cookies[i].setPath("/");
 						response.addCookie(cookies[i]);

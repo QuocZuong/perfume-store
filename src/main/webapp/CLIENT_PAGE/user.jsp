@@ -310,7 +310,7 @@
             var callApiDistrict = (api) => {
                 return axios.get(api)
                         .then((response) => {
-                            renderData(response.data.districts, "district");
+                            renderData(response.data.districts, "district", "Chọn quận huyện");
                             if (District !== "")
                             {
                                 $(`select option[value='` + District + `']`).prop("selected", true);
@@ -321,15 +321,15 @@
             var callApiWard = (api) => {
                 return axios.get(api)
                         .then((response) => {
-                            renderData(response.data.wards, "ward");
+                            renderData(response.data.wards, "ward", "Chọn phường xã");
                             if (Ward !== "")
                             {
                                 $(`select option[value='` + Ward + `']`).prop("selected", true);
                             }
                         });
             };
-            var renderData = (array, select) => {
-                let row = ' <option disable value="">Chọn</option>';
+            var renderData = (array, select, msg = "Chọn") => {
+                let row = ' <option disable value="">' + msg + '</option>';
                 array.forEach((e) => {
                     let code = e.code;
                     let name = e.name;
@@ -337,20 +337,21 @@
                 });
                 document.querySelector("#" + select).innerHTML = row;
             };
-            function resetData(select) {
-                let row = ' <option disable value="">Chọn</option>';
+
+            function resetData(select, msg = "Chọn") {
+                let row = '<option disable value="">' + msg + '</option>';
                 document.querySelector("#" + select).innerHTML = row;
             }
 
 
             $("#city").change(() => {
-                resetData("district");
-                resetData("ward");
+                resetData("district", "Chọn quận huyện");
+                resetData("ward", "Chọn phường xã");
                 callApiDistrict(host + "p/" + $("#city").find(':selected').data('id') + "?depth=2");
                 printResult();
             });
             $("#district").change(() => {
-                resetData("ward");
+                resetData("ward", "Chọn phường xã");
                 callApiWard(host + "d/" + $("#district").find(':selected').data('id') + "?depth=2");
                 printResult();
             });
