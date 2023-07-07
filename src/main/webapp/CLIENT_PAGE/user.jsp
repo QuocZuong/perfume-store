@@ -145,7 +145,7 @@
                     <div class="address-page">
                         <p>Các địa chỉ bên dưới mặc định sẽ được sử dụng ở trang thanh toán sản phẩm.</p>
                         <div class="default">
-                          
+
                             <!-- Add new Form. Maybe Change later-->
                             <form action="/Client/Update/Address" method="POST">
                                 <h3>Địa chỉ giao hàng mặc định</h3>
@@ -162,7 +162,7 @@
                                     <select id="ward" class="form-select">
                                         <option value="" selected>Chọn phường xã</option>
                                     </select>
-                                  <input style="width:100%" type="text" name="txtPhoneNumber" id="txtPhoneNumber" value="<%= user.getPhoneNumber()%>"> 
+                                    <input style="width:100%" type="text" name="txtPhoneNumber" id="txtPhoneNumber" value="<%= user.getPhoneNumber()%>"> 
                                 </div>
                                 <input  type="hidden" name="txtAddress" id="txtAddress" value="" >
                                 <button type="submit" name="btnUpdateAdress" value="Submit"> <h4>Sửa</h4> </button>
@@ -176,10 +176,13 @@
                             <p><%= user.getPhoneNumber()%></p>
                             <p><%= user.getAddress()%></p>
                         </div>
-                        
+
                     </div>
                     <div class="info-page">
-                        <form action="/Client/Update/Info" method="POST">
+
+
+                        <!--  Form Update Client account -->
+                        <form action="/Client/Update/Info" method="POST" id="formUpdateAccount">
                             <div class="fullname">
                                 <div>
                                     <label>
@@ -207,6 +210,8 @@
                             </fieldset>
                             <button type="submit" name="btnUpdateInfo" value="Submit">Lưu thay đổi</button>
                         </form>
+                        <!--  Form Update Client account -->
+
 
                     </div>
                 </div>
@@ -278,16 +283,18 @@
                 integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>
 
+        <script src="/RESOURCES/user/public/js/main.js"></script>
+
+
+        <!--VietName Province APU-->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 
-        <script src="/RESOURCES/user/public/js/main.js"></script>
         <script >
             const host = "https://provinces.open-api.vn/api/";
             let City = '<%= Tinh%>';
             let District = '<%= QuanHuyen%>';
             let Ward = '<%= PhuongXa%>';
-
             var callAPI = (api) => {
                 return axios.get(api)
                         .then((response) => {
@@ -299,7 +306,6 @@
                             }
                         });
             };
-
             callAPI('https://provinces.open-api.vn/api/?depth=1');
             var callApiDistrict = (api) => {
                 return axios.get(api)
@@ -322,7 +328,6 @@
                             }
                         });
             };
-
             var renderData = (array, select) => {
                 let row = ' <option disable value="">Chọn</option>';
                 array.forEach((e) => {
@@ -332,7 +337,6 @@
                 });
                 document.querySelector("#" + select).innerHTML = row;
             };
-
             function resetData(select) {
                 let row = ' <option disable value="">Chọn</option>';
                 document.querySelector("#" + select).innerHTML = row;
@@ -353,7 +357,6 @@
             $("#ward").change(() => {
                 printResult();
             });
-
             var printResult = () => {
                 if ($("#district").find(':selected').data('id') != "" && $("#city").find(':selected').data('id') != "" &&
                         $("#ward").find(':selected').data('id') != "") {
@@ -369,6 +372,39 @@
                     $("#txtAddress").val(result);
                 }
             };
+        </script>
+
+        <!--Jquery Validation-->
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+        <script>
+            $().ready(function () {
+                $.validator.addMethod("regex", function (value, element, regex) {
+                    return !regex.test(value);
+                }, "No special character please.");
+
+                $("#formUpdateAccount").validate({
+                    rules: {
+                        txtFullname: {
+                            maxlength: 50
+                        },
+                        txtUserName: {
+                            required: true,
+                            maxlength: 50
+                        },
+                        txtEmail: {
+                            required: true,
+                            email: true
+                        },
+                        pwdNew: {
+                            minlength: 6
+                        },
+                        pwdConfirmNew: {
+                            equalto: "#pwdNew"
+                        }
+
+                    }
+                });
+            });
         </script>
     </body>
 

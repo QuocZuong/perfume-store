@@ -438,6 +438,29 @@ public class ProductDAO {
         return -1;
     }
 
+    public int GetNumberOfProductForSearch(String Search) {
+
+        ResultSet rs = null;
+
+        String sql = "SELECT COUNT(*) AS CountRow FROM Product\n"
+                + "WHERE ID LIKE ?\n"
+                + "OR Name LIKE ?\n";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setString(1, Search);
+            ps.setNString(2, "%" + Search + "%");
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("CountRow");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return -1;
+    }
+
     public List<Product> getAllProductActive() {
         ResultSet rs = null;
         List<Product> list = new LinkedList<>();

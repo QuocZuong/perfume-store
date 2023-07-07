@@ -22,6 +22,7 @@ import jakarta.servlet.http.Part;
 public class AdminController extends HttpServlet {
 
     // ----------------------- URI DECLARATION SECTION ----------------------------
+    public static final String ADMIN_USER_URI = "/Admin/User";
     public static String ADMIN_PRODUCT_LIST_URI = "/Admin/List";
     public static String ADMIN_PRODUCT_ADD_URI = "/Admin/Add";
     public static String ADMIN_UPDATE_URI = "/Admin/Update";
@@ -71,6 +72,11 @@ public class AdminController extends HttpServlet {
             return;
         }
 
+        if (path.startsWith(ADMIN_USER_URI)) {
+            request.getRequestDispatcher("/ADMIN_PAGE/admin.jsp").forward(request, response);
+            return;
+        }
+
     }
 
     /**
@@ -113,12 +119,12 @@ public class AdminController extends HttpServlet {
         String pName = request.getParameter("txtProductName");
         String bName = request.getParameter("txtBrandName");
         String pPrice = ProductDAO
-                .IntegerToMoney(Integer.parseInt(request.getParameter("txtProductPrice").replace(".", "")));
+                .IntegerToMoney(Integer.parseInt(request.getParameter("txtProductPrice").replace(",", "")));
         String Gender = request.getParameter("rdoGender");
         String Smell = request.getParameter("txtProductSmell");
-        int Quantity = Integer.parseInt(request.getParameter("txtProductQuantity"));
+        int Quantity = Integer.parseInt(request.getParameter("txtProductQuantity").replace(",", ""));
         int ReleaseYear = Integer.parseInt(request.getParameter("txtProductReleaseYear"));
-        int Volume = Integer.parseInt(request.getParameter("txtProductVolume"));
+        int Volume = Integer.parseInt(request.getParameter("txtProductVolume").replace(",", ""));
         String Description = request.getParameter("txtProductDescription");
 
         String filename = (pDAO.getMaxProductID() + 1) + ".png";
@@ -148,55 +154,6 @@ public class AdminController extends HttpServlet {
     }
 
     // ---------------------------- READ SECTION ----------------------------
-    private void ProductFilter(HttpServletRequest request, HttpServletResponse response) {
-        String URI = request.getRequestURI();
-        String data[] = URI.split("/");
-        int page = 1;
-        ProductDAO pDAO = new ProductDAO();
-        ResultSet rs = null;
-        for (int i = 0; i < data.length; i++) {
-            if (data[i].equals("page")) {
-                page = Integer.parseInt(data[i + 1]);
-            }
-        }
-        rs = pDAO.getFilteredProductForAdmin(page);
-
-        int NumberOfProduct = pDAO.GetNumberOfProduct(null, null, null, page);
-        final int ROWS = 20;
-        int NumberOfPage = NumberOfProduct / ROWS;
-        NumberOfPage = (NumberOfProduct % ROWS == 0 ? NumberOfPage : NumberOfPage + 1);
-
-        request.setAttribute("page", page);
-        request.setAttribute("numberOfPage", NumberOfPage);
-
-        List<Product> listProduct = new ArrayList<>();
-        try {
-            while (rs.next()) {
-                int id = rs.getInt("ID");
-                String name = rs.getString("Name");
-                int brandID = rs.getInt("BrandID");
-                int price = rs.getInt("Price");
-                String gender = rs.getString("Gender");
-                String smell = rs.getString("Smell");
-                int quantity = rs.getInt("Quantity");
-                int releaseYear = rs.getInt("ReleaseYear");
-                int volume = rs.getInt("Volume");
-                String imgURL = rs.getString("ImgURL");
-                String description = rs.getString("Description");
-                boolean active = rs.getBoolean("Active");
-
-                // Create a new Product object and add it to the list
-                Product product = new Product(id, name, brandID, price, gender, smell, quantity, releaseYear, volume,
-                        imgURL, description, active);
-                listProduct.add(product);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        request.setAttribute("listProduct", listProduct);
-
-    }
 
     private void searchProduct(HttpServletRequest request, HttpServletResponse response) {
         String URI = request.getRequestURI();
@@ -209,7 +166,6 @@ public class AdminController extends HttpServlet {
             if (data[i].equals("page")) {
                 page = Integer.parseInt(data[i + 1]);
             }
-
         }
         if (Search == null || Search.equals("")) {
             Search = "%";
@@ -239,14 +195,14 @@ public class AdminController extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        int NumberOfProduct = listProduct.size();
+        int NumberOfProduct = pDAO.GetNumberOfProductForSearch(Search);
         final int ROWS = 20;
         int NumberOfPage = NumberOfProduct / ROWS;
         NumberOfPage = (NumberOfProduct % ROWS == 0 ? NumberOfPage : NumberOfPage + 1);
         request.setAttribute("page", page);
         request.setAttribute("numberOfPage", NumberOfPage);
         request.setAttribute("listProduct", listProduct);
+        request.setAttribute("Search", Search);
     }
 
     // ---------------------------- UPDATE SECTION ----------------------------
@@ -265,12 +221,12 @@ public class AdminController extends HttpServlet {
         String pName = request.getParameter("txtProductName");
         String bName = request.getParameter("txtBrandName");
         String pPrice = ProductDAO
-                .IntegerToMoney(Integer.parseInt(request.getParameter("txtProductPrice").replace(".", "")));
+                .IntegerToMoney(Integer.parseInt(request.getParameter("txtProductPrice").replace(",", "")));
         String Gender = request.getParameter("rdoGender");
         String Smell = request.getParameter("txtProductSmell");
-        int Quantity = Integer.parseInt(request.getParameter("txtProductQuantity"));
+        int Quantity = Integer.parseInt(request.getParameter("txtProductQuantity").replace(",", ""));
         int ReleaseYear = Integer.parseInt(request.getParameter("txtProductReleaseYear"));
-        int Volume = Integer.parseInt(request.getParameter("txtProductVolume"));
+        int Volume = Integer.parseInt(request.getParameter("txtProductVolume").replace(",", ""));
         String Description = request.getParameter("txtProductDescription");
         String filename = pID + ".png";
 
@@ -376,3 +332,55 @@ public class AdminController extends HttpServlet {
     }// </editor-fold>
 
 }
+// ---------------------------- TRASH SECTION ----------------------------
+
+// private void ProductFilter(HttpServletRequest request, HttpServletResponse
+// response) {
+// String URI = request.getRequestURI();
+// String data[] = URI.split("/");
+// int page = 1;
+// ProductDAO pDAO = new ProductDAO();
+// ResultSet rs = null;
+// for (int i = 0; i < data.length; i++) {
+// if (data[i].equals("page")) {
+// page = Integer.parseInt(data[i + 1]);
+// }
+// }
+// rs = pDAO.getFilteredProductForAdmin(page);
+
+// int NumberOfProduct = pDAO.GetNumberOfProduct(null, null, null, page);
+// final int ROWS = 20;
+// int NumberOfPage = NumberOfProduct / ROWS;
+// NumberOfPage = (NumberOfProduct % ROWS == 0 ? NumberOfPage : NumberOfPage +
+// 1);
+
+// request.setAttribute("page", page);
+// request.setAttribute("numberOfPage", NumberOfPage);
+
+// List<Product> listProduct = new ArrayList<>();
+// try {
+// while (rs.next()) {
+// int id = rs.getInt("ID");
+// String name = rs.getString("Name");
+// int brandID = rs.getInt("BrandID");
+// int price = rs.getInt("Price");
+// String gender = rs.getString("Gender");
+// String smell = rs.getString("Smell");
+// int quantity = rs.getInt("Quantity");
+// int releaseYear = rs.getInt("ReleaseYear");
+// int volume = rs.getInt("Volume");
+// String imgURL = rs.getString("ImgURL");
+// String description = rs.getString("Description");
+// boolean active = rs.getBoolean("Active");
+
+// // Create a new Product object and add it to the list
+// Product product = new Product(id, name, brandID, price, gender, smell,
+// quantity, releaseYear, volume,
+// imgURL, description, active);
+// listProduct.add(product);
+// }
+// } catch (SQLException e) {
+// e.printStackTrace();
+// }
+// request.setAttribute("listProduct", listProduct);
+// }

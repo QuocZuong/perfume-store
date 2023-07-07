@@ -37,9 +37,11 @@
         <%! BrandDAO bdao = new BrandDAO();%>
         <%! ResultSet rs = null;%>
         <%! int currentPage, numberOfPage;%>
+        <%! boolean isAdmin;%>
         <%
             currentPage = (int) request.getAttribute("page");
             numberOfPage = (int) request.getAttribute("numberOfPage");
+            isAdmin = (boolean) ((Cookie) request.getSession().getAttribute("userCookie")).getName().equals("Admin");
         %>
 
     </head>
@@ -61,9 +63,10 @@
                     </ul>
                     <a href="/"><img src="/RESOURCES/images/icons/icon.webp" alt=""
                                      height="64"></a>
+                    <input id="inputSearch" type="text" name="txtSearch" value="<%= (request.getParameter("txtSearch") != null ? request.getParameter("txtSearch") : "")%>">
                     <div class="account">
                         <a><img src="/RESOURCES/images/icons/search.png" alt=""></a>
-                        <a href="/Log/Login"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+                        <a href="<%= isAdmin ? '/Admin/User' : '/Client/User'%>" id="SearchProduct" onclick="changeLink();"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
                         <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
                     </div>
                 </div>

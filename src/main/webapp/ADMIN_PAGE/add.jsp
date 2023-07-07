@@ -22,6 +22,11 @@
         <link rel="stylesheet" href="/RESOURCES/admin/public/style/add.css">
         <link rel="icon" href="/RESOURCES/images/icons/icon.webp">
 
+        <style>
+            label.error{
+                color:red;
+            }
+        </style>
         <title>Thêm sản phẩm</title>
     </head>
     <body>
@@ -75,8 +80,9 @@
                 <div class="image">
                     <label class="custom-file-upload">
                         <input type="file"/>
-                        <img src="/RESOURCES/images/icons/cloud-computing.png" alt="alt"/> Upload Image *</label>
-                    <input type="file" name="fileProductImg">
+                        <img src="/RESOURCES/images/icons/cloud-computing.png" alt="alt"/> Upload Image *
+                        <input type="file" name="fileProductImg">
+                    </label>
                 </div>
                 <div class="description">
                     <label>Smell *</label>
@@ -96,6 +102,50 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 
         <script src="/RESOURCES/admin/public/js/main.js"></script>
+        <!--Jquery Validation-->
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+        <script>
+            $().ready(function () {
+                $("form").validate({
+                    rules: {
+                        txtProductName: {
+                            required: true,
+                            maxlength: 300
+                        },
+                        txtBrandName: {
+                            required: true,
+                            maxlength: 50
+                        },
+                        txtProductPrice: {
+                            required: true,
+                            number: true
+                        },
+                        rdoGender: {
+                            required: true
+                        },
+                        txtProductSmell: {
+                            required: true,
+                            maxlength: 200
+                        },
+                        txtProductQuantity: {
+                            required: true,
+                            digits: true
+                        },
+                        txtProductReleaseYear: {
+                            required: true,
+                            range: [1900, 2100]
+                        },
+                        txtProductVolume: {
+                            required: true,
+                            digits: true
+                        },
+                        fileProductImg: {
+                            required: true
+                        }
+                    }
+                });
+            });
+        </script>
     </body>
 
 </html>

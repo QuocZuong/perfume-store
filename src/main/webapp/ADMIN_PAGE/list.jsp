@@ -13,6 +13,8 @@
 <%! ResultSet rs = null;%>
 <%! ArrayList<Product> listProduct = null; %>
 <%! int currentPage, numberOfPage;%>
+<%! boolean isAdmin;%>
+
 <%
     rs = pDAO.getAllForAdmin();
     listProduct = (ArrayList<Product>) request.getAttribute("listProduct");
@@ -47,6 +49,8 @@
                 width:50px;
                 height: 50px;
             }
+
+
         </style>
 
 
@@ -55,11 +59,8 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-10 offset-1">
-                    <form>
-                        <input type="text" name="txtSearch" value="<%= (request.getParameter("txtSearch") != null ? request.getParameter("txtSearch") : "")%>">
-                        <button type="submit" name="btnSearchSubmit" value="Submit">Search</button>
-                    </form>
-
+                <input id="inputSearch" type="text" name="txtSearch" value="<%= (request.getParameter("txtSearch") != null ? request.getParameter("txtSearch") : "")%>">
+                <a class="page-link" href="" id="Search" onclick="changeLink();">Search</a>
                     <table class="table" id="table">
                         <thead>
                             <tr>
@@ -116,26 +117,35 @@
             </div>
         </div>
 
+        <h1>num page: ${numberOfPage}</h1>
+        <h1>page:  <%= currentPage%> </h1>
+
         <nav aria-label="...">
             <ul class="pagination">
-                <li class="page-item"><a class="page-link" href="/Admin/List/page/1">Trang dau</a></li>
-                <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>"><a class="page-link" href="/Admin/List/page/${currentPage-1}">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="/Admin/List/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>">Trang dau</a></li>
+                <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>"><a class="page-link" href="/Admin/List/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>">Previous</a></li>
                     <c:forEach var="i" begin="${page-2<0?0:page-2}" end="${page+2 +1}">
                         <c:choose>
                             <c:when test="${i==page}">
-                            <li class="page-item active"><a href="/Admin/List/page/${i}" class="page-link"> ${i}</a></li>
+                            <li class="page-item active"><a href="/Admin/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
                             </c:when>
                             <c:when test="${i>0 && i<=numberOfPage}"> 
-                            <li class="page-item"><a href="/Admin/List/page/${i}" class="page-link"> ${i}</a></li>
+                            <li class="page-item"><a href="/Admin/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
                             </c:when>
                             <c:otherwise>
                             </c:otherwise>
                         </c:choose>
                     </c:forEach>
-                <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>"><a class="page-link" href="/Admin/List/page/${currentPage+1}">Next</a></li>
-                <li class="page-item"><a class="page-link" href="/Admin/List/page/${numberOfPage}">Trang cuoi</a></li>
+                <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>"><a class="page-link" href="/Admin/List/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>">Next</a></li>
+                <li class="page-item"><a class="page-link" href="/Admin/List/page/${numberOfPage}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>">Trang cuoi</a></li>
             </ul>
         </nav>
+        <script>
+            function changeLink(){
+                let SearchURL = document.getElementById("inputSearch").value;
+                document.getElementById("Search").href = "/Admin/List/page/1?txtSearch="+SearchURL;
+            }
+        </script>
         <script src="/RESOURCES/admin/public/js/list.js"></script>
     </body>
 </html>
