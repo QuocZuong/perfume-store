@@ -26,8 +26,10 @@ import jakarta.servlet.http.Part;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -176,7 +178,8 @@ public class AdminController extends HttpServlet {
 
     /* CRUD */
     // ---------------------------- CREATE SECTION ----------------------------
-    private void addProduct(HttpServletRequest request, HttpServletResponse response) {
+    private void addProduct(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
         ProductDAO pDAO = new ProductDAO();
         String pName = request.getParameter("txtProductName");
         String bName = request.getParameter("txtBrandName");
@@ -188,104 +191,21 @@ public class AdminController extends HttpServlet {
         int ReleaseYear = Integer.parseInt(request.getParameter("txtProductReleaseYear"));
         int Volume = Integer.parseInt(request.getParameter("txtProductVolume").replace(",", ""));
         String Description = request.getParameter("txtProductDescription");
-        String ImgURL = "";
-        HttpURLConnection conn;
-        try {
-            Part imagePart = request.getPart("fileProductImg");
-            File imageFile = convertPartToFile(imagePart);
+        Part imgPart = request.getPart("fileProductImg");
 
-            // Create URL object
-            URL url = new URL(IMGUR_API_ENDPOINT);
-            conn = (HttpURLConnection) url.openConnection();
+        // Upload to Imgur database
+        String ImgURL = uploadImageToClound(imgPart);
 
-            // Set the request method to POST
-            conn.setRequestMethod("POST");
-
-            // Set the Authorization header
-            conn.setRequestProperty("Authorization", "Client-ID " + IMGUR_CLIENT_ID);
-
-            // Enable input and output streams
-            conn.setDoInput(true);
-            conn.setDoOutput(true);
-
-            // Create a boundary for the multipart/form-data
-            String boundary = "---------------------------" + System.currentTimeMillis();
-
-            // Set the content type as multipart/form-data with the boundary
-            conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-
-            // Create the request body
-            DataOutputStream requestOS = new DataOutputStream(conn.getOutputStream());
-            requestOS.writeBytes("--" + boundary + "\r\n");
-            requestOS.writeBytes(
-                    "Content-Disposition: form-data; name=\"image\"; filename=\"" + imageFile.getName() + "\"\r\n");
-            requestOS.writeBytes("Content-Type: application/octet-stream\r\n\r\n");
-
-            // Read the image file and write it to the requestOS body
-            FileInputStream fileInputStream = new FileInputStream(imageFile);
-            byte[] buffer = new byte[4096];
-            int bytesRead;
-            while ((bytesRead = fileInputStream.read(buffer)) != -1) {
-                requestOS.write(buffer, 0, bytesRead);
-            }
-            requestOS.writeBytes("\r\n");
-            requestOS.writeBytes("--" + boundary + "--\r\n");
-            requestOS.flush();
-            requestOS.close();
-
-            // Get the response
-            int responseCode = conn.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                // Read the response
-                InputStreamReader inputStreamReader = new InputStreamReader(conn.getInputStream(),
-                        StandardCharsets.UTF_8);
-                StringBuilder responseOS = new StringBuilder();
-                int c;
-                while ((c = inputStreamReader.read()) != -1) {
-                    responseOS.append((char) c);
-                }
-                inputStreamReader.close();
-
-                // Extract the image URL from the responseOS
-                String imageUrl = extractImageUrl(responseOS.toString());
-                ImgURL = imageUrl;
-                // Display the image URL
-                System.out.println("Image uploaded successfully. Image URL: " + imageUrl);
-            } else {
-                System.out.println("Error occurred while uploading the image. Response Code: " + responseCode);
-                return;
-            }
-            conn.disconnect();
-        } catch (IOException | ServletException e) {
-            e.printStackTrace();
-        }
-
-        // String filename = (pDAO.getMaxProductID() + 1) + ".png";
-
-        // String ImgURL = "\\RESOURCES\\images\\products\\" + filename;
         String addData = pDAO.convertToStringData(pName, bName, pPrice, Gender, Smell, Quantity + "", ReleaseYear + "",
                 Volume + "", ImgURL, Description);
+        // Upload data to db
         int kq = pDAO.addProduct(addData);
         if (kq == 0) {
             System.out.println("Add failed, Some attribute may be duplicate");
             return;
         }
-        // try {
-        // String Local_destination =
-        // getServletContext().getRealPath("/").replace("target\\SQLproject-1\\",
-        // "src\\main\\webapp\\RESOURCES\\images\\products\\");
-        // String Target_destination = getServletContext().getRealPath("/") +
-        // "RESOURCES\\images\\products";
-        // Part imagePart = request.getPart("fileProductImg");
-        // pDAO.copyImg(imagePart, Local_destination, Target_destination, filename);
-        // } catch (IOException | ServletException e) {
-        // e.printStackTrace();
-        // }
         System.out.println("Add successfully");
-        // Local
-        // :C:\Users\Acer\OneDrive\Desktop\#SU23\PRJ301\SQLproject\perfume-store\src\main\webapp\RESOURCES\images\products
-        // Target:
-        // C:\Users\Acer\OneDrive\Desktop\#SU23\PRJ301\SQLproject\perfume-store\target\SQLproject-1\RESOURCES\images\products
+
     }
 
     // ---------------------------- READ SECTION ----------------------------
@@ -610,11 +530,8 @@ public class AdminController extends HttpServlet {
 
     // ---------------------------- CLOUD SECTION ----------------------------
 
-    private boolean uploadImageToClound(Part imagePart) {
-        String IMGUR_API_ENDPOINT = "https://api.imgur.com/3/image";
-        String IMGUR_CLIENT_ID = "87da474f87f4754";
-
-        // Part imagePart = request.getPart("fileProductImg");
+    private String uploadImageToClound(Part imagePart) throws IOException {
+        String imgURL = "fail";
         File imageFile = convertPartToFile(imagePart);
         // File imageFile = new File("D:\\Images\\Anime Image\\Untitled.png");
 
@@ -671,18 +588,20 @@ public class AdminController extends HttpServlet {
 
             // Extract the image URL from the response
             String imageUrl = extractImageUrl(rp.toString());
+            imgURL = imageUrl;
 
             // Display the image URL
             System.out.println("Image uploaded successfully. Image URL: " + imageUrl);
+
         } else {
             System.out.println("Error occurred while uploading the image. Response Code: " + responseCode);
         }
-
         conn.disconnect();
+        return imgURL;
     }
 
-    private File convertPartToFile(Part part) throws IOException {
-        String fileName = part.getSubmittedFileName();
+    public static File convertPartToFile(Part part) throws IOException {
+        // String fileName = part.getSubmittedFileName();
         File tempFile = File.createTempFile("temp", null);
         tempFile.deleteOnExit();
 

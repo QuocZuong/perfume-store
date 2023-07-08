@@ -77,9 +77,8 @@
                 </div>
                 <div class="image">
                     <label class="custom-file-upload">
-                        <input type="file"/>
-                        <img src="/RESOURCES/images/icons/cloud-computing.png" alt="alt"/> Upload Image *
                         <input type="file" name="fileProductImg">
+                        <img src="/RESOURCES/images/icons/cloud-computing.png" alt="alt"/> Upload Image *
                     </label>
                 </div>
                 <div class="description">
