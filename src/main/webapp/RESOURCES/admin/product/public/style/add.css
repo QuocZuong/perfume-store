@@ -5,7 +5,12 @@ body {
     font-family: "Josefin Sans", sans-serif;
 }
 
-
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
 
 form{
     width: 700px;

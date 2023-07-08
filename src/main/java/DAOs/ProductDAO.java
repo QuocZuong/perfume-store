@@ -143,6 +143,7 @@ public class ProductDAO {
                 out.println(string);
                 strOUT.setLength(0);
             }
+            System.out.println("Save backup successfully!");
         } catch (SQLException ex) {
             Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException io) {
@@ -670,5 +671,6 @@ public class ProductDAO {
             System.out.println(e.getMessage());
         }
     }
+
 
 }

@@ -1,11 +1,7 @@
 
 package Controllers;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,9 +16,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
-
-//
-
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -318,18 +311,12 @@ public class AdminController extends HttpServlet {
     }
 
     // ---------------------------- UPDATE SECTION ----------------------------
-    private void updateProduct(HttpServletRequest request, HttpServletResponse response) {
-        Part imagePart = null;
-        try {
-            imagePart = request.getPart("fileProductImg");
-            System.out.println("Part of the Product : " + imagePart.getName() + " ||| " + imagePart.getSize());
-        } catch (IOException | ServletException e) {
-            e.printStackTrace();
-        }
+    private void updateProduct(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        // Get the text parameter in order to update
         ProductDAO pDAO = new ProductDAO();
         int pID = Integer.parseInt(request.getParameter("txtProductID"));
         Product oldProduct = pDAO.getProduct(pID);
-
         String pName = request.getParameter("txtProductName");
         String bName = request.getParameter("txtBrandName");
         String pPrice = ProductDAO
@@ -340,12 +327,21 @@ public class AdminController extends HttpServlet {
         int ReleaseYear = Integer.parseInt(request.getParameter("txtProductReleaseYear"));
         int Volume = Integer.parseInt(request.getParameter("txtProductVolume").replace(",", ""));
         String Description = request.getParameter("txtProductDescription");
-        String filename = pID + ".png";
 
-        String ImgURL = "\\RESOURCES\\images\\products\\" + filename;
+        // Get the part of the image
+        Part imagePart = null;
+        imagePart = request.getPart("fileProductImg");
+        System.out.println("Part of the Product : " + imagePart.getName() + " ||| " + imagePart.getSize());
+
+        String ImgURL = "";
+        // Check if user update image
         if (imagePart == null || imagePart.getSize() == 0) {
             ImgURL = oldProduct.getImgURL();
+        } else {
+            // Upload to Imgur Database and save new URL
+            ImgURL = uploadImageToClound(imagePart);
         }
+
         String updateData = pDAO.convertToStringData(pName, bName, pPrice, Gender, Smell, Quantity + "",
                 ReleaseYear + "",
                 Volume + "", ImgURL, Description);
@@ -354,17 +350,6 @@ public class AdminController extends HttpServlet {
             System.out.println("Update Failed, The Product is not in the database");
             return;
         }
-
-        // Update Img
-        String Local_destination = getServletContext().getRealPath("/").replace("target\\SQLproject-1\\",
-                "src\\main\\webapp\\RESOURCES\\images\\products\\");
-        String Target_destination = getServletContext().getRealPath("/") + "RESOURCES\\images\\products";
-        if (imagePart != null && imagePart.getSize() != 0) {
-            pDAO.copyImg(imagePart, Local_destination, Target_destination, filename);
-        } else {
-
-        }
-
         System.out.println("Update Product with ID: " + pID + " successfully!");
     }
 
@@ -538,26 +523,26 @@ public class AdminController extends HttpServlet {
         // File imageFile = new File("D:\\Images\\Anime Image\\Untitled.png");
         // Create URL object
         URL url = new URL(IMGUR_API_ENDPOINT);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        HttpURLConnection URLconn = (HttpURLConnection) url.openConnection();
 
         // Set the request method to POST
-        conn.setRequestMethod("POST");
+        URLconn.setRequestMethod("POST");
 
         // Set the Authorization header
-        conn.setRequestProperty("Authorization", "Client-ID " + IMGUR_CLIENT_ID);
+        URLconn.setRequestProperty("Authorization", "Client-ID " + IMGUR_CLIENT_ID);
 
         // Enable input and output streams
-        conn.setDoInput(true);
-        conn.setDoOutput(true);
+        URLconn.setDoInput(true);
+        URLconn.setDoOutput(true);
 
         // Create a boundary for the multipart/form-data
         String boundary = "---------------------------" + System.currentTimeMillis();
 
         // Set the content type as multipart/form-data with the boundary
-        conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+        URLconn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
 
         // Create the request body
-        DataOutputStream rq = new DataOutputStream(conn.getOutputStream());
+        DataOutputStream rq = new DataOutputStream(URLconn.getOutputStream());
         rq.writeBytes("--" + boundary + "\r\n");
         rq.writeBytes("Content-Disposition: form-data; name=\"image\"; filename=\"" + imageFile.getName() + "\"\r\n");
         rq.writeBytes("Content-Type: application/octet-stream\r\n\r\n");
@@ -575,10 +560,11 @@ public class AdminController extends HttpServlet {
         rq.close();
 
         // Get the response
-        int responseCode = conn.getResponseCode();
+        int responseCode = URLconn.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_OK) {
             // Read the response
-            InputStreamReader inputStreamReader = new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8);
+            InputStreamReader inputStreamReader = new InputStreamReader(URLconn.getInputStream(),
+                    StandardCharsets.UTF_8);
             StringBuilder rp = new StringBuilder();
             int c;
             while ((c = inputStreamReader.read()) != -1) {
@@ -596,7 +582,8 @@ public class AdminController extends HttpServlet {
         } else {
             System.out.println("Error occurred while uploading the image. Response Code: " + responseCode);
         }
-        conn.disconnect();
+        URLconn.disconnect();
+        fileInputStream.close();
         return imgURL;
     }
 

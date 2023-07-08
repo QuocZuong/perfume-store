@@ -403,34 +403,32 @@ h1{
     height: 40px;
     outline: none;
 }
-.content .pagination .page-item:first-child .page-link{
-    background-image: url("/shop/public/images/leftarrow.png");
-    background-repeat: no-repeat;
-    background-position: 5px;
+.content .pagination .page-item:first-child .page-link i {
+    margin-right: 2px;
+    vertical-align: middle;
 }
 
-.content .pagination .page-item:last-child .page-link{
-    background-image: url("/shop/public/images/rightarrow.png");
-    background-repeat: no-repeat;
-    background-position: 5px;
+.content .pagination .page-item:last-child .page-link i {
+    margin-left: 2px;
+    vertical-align: middle;
 }
 
-.content .pagination .page-item .page-link.active{
+.content .pagination .page-item .page-link i {
+    font-size: 1rem;
+}
+
+.content .pagination .page-item .page-link.active {
     border: 1px solid black;
     outline: none;
+    background-color: transparent;
 }
 
-.pagination div{
-    margin-top: 3px;
-    height: 19px;
-}
-
-li.page-item.active{
+li.page-item.active {
     border: 1px solid black;
     border-radius: 50%;
 }
 
-li.page-item.active a{
+li.page-item.active a {
     background-color: transparent;
 }
 
@@ -453,10 +451,10 @@ li.page-item.active a{
 .register input{
     border: none;
     border-bottom: 1px solid black;
-    margin-right: 20px;
-    padding-right: 70px;
+    width: 220px;
+    margin-right: 10px;
     outline: none;
-}
+  }
 
 .register button{
     margin-right: 20px;

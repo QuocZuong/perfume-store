@@ -177,8 +177,8 @@ h1{
 .register input{
   border: none;
   border-bottom: 1px solid black;
-  margin-right: 20px;
-  padding-right: 70px;
+  width: 220px;
+  margin-right: 10px;
   outline: none;
 }
 

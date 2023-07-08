@@ -55,18 +55,20 @@ public class UserDAO {
     public String getMD5hash(String str) {
 
         MessageDigest md = null;
+        String pwdMD5 = null;
+
         try {
             md = MessageDigest.getInstance("MD5");
+            md.update(str.getBytes());
+            byte[] digest = md.digest();
+            StringBuilder sb = new StringBuilder();
+            for (byte b : digest) {
+                sb.append(String.format("%02x", b & 0xff));
+            }
+            pwdMD5 = sb.toString();
         } catch (NoSuchAlgorithmException ex) {
             ex.printStackTrace();
         }
-        md.update(str.getBytes());
-        byte[] digest = md.digest();
-        StringBuilder sb = new StringBuilder();
-        for (byte b : digest) {
-            sb.append(String.format("%02x", b & 0xff));
-        }
-        String pwdMD5 = sb.toString();
 
         return pwdMD5;
     }

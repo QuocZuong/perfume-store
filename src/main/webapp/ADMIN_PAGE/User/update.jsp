@@ -8,7 +8,7 @@
 <%! ProductDAO pDAO = new ProductDAO(); %>
 <%! User us;%>
 
-<% us = (User) request.getAttribute("ProductUpdate");%>
+<% us = (User) request.getAttribute("UserUpdate");%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -45,7 +45,7 @@
 
     <div class="container">
       <h1>Update Product</h1>
-      <form action="/Admin/User/Update" method="POST" enctype="multipart/form-data">
+      <form action="/Admin/User/Update" method="POST">
         <div class="id">
           <label>User ID *</label>
           <input type="number" name="txtUserID" readonly="true" value="<%= us.getID()%>">
