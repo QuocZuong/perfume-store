@@ -117,7 +117,7 @@ public class ProductDAO {
         String sql = "SELECT * FROM Product";
 
         try (OutputStream os = new FileOutputStream(
-                "C:\\Users\\Acer\\OneDrive\\Desktop\\#SU23\\PRJ301\\SQLproject\\SQLproject\\src\\main\\java\\BackUp\\backup_Product_data.txt");
+                "C:\\Users\\Acer\\OneDrive\\Desktop\\#SU23\\PRJ301\\SQLproject\\perfume-store\\src\\main\\java\\BackUp\\backup_Product_data.txt");
                 PrintWriter out = new PrintWriter(new OutputStreamWriter(os, "UTF-8"));) {
             PreparedStatement ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
@@ -145,9 +145,9 @@ public class ProductDAO {
             }
             System.out.println("Save backup successfully!");
         } catch (SQLException ex) {
-            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex.getMessage());
         } catch (IOException io) {
-
+            System.out.println(io.getMessage());
         }
     }
 
@@ -671,6 +671,5 @@ public class ProductDAO {
             System.out.println(e.getMessage());
         }
     }
-
 
 }
