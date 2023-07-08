@@ -52,7 +52,7 @@
                                                                 height="64"></a>
                     <div class="account">
                         <a><img src="/RESOURCES/images/icons/search.png" alt=""></a>
-                        <a href="/Client/User"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+                        <a href="<%= ((String)request.getAttribute("UserRole") == null ? "/Client" : (String)request.getAttribute("UserRole")) %>"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
                         <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
                     </div>
                 </div>

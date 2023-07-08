@@ -2,7 +2,10 @@
 package Controllers;
 
 import java.io.IOException;
+
+import DAOs.UserDAO;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -55,4 +58,21 @@ public class HomeController extends HttpServlet {
             throws ServletException, IOException {
 
     }
+
+    public String getSessionUserRole(HttpServletRequest request, HttpServletResponse response) {
+         Cookie userCookie = (Cookie) request.getSession().getAttribute("userCookie");
+         if(userCookie != null){
+            return userCookie.getName();
+         }
+         return "Anonymous";
+    }
+    public void handleHome(HttpServletRequest request, HttpServletResponse response){
+        String Role = getSessionUserRole(request, response);
+        if(Role.equals("Client")){
+            request.setAttribute("UserRole", "/Client");
+        }else if(Role.equals("Admin")){
+            request.setAttribute("UserRole", "/Admin");
+        }
+    }
+
 }

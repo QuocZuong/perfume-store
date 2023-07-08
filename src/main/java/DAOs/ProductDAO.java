@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -113,39 +114,72 @@ public class ProductDAO {
     }
 
     public void save_Backup_Data() {
-        ResultSet rs = null;
-        String sql = "SELECT * FROM Product";
+
+        ProductDAO pDAO = new ProductDAO();
+        BrandDAO bDAO = new BrandDAO();
+        List<Product> listProduct = pDAO.getAll();
+        String sp = DB.DataManager.Separator;
 
         try (OutputStream os = new FileOutputStream(
                 "C:\\Users\\Acer\\OneDrive\\Desktop\\#SU23\\PRJ301\\SQLproject\\perfume-store\\src\\main\\java\\BackUp\\backup_Product_data.txt");
                 PrintWriter out = new PrintWriter(new OutputStreamWriter(os, "UTF-8"));) {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            rs = ps.executeQuery();
             StringBuilder strOUT = new StringBuilder("");
             String string = null;
 
-            Object obj;
-            int columnCount = ps.getMetaData().getColumnCount();
-            while (rs.next()) {
+            double currentProgress = 0;
+            int lastProgress = 0;
+
+            for (int i = 0; i < listProduct.size(); i++) {
+                // "NAME~BRANDNAME(string)~PRICE(INT)~Gender(string)~Smell(String)~Quantity(int)~ReleaseYear(smallint)~Volume(INT)~URL(Srtring)~Description",
+                // Open double quote
                 strOUT.append("\"");
-                for (int i = 1; i <= columnCount; i++) {
-                    if (i == 4) {
-                        obj = IntegerToMoney((int) rs.getObject(i));
-                    }
-                    obj = rs.getObject(i) + "";
-                    strOUT.append(obj);
-                    if (i <= columnCount - 1) {
-                        strOUT.append(DataManager.Separator);
-                    }
+
+                Product pd = listProduct.get(i);
+                // Delete enter
+                pd.setDescription(pd.getDescription().replace("\n", ""));
+
+                strOUT.append(pd.getName());
+                strOUT.append(sp);
+                strOUT.append(bDAO.getBrandName(pd.getBrandID()));
+                strOUT.append(sp);
+                strOUT.append(ProductDAO.IntegerToMoney(pd.getPrice()));
+                strOUT.append(sp);
+                strOUT.append(pd.getGender());
+                strOUT.append(sp);
+                strOUT.append(pd.getSmell());
+                strOUT.append(sp);
+                strOUT.append(pd.getQuantity());
+                strOUT.append(sp);
+                strOUT.append(pd.getReleaseYear());
+                strOUT.append(sp);
+                strOUT.append(pd.getVolume());
+                strOUT.append(sp);
+                strOUT.append(pd.getImgURL());
+                strOUT.append(sp);
+                strOUT.append(pd.getDescription());
+
+                strOUT.append(DataManager.Separator);
+
+                if (i < listProduct.size() - 1) {
+                    strOUT.append("\",");
+                } else {
+                    strOUT.append("\"");
                 }
-                strOUT.append("\",");
+                // Close double quote
+
                 string = strOUT.toString().replace("'", "''");
                 out.println(string);
                 strOUT.setLength(0);
+
+                // Progress bar
+                currentProgress = ((double) (i + 1) / listProduct.size()) * 100;
+                if (lastProgress < (int) currentProgress) {
+                    lastProgress = (int) currentProgress;
+                    System.out.println("Saving: " + lastProgress + "%");
+                }
+
             }
             System.out.println("Save backup successfully!");
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
         } catch (IOException io) {
             System.out.println(io.getMessage());
         }
@@ -209,16 +243,35 @@ public class ProductDAO {
         return rs;
     }
 
-    public ResultSet getAll() {
+    public List<Product> getAll() {
         ResultSet rs = null;
-        String sql = "SELECT * FROM Product WHERE Active = 1";
+        List<Product> listProduct = new ArrayList<>();
+        String sql = "SELECT * FROM Product";
+
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
+            while (rs.next()) {
+                Product pd = new Product();
+                pd.setID(rs.getInt("ID"));
+                pd.setName(rs.getNString("Name"));
+                pd.setBrandID(rs.getInt("BrandID"));
+                pd.setPrice(rs.getInt("Price"));
+                pd.setGender(rs.getNString("Gender"));
+                pd.setSmell(rs.getNString("Smell"));
+                pd.setQuantity(rs.getInt("Quantity"));
+                pd.setReleaseYear(rs.getInt("ReleaseYear"));
+                pd.setVolume(rs.getInt("Volume"));
+                pd.setImgURL(rs.getNString("ImgURL"));
+                pd.setDescription(rs.getNString("Description"));
+                pd.setActive(rs.getBoolean("Active"));
+                listProduct.add(pd);
+            }
+
         } catch (SQLException ex) {
             Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return rs;
+        return listProduct;
     }
 
     public Product getProductForAdmin(int id) {

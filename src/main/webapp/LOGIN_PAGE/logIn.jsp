@@ -62,8 +62,7 @@
                         <br>
                         <input type="password" name="txtPassword" id="password-input">
                         <br>
-                        <input type="checkbox" name="remember-password" id="remember-password"
-                               class="remember-password">
+                        <input type="checkbox" name="txtRememberPassword" id="remember-password">
                         <label for="remember-password">Ghi nhớ mật khẩu</label>
                         <br>
                         <button type="submit" name="submitBtn" value="submitLogin" class="enter">Đăng nhập</button>

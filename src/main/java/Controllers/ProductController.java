@@ -75,7 +75,7 @@ public class ProductController extends HttpServlet {
         String shop = "shop";
 
         bdRs = bDao.getAll();
-        rs = pDAO.getAll();
+        // rs = pDAO.getAll();
 
         request.setAttribute("shopName", shop);
         request.setAttribute("PDResultSet", rs);

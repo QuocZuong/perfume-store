@@ -59,16 +59,18 @@ public class UserDAO {
 
         try {
             md = MessageDigest.getInstance("MD5");
-            md.update(str.getBytes());
+            
+        } catch (NoSuchAlgorithmException ex) {
+            ex.printStackTrace();
+        }
+
+        md.update(str.getBytes());
             byte[] digest = md.digest();
             StringBuilder sb = new StringBuilder();
             for (byte b : digest) {
                 sb.append(String.format("%02x", b & 0xff));
             }
             pwdMD5 = sb.toString();
-        } catch (NoSuchAlgorithmException ex) {
-            ex.printStackTrace();
-        }
 
         return pwdMD5;
     }
@@ -656,4 +658,8 @@ public class UserDAO {
 
         return false;
     }
+
+    
+
+    
 }

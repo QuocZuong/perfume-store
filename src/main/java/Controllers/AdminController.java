@@ -359,8 +359,14 @@ public class AdminController extends HttpServlet {
         int uID = Integer.parseInt(request.getParameter("txtUserID"));
         String uName = request.getParameter("txtName");
         String uUserName = request.getParameter("txtUsername");
-        String uPassword = request.getParameter("password");
-        uPassword = uDAO.getMD5hash(uPassword);
+
+        String uPassword = request.getParameter("txtPassword");
+
+        // Only hash the new password if the password is different from the user's old md5 password.
+        if (uPassword != uDAO.getUser(uID).getPassword()) {
+            uPassword = uDAO.getMD5hash(uPassword);
+        }
+
         String uPhoneNumber = request.getParameter("txtPhoneNumber");
         String uEmail = request.getParameter("txtEmail");
         String uAddress = request.getParameter("txtAddress");

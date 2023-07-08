@@ -108,7 +108,7 @@ public class ImportProduct extends HttpServlet {
 
 
             // pd.addProduct(data.toString());
-            rs = pd.getAll();
+            // rs = pd.getAll();
         } catch (Exception ex) {
             Logger.getLogger(ImportProduct.class.getName()).log(Level.SEVERE, null, ex);
         }
