@@ -1,5 +1,5 @@
 html{
-    scroll-behavior: smooth;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -146,35 +146,35 @@ h1{
 }
 
 .brand{
-    text-align: center;
-    padding-top: 5rem;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 120px;
+  text-align: center;
+  padding-top: 5rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 120px;
 }
 
 .brand h1{
-    padding-bottom: 2rem;
-    width: 100%;
-    font-size: 4vw;
+  padding-bottom: 2rem;
+  width: 100%;
+  font-size: 4vw;
 }
 
 .brand a{
-    border-radius: 12px;
-    border: 1px solid rgba(0,0,0,0.2);
-    padding: 10px;
-    max-width: 180px;
-    max-height: 180px;
-    min-height: 190px;
-    min-width: 150px;
-    width: 25%;
-    height: 25%;
-    background-color: transparent;
-    margin-right: 10px;
-    margin-bottom: 10px;
-    text-decoration: none;
-    cursor:pointer;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.2);
+  padding: 10px;
+  max-width: 180px;
+  max-height: 180px;
+  min-height: 190px;
+  min-width: 150px;
+  width: 25%;
+  height: 25%;
+  background-color: transparent;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  text-decoration: none;
+  cursor:pointer;
 }
 
 
@@ -186,13 +186,13 @@ h1{
   flex-wrap: wrap;
   justify-content: center;
   margin-left: 10px;
-  
+
 }
 
 .brand .logo a img{
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .brand hr{
@@ -222,25 +222,52 @@ h1{
   margin-bottom: 130px;
 }
 
-.product .classify button:hover{
-  border-bottom: 1px solid black;
-  transition: border-bottom 0.3s ease-in-out;
+.product .classify button.active {
+border-bottom: 1px solid black;
+transition: border-bottom 0.3s ease-in-out;
 }
 
-.product{
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+.product .classify button:hover {
+border-bottom: 1px solid black;
+transition: border-bottom 0.3s ease-in-out;
 }
 
-.product .item{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  width:  1300px;
+.product-container {
+text-align: center;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+height: 930px; 
+margin-bottom: 30px;
+}
+
+.product {
+text-align: center;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+min-height: 926px;
+
+}
+
+.product .item {
+display: flex;
+justify-content: center;
+align-items: center;
+overflow: hidden;
+width: 1300px;
+opacity: 0;
+visibility: hidden;
+max-height: 0;
+transition: max-height 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.product .item.active {
+opacity: 1;
+visibility: visible;
+max-height: 390px;
 }
 
 .product .item .card{
@@ -263,7 +290,7 @@ h1{
   color: #6f3620;
   font-size: 1.3rem;
   padding: 10px;
-  
+
 }
 
 .product .item .card hr{
@@ -288,7 +315,7 @@ h1{
 }
 
 .product .item .card .product-price{
-    margin: 10px 0 20px 0;
+  margin: 10px 0 20px 0;
 }
 
 .dots {
@@ -306,6 +333,7 @@ h1{
   background-color: #fff;
   cursor: pointer;
   border: 1px solid rgba(0,0,0,0.2);
+  display: none;
 }
 
 .dot:hover{
@@ -326,7 +354,7 @@ h1{
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;  
+  flex-direction: column;
 }
 
 .reason hr{
@@ -384,7 +412,7 @@ h1{
 }
 
 .contact div p{
-  font-size: 1.15rem;   
+  font-size: 1.15rem;
 }
 
 .contact div img{
@@ -408,7 +436,7 @@ h1{
 .register{
   margin: 20px 0;
   text-align: center;
-  
+
 }
 
 .register h1{
@@ -482,7 +510,7 @@ h1{
 
 .footer ul{
   padding: 0;
- 
+
 }
 
 .footer h2{
@@ -509,15 +537,16 @@ h1{
 }
 
 .copyright{
-    margin-top: 20px;
-    padding: 10px 0;
-}
-.copyright p{
-  font-size: 1.2rem;
+  margin-top: 20px;
+  padding: 10px 0;
 }
 
+.copyright p{
+      font-size: 1.2rem;
+  }
+
 @media screen and (max-width: 700px) {
-    h1{
-      font-size: 100px;
-    }
+      h1{
+          font-size: 100px;
+      }
 }

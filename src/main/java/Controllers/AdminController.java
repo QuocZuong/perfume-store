@@ -366,7 +366,7 @@ public class AdminController extends HttpServlet {
         if (uPassword != uDAO.getUser(uID).getPassword()) {
             uPassword = uDAO.getMD5hash(uPassword);
         }
-
+        
         String uPhoneNumber = request.getParameter("txtPhoneNumber");
         String uEmail = request.getParameter("txtEmail");
         String uAddress = request.getParameter("txtAddress");

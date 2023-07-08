@@ -343,6 +343,8 @@ public class ClientController extends HttpServlet {
         String username = currentUserCookie.getValue();
         User UpdateClient = usDAO.getUser(username);
 
+
+
         String newAddress = request.getParameter("txtAddress");
         try {
             if (newAddress.split(" - ").length != 3) {
