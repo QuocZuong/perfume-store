@@ -168,6 +168,11 @@ public class ProductDAO {
                 // Close double quote
 
                 string = strOUT.toString().replace("'", "''");
+                string = strOUT.toString().replace("’", "`");
+                string = strOUT.toString().replace(" ", " ");
+                string = strOUT.toString().replace("\n", " ");
+                string = strOUT.toString().replace("\n", "").replace("\r", "");
+                string = strOUT.toString().replace("\u2013", "-");
                 out.println(string);
                 strOUT.setLength(0);
 

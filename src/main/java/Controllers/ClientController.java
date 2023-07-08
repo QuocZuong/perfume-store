@@ -6,10 +6,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.security.auth.login.AccountNotFoundException;
+
 import DAOs.OrderDAO;
 import DAOs.CartDAO;
 import DAOs.ProductDAO;
 import DAOs.UserDAO;
+import Exceptions.AccountDeactivatedException;
+import Exceptions.EmailDuplicationException;
+import Exceptions.UsernameDuplicationException;
+import Exceptions.WrongPasswordException;
 import Models.Cart;
 import Models.Order;
 import Models.User;
@@ -21,7 +27,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class ClientController extends HttpServlet {
 
-    // ---------------------------- URI DECLARATION SECTION ----------------------------
+    // ---------------------------- URI DECLARATION SECTION
+    // ----------------------------
     public static final String CLIENT_CART_URI = "/Client/Cart";
     public static final String CLIENT_CART_CHECKOUT_URI = "/Client/Cart/Checkout";
     public static final String CLIENT_CART_DELETE_URI = "/Client/Cart/Delete";
@@ -76,9 +83,16 @@ public class ClientController extends HttpServlet {
             return;
         }
 
+        boolean isAdmin = ((Cookie) request.getSession().getAttribute("userCookie")).getName().equals("Admin");
+
         if (path.startsWith(CLIENT_USER_URI)) {
-            System.out.println("Going user");
-            request.getRequestDispatcher("/CLIENT_PAGE/user.jsp").forward(request, response);
+            if (isAdmin) {
+                System.out.println("Going admin");
+                response.sendRedirect("/Admin");
+            } else {
+                System.out.println("Going user");
+                request.getRequestDispatcher("/CLIENT_PAGE/user.jsp").forward(request, response);
+            }
             return;
         }
 
@@ -114,13 +128,15 @@ public class ClientController extends HttpServlet {
                 return;
             }
         }
-
         if (path.startsWith(CLIENT_UPDATE_INFO_URI)) {
             if (request.getParameter("btnUpdateInfo") != null
                     && request.getParameter("btnUpdateInfo").equals("Submit")) {
                 System.out.println("Going update info");
-                updateClientInfomation(request, response);
-                response.sendRedirect(CLIENT_USER_URI);
+                if (updateClientInfomation(request, response)) {
+                    response.sendRedirect(CLIENT_USER_URI);
+                } else {
+                    response.sendRedirect(CLIENT_USER_URI + checkException(request));
+                }
                 return;
             }
         }
@@ -133,7 +149,6 @@ public class ClientController extends HttpServlet {
                 return;
             }
         }
-
         if (path.startsWith(CLIENT_CHECKOUT_URI)) {
             if (request.getParameter("btnSubmitCheckOut") != null
                     && request.getParameter("btnSubmitCheckOut").equals("Submit")) {
@@ -233,7 +248,7 @@ public class ClientController extends HttpServlet {
     }
 
     // ---------------------------- UPDATE SECTION ----------------------------
-    private void updateClientInfomation(HttpServletRequest request, HttpServletResponse response) {
+    private boolean updateClientInfomation(HttpServletRequest request, HttpServletResponse response) {
         /*
          * txtFullname
          * txtUserName
@@ -256,24 +271,39 @@ public class ClientController extends HttpServlet {
         User user = usDAO.getUser(currentUserCookie.getValue());
 
         // Username, email, phone number is unique
-        if (currentPassword != null) {
-            currentPassword = user.getPassword();
-        } else if (!usDAO.login(user.getUsername(), currentPassword)) {
-            System.out.println("Login failed. Update Failed");
-            return;
-        }
+        try {
+            if (!email.equals(user.getEmail())) {
+                if (usDAO.isExistEmail(email)) {
+                    throw new EmailDuplicationException();
+                }
+            }
+            if (!username.equals(user.getUsername())) {
+                if (usDAO.isExistUsername(username)) {
+                    throw new UsernameDuplicationException();
+                }
+            }
+            if (currentPassword == null || currentPassword.isEmpty()) {
+                currentPassword = user.getPassword();
+            } else if (!usDAO.login(user.getUsername(), currentPassword)) {
+                throw new WrongPasswordException();
+            }
 
-        if (!email.equals(user.getEmail())) {
-            if (usDAO.isExistEmail(email)) {
-                System.out.println("Email is existed. Update Failed");
-                return;
-            }
-        }
-        if (!username.equals(user.getUsername())) {
-            if (usDAO.isExistUsername(username)) {
-                System.out.println("Username is existed. Update Failed");
-                return;
-            }
+            // Email and username duplication must come first
+        } catch (WrongPasswordException e) {
+            request.setAttribute("exceptionType", "WrongPasswordException");
+            return false;
+        } catch (AccountDeactivatedException e) {
+            request.setAttribute("exceptionType", "AccountDeactivatedException");
+            return false;
+        } catch (AccountNotFoundException e) {
+            request.setAttribute("exceptionType", "AccountNotFoundException");
+            return false;
+        } catch (EmailDuplicationException e) {
+            request.setAttribute("exceptionType", "EmailDuplicationException");
+            return false;
+        } catch (UsernameDuplicationException e) {
+            request.setAttribute("exceptionType", "UsernameDuplicationException");
+            return false;
         }
 
         if (request.getParameter("pwdNew") != null && !request.getParameter("pwdNew").equals("")) {
@@ -299,7 +329,8 @@ public class ClientController extends HttpServlet {
         c.setValue(username);
         c.setPath("/");
         response.addCookie(c);
-
+        System.out.println("update account with ID " + user.getID() + " successfully");
+        return true;
     }
 
     private void updateClientAddress(HttpServletRequest request, HttpServletResponse response) {
@@ -359,6 +390,34 @@ public class ClientController extends HttpServlet {
             }
         }
         cDAO.deleteCart(ClientID, ProductID);
+    }
+
+    // ------------------------- EXEPTION HANDLING SECTION -------------------------
+    private String checkException(HttpServletRequest request) {
+        String exception = "";
+        if (request.getAttribute("exceptionType") == null) {
+            return "";
+        }
+
+        switch ((String) request.getAttribute("exceptionType")) {
+            case "WrongPasswordException":
+            case "AccountNotFoundException":
+                exception = "?errAccNF=true";
+                break;
+            case "AccountDeactivatedException":
+                exception = "?errAccD=true";
+                break;
+            case "EmailDuplicationException":
+                exception = "?errEmail=true";
+                break;
+            case "UsernameDuplicationException":
+                exception = "?errUsername=true";
+                break;
+            default:
+                break;
+        }
+
+        return exception;
     }
 
     /**

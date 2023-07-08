@@ -68,6 +68,8 @@ h1 {
   font-size: 1.1rem;
 }
 
+
+
 .nav {
   display: flex;
   justify-content: space-between;
@@ -210,7 +212,7 @@ h1 {
   word-break: break-word;
 }
 
-.main .right .order-page table tbody tr td a{
+.main .right .order-page table tbody tr td a {
   text-decoration: none;
 }
 
@@ -364,14 +366,11 @@ h1 {
 
 
 
-.main .right .info-page {
-}
+.main .right .info-page {}
 
-.main .right .info-page {
-}
+.main .right .info-page {}
 
-.main .right .info-page {
-}
+.main .right .info-page {}
 
 .register {
   text-align: center;
@@ -389,7 +388,7 @@ h1 {
   font-size: 2vw;
 }
 
-.register input{
+.register input {
   border: none;
   border-bottom: 1px solid black;
   width: 220px;
@@ -484,6 +483,15 @@ h1 {
 .copyright p {
   font-size: 1.2rem;
 }
+
+/* For underlined the anchor tag. Made by Nguyen Le Tai Duc, if you want to modified, contact me*/
+div.list li a.active {
+  border-bottom: 1px solid black !important;
+  transition: border-bottom 0.3s ease-in-out !important;
+  font-weight: bold !important;
+}
+/* For underlined the anchor tag */
+
 
 @media screen and (max-width: 700px) {
   h1 {

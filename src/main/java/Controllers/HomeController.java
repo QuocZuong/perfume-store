@@ -3,7 +3,6 @@ package Controllers;
 
 import java.io.IOException;
 
-import DAOs.UserDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
@@ -25,14 +24,17 @@ public class HomeController extends HttpServlet {
             throws ServletException, IOException {
         String path = request.getRequestURI();
         if (path.equals("/")) {
+            handleRole(request, response);
             request.getRequestDispatcher("/HOME_PAGE/homePage.jsp").forward(request, response);
             return;
         }
         if (path.equals("/home/introduction")) {
+            handleRole(request, response);
             request.getRequestDispatcher("/HOME_PAGE/introduction.jsp").forward(request, response);
             return;
         }
         if (path.equals("/home/brand")) {
+            handleRole(request, response);
             request.getRequestDispatcher("/HOME_PAGE/brand.jsp").forward(request, response);
             return;
         }
@@ -66,10 +68,11 @@ public class HomeController extends HttpServlet {
          }
          return "Anonymous";
     }
-    public void handleHome(HttpServletRequest request, HttpServletResponse response){
+    public void handleRole(HttpServletRequest request, HttpServletResponse response){
         String Role = getSessionUserRole(request, response);
+        System.out.println("role:"+ Role);
         if(Role.equals("Client")){
-            request.setAttribute("UserRole", "/Client");
+            request.setAttribute("UserRole", "/Client/User");
         }else if(Role.equals("Admin")){
             request.setAttribute("UserRole", "/Admin");
         }

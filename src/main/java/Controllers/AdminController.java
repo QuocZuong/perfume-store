@@ -372,9 +372,9 @@ public class AdminController extends HttpServlet {
         String uAddress = request.getParameter("txtAddress");
         String uRole = request.getParameter("txtRole");
 
-        boolean isExistUsername = uDAO.isExistUsernameEceptItself(uUserName, uID);
-        boolean isExistPhone = uDAO.isExistPhoneEceptItself(uPhoneNumber, uID);
-        boolean isExistEmail = uDAO.isExistEmailEceptItself(uEmail, uID);
+        boolean isExistUsername = uDAO.isExistUsernameExceptItself(uUserName, uID);
+        boolean isExistPhone = uDAO.isExistPhoneExceptItself(uPhoneNumber, uID);
+        boolean isExistEmail = uDAO.isExistEmailExceptItself(uEmail, uID);
         if (isExistUsername || isExistPhone || isExistEmail) {
             System.out.println("Update fail because Username or Phone or Email exist");
             return;

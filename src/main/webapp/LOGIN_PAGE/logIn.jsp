@@ -1,6 +1,14 @@
-<%-- Document : index Created on : Jun 19, 2023, 10:58:07 PM Author : quoczuong --%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib  uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
+<%! boolean isAccountDeactivated, isAccountNotFound, isExistEmail;%>
+<%
+    // Handling execption
+    isAccountDeactivated = (request.getParameter("errAccD") == null ? false : Boolean.parseBoolean(request.getParameter("errAccD")));
+    isAccountNotFound = (request.getParameter("errAccNF") == null ? false : Boolean.parseBoolean(request.getParameter("errAccNF")));
+    isExistEmail = (request.getParameter("errEmail") == null ? false : Boolean.parseBoolean(request.getParameter("errEmail")));
+%>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,7 +33,6 @@
 
     <body>
         <div class="container-fluid">
-
             <div class="row">
                 <div class="col-md-12 nav">
                     <ul>
@@ -47,10 +54,32 @@
             </div>
 
             <div class="row">
+
+                <!--Execption Handling-->
+                <c:choose>
+                    <c:when test='<%= isAccountNotFound%>'>
+                        <h1 class="alert alert-danger">
+                            Sai tên đăng nhập hoặc mật khẩu
+                        </h1>
+                    </c:when>
+                    <c:when test='<%= isAccountDeactivated%>'>
+                        <h1 class="alert alert-danger">
+                            Tài khoản đã bị vô hiệu hóa.
+                        </h1>
+                    </c:when>
+
+                    <c:when test='<%= isExistEmail%>'>
+                        <h1 class="alert alert-danger">
+                            Email đã tồn tại
+                        </h1>
+                    </c:when>
+                </c:choose>
+                <!--Execption Handling-->
+
                 <div class="col-md-12 login-form">
                     <div class="type">
-                        <button type="button" id="signIn">Đăng nhập</button>
-                        <button type="button" id="signUp">Đăng ký</button>
+                        <button type="button" id="signIn" class="<%= isExistEmail ? "" : "active"%>">Đăng nhập</button>
+                        <button type="button" id="signUp" class="<%= isExistEmail ? "active" : ""%>">Đăng ký</button>
                     </div>
 
                     <form action="LogController" method="post" class="sign-in" id="signInForm">
@@ -62,14 +91,15 @@
                         <br>
                         <input type="password" name="txtPassword" id="password-input">
                         <br>
-                        <input type="checkbox" name="txtRememberPassword" id="remember-password">
+                        <input type="checkbox" name="txtRememberPassword" id="remember-password"
+                               class="remember-password">
                         <label for="remember-password">Ghi nhớ mật khẩu</label>
                         <br>
                         <button type="submit" name="submitBtn" value="submitLogin" class="enter">Đăng nhập</button>
                     </form>
 
                     <form action="LogController" method="post" class="sign-up" id="signUpForm">
-                        <label for="email">Địa chỉ email *</label>
+                        <label for="user-input">Địa chỉ email *</label>
                         <br>
                         <input type="text" name="txtEmail" id="user-input">
                         <p>Một mật khẩu sẽ được gửi đến địa chỉ email của bạn.</p>
@@ -145,6 +175,8 @@
         crossorigin="anonymous"></script>
         <script src="/RESOURCES/logIn/public/js/main.js"></script>
 
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
         <script>
             $(document).ready(function () {
                 $("input[name='user']").on("keydown", function (e) {

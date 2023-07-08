@@ -49,10 +49,10 @@
                         <li><a href="">blog</a></li>
                     </ul>
                     <a href="/"><img src="/RESOURCES/images/icons/icon.webp" alt=""
-                                                                height="64"></a>
+                                     height="64"></a>
                     <div class="account">
                         <a><img src="/RESOURCES/images/icons/search.png" alt=""></a>
-                        <a href="<%= ((String)request.getAttribute("UserRole") == null ? "/Client" : (String)request.getAttribute("UserRole")) %>"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+                        <a href="/Client/User"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
                         <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
                     </div>
                 </div>
@@ -63,37 +63,37 @@
                     <h1>thương hiệu nổi tiếng</h2>
 
                         <div class="logo">
-                            <a><img
+                            <a href="/Product/List/BrandID/22"><img
                                     src="/RESOURCES/images/brands/159133030_1044233219399119_4321418372070751780_n.png"
                                     alt=""></a>
-                            <a><img
+                            <a href="/Product/List/BrandID/38"><img
                                     src="/RESOURCES/images/brands/Hang-nuoc-hoa-Imaginary-Authors.png"
                                     alt=""></a>
-                            <a><img
+                            <a href="/Product/List/BrandID/51"><img
                                     src="/RESOURCES/images/brands/Hang-nuoc-hoa-Maison-Matine.png"
                                     alt=""></a>
-                            <a><img
+                            <a href="/Product/List/BrandID/48"><img
                                     src="/RESOURCES/images//brands/LOrchestre-Parfums.png"
                                     alt=""></a>
-                            <a><img src="/RESOURCES/images/brands/Nasomatto.png"
-                                    alt=""></a>
-                            <a><img
+                            <a href="/Product/List/BrandID/61"><img src="/RESOURCES/images/brands/Nasomatto.png"
+                                                                    alt=""></a>
+                            <a href="/Product/List/BrandID/16"><img
                                     src="/RESOURCES/images/brands/nuoc-hoa-by-kilian.png"
                                     alt="" class="kilian"></a>
-                            <a><img src="/RESOURCES/images/brands/nuoc-hoa-dior.png"
-                                    alt=""></a>
-                            <a><img
+                            <a href="/Product/List/BrandID/27"><img src="/RESOURCES/images/brands/nuoc-hoa-dior.png"
+                                                                    alt=""></a>
+                            <a href="/Product/List/BrandID/46"><img
                                     src="/RESOURCES/images/brands/nuoc-hoa-le-labo.png"
                                     alt="" class="lelabo"></a>
-                            <a><img
+                            <a href="/Product/List/BrandID/74"><img
                                     src="/RESOURCES/images/brands/nuoc-hoa-tomford.png"
                                     alt="" class="tomford"></a>
-                            <a><img src="/RESOURCES/images/brands/nuoc-hoa-ysl.png"
-                                    alt=""></a>
-                            <a><img src="/RESOURCES/images/brands/Orto-Parisi.png"
-                                    alt=""></a>
-                            <a><img src="/RESOURCES/images/brands/Zoologist.png"
-                                    alt=""></a>
+                            <a href="/Product/List/BrandID/79"><img src="/RESOURCES/images/brands/nuoc-hoa-ysl.png"
+                                                                    alt=""></a>
+                            <a href="/Product/List/BrandID/66"><img src="/RESOURCES/images/brands/Orto-Parisi.png"
+                                                                    alt=""></a>
+                            <a href="/Product/List/BrandID/80"><img src="/RESOURCES/images/brands/Zoologist.png"
+                                                                    alt=""></a>
                             <hr>  
                         </div>
 
@@ -110,7 +110,7 @@
                     </div>
 
                     <div class="item">
-                        <a href="./logIn/index.html">
+                        <a href="/Product/Detail/ID/88">
                             <div class="card">
                                 <img src="/RESOURCES/images/products/Nuoc-hoa-Creed-Aventus-600x600.png" alt="" class="product-img">
                                 <span class="product-brand">Creed</span>
@@ -119,7 +119,7 @@
                                 <span class="product-price">6.000.000 <span>đ</span></span>
                             </div>
                         </a>
-                        <a href="./logIn/index.html">
+                        <a href="/Product/Detail/ID/229">
 
                             <div class="card">
                                 <img src="/RESOURCES/images/products/13-600x600.png" alt="" class="product-img">
@@ -130,7 +130,7 @@
                             </div>
                         </a>
 
-                        <a href="./logIn/index.html">
+                        <a href="/Product/Detail/ID/373">
                             <div class="card">
                                 <img src="/RESOURCES/images/products/6bb559193c12a192157b071aa6c2f153-600x600.png" alt="" class="product-img">
                                 <span class="product-brand">Tom Ford</span>
@@ -139,8 +139,18 @@
                                 <span class="product-price">6.000.000 <span>đ</span></span>
                             </div>
                         </a>
+                        
+                        <a href="/Product/Detail/ID/191">
+                            <div class="card">
+                                <img src="https://xxivstore.com/wp-content/uploads/2022/08/Imaginary-Authors-Fox-in-the-flowerbed-600x600.png" alt="" class="product-img">
+                                <span class="product-brand">Imaginary Authors</span>
+                                <hr>
+                                <span class="product-name">Fox in the Flowerbed</span>
+                                <span class="product-price">3.200.000 <span>đ</span></span>
+                            </div>
+                        </a>
 
-                        <a href="./logIn/index.html">
+                        <a href="/Product/Detail/ID/246">
 
                             <div class="card">
                                 <img src="/RESOURCES/images/products/baccarat540-600x600.png" alt="" class="product-img">
@@ -150,7 +160,7 @@
                                 <span class="product-price">6.000.000 <span>đ</span></span>
                             </div>
                         </a>
-                        <a href="./logIn/index.html">
+                        <a href="/Product/Detail/ID/39">
 
                             <div class="card">
                                 <img src="/RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
@@ -160,7 +170,7 @@
                                 <span class="product-price">6.000.000 <span>đ</span></span>
                             </div>
                         </a>
-                        <a href="./logIn/index.html">
+                        <a href="/Product/Detail/ID/302">
 
                             <div class="card">
                                 <img src="/RESOURCES/images/products/Marie-Jeanne-Vetiver-Santal-600x600.png" alt="" class="product-img">
@@ -170,7 +180,7 @@
                                 <span class="product-price">6.000.000 <span>đ</span></span>
                             </div>
                         </a>
-                        <a href="./logIn/index.html">
+                        <a href="/Product/Detail/ID/106">
 
                             <div class="card">
                                 <img src="/RESOURCES/images/products/Nuoc-hoa-Dior-Sauvage-EDT-600x600.png" alt="" class="product-img">
@@ -180,174 +190,159 @@
                                 <span class="product-price">6.000.000 <span>đ</span></span>
                             </div>
                         </a>
-                        <a href="./logIn/index.html">
-
+                        <a href="/Product/Detail/ID/88">
                             <div class="card">
-                                <img src="/RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
-                                <span class="product-brand">Kilian</span>
+                                <img src="/RESOURCES/images/products/Nuoc-hoa-Creed-Aventus-600x600.png" alt="" class="product-img">
+                                <span class="product-brand">Creed</span>
                                 <hr>
-                                <span class="product-name">Angels Share</span>
+                                <span class="product-name">Aventus</span>
                                 <span class="product-price">6.000.000 <span>đ</span></span>
                             </div>
                         </a>
-                        <a href="./logIn/index.html">
-
+                        <a href="/Product/Detail/ID/19">
                             <div class="card">
-                                <img src="/RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
-                                <span class="product-brand">Kilian</span>
+                                <img src="https://xxivstore.com/wp-content/uploads/2022/10/Attar-Collection-Musk-Kashmir-600x600.png" alt="" class="product-img">
+                                <span class="product-brand">Attar Collection</span>
                                 <hr>
-                                <span class="product-name">Angels Share</span>
+                                <span class="product-name">Musk Kashmir</span>
+                                <span class="product-price">3.050.000 <span>đ</span></span>
+                            </div>
+                        </a>
+
+                        <a href="/Product/Detail/ID/373">
+                            <div class="card">
+                                <img src="/RESOURCES/images/products/6bb559193c12a192157b071aa6c2f153-600x600.png" alt="" class="product-img">
+                                <span class="product-brand">Tom Ford</span>
+                                <hr>
+                                <span class="product-name">Lost Cherry</span>
                                 <span class="product-price">6.000.000 <span>đ</span></span>
                             </div>
                         </a>
-                        <a href="./logIn/index.html">
+                    </div>
 
-                            <div class="card">
-                                <img src="/RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
-                                <span class="product-brand">Kilian</span>
-                                <hr>
-                                <span class="product-name">Angels Share</span>
-                                <span class="product-price">6.000.000 <span>đ</span></span>
-                            </div>
-                        </a>
-                        <a href="./logIn/index.html">
-                            <div class="card">
-                                <img src="/RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
-                                <span class="product-brand">Kilian</span>
-                                <hr>
-                                <span class="product-name">Angels Share</span>
-                                <span class="product-price">6.000.000 <span>đ</span></span>
-                            </div>
-                    </a>
+
+                    <div class="dots">
+                        <span class="dot active"></span>
+                    </div>
+
                 </div>
-
-
-                <div class="dots">
-                    <span class="dot active"></span>
-                </div>
-
             </div>
-        </div>
 
-        <div class="row">
-            <div class="col-md-12 reason">
-                <hr>
-                <h1>Tại sao chọn xxiv store</h1>
-                <div class="listReason">
-                    <div class="advantage">
-                        <img src="/RESOURCES/images/icons/grommet-icons_shield-security.svg" alt="">
-                        <h4>sản phẩm chính hãng
-                        </h4>
-                        <p>sản phẩm nước hoa được mua trực tiếp tại các store ở nước ngoài hoặc làm việc trực tiếp với các hãng, cam kết authentic 100%
-                        </p>
-                    </div>
-                    <div class="advantage">
-                        <img src="/RESOURCES/images/icons/free-ship.svg" alt="">
-                        <h4>free ship toàn quốc
-                        </h4>
-                        <p>xxiv áp dụng freeship cho tất cả các khách hàng trên toàn quốc. chúng tôi chưa áp dụng hình thức giao hàng quốc tế tại thời điểm này</p>
-                    </div>
-                    <div class="advantage">
-                        <img src="/RESOURCES/images/icons/gift.svg" alt="">
-                        <h4>thành viên thân thiết
-                        </h4>
-                        <p>thành viên vàng sẽ được giảm 5% / đơn hàng. với thành viên bạc khách được giảm 3% / đơn hàng.</p>
+            <div class="row">
+                <div class="col-md-12 reason">
+                    <hr>
+                    <h1>Tại sao chọn xxiv store</h1>
+                    <div class="listReason">
+                        <div class="advantage">
+                            <img src="/RESOURCES/images/icons/grommet-icons_shield-security.svg" alt="">
+                            <h4>sản phẩm chính hãng
+                            </h4>
+                            <p>sản phẩm nước hoa được mua trực tiếp tại các store ở nước ngoài hoặc làm việc trực tiếp với các hãng, cam kết authentic 100%
+                            </p>
+                        </div>
+                        <div class="advantage">
+                            <img src="/RESOURCES/images/icons/free-ship.svg" alt="">
+                            <h4>free ship toàn quốc
+                            </h4>
+                            <p>xxiv áp dụng freeship cho tất cả các khách hàng trên toàn quốc. chúng tôi chưa áp dụng hình thức giao hàng quốc tế tại thời điểm này</p>
+                        </div>
+                        <div class="advantage">
+                            <img src="/RESOURCES/images/icons/gift.svg" alt="">
+                            <h4>thành viên thân thiết
+                            </h4>
+                            <p>thành viên vàng sẽ được giảm 5% / đơn hàng. với thành viên bạc khách được giảm 3% / đơn hàng.</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="row">
-            <div class="col-md-12 contact">
-                <hr>
-                <h1>xxiv store</h1>
-                <div>
-                    <img src="/RESOURCES/images/icons/location-pin.png">
-                    <p>Số 25 Ngõ Thái Hà, Đống Đa, Hà Nội | 525/44 Tô Hiến Thành, P14, Q10, TP. Hồ Chí Minh</p>
-                </div>
-                <div>
-                    <img src="/RESOURCES/images/icons/smartphone.png">
-                    <p>090 721 9889| 093 194 8668</p>
-                    <img src="/RESOURCES/images/icons/email.png" class="mail-icon">
-                    <p>xxiv.fragrance@gmail.com</p>
-                </div>
-                <div>
-                    <p>Giờ mở cửa: Các ngày trong tuần từ 9:00 - 21:00</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="row no-gutters">
-            <div class="theme ">
-                <img src="/RESOURCES/images/icons/perfumeStore.jpg">
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12 register">
-                <h1>Đăng ký thành viên để nhận khuyến mại</h1>
-                <p>Theo dõi chúng tôi để nhận thêm nhiều ưu đãi</p>
-                <form action="">
-                    <input type="text" name="" id="" placeholder="nhập email" required="true">
-                    <button type="button">ĐĂNG KÝ</button>
-                </form>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12 social">
-                <a href=""><img src="/RESOURCES/images/icons/instagram.png" alt=""></a>
-                <a href=""><img src="/RESOURCES/images/icons/facebook.png" alt=""></a>
-                <a href=""><img src="/RESOURCES/images/icons/youtube.png" alt=""></a>
-                <a href=""><img src="/RESOURCES/images/icons/location-pin.png" alt=""></a>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12 footer">
-                <div>
-                    <h2>xxiv store</h2>
-                    <ul>
-                        <li><a href="">ưu đãi thành viên</a></li>
-                        <li><a href="">tài khoản</a></li>
-                        <li><a href="">tuyển dụng</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h2>chính sách bán hàng</h2>
-                    <ul>
-                        <li><a href="">phương thức vận chuyển</a></li>
-                        <li><a href="">câu hỏi thường gặp</a></li>
-                        <li><a href="">điều khoản và điện kiện sử dụng</a></li>
-                        <li><a href="">điều khoản và điều kiện bán hàng</a></li>
-                        <li><a href="">thông báo pháp lý</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h2>thông tin chung</h2>
-                    <ul>
-                        <li><a href="">giới thiệu</a></li>
-                        <li><a href="">blog</a></li>
-                        <li><a href="">liên hệ</a></li>
-                        <li><a href="">sản phẩm</a></li>
-                    </ul>
+            <div class="row">
+                <div class="col-md-12 contact">
+                    <hr>
+                    <h1>xxiv store</h1>
+                    <div>
+                        <img src="/RESOURCES/images/icons/location-pin.png">
+                        <p>Số 25 Ngõ Thái Hà, Đống Đa, Hà Nội | 525/44 Tô Hiến Thành, P14, Q10, TP. Hồ Chí Minh</p>
+                    </div>
+                    <div>
+                        <img src="/RESOURCES/images/icons/smartphone.png">
+                        <p>090 721 9889| 093 194 8668</p>
+                        <img src="/RESOURCES/images/icons/email.png" class="mail-icon">
+                        <p>xxiv.fragrance@gmail.com</p>
+                    </div>
+                    <div>
+                        <p>Giờ mở cửa: Các ngày trong tuần từ 9:00 - 21:00</p>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="row">
-            <div class="col-md-12 copyright">
-                <p>&copy; xxiv 2023 | all right reserved</p>
+            <div class="row no-gutters">
+                <div class="theme ">
+                    <img src="/RESOURCES/images/icons/perfumeStore.jpg">
+                </div>
             </div>
-        </div>
 
+            <div class="row">
+                <div class="col-md-12 register">
+                    <h1>Đăng ký thành viên để nhận khuyến mại</h1>
+                    <p>Theo dõi chúng tôi để nhận thêm nhiều ưu đãi</p>
+                    <form action="">
+                        <input type="text" name="" id="" placeholder="nhập email" required="true">
+                        <button type="button">ĐĂNG KÝ</button>
+                    </form>
+                </div>
+            </div>
 
+            <div class="row">
+                <div class="col-md-12 social">
+                    <a href=""><img src="/RESOURCES/images/icons/instagram.png" alt=""></a>
+                    <a href=""><img src="/RESOURCES/images/icons/facebook.png" alt=""></a>
+                    <a href=""><img src="/RESOURCES/images/icons/youtube.png" alt=""></a>
+                    <a href=""><img src="/RESOURCES/images/icons/location-pin.png" alt=""></a>
+                </div>
+            </div>
 
+            <div class="row">
+                <div class="col-md-12 footer">
+                    <div>
+                        <h2>xxiv store</h2>
+                        <ul>
+                            <li><a href="">ưu đãi thành viên</a></li>
+                            <li><a href="">tài khoản</a></li>
+                            <li><a href="">tuyển dụng</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h2>chính sách bán hàng</h2>
+                        <ul>
+                            <li><a href="">phương thức vận chuyển</a></li>
+                            <li><a href="">câu hỏi thường gặp</a></li>
+                            <li><a href="">điều khoản và điện kiện sử dụng</a></li>
+                            <li><a href="">điều khoản và điều kiện bán hàng</a></li>
+                            <li><a href="">thông báo pháp lý</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h2>thông tin chung</h2>
+                        <ul>
+                            <li><a href="">giới thiệu</a></li>
+                            <li><a href="">blog</a></li>
+                            <li><a href="">liên hệ</a></li>
+                            <li><a href="">sản phẩm</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
 
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
-        crossorigin="anonymous"></script>
-        <script src="/RESOURCES/home/public/js/main.js"></script>
+            <div class="row">
+                <div class="col-md-12 copyright">
+                    <p>&copy; xxiv 2023 | all right reserved</p>
+                </div>
+            </div>
+            <script
+                src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+            crossorigin="anonymous"></script>
+            <script src="/RESOURCES/home/public/js/main.js"></script>
     </body>
 </html>
