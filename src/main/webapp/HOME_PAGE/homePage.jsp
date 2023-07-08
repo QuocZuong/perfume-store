@@ -202,48 +202,64 @@
                         </div>
 
                         <div class="item woman">
-                            <a href="./logIn/index.html">
+                            <a href="/Product/Detail/ID/398">
                                 <div class="card">
-                                    <img src="/RESOURCES/images/products/Nuoc-hoa-Creed-Aventus-600x600.png" alt="" class="product-img">
-                                    <span class="product-brand">Creed</span>
-                                    <hr>
-                                    <span class="product-name">Aventus</span>
-                                    <span class="product-price">6.000.000 <span>đ</span></span>
-                                </div>
-                            </a>
-                            <a href="./logIn/index.html">
-
-                                <div class="card">
-                                    <img src="/RESOURCES/images/products/13-600x600.png" alt="" class="product-img">
-                                    <span class="product-brand">Lelabo</span>
-                                    <hr>
-                                    <span class="product-name">Another 13</span>
-                                    <span class="product-price">6.000.000 <span>đ</span></span>
-                                </div>
-                            </a>
-
-                            <a href="./logIn/index.html">
-                                <div class="card">
-                                    <img src="/RESOURCES/images/products/6bb559193c12a192157b071aa6c2f153-600x600.png" alt="" class="product-img">
+                                    <img src="https://xxivstore.com/wp-content/uploads/2020/07/afa315528ab34622c4184e035cc662f0-600x600.png" alt="" class="product-img">
                                     <span class="product-brand">Tom Ford</span>
                                     <hr>
-                                    <span class="product-name">Lost Cherry</span>
-                                    <span class="product-price">6.000.000 <span>đ</span></span>
+                                    <span class="product-name">Santal Blush</span>
+                                    <span class="product-price">5.800.000 <span>đ</span></span>
                                 </div>
                             </a>
-
-                            <a href="./logIn/index.html">
-
+                            <a href="/Product/Detail/ID/89">
                                 <div class="card">
-                                    <img src="/RESOURCES/images/products/baccarat540-600x600.png" alt="" class="product-img">
-                                    <span class="product-brand">Maison Francis Kurkdijian</span>
+                                    <img src="https://xxivstore.com/wp-content/uploads/2020/06/aventus-for-her-eau-de-parfum-75ml-8cd-600x600.png" alt="" class="product-img">
+                                    <span class="product-brand">Creed</span>
                                     <hr>
-                                    <span class="product-name">Baccarat Rouge 540</span>
-                                    <span class="product-price">6.000.000 <span>đ</span></span>
+                                    <span class="product-name">Aventus For Her</span>
+                                    <span class="product-price">7.000.000 <span>đ</span></span>
                                 </div>
                             </a>
-                            <a href="./logIn/index.html">
+                            <a href="/Product/Detail/ID/375">
+                                <div class="card">
+                                    <img src="https://xxivstore.com/wp-content/uploads/2020/07/1df87c53922b7304030d168cef3632ed-600x600.png" alt="" class="product-img">
+                                    <span class="product-brand">Tom Ford</span>
+                                    <hr>
+                                    <span class="product-name">Jasmin Rouge EDP</span>
+                                    <span class="product-price">5.500.000 <span>đ</span></span>
+                                </div>
+                            </a>
 
+                            <a href="/Product/Detail/ID/89">
+                                <div class="card">
+                                    <img src="https://xxivstore.com/wp-content/uploads/2020/06/aventus-for-her-eau-de-parfum-75ml-8cd-600x600.png" alt="" class="product-img">
+                                    <span class="product-brand">Creed</span>
+                                    <hr>
+                                    <span class="product-name">Aventus For Her</span>
+                                    <span class="product-price">7.000.000 <span>đ</span></span>
+                                </div>
+                            </a>
+                            
+                            <a href="/Product/Detail/ID/419">
+                                <div class="card">
+                                    <img src="https://xxivstore.com/wp-content/uploads/2021/12/Dama1-600x600.png" alt="" class="product-img">
+                                    <span class="product-brand">Xerjoff</span>
+                                    <hr>
+                                    <span class="product-name">Dama Bianca</span>
+                                    <span class="product-price">6.900.000 <span>đ</span></span>
+                                </div>
+                            </a>
+
+                            <a href="/Product/Detail/ID/398">
+                                <div class="card">
+                                    <img src="https://xxivstore.com/wp-content/uploads/2020/07/afa315528ab34622c4184e035cc662f0-600x600.png" alt="" class="product-img">
+                                    <span class="product-brand">Tom Ford</span>
+                                    <hr>
+                                    <span class="product-name">Santal Blush</span>
+                                    <span class="product-price">5.800.000 <span>đ</span></span>
+                                </div>
+                            </a>
+                            <a href="/Product/Detail/ID/39">
                                 <div class="card">
                                     <img src="/RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
                                     <span class="product-brand">Kilian</span>
@@ -252,98 +268,93 @@
                                     <span class="product-price">6.000.000 <span>đ</span></span>
                                 </div>
                             </a>
-                            <a href="./logIn/index.html">
-
+                            <a href="/Product/Detail/ID/120">
                                 <div class="card">
-                                    <img src="/RESOURCES/images/products/Marie-Jeanne-Vetiver-Santal-600x600.png" alt="" class="product-img">
-                                    <span class="product-brand">Marie Jeanne</span>
-                                    <hr>
-                                    <span class="product-name">Vetiver Santal</span>
-                                    <span class="product-price">6.000.000 <span>đ</span></span>
-                                </div>
-                            </a>
-                            <a href="./logIn/index.html">
-
-                                <div class="card">
-                                    <img src="/RESOURCES/images/products/Nuoc-hoa-Dior-Sauvage-EDT-600x600.png" alt="" class="product-img">
+                                    <img src="https://xxivstore.com/wp-content/uploads/2020/07/558153_1_4-e1594898257731-600x530.png" alt="" class="product-img">
                                     <span class="product-brand">Dior</span>
                                     <hr>
-                                    <span class="product-name">Sauvage</span>
-                                    <span class="product-price">6.000.000 <span>đ</span></span>
+                                    <span class="product-name">Miss Dior Blooming Bouquet EDT</span>
+                                    <span class="product-price">3.600.000 <span>đ</span></span>
                                 </div>
                             </a>
-                            <a href="./logIn/index.html">
+                            <a href="/Product/Detail/ID/127">
 
                                 <div class="card">
-                                    <img src="/RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
-                                    <span class="product-brand">Kilian</span>
+                                    <img src="https://xxivstore.com/wp-content/uploads/2020/08/do-son-eau-de-toilette-100ml-99a-600x600.png" alt="" class="product-img">
+                                    <span class="product-brand">Diptyque</span>
                                     <hr>
-                                    <span class="product-name">Angels Share</span>
-                                    <span class="product-price">6.000.000 <span>đ</span></span>
+                                    <span class="product-name">Do Son</span>
+                                    <span class="product-price">3.500.000 <span>đ</span></span>
                                 </div>
                             </a>
-                            <a href="./logIn/index.html">
+                            <a href="/Product/Detail/ID/10">
 
                                 <div class="card">
-                                    <img src="/RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
-                                    <span class="product-brand">Kilian</span>
+                                    <img src="https://xxivstore.com/wp-content/uploads/2023/01/Amouge-Meander-600x600.png" alt="" class="product-img">
+                                    <span class="product-brand">Amouage</span>
                                     <hr>
-                                    <span class="product-name">Angels Share</span>
-                                    <span class="product-price">6.000.000 <span>đ</span></span>
+                                    <span class="product-name">Meander</span>
+                                    <span class="product-price">7.900.000 <span>đ</span></span>
                                 </div>
                             </a>
-                            <a href="./logIn/index.html">
+                            <a href="/Product/Detail/ID/419">
+                                <div class="card">
+                                    <img src="https://xxivstore.com/wp-content/uploads/2021/12/Dama1-600x600.png" alt="" class="product-img">
+                                    <span class="product-brand">Xerjoff</span>
+                                    <hr>
+                                    <span class="product-name">Dama Bianca</span>
+                                    <span class="product-price">6.900.000 <span>đ</span></span>
+                                </div>
+                            </a>
+                            <a href="/Product/Detail/ID/171">
 
                                 <div class="card">
-                                    <img src="/RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
-                                    <span class="product-brand">Kilian</span>
+                                    <img src="https://xxivstore.com/wp-content/uploads/2020/08/hermes-twilly-d-hermes-hermes-twilly-d-hermes-eau-de-parfum-50-ml-3346133200014-copy-600x629.png" alt="" class="product-img">
+                                    <span class="product-brand">Hermès</span>
                                     <hr>
-                                    <span class="product-name">Angels Share</span>
-                                    <span class="product-price">6.000.000 <span>đ</span></span>
+                                    <span class="product-name">Twilly d`Hermès</span>
+                                    <span class="product-price">2.950.000 <span>đ</span></span>
                                 </div>
                             </a>
-                            <a href="./logIn/index.html">
+                            <a href="/Product/Detail/ID/191">
                                 <div class="card">
-                                    <img src="/RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
-                                    <span class="product-brand">Kilian</span>
+                                    <img src="https://xxivstore.com/wp-content/uploads/2022/08/Imaginary-Authors-Fox-in-the-flowerbed-600x600.png" alt="" class="product-img">
+                                    <span class="product-brand">Imaginary Authors</span>
                                     <hr>
-                                    <span class="product-name">Angels Share</span>
-                                    <span class="product-price">6.000.000 <span>đ</span></span>
+                                    <span class="product-name">Fox in the Flowerbed</span>
+                                    <span class="product-price">3.200.000 <span>đ</span></span>
                                 </div>
                             </a>
                         </div>
                         <div class="item unisex">
-                            <a href="./logIn/index.html">
+                            <a href="/Product/Detail/ID/392">
                                 <div class="card">
-                                    <img src="/RESOURCES/images/products/Nuoc-hoa-Creed-Aventus-600x600.png" alt="" class="product-img">
-                                    <span class="product-brand">Creed</span>
-                                    <hr>
-                                    <span class="product-name">Aventus</span>
-                                    <span class="product-price">6.000.000 <span>đ</span></span>
-                                </div>
-                            </a>
-                            <a href="./logIn/index.html">
-
-                                <div class="card">
-                                    <img src="/RESOURCES/images/products/13-600x600.png" alt="" class="product-img">
-                                    <span class="product-brand">Lelabo</span>
-                                    <hr>
-                                    <span class="product-name">Another 13</span>
-                                    <span class="product-price">6.000.000 <span>đ</span></span>
-                                </div>
-                            </a>
-
-                            <a href="./logIn/index.html">
-                                <div class="card">
-                                    <img src="/RESOURCES/images/products/6bb559193c12a192157b071aa6c2f153-600x600.png" alt="" class="product-img">
+                                    <img src="https://xxivstore.com/wp-content/uploads/2020/08/Mandarino-di-amalfi.png" alt="" class="product-img">
                                     <span class="product-brand">Tom Ford</span>
                                     <hr>
-                                    <span class="product-name">Lost Cherry</span>
+                                    <span class="product-name">Mandarino Di Amalfi</span>
+                                    <span class="product-price">4.100.000 <span>đ</span></span>
+                                </div>
+                            </a>
+                            <a href="/Product/Detail/ID/394">
+                                <div class="card">
+                                    <img src="https://xxivstore.com/wp-content/uploads/2020/08/tom-ford-lavender-extreme-eau-de-parfum-50ml.png" alt="" class="product-img">
+                                    <span class="product-brand">Tom Ford</span>
+                                    <hr>
+                                    <span class="product-name">Lavender Extreme</span>
                                     <span class="product-price">6.000.000 <span>đ</span></span>
                                 </div>
                             </a>
-
-                            <a href="./logIn/index.html">
+                            <a href="/Product/Detail/ID/256">
+                                <div class="card">
+                                    <img src="https://xxivstore.com/wp-content/uploads/2020/06/fire-600x600.png" alt="" class="product-img">
+                                    <span class="product-brand">Maison Margiela</span>
+                                    <hr>
+                                    <span class="product-name">Replica By The Fireplace</span>
+                                    <span class="product-price">3.500.000 <span>đ</span></span>
+                                </div>
+                            </a>
+                            <a href="/Product/Detail/ID/246">
                                 <div class="card">
                                     <img src="/RESOURCES/images/products/baccarat540-600x600.png" alt="" class="product-img">
                                     <span class="product-brand">Maison Francis Kurkdijian</span>
@@ -352,68 +363,69 @@
                                     <span class="product-price">6.000.000 <span>đ</span></span>
                                 </div>
                             </a>
-                            <a href="./logIn/index.html">
+                            <a href="/Product/Detail/ID/256">
                                 <div class="card">
-                                    <img src="/RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
-                                    <span class="product-brand">Kilian</span>
+                                    <img src="https://xxivstore.com/wp-content/uploads/2020/06/fire-600x600.png" alt="" class="product-img">
+                                    <span class="product-brand">Maison Margiela</span>
                                     <hr>
-                                    <span class="product-name">Angels Share</span>
-                                    <span class="product-price">6.000.000 <span>đ</span></span>
+                                    <span class="product-name">Replica By The Fireplace</span>
+                                    <span class="product-price">3.500.000 <span>đ</span></span>
                                 </div>
                             </a>
-                            <a href="./logIn/index.html">
-                                <div class="card">
-                                    <img src="/RESOURCES/images/products/Marie-Jeanne-Vetiver-Santal-600x600.png" alt="" class="product-img">
-                                    <span class="product-brand">Marie Jeanne</span>
-                                    <hr>
-                                    <span class="product-name">Vetiver Santal</span>
-                                    <span class="product-price">6.000.000 <span>đ</span></span>
-                                </div>
-                            </a>
-                            <a href="./logIn/index.html">
-                                <div class="card">
-                                    <img src="/RESOURCES/images/products/Nuoc-hoa-Dior-Sauvage-EDT-600x600.png" alt="" class="product-img">
-                                    <span class="product-brand">Dior</span>
-                                    <hr>
-                                    <span class="product-name">Sauvage</span>
-                                    <span class="product-price">6.000.000 <span>đ</span></span>
-                                </div>
-                            </a>
-                            <a href="./logIn/index.html">
-                                <div class="card">
-                                    <img src="/RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
-                                    <span class="product-brand">Kilian</span>
-                                    <hr>
-                                    <span class="product-name">Angels Share</span>
-                                    <span class="product-price">6.000.000 <span>đ</span></span>
-                                </div>
-                            </a>
-                            <a href="./logIn/index.html">
-                                <div class="card">
-                                    <img src="/RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
-                                    <span class="product-brand">Kilian</span>
-                                    <hr>
-                                    <span class="product-name">Angels Share</span>
-                                    <span class="product-price">6.000.000 <span>đ</span></span>
-                                </div>
-                            </a>
-                            <a href="./logIn/index.html">
 
+                            <a href="/Product/Detail/ID/325">
                                 <div class="card">
-                                    <img src="/RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
-                                    <span class="product-brand">Kilian</span>
+                                    <img src="/RESOURCES/images/products/6bb559193c12a192157b071aa6c2f153-600x600.png" alt="" class="product-img">
+                                    <span class="product-brand">Nasomatto</span>
                                     <hr>
-                                    <span class="product-name">Angels Share</span>
+                                    <span class="product-name">Nasomatto Blamage</span>
+                                    <span class="product-price">3.850.000 <span>đ</span></span>
+                                </div>
+                            </a>
+
+                            <a href="/Product/Detail/ID/329">
+                                <div class="card">
+                                    <img src="https://xxivstore.com/wp-content/uploads/2021/07/XXIV-Store-Nishane-Hacivat-600x600.png" alt="" class="product-img">
+                                    <span class="product-brand">Nishane</span>
+                                    <hr>
+                                    <span class="product-name">Nishane Hacivat</span>
+                                    <span class="product-price">5.500.000 <span>đ</span></span>
+                                </div>
+                            </a>
+                            <a href="/Product/Detail/ID/339">
+                                <div class="card">
+                                    <img src="https://xxivstore.com/wp-content/uploads/2022/05/Orto-Parisi-Viride.png" alt="" class="product-img">
+                                    <span class="product-brand">Orto Parisi</span>
+                                    <hr>
+                                    <span class="product-name">Orto Parisi Viride</span>
+                                    <span class="product-price">5.300.000 <span>đ</span></span>
+                                </div>
+                            </a>
+                            <a href="/Product/Detail/ID/392">
+                                <div class="card">
+                                    <img src="https://xxivstore.com/wp-content/uploads/2020/08/Mandarino-di-amalfi.png" alt="" class="product-img">
+                                    <span class="product-brand">Tom Ford</span>
+                                    <hr>
+                                    <span class="product-name">Mandarino Di Amalfi</span>
+                                    <span class="product-price">4.100.000 <span>đ</span></span>
+                                </div>
+                            </a>
+                            <a href="/Product/Detail/ID/394">
+                                <div class="card">
+                                    <img src="https://xxivstore.com/wp-content/uploads/2020/08/tom-ford-lavender-extreme-eau-de-parfum-50ml.png" alt="" class="product-img">
+                                    <span class="product-brand">Tom Ford</span>
+                                    <hr>
+                                    <span class="product-name">Lavender Extreme</span>
                                     <span class="product-price">6.000.000 <span>đ</span></span>
                                 </div>
                             </a>
-                            <a href="./logIn/index.html">
+                            <a href="/Product/Detail/ID/426">
                                 <div class="card">
-                                    <img src="/RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
-                                    <span class="product-brand">Kilian</span>
+                                    <img src="https://xxivstore.com/wp-content/uploads/2022/08/Zoologist-Seahorse-600x600.png" alt="" class="product-img">
+                                    <span class="product-brand">Zoologist</span>
                                     <hr>
-                                    <span class="product-name">Angels Share</span>
-                                    <span class="product-price">6.000.000 <span>đ</span></span>
+                                    <span class="product-name">Seahorse</span>
+                                    <span class="product-price">5.200.000 <span>đ</span></span>
                                 </div>
                             </a>
                         </div>
@@ -421,7 +433,6 @@
                         <div class="dots">
                             <span class="dot active"></span>
                         </div>
-
                     </div>
                 </div>
             </div>

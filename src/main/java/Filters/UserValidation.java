@@ -1,13 +1,13 @@
 package Filters;
 
 import DAOs.UserDAO;
-import jakarta.servlet.http.Cookie;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -23,6 +23,7 @@ public class UserValidation implements Filter {
 	private FilterConfig filterConfig = null;
 	private boolean debug = true;
 	private final UserDAO userDAO = new UserDAO();
+	private final String[] FOLDER_URL_LIST = {"/ADMIN_PAGE", "/CLIENT_PAGE", "/LOGIN_PAGE", "/PRODUCT_PAGE", "/USER_PAGE"};
 	
 	public UserValidation() {
 	}
@@ -49,6 +50,15 @@ public class UserValidation implements Filter {
 		final String URI = req.getRequestURI();
 		final String URL = req.getRequestURL().toString();
 
+		// --------------------------PREVENT FOLDER LINKS----------------------
+		for (String folder : FOLDER_URL_LIST) {
+			if (URI.startsWith(folder)) {
+				System.out.println("User trying to go to folder links, so redirect to home page");
+				res.sendRedirect("/");
+				return;
+			}
+		}
+
 		// --------------------------SKIP LOGIN IF IS USER----------------------
 		// If in Login page and is an admin or client, go to product list.
 		if (URI.startsWith("/Log/Login")) {
@@ -58,15 +68,24 @@ public class UserValidation implements Filter {
 			}
 		}
 
-		// --------------------------GO BACK TO LOGIN IF IS NOT USER----------------------
-//		 If not in the Login page and not and admin or client, then go back to login page.
-		if (URI.startsWith("/Client") || URI.startsWith("/Admin")) {
-			if (!isAdmin && !isClient) {
-				System.out.println("Not admin or Client, so redirect to /Log/Login");
+		// --------------------------PREVENT UNAUTHORISED USER----------------------
+		if (URI.startsWith("/Client")) {
+			if (!isClient) {
+				System.out.println("Not Client, so redirect to /Log/Login");
 				res.sendRedirect("/Log/Login");
 				return;
 			}
 		}
+
+		// --------------------------PREVENT UNAUTHORISED ADMIN----------------------
+		if (URI.startsWith("/Admin")) {
+			if (!isAdmin) {
+				System.out.println("Not Admin, so redirect to home page");
+				res.sendRedirect("/");
+				return;
+			}
+		}
+
 
 		Throwable problem = null;
 

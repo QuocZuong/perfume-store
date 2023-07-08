@@ -116,13 +116,13 @@
                                 <div class="gender">
                                     <h4>GIỚI TÍNH</h4>
                                     <input type="checkbox" name="Gender" id="Nam" value="Nam">
-                                    <label for="male" value="Male">Nam</label>
+                                    <label for="Nam" value="Male">Nam</label>
 
                                     <input type="checkbox" name="Gender" id="Nữ" value="Nữ">
-                                    <label for="female" value="Female">Nữ</label>
+                                    <label for="Nữ" value="Female">Nữ</label>
 
                                     <input type="checkbox" name="Gender" id="Unisex" value="Unisex">
-                                    <label for="unisex" value="Unisex">Unisex</label>
+                                    <label for="Unisex" value="Unisex">Unisex</label>
                                 </div>
                                 <div class="price">
                                     <h4>THEO GIÁ</h4>

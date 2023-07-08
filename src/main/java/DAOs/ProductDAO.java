@@ -122,7 +122,7 @@ public class ProductDAO {
 
         try (OutputStream os = new FileOutputStream(
                 "C:\\Users\\Acer\\OneDrive\\Desktop\\#SU23\\PRJ301\\SQLproject\\perfume-store\\src\\main\\java\\BackUp\\backup_Product_data.txt");
-                PrintWriter out = new PrintWriter(new OutputStreamWriter(os, "UTF-8"));) {
+                PrintWriter outPrint = new PrintWriter(new OutputStreamWriter(os, "UTF-8"));) {
             StringBuilder strOUT = new StringBuilder("");
             String string = null;
 
@@ -135,8 +135,6 @@ public class ProductDAO {
                 strOUT.append("\"");
 
                 Product pd = listProduct.get(i);
-                // Delete enter
-                pd.setDescription(pd.getDescription().replace("\n", ""));
 
                 strOUT.append(pd.getName());
                 strOUT.append(sp);
@@ -158,24 +156,21 @@ public class ProductDAO {
                 strOUT.append(sp);
                 strOUT.append(pd.getDescription());
 
-                strOUT.append(DataManager.Separator);
-
                 if (i < listProduct.size() - 1) {
                     strOUT.append("\",");
                 } else {
                     strOUT.append("\"");
                 }
                 // Close double quote
-
-                string = strOUT.toString().replace("'", "''");
-                string = strOUT.toString().replace("’", "`");
-                string = strOUT.toString().replace(" ", " ");
-                string = strOUT.toString().replace("\n", " ");
-                string = strOUT.toString().replace("\n", "").replace("\r", "");
-                string = strOUT.toString().replace("\u2013", "-");
-                out.println(string);
+                string = strOUT.toString();
+                // string = string.replace("'", "''");
+                string = string.replace("’", "`");
+                string = string.replace(" ", " ");
+                string = string.replace("\\/", "\\\\/");
+                string = string.replace("\u2013", "-");
+                string = string.replace(System.getProperty("line.separator"), "");
+                outPrint.println(string);
                 strOUT.setLength(0);
-
                 // Progress bar
                 currentProgress = ((double) (i + 1) / listProduct.size()) * 100;
                 if (lastProgress < (int) currentProgress) {

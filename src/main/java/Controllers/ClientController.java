@@ -273,6 +273,7 @@ public class ClientController extends HttpServlet {
         UserDAO usDAO = new UserDAO();
         User user = usDAO.getUser(currentUserCookie.getValue());
 
+        boolean isChangedPassword = false;
         // Username, email, phone number is unique
         try {
             if (!email.equals(user.getEmail())) {
@@ -332,6 +333,8 @@ public class ClientController extends HttpServlet {
         c.setValue(username);
         c.setPath("/");
         response.addCookie(c);
+
+
         System.out.println("update account with ID " + user.getID() + " successfully");
         return true;
     }
@@ -342,8 +345,6 @@ public class ClientController extends HttpServlet {
         UserDAO usDAO = new UserDAO();
         String username = currentUserCookie.getValue();
         User UpdateClient = usDAO.getUser(username);
-
-
 
         String newAddress = request.getParameter("txtAddress");
         try {
