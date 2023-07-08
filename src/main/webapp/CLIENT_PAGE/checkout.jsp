@@ -216,7 +216,7 @@
         let City = '<%= Tinh%>';
         let District = '<%= QuanHuyen%>';
         let Ward = '<%= PhuongXa%>';
-        let DefaultCity = 'Chọn';
+        let DefaultCity = 'Chọn tỉnh thành';
         let DefaultDistrict = 'Chọn quận huyện';
         let DefaultWard = 'Chọn phường xã';
         var callAPI = (api) => {
@@ -252,7 +252,7 @@
                         }
                     });
         };
-        var renderData = (array, select, msg = "Chọn") => {
+        var renderData = (array, select, msg = DefaultCity) => {
             let row = ' <option disable value="">' + msg + '</option>';
             array.forEach((e) => {
                 let code = e.code;
@@ -262,7 +262,7 @@
             document.querySelector("#" + select).innerHTML = row;
         };
 
-        function resetData(select, msg = "Chọn") {
+        function resetData(select, msg = DefaultCity) {
             let row = '<option disable value="">' + msg + '</option>';
             document.querySelector("#" + select).innerHTML = row;
         }

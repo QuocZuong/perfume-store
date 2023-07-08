@@ -1,15 +1,15 @@
 
 package Controllers;
 
-import java.io.InputStream;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import DAOs.ProductDAO;
-import DAOs.UserDAO;
 import Models.User;
+import DAOs.UserDAO;
+import java.util.List;
 import Models.Product;
+import DAOs.ProductDAO;
+import java.sql.ResultSet;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.sql.SQLException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;

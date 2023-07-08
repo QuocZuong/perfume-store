@@ -14,6 +14,8 @@ import DAOs.ProductDAO;
 import DAOs.UserDAO;
 import Exceptions.AccountDeactivatedException;
 import Exceptions.EmailDuplicationException;
+import Exceptions.NotEnoughInformationException;
+import Exceptions.PhoneNumberDuplicationException;
 import Exceptions.UsernameDuplicationException;
 import Exceptions.WrongPasswordException;
 import Models.Cart;
@@ -122,6 +124,7 @@ public class ClientController extends HttpServlet {
         if (path.startsWith(CLIENT_ADD_TO_CART_URI)) {
             if (request.getParameter(BTN_ADD_TO_CART) != null
                     && request.getParameter(BTN_ADD_TO_CART).equals(SUBMIT_VALUE)) {
+
                 PostAddToCart(request, response);
                 int pID = Integer.parseInt(request.getParameter("ProductID"));
                 response.sendRedirect("/Product/Detail/ID/" + pID);
@@ -333,20 +336,34 @@ public class ClientController extends HttpServlet {
         return true;
     }
 
-    private void updateClientAddress(HttpServletRequest request, HttpServletResponse response) {
+    private boolean updateClientAddress(HttpServletRequest request, HttpServletResponse response) {
         String phoneNumber = request.getParameter("txtPhoneNumber");
-        String newAddress = request.getParameter("txtAddress");
         Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
         UserDAO usDAO = new UserDAO();
         String username = currentUserCookie.getValue();
         User UpdateClient = usDAO.getUser(username);
-        System.out.println("User name :" + username);
-        System.out.println("User name :" + UpdateClient.getPhoneNumber());
-        if (!phoneNumber.equals(UpdateClient.getPhoneNumber())) {
-            if (usDAO.isExistPhone(phoneNumber)) {
-                System.out.println("Phone Number is existed. Update Failed");
-                return;
+
+        String newAddress = request.getParameter("txtAddress");
+        try {
+            if (newAddress.split(" - ").length != 3) {
+                throw new NotEnoughInformationException();
             }
+
+            System.out.println("User name :" + username);
+            System.out.println("User's Phone :" + UpdateClient.getPhoneNumber());
+            System.out.println("User's Address :" + newAddress);
+            // Phone number is unique
+            if (!phoneNumber.equals(UpdateClient.getPhoneNumber())) {
+                if (usDAO.isExistPhone(phoneNumber)) {
+                    throw new PhoneNumberDuplicationException();
+                }
+            }
+        } catch (PhoneNumberDuplicationException e) {
+            request.setAttribute("exceptionType", "PhoneNumberDuplicationException");
+            return false;
+        } catch (NotEnoughInformationException e) {
+            request.setAttribute("exceptionType", "NotEnoughInformationException");
+            return false;
         }
 
         UpdateClient.setAddress(newAddress);
@@ -355,9 +372,10 @@ public class ClientController extends HttpServlet {
         int kq = usDAO.updateUser(UpdateClient);
         if (kq == 0) {
             System.out.println("Update address and phone fail");
-        } else {
-            System.out.println("Update address and phone success");
+            return false;
         }
+        System.out.println("Update address and phone success");
+        return true;
 
     }
 
@@ -394,40 +412,34 @@ public class ClientController extends HttpServlet {
 
     // ------------------------- EXEPTION HANDLING SECTION -------------------------
     private String checkException(HttpServletRequest request) {
-        String exception = "";
         if (request.getAttribute("exceptionType") == null) {
             return "";
         }
+        String exception = "?err";
 
         switch ((String) request.getAttribute("exceptionType")) {
             case "WrongPasswordException":
             case "AccountNotFoundException":
-                exception = "?errAccNF=true";
+                exception = "AccNF";
                 break;
             case "AccountDeactivatedException":
-                exception = "?errAccD=true";
+                exception = "AccD";
                 break;
             case "EmailDuplicationException":
-                exception = "?errEmail=true";
+                exception = "Email";
                 break;
             case "UsernameDuplicationException":
-                exception = "?errUsername=true";
+                exception = "Username";
                 break;
+            case "PhoneNumberDuplicationException":
+                exception = "Phone";
+            case "NotEnoughInformationException":
+                exception = "NEInfo";
             default:
                 break;
         }
-
+        exception += "=true";
         return exception;
-    }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
     }
 
 }

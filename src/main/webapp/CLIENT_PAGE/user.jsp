@@ -1,5 +1,3 @@
-<%-- Document : newjsp Created on : Jul 5, 2023, 3:27:56 PM Author : Acer --%>
-
 <%@page import="DAOs.ProductDAO"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="Models.Order"%>
@@ -21,6 +19,9 @@
 <%! boolean isAccountDeactivated, isAccountNotFound, isExistEmail, isExistUsername;%>
 <%! boolean isUpdateAccountExecption;%>
 
+<%! boolean isExistPhone, isNotEnoughInfomation;%>
+<%! boolean isUpdateAddressExecption;%>
+
 <%
     currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
     user = usDAO.getUser(currentUserCookie.getValue());
@@ -36,14 +37,19 @@
         PhuongXa = Address[2];
     }
 
-    // Handling execption
-    isAccountNotFound = (request.getParameter("errAccNF") == null ? false : Boolean.parseBoolean(request.getParameter("errAccNF")));
-    isAccountDeactivated = (request.getParameter("errAccD") == null ? false : Boolean.parseBoolean(request.getParameter("errAccD")));
-    isExistEmail = (request.getParameter("errEmail") == null ? false : Boolean.parseBoolean(request.getParameter("errEmail")));
-    isExistUsername = (request.getParameter("errUsername") == null ? false : Boolean.parseBoolean(request.getParameter("errUsername")));
+    // Handling exception
+    String err = "err";
+    isAccountNotFound = (request.getParameter(err + "AccNF") == null ? false : Boolean.parseBoolean(request.getParameter(err + "AccNF")));
+    isAccountDeactivated = (request.getParameter(err + "AccD") == null ? false : Boolean.parseBoolean(request.getParameter(err + "AccD")));
+    isExistEmail = (request.getParameter(err + "Email") == null ? false : Boolean.parseBoolean(request.getParameter(err + "Email")));
+    isExistUsername = (request.getParameter(err + "Username") == null ? false : Boolean.parseBoolean(request.getParameter(err + "Username")));
 
     isUpdateAccountExecption = isAccountNotFound || isAccountDeactivated || isExistEmail || isExistUsername;
 
+    isExistPhone = (request.getParameter(err + "Phone") == null ? false : Boolean.parseBoolean(request.getParameter(err + "Phone")));
+    isNotEnoughInfomation = (request.getParameter(err + "NEInfo") == null ? false : Boolean.parseBoolean(request.getParameter(err + "NEInfo")));
+
+    isUpdateAddressExecption = isExistPhone || isNotEnoughInfomation;
 %>
 
 <!DOCTYPE html>
@@ -427,7 +433,7 @@
             $().ready(function () {
                 $.validator.addMethod("regex", function (value, element, regex) {
                     return !regex.test(value);
-                }, "No special character please.");
+                }, "Mật khẩu phải có ít nhất 6 kí tự.");
 
                 $("#formUpdateAccount").validate({
                     rules: {
@@ -443,7 +449,7 @@
                             email: true
                         },
                         pwdNew: {
-                            minlength: 6
+                            regex: /^.{6,}$/
                         },
                         pwdConfirmNew: {
                             equalto: "#pwdNew"
