@@ -17,36 +17,37 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class UserValidation implements Filter {
 
-	// The filter configuration object we are associated with.  If
+	// The filter configuration object we are associated with. If
 	// this value is null, this filter instance is not currently
-	// configured. 
+	// configured.
 	private FilterConfig filterConfig = null;
 	private boolean debug = true;
 	private final UserDAO userDAO = new UserDAO();
-	private final String[] FOLDER_URL_LIST = {"/ADMIN_PAGE", "/CLIENT_PAGE", "/LOGIN_PAGE", "/PRODUCT_PAGE", "/USER_PAGE"};
-	
+	private final String[] FOLDER_URL_LIST = { "/ADMIN_PAGE", "/CLIENT_PAGE", "/LOGIN_PAGE", "/PRODUCT_PAGE",
+			"/USER_PAGE" };
+
 	public UserValidation() {
 	}
 
 	/**
 	 * Validate cookies and redirect user to login page if not valid.
 	 *
-	 * @param request The servlet request we are processing
+	 * @param request  The servlet request we are processing
 	 * @param response The servlet response we are creating
-	 * @param chain The filter chain we are processing
+	 * @param chain    The filter chain we are processing
 	 *
-	 * @exception IOException if an input/output error occurs
+	 * @exception IOException      if an input/output error occurs
 	 * @exception ServletException if a servlet error occurs
 	 */
 	public void doFilter(ServletRequest request, ServletResponse response,
-					FilterChain chain)
-					throws IOException, ServletException {
+			FilterChain chain)
+			throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
-		
+
 		boolean isAdmin = isAdmin(req, res);
 		boolean isClient = isClient(req, res);
-		
+
 		final String URI = req.getRequestURI();
 		final String URL = req.getRequestURL().toString();
 
@@ -62,8 +63,12 @@ public class UserValidation implements Filter {
 		// --------------------------SKIP LOGIN IF IS USER----------------------
 		// If in Login page and is an admin or client, go to product list.
 		if (URI.startsWith("/Log/Login")) {
-			if (isAdmin || isClient) {
+			if (isClient) {
 				res.sendRedirect("/Client/User");
+				return;
+			}
+			if (isAdmin) {
+				res.sendRedirect("/Admin");
 				return;
 			}
 		}
@@ -85,7 +90,6 @@ public class UserValidation implements Filter {
 				return;
 			}
 		}
-
 
 		Throwable problem = null;
 
@@ -148,7 +152,7 @@ public class UserValidation implements Filter {
 						response.addCookie(cookies[i]);
 						return false;
 					}
-					
+
 					cookies[i].setPath("/");
 					request.getSession().setAttribute("userCookie", cookies[i]);
 					return true;
@@ -215,12 +219,12 @@ public class UserValidation implements Filter {
 				response.setContentType("text/html");
 				PrintStream ps = new PrintStream(response.getOutputStream());
 				PrintWriter pw = new PrintWriter(ps);
-				pw.print("<html>\n<head>\n<title>Error</title>\n</head>\n<body>\n"); //NOI18N
+				pw.print("<html>\n<head>\n<title>Error</title>\n</head>\n<body>\n"); // NOI18N
 
 				// PENDING! Localize this for next official release
 				pw.print("<h1>The resource did not process correctly</h1>\n<pre>\n");
 				pw.print(stackTrace);
-				pw.print("</pre></body>\n</html>"); //NOI18N
+				pw.print("</pre></body>\n</html>"); // NOI18N
 				pw.close();
 				ps.close();
 				response.getOutputStream().close();

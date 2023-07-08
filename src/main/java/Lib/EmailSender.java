@@ -145,7 +145,7 @@ public class EmailSender {
         return html;
     }
 
-    public String changePasswordNotifcation(String newPassword) {
+    public String changePasswordNotifcation() {
         String username = EmailTo.substring(0, EmailTo.indexOf("@"));
         String ShopURL = "http://localhost:8080";
 

@@ -1,6 +1,7 @@
 package Controllers;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import Exceptions.NotEnoughInformationException;
 import Exceptions.PhoneNumberDuplicationException;
 import Exceptions.UsernameDuplicationException;
 import Exceptions.WrongPasswordException;
+import Lib.EmailSender;
 import Models.Cart;
 import Models.Order;
 import Models.User;
@@ -273,21 +275,27 @@ public class ClientController extends HttpServlet {
         UserDAO usDAO = new UserDAO();
         User user = usDAO.getUser(currentUserCookie.getValue());
 
-        boolean isChangedPassword = false;
+        boolean isChangedEmail = true;
+        boolean isChangedPassword = true;
         // Username, email, phone number is unique
         try {
             if (!email.equals(user.getEmail())) {
                 if (usDAO.isExistEmail(email)) {
                     throw new EmailDuplicationException();
                 }
+            } else {
+                isChangedEmail = false;
             }
+
             if (!username.equals(user.getUsername())) {
                 if (usDAO.isExistUsername(username)) {
                     throw new UsernameDuplicationException();
                 }
             }
+
             if (currentPassword == null || currentPassword.isEmpty()) {
                 currentPassword = user.getPassword();
+                isChangedPassword = false;
             } else if (!usDAO.login(user.getUsername(), currentPassword)) {
                 throw new WrongPasswordException();
             }
@@ -334,6 +342,25 @@ public class ClientController extends HttpServlet {
         c.setPath("/");
         response.addCookie(c);
 
+        // Sending mail
+        try {
+            EmailSender es = new EmailSender();
+            if (isChangedPassword) {
+                System.out.println("Detect email change");
+                System.out.println("sending mail changing email");
+                es.setEmailTo(email);
+                es.sendToEmail(es.CHANGE_PASSWORD_NOTFICATION, es.changePasswordNotifcation());
+            }
+            if (isChangedEmail) {
+                System.out.println("Detect email change");
+                System.out.println("sending mail changing email");
+                es.setEmailTo(user.getEmail());
+                es.sendToEmail(es.CHANGE_EMAIL_NOTFICATION, es.changeEmailNotification(email));
+            }
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
         System.out.println("update account with ID " + user.getID() + " successfully");
         return true;
