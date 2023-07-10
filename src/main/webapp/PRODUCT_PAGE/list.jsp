@@ -1,13 +1,21 @@
-<%-- Document : index.jsp Created on : Jun 7, 2023, 1:34:15 PM Author : Acer --%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@page import="DAOs.ProductDAO" %>
 <%@page import="DAOs.BrandDAO" %>
 <%@page import="java.sql.ResultSet" %>
 <%@page import="jakarta.servlet.http.HttpServletRequest"%>
 <%@page import="jakarta.servlet.http.HttpServletResponse"%>
+<%@page import="jakarta.servlet.http.Cookie"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
+
+<%! ProductDAO pdao = new ProductDAO();%>
+<%! BrandDAO bdao = new BrandDAO();%>
+<%! ResultSet rs = null;%>
+<%! int currentPage, numberOfPage;%>
+<%
+    currentPage = (int) request.getAttribute("page");
+    numberOfPage = (int) request.getAttribute("numberOfPage");
+%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -29,18 +37,11 @@
         <link rel="icon" href="/RESOURCES/shop/public/images/icon.webp">
         <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css"
               rel="stylesheet" type="text/css" />
-
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
         <title>
             <%= request.getAttribute("shopName")%>
         </title>
-        <%! ProductDAO pdao = new ProductDAO();%>
-        <%! BrandDAO bdao = new BrandDAO();%>
-        <%! ResultSet rs = null;%>
-        <%! int currentPage, numberOfPage;%>
-        <%
-            currentPage = (int) request.getAttribute("page");
-            numberOfPage = (int) request.getAttribute("numberOfPage");
-        %>
+
 
     </head>
 
@@ -48,7 +49,7 @@
 
 
         <div class="container-fluid">
-            
+
             <div class="row">
                 <div class="col-md-12 nav">
                     <ul>
@@ -61,11 +62,25 @@
                     </ul>
                     <a href="/"><img src="/RESOURCES/images/icons/icon.webp" alt=""
                                      height="64"></a>
+
+                    <!-- This is search function -->                                     
                     <div class="account">
-                        <a><img src="/RESOURCES/images/icons/search.png" alt=""></a>
-                        <a href="/Log/Login"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+                        <a class="searchIcon"><img src="/RESOURCES/images/icons/search.png" alt=""></a>
+                        <a href="/Client/User"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
                         <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
                     </div>
+                    <div class="search-box">
+                        <div class="search-box-first">
+                            <a href="" id="SearchProduct" onclick="changeLink()">
+                                <img src="/RESOURCES/images/icons/search.png" alt="">
+                            </a>
+                            <input id="inputSearch" type="text" name="txtSearch" placeholder="Tìm kiếm" value="<%= (request.getParameter("txtSearch") != null ? request.getParameter("txtSearch") : "")%>" autofocus onkeydown="handleKeyDown(event)">
+                        </div>
+                        <button class="close-search-box" type="button">
+                            <img src="/RESOURCES/images/icons/close.png" alt="">
+                        </button>
+                    </div>
+
                 </div>
             </div>
 
@@ -80,45 +95,51 @@
                                 <h4>THƯƠNG HIỆU</h4>
                                 <input placeholder="Tìm kiếm nhanh" type="text" name="" id="searchBox">
                                 <div class="list-brand">
-                                    <ul>
+                                    <ul id="box-brand">
                                         <% rs = (ResultSet) request.getAttribute("BDResultSet");
                                             while (rs != null && rs.next()) {%>
                                         <li>
-                                            <a  href="/Product/List/BrandID/<%=rs.getInt("ID")%>">
+                                            <a  href="/Product/List/BrandID/<%=rs.getInt("ID")%>" class="brandNameForSearch">
                                                 <%=rs.getString(2)%>
                                             </a>
                                         </li>
 
                                         <% }
-                                            rs = null; %>
+                                            rs = null;%>
                                     </ul>
                                 </div>
                             </div>
 
+                            <!--Filter Form-->
+
                             <form action="" id="searchForm" method="GET">
                                 <div class="gender">
                                     <h4>GIỚI TÍNH</h4>
-                                    <input type="checkbox" name="Gender" id="Nam" value="Nam" onchange="this.form.submit()">
-                                    <label for="male" value="Male">Nam</label>
+                                    <input type="checkbox" name="Gender" id="Nam" value="Nam">
+                                    <label for="Nam" value="Male">Nam</label>
 
-                                    <input type="checkbox" name="Gender" id="Nữ" value="Nữ" onchange="this.form.submit()">
-                                    <label for="female" value="Female">Nữ</label>
+                                    <input type="checkbox" name="Gender" id="Nữ" value="Nữ">
+                                    <label for="Nữ" value="Female">Nữ</label>
 
-                                    <input type="checkbox" name="Gender" id="Unisex" value="Unisex" onchange="this.form.submit()">
-                                    <label for="unisex" value="Unisex">Unisex</label>
+                                    <input type="checkbox" name="Gender" id="Unisex" value="Unisex">
+                                    <label for="Unisex" value="Unisex">Unisex</label>
                                 </div>
                                 <div class="price">
                                     <h4>THEO GIÁ</h4>
-                                    <input type="radio" name="priceRange" id="low" value="1500000-3000000" onchange="this.form.submit()">
+                                    <input type="checkbox" name="priceRange" id="low" value="1500000-3000000">
                                     <label for="low">1.500.000 - 3.000.000</label>
                                     <br>
-                                    <input type="radio" name="priceRange" id="medium" value="3000000-5000000" onchange="this.form.submit()">
+                                    <input type="checkbox" name="priceRange" id="medium" value="3000000-5000000">
                                     <label for="medium">3.000.000 - 5.000.000</label>
                                     <br>
-                                    <input type="radio" name="priceRange" id="high" value="5000000-100000000" onchange="this.form.submit()">
+                                    <input type="checkbox" name="priceRange" id="high" value="5000000-100000000">
                                     <label for="high"> >5.000.000</label>
                                 </div>
+                                <c:if test='<%= request.getParameter("txtSearch") != null%>'>
+                                    <input type="hidden" name="txtSearch"  value="<%= request.getParameter("txtSearch")%>" >
+                                </c:if>
                             </form>
+                            <!--Filter Form-->
 
                         </div>
 
@@ -172,8 +193,16 @@
                     <form>
                         <nav aria-label="...">
                             <ul class="pagination">
-                                <li class="page-item"><a class="page-link" href="#">Trang dau</a></li>
-                                <li class="page-item"><span class="page-link">Previous</span></li>
+                                <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>">
+                                    <a class="page-link" href="${currentURL}/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link">
+                                        <div><i class="bi bi-skip-backward" id></i></div>
+                                    </a>
+                                </li>
+                                <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>">
+                                    <a class="page-link" href="${currentURL}/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link">
+                                        <div style="transform: rotate(180deg);"><i class="bi bi-play"></i></div>
+                                    </a>
+                                </li>
 
                                 <c:forEach var="i" begin="${page-2<0?0:page-2}" end="${page+2 +1}">
                                     <c:choose>
@@ -189,8 +218,16 @@
                                     </c:choose>
                                 </c:forEach>
 
-                                <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                                <li class="page-item"><a class="page-link" href="#">Trang cuoi</a></li>
+                                <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>">
+                                    <a class="page-link" href="${currentURL}/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link">
+                                        <i class="bi bi-play"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>">
+                                    <a class="page-link" href="${currentURL}/page/<%=numberOfPage%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link">
+                                        <i class="bi bi-skip-forward"></i>
+                                    </a>
+                                </li>
                             </ul>
                         </nav>
                     </form>
@@ -255,8 +292,28 @@
                     <p>&copy; xxiv 2023 | all right reserved</p>
                 </div>
             </div>
-
         </div>
+
+        <div class="spinner-container">
+            <div class="spinner-border" role="status"></div>
+        </div>
+        <!-- This is funtion search -->
+        <script>
+            function changeLink() {
+                let SearchURL = document.getElementById("inputSearch").value;
+            <%! String searchTxT;%>
+            <%
+                    if (request.getQueryString() != null) {
+                        if (request.getQueryString().startsWith("txtSearch")) {
+                            searchTxT = "txtSearch=";
+                        } else {
+                            searchTxT = "&txtSearch=";
+                        }
+                    }
+            %>
+                document.getElementById("SearchProduct").href = "${currentURL}/page/1<%= (request.getQueryString() == null ? "?txtSearch=" : "?" + request.getQueryString().replace("&txtSearch=" + request.getParameter("txtSearch"), "").replace("txtSearch=" + request.getParameter("txtSearch"), "") + searchTxT)%>" + SearchURL;
+                    }
+        </script>
 
         <script
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"

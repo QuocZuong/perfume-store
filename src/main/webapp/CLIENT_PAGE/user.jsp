@@ -1,7 +1,4 @@
-<%-- Document : newjsp Created on : Jul 5, 2023, 3:27:56 PM Author : Acer --%>
-
 <%@page import="DAOs.ProductDAO"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="Models.Order"%>
 <%@page import="java.util.List"%>
@@ -9,17 +6,29 @@
 <%@page import="Models.User"%>
 <%@page import="DAOs.UserDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <%! ProductDAO pDAO = new ProductDAO();  %>
 <%! UserDAO usDAO = new UserDAO();%>
-<%!String fullname, username, email, Tinh = "", QuanHuyen = "", PhuongXa = "";%>
+<%! OrderDAO od = new OrderDAO();%>
+<%! List<Order> orders = null; %>
+<%! User user = null; %>
+<%! Cookie currentUserCookie = null;%>
+<%! String fullname, username, email, Tinh = "", QuanHuyen = "", PhuongXa = "";%>
+
+<%! boolean isAccountDeactivated, isAccountNotFound, isExistEmail, isExistUsername;%>
+<%! boolean isUpdateAccountExecption;%>
+
+<%! boolean isExistPhone, isNotEnoughInfomation;%>
+<%! boolean isUpdateAddressExecption;%>
+
 <%
-    Cookie currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
-    User user = usDAO.getUser(currentUserCookie.getValue());
+    currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
+    user = usDAO.getUser(currentUserCookie.getValue());
     fullname = user.getName();
     username = user.getUsername();
     email = user.getEmail();
-    OrderDAO od = new OrderDAO();
-    List<Order> orders = od.getOrderByClientId(user.getID());
+    orders = od.getOrderByClientId(user.getID());
 
     if (user.getAddress() != null && user.getAddress().split(" - ").length == 3) {
         String Address[] = user.getAddress().split(" - ");
@@ -27,6 +36,20 @@
         QuanHuyen = Address[1];
         PhuongXa = Address[2];
     }
+
+    // Handling exception
+    String err = "err";
+    isAccountNotFound = (request.getParameter(err + "AccNF") == null ? false : Boolean.parseBoolean(request.getParameter(err + "AccNF")));
+    isAccountDeactivated = (request.getParameter(err + "AccD") == null ? false : Boolean.parseBoolean(request.getParameter(err + "AccD")));
+    isExistEmail = (request.getParameter(err + "Email") == null ? false : Boolean.parseBoolean(request.getParameter(err + "Email")));
+    isExistUsername = (request.getParameter(err + "Username") == null ? false : Boolean.parseBoolean(request.getParameter(err + "Username")));
+
+    isUpdateAccountExecption = isAccountNotFound || isAccountDeactivated || isExistEmail || isExistUsername;
+
+    isExistPhone = (request.getParameter(err + "Phone") == null ? false : Boolean.parseBoolean(request.getParameter(err + "Phone")));
+    isNotEnoughInfomation = (request.getParameter(err + "NEInfo") == null ? false : Boolean.parseBoolean(request.getParameter(err + "NEInfo")));
+
+    isUpdateAddressExecption = isExistPhone || isNotEnoughInfomation;
 %>
 
 <!DOCTYPE html>
@@ -55,15 +78,12 @@
 
 
         <div class="container-fluid">
-            <h1><%= user.getID()%></h1>
             <h1><%= user.getName()%></h1>
             <h1><%= user.getUsername()%></h1>
             <h1><%= user.getEmail()%></h1>
-            <h1><%= user.getPassword()%></h1>
-            <h1>|<%= Tinh%>|</h1>
-            <h1>|<%= QuanHuyen%>|</h1>
+            <h1>|<%= Tinh%>|</h1>            
+            <h1>|<%= QuanHuyen%>|</h1>            
             <h1>|<%= PhuongXa%>|</h1>
-
             <div class="row">
                 <div class="col-md-12 nav">
                     <ul>
@@ -89,18 +109,18 @@
                     <h1>Tài khoản của tôi</h1>
                     <div class="list">
                         <ul>
-                            <li><a>Trang tài khoản</a></li>
-                            <li><a>Đơn hàng</a></li>
-                            <li><a>Địa chỉ</a></li>
-                            <li><a>Tài khoản</a></li>
+                            <li><a class="<%= isUpdateAccountExecption ? "" : "active"%>">Trang tài khoản</a></li>
+                            <li><a class="">Đơn hàng</a></li>
+                            <li><a class="">Địa chỉ</a></li>
+                            <li><a class="<%= isUpdateAccountExecption ? "active" : ""%>">Tài khoản</a></li>
                             <li><a href="/Log/Logout">Đăng xuất</a></li>
                         </ul>
                     </div>
                 </div>
                 <div class="right">
                     <div class="account-page">
-                        <p>Xin chào <b><strong>quocvuongle.ct</strong></b> (không phải tài khoản
-                            <b><strong>quocvuongle.ct</strong></b>? Hãy <a href="">thoát ra</a> và đăng nhập vào tài
+                        <p>Xin chào <b><strong><%=  (user.getName() != null && !user.getName().isEmpty()) ? user.getName() : user.getUsername()%></strong></b> (không phải tài khoản
+                            <b><strong><%=  (user.getName() != null && !user.getName().isEmpty()) ? user.getName() : user.getUsername()%></strong></b>? Hãy <a href="">thoát ra</a> và đăng nhập vào tài
                             khoản của bạn)</p>
                         <p>
                             Từ trang quản lý tài khoản bạn có thể xem <a href="">đơn hàng mới</a>, quản lý <a
@@ -126,6 +146,7 @@
                                     </thead>
                                     <tbody>
                                         <tr>
+
                                             <c:if test="<%=orders.size() != 0%>">
                                                 <c:forEach var="i" begin="0" end="<%=orders.size() - 1%>">
                                                 <tr>
@@ -136,6 +157,7 @@
                                                 </tr>
                                             </c:forEach>
                                         </c:if>
+
                                         </tr>
                                     </tbody>
                                 </table>
@@ -146,43 +168,69 @@
                         <p>Các địa chỉ bên dưới mặc định sẽ được sử dụng ở trang thanh toán sản phẩm.</p>
                         <div class="default">
 
-
-                            <!--                       Add new Form. Maybe Change later-->
+                            <!-- Add new Form. Maybe Change later-->
                             <form action="/Client/Update/Address" method="POST">
                                 <h3>Địa chỉ giao hàng mặc định</h3>
 
-                                <div>
-                                    <select id="city">
+                                <div class="d-flex flex-column gap-2 mb-2">
+                                    <select id="city" class="form-select">
                                         <option value="" selected>Chọn tỉnh thành</option>           
                                     </select>
 
-                                    <select id="district">
+                                    <select id="district" class="form-select">
                                         <option value="" selected>Chọn quận huyện</option>
                                     </select>
 
-                                    <select id="ward">
+                                    <select id="ward" class="form-select">
                                         <option value="" selected>Chọn phường xã</option>
                                     </select>
+                                    <input style="width:100%" type="text" name="txtPhoneNumber" id="txtPhoneNumber" value="<%= user.getPhoneNumber()%>"> 
+                                    <input  type="hidden" name="txtAddress" id="txtAddress" >
                                 </div>
-                                <div> <input style="width:100%" type="text" name="txtPhoneNumber" id="txtPhoneNumber" value="<%= user.getPhoneNumber()%>"> </div>
-                                <input  type="hidden" name="txtAddress" id="txtAddress" value="" >
                                 <button type="submit" name="btnUpdateAdress" value="Submit"> <h4>Sửa</h4> </button>
                             </form>
-                            <!--                       Add new Form. Maybe Change later-->
-
+                            <!--  Add new Form. Maybe Change later-->
 
                         </div>
 
-
-
-                        <div class="address">
+                        <div class="address d-none">
                             <p><%= user.getName()%></p>
                             <p><%= user.getPhoneNumber()%></p>
                             <p><%= user.getAddress()%></p>
                         </div>
+
                     </div>
                     <div class="info-page">
-                        <form action="/Client/Update/Info" method="POST">
+
+
+                        <!--Execption Handling-->
+                        <c:choose>
+                            <c:when test='<%= isAccountNotFound%>'>
+                                <h1 class="alert alert-danger">
+                                    Sai mật khẩu hiện tại
+                                </h1>
+                            </c:when>
+                            <c:when test='<%= isAccountDeactivated%>'>
+                                <h1 class="alert alert-danger">
+                                    Tài khoản đã bị vô hiệu hóa.
+                                </h1>
+                            </c:when>
+                            <c:when test='<%= isExistEmail%>'>
+                                <h1 class="alert alert-danger">
+                                    Email đã tồn tại
+                                </h1>
+                            </c:when>
+                            <c:when test='<%= isExistUsername%>'>
+                                <h1 class="alert alert-danger">
+                                    Tên đăng nhập đã tồn tại
+                                </h1>
+                            </c:when>
+                        </c:choose>
+                        <!--Execption Handling-->
+
+                        <!--  Form Update Client account -->
+
+                        <form action="/Client/Update/Info" method="POST" id="formUpdateAccount">
                             <div class="fullname">
                                 <div>
                                     <label>
@@ -210,6 +258,8 @@
                             </fieldset>
                             <button type="submit" name="btnUpdateInfo" value="Submit">Lưu thay đổi</button>
                         </form>
+                        <!--  Form Update Client account -->
+
 
                     </div>
                 </div>
@@ -281,16 +331,21 @@
                 integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>
 
+        <script src="/RESOURCES/user/public/js/main.js"></script>
+
+
+        <!--VietName Province APU-->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 
-        <script src="/RESOURCES/user/public/js/main.js"></script>
         <script >
             const host = "https://provinces.open-api.vn/api/";
             let City = '<%= Tinh%>';
             let District = '<%= QuanHuyen%>';
             let Ward = '<%= PhuongXa%>';
-
+            let DefaultCity = 'Chọn tỉnh thành';
+            let DefaultDistrict = 'Chọn quận huyện';
+            let DefaultWard = 'Chọn phường xã';
             var callAPI = (api) => {
                 return axios.get(api)
                         .then((response) => {
@@ -302,12 +357,11 @@
                             }
                         });
             };
-
             callAPI('https://provinces.open-api.vn/api/?depth=1');
             var callApiDistrict = (api) => {
                 return axios.get(api)
                         .then((response) => {
-                            renderData(response.data.districts, "district");
+                            renderData(response.data.districts, "district", DefaultDistrict);
                             if (District !== "")
                             {
                                 $(`select option[value='` + District + `']`).prop("selected", true);
@@ -318,16 +372,15 @@
             var callApiWard = (api) => {
                 return axios.get(api)
                         .then((response) => {
-                            renderData(response.data.wards, "ward");
+                            renderData(response.data.wards, "ward", DefaultWard);
                             if (Ward !== "")
                             {
                                 $(`select option[value='` + Ward + `']`).prop("selected", true);
                             }
                         });
             };
-
-            var renderData = (array, select) => {
-                let row = ' <option disable value="">Chọn</option>';
+            var renderData = (array, select, msg = DefaultCity) => {
+                let row = ' <option disable value="">' + msg + '</option>';
                 array.forEach((e) => {
                     let code = e.code;
                     let name = e.name;
@@ -336,30 +389,75 @@
                 document.querySelector("#" + select).innerHTML = row;
             };
 
+            function resetData(select, msg = DefaultCity) {
+                let row = '<option disable value="">' + msg + '</option>';
+                document.querySelector("#" + select).innerHTML = row;
+            }
+
+
             $("#city").change(() => {
+                resetData("district", DefaultDistrict);
+                resetData("ward", DefaultWard);
                 callApiDistrict(host + "p/" + $("#city").find(':selected').data('id') + "?depth=2");
-                callApiWard(host + "d/" + $("#district").find(':selected').data('id') + "?depth=2");
                 printResult();
             });
             $("#district").change(() => {
+                resetData("ward", DefaultWard);
                 callApiWard(host + "d/" + $("#district").find(':selected').data('id') + "?depth=2");
                 printResult();
             });
             $("#ward").change(() => {
                 printResult();
-            })
-
+            });
             var printResult = () => {
                 if ($("#district").find(':selected').data('id') != "" && $("#city").find(':selected').data('id') != "" &&
                         $("#ward").find(':selected').data('id') != "") {
-                    let result = $("#city option:selected").text() +
-                            " - " + $("#district option:selected").text() + " - " +
-                            $("#ward option:selected").text();
-                    $("#result").text(result);
-                    $("#txtAddress").val(result);
-                }
 
+                    let city = $("#city option:selected").text();
+                    let district = $("#district option:selected").text();
+                    let ward = $("#ward option:selected").text();
+                    let sp = " - ";
+                    let result = (city === DefaultCity ? "" : city);
+                    result += (district === DefaultDistrict ? "" : sp + district);
+                    result += (ward === DefaultWard ? "" : sp + ward);
+                    $("#result").text(result);
+                    console.log("update value success");
+                    $("input#txtAddress").val(result);
+                }
             };
+        </script>
+
+        <!--Jquery Validation-->
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+        <script>
+            $().ready(function () {
+                $.validator.addMethod("regex", function (value, element, regex) {
+                    return !regex.test(value);
+                }, "Mật khẩu phải có ít nhất 6 kí tự.");
+
+                $("#formUpdateAccount").validate({
+                    rules: {
+                        txtFullname: {
+                            maxlength: 50
+                        },
+                        txtUserName: {
+                            required: true,
+                            maxlength: 50
+                        },
+                        txtEmail: {
+                            required: true,
+                            email: true
+                        },
+                        pwdNew: {
+                            regex: /^.{6,}$/
+                        },
+                        pwdConfirmNew: {
+                            equalto: "#pwdNew"
+                        }
+
+                    }
+                });
+            });
         </script>
     </body>
 

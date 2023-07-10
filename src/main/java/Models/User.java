@@ -10,6 +10,20 @@ public class User {
     private String phoneNumber;
     private String address;
     private String role;
+    private boolean active;
+
+    public User(int iD, String name, String username, String password, String email, String phoneNumber, String address,
+            String role, boolean active) {
+        ID = iD;
+        this.name = name;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.role = role;
+        this.active = active;
+    }
 
     public User(
             int ID,
@@ -28,6 +42,7 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.address = address;
         this.role = role;
+        this.active = true;
     }
 
     public int getID() {
@@ -62,6 +77,10 @@ public class User {
         return role;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
     public void setID(int ID) {
         this.ID = ID;
     }
@@ -92,6 +111,10 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
     
 }

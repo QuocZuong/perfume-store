@@ -1,8 +1,16 @@
 package Controllers;
 
 import DAOs.UserDAO;
+
+// For Exception
+import Exceptions.AccountDeactivatedException;
+import Exceptions.EmailDuplicationException;
+import Exceptions.WrongPasswordException;
+import javax.security.auth.login.AccountNotFoundException;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
+// For Exception
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,10 +24,10 @@ public class LogController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -31,7 +39,7 @@ public class LogController extends HttpServlet {
             request.getRequestDispatcher("/LOGIN_PAGE/logIn.jsp").forward(request, response);
             return;
         }
-            System.out.println("going logout controller");
+        System.out.println("going logout controller");
         if (path.startsWith(LOGOUT_URI)) {
             System.out.println("going logout");
             logout(request, response);
@@ -44,42 +52,44 @@ public class LogController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        // Login
         if (request.getParameter("submitBtn") != null && request.getParameter("submitBtn").equals("submitLogin")) {
             if (login(request, response)) {
                 System.out.println("Login Successfully. Going to /Product/List");
                 response.sendRedirect("/Product/List");
             } else {
                 System.out.println("Login failed. Going to /Log/Login");
-                response.sendRedirect("/Log/Login");
+                response.sendRedirect(LOGIN_URI + checkException(request));
             }
             return;
         }
-
+        // Register
         if (request.getParameter("submitBtn") != null && request.getParameter("submitBtn").equals("submitRegister")) {
             if (register(request, response)) {
                 System.out.println("Register Successfully. Going to /Product/List");
                 response.sendRedirect("/Product/List");
             } else {
                 System.out.println("Register failed. Going to /Log/Login");
-                response.sendRedirect("/Log/Login");
+                response.sendRedirect(LOGIN_URI + checkException(request));
             }
             return;
         }
     }
 
+    // ------------------------- AUNTHENTICATION SECTION -------------------------
     public boolean login(HttpServletRequest request, HttpServletResponse response) {
         String us = request.getParameter("txtUsername");
         String pw = request.getParameter("txtPassword");
-
+        boolean remember = request.getParameter("txtRememberPassword") != null;
         UserDAO dao = new UserDAO();
 
         boolean hasUser = false;
@@ -89,14 +99,28 @@ public class LogController extends HttpServlet {
             hasUser = dao.loginWithEmail(us, pw);
             username = dao.getUserByEmail(us).getUsername();
         } else {
-            hasUser = dao.login(us, pw);
+            try {
+                hasUser = dao.login(us, pw);
+            } catch (AccountNotFoundException e) {
+                request.setAttribute("exceptionType", "AccountNotFoundException");
+                return false;
+            } catch (AccountDeactivatedException e) {
+                request.setAttribute("exceptionType", "AccountDeactivatedException");
+                return false;
+            } catch (WrongPasswordException e) {
+                request.setAttribute("exceptionType", "WrongPasswordException");
+            }
         }
 
         if (hasUser) {
             boolean isAdmin = dao.isAdmin(username);
 
             Cookie c = new Cookie(isAdmin == true ? "Admin" : "Client", username);
-            c.setMaxAge(3 * 24 * 60 * 60);
+            if (remember) {
+                c.setMaxAge(24 * 60 * 60 * 30);
+            } else {
+                c.setMaxAge(60 * 60 * 1);
+            }
             c.setPath("/");
             request.getSession().setAttribute("userCookie", c);
             response.addCookie(c);
@@ -110,8 +134,20 @@ public class LogController extends HttpServlet {
         String email = request.getParameter("txtEmail");
         UserDAO dao = new UserDAO();
 
-        if (dao.register(email)) {
-            return true;
+        try {
+            if (dao.register(email)) {
+                String username = dao.getUserByEmail(email).getUsername();
+
+                Cookie c = new Cookie("Client", username);
+                c.setMaxAge(3 * 24 * 60 * 60);
+                c.setPath("/");
+
+                response.addCookie(c);
+
+                return true;
+            }
+        } catch (EmailDuplicationException e) {
+            request.setAttribute("exceptionType", "EmailDuplicationException");
         }
 
         return false;
@@ -130,4 +166,33 @@ public class LogController extends HttpServlet {
 
         return true;
     }
+
+    // ------------------------- EXEPTION HANDLING SECTION -------------------------
+    private String checkException(HttpServletRequest request) {
+        String exception = "";
+        if (request.getAttribute("exceptionType") == null) {
+            return "";
+        }
+
+        switch ((String) request.getAttribute("exceptionType")) {
+            case "WrongPasswordException":
+            case "AccountNotFoundException":
+                exception = "?errAccNF=true";
+                break;
+            case "AccountDeactivatedException":
+                exception = "?errAccD=true";
+                break;
+            case "EmailDuplicationException":
+                exception = "?errEmail=true";
+                break;
+            case "UsernameDuplicationException":
+                exception = "?errUsername=true";
+                break;
+            default:
+                break;
+        }
+
+        return exception;
+    }
+
 }

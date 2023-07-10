@@ -1,16 +1,27 @@
 package Controllers;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.security.auth.login.AccountNotFoundException;
+
 import DAOs.OrderDAO;
 import DAOs.CartDAO;
 import DAOs.ProductDAO;
 import DAOs.UserDAO;
+import Exceptions.AccountDeactivatedException;
+import Exceptions.EmailDuplicationException;
+import Exceptions.NotEnoughInformationException;
+import Exceptions.PhoneNumberDuplicationException;
+import Exceptions.UsernameDuplicationException;
+import Exceptions.WrongPasswordException;
+import Lib.EmailSender;
 import Models.Cart;
+import Models.Order;
 import Models.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -18,12 +29,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-/**
- *
- * @author Acer
- */
 public class ClientController extends HttpServlet {
 
+    // ---------------------------- URI DECLARATION SECTION
+    // ----------------------------
     public static final String CLIENT_CART_URI = "/Client/Cart";
     public static final String CLIENT_CART_CHECKOUT_URI = "/Client/Cart/Checkout";
     public static final String CLIENT_CART_DELETE_URI = "/Client/Cart/Delete";
@@ -78,16 +87,16 @@ public class ClientController extends HttpServlet {
             return;
         }
 
-        if (path.startsWith(CLIENT_USER_URI)) {
-            System.out.println("Going user");
-            request.getRequestDispatcher("/CLIENT_PAGE/user.jsp").forward(request, response);
-            return;
-        }
+        boolean isAdmin = ((Cookie) request.getSession().getAttribute("userCookie")).getName().equals("Admin");
 
-        if (path.startsWith(CLIENT_CHECKOUT_URI)) {
-            System.out.println("Going Checkout");
-            ClientCheckout(request, response);
-            response.sendRedirect(CLIENT_CART_URI);
+        if (path.startsWith(CLIENT_USER_URI)) {
+            if (isAdmin) {
+                System.out.println("Going admin");
+                response.sendRedirect("/Admin");
+            } else {
+                System.out.println("Going user");
+                request.getRequestDispatcher("/CLIENT_PAGE/user.jsp").forward(request, response);
+            }
             return;
         }
 
@@ -102,13 +111,76 @@ public class ClientController extends HttpServlet {
         response.sendRedirect("/");
     }
 
-    private void ClientOrderDetail(HttpServletRequest request, HttpServletResponse response) {
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request  servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException      if an I/O error occurs
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         String path = request.getRequestURI();
-        String[] data = path.split("/");
-        int order_id = Integer.parseInt(data[data.length - 1]);
-        OrderDAO oDAO = new OrderDAO();
-        List<String[]> orderDetail = oDAO.getOrderDetailByOrderID(order_id);
-        request.setAttribute("OrderDetail", orderDetail);
+        if (path.startsWith(CLIENT_ADD_TO_CART_URI)) {
+            if (request.getParameter(BTN_ADD_TO_CART) != null
+                    && request.getParameter(BTN_ADD_TO_CART).equals(SUBMIT_VALUE)) {
+
+                PostAddToCart(request, response);
+                int pID = Integer.parseInt(request.getParameter("ProductID"));
+                response.sendRedirect("/Product/Detail/ID/" + pID);
+                return;
+            }
+        }
+        if (path.startsWith(CLIENT_UPDATE_INFO_URI)) {
+            if (request.getParameter("btnUpdateInfo") != null
+                    && request.getParameter("btnUpdateInfo").equals("Submit")) {
+                System.out.println("Going update info");
+                if (updateClientInfomation(request, response)) {
+                    response.sendRedirect(CLIENT_USER_URI);
+                } else {
+                    response.sendRedirect(CLIENT_USER_URI + checkException(request));
+                }
+                return;
+            }
+        }
+        if (path.startsWith(CLIENT_UPDATE_ADDRESS_URI)) {
+            if (request.getParameter("btnUpdateAdress") != null
+                    && request.getParameter("btnUpdateAdress").equals("Submit")) {
+                System.out.println("Going update address");
+                updateClientAddress(request, response);
+                response.sendRedirect(CLIENT_USER_URI);
+                return;
+            }
+        }
+        if (path.startsWith(CLIENT_CHECKOUT_URI)) {
+            if (request.getParameter("btnSubmitCheckOut") != null
+                    && request.getParameter("btnSubmitCheckOut").equals("Submit")) {
+                System.out.println("Going Checkout");
+                ClientCheckout(request, response);
+                response.sendRedirect(CLIENT_CART_URI);
+                return;
+            }
+        }
+    }
+
+    /* CRUD */
+    // ---------------------------- CREATE SECTION ----------------------------
+    private void PostAddToCart(HttpServletRequest request, HttpServletResponse response) {
+        UserDAO uDao = new UserDAO();
+
+        Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
+        String username = userCookie.getValue();
+
+        int pID = Integer.parseInt(request.getParameter("ProductID"));
+        int pQuan = Integer.parseInt(request.getParameter("ProductQuantity"));
+
+        // Assume having client Username and get Client ID from username
+        int ClientID = uDao.getUser(username).getID();
+
+        CartDAO cDAO = new CartDAO();
+        cDAO.addToCart(ClientID, pID, pQuan);
     }
 
     private boolean ClientCheckout(HttpServletRequest request, HttpServletResponse response) {
@@ -119,7 +191,6 @@ public class ClientController extends HttpServlet {
         Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
         String username = currentUserCookie.getValue();
         int ClientID = usDAO.getUser(username).getID();
-
         ArrayList<int[]> CartProductQuan = cDAO.getAllCartProductQuantity(ClientID);
 
         for (int i = 0; i < CartProductQuan.size(); i++) {
@@ -131,13 +202,21 @@ public class ClientController extends HttpServlet {
                 return false;
             }
         }
-
+        String newAddress = request.getParameter("txtNewAddress");
+        String newPhone = request.getParameter("txtNewPhone");
+        String Address = request.getParameter("txtAddress");
+        String Phone = request.getParameter("txtPhone");
+        if (newAddress != null && !newAddress.equals("")) {
+            Address = newAddress;
+        }
+        if (newPhone != null && !newPhone.equals("")) {
+            Phone = newPhone;
+        }
+        String Note = request.getParameter("txtNote");
         int Total = cDAO.getCartTotal(ClientID);
-
         String now = new SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date());
         Date nowDate = Date.valueOf(now);
-        int kq = usDAO.checkout(ClientID, nowDate, Total);
-
+        int kq = usDAO.checkout(ClientID, nowDate, Address, Phone, Note, Total);
         if (kq == 0) {
             System.out.println("Khong thanh toan duoc");
             return false;
@@ -148,7 +227,33 @@ public class ClientController extends HttpServlet {
 
     }
 
-    private void updateClientInfomation(HttpServletRequest request, HttpServletResponse response) {
+    // ---------------------------- READ SECTION ----------------------------
+    private void GetCartProduct(HttpServletRequest request, HttpServletResponse response) {
+        UserDAO uDao = new UserDAO();
+        CartDAO cDAO = new CartDAO();
+
+        Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
+        String username = userCookie.getValue();
+        int ClientID = uDao.getUser(username).getID();
+
+        List<Cart> listCart = cDAO.getAllClientProduct(ClientID);
+        request.setAttribute("listCart", listCart);
+    }
+
+    private void ClientOrderDetail(HttpServletRequest request, HttpServletResponse response) {
+        String path = request.getRequestURI();
+        String[] data = path.split("/");
+        int order_id = Integer.parseInt(data[data.length - 1]);
+        OrderDAO oDAO = new OrderDAO();
+        List<String[]> orderDetail = oDAO.getOrderDetailByOrderID(order_id);
+        Order OrderInfor = oDAO.getOrderByOrderId(order_id);
+        System.out.println(OrderInfor);
+        request.setAttribute("OrderInfor", OrderInfor);
+        request.setAttribute("OrderDetail", orderDetail);
+    }
+
+    // ---------------------------- UPDATE SECTION ----------------------------
+    private boolean updateClientInfomation(HttpServletRequest request, HttpServletResponse response) {
         /*
          * txtFullname
          * txtUserName
@@ -170,25 +275,47 @@ public class ClientController extends HttpServlet {
         UserDAO usDAO = new UserDAO();
         User user = usDAO.getUser(currentUserCookie.getValue());
 
+        boolean isChangedEmail = true;
+        boolean isChangedPassword = true;
         // Username, email, phone number is unique
-        if (currentPassword != null) {
-            currentPassword = user.getPassword();
-        } else if (!usDAO.login(user.getUsername(), currentPassword)) {
-            System.out.println("Login failed. Update Failed");
-            return;
-        }
+        try {
+            if (!email.equals(user.getEmail())) {
+                if (usDAO.isExistEmail(email)) {
+                    throw new EmailDuplicationException();
+                }
+            } else {
+                isChangedEmail = false;
+            }
 
-        if (!email.equals(user.getEmail())) {
-            if (usDAO.isExistEmail(email)) {
-                System.out.println("Email is existed. Update Failed");
-                return;
+            if (!username.equals(user.getUsername())) {
+                if (usDAO.isExistUsername(username)) {
+                    throw new UsernameDuplicationException();
+                }
             }
-        }
-        if (!username.equals(user.getUsername())) {
-            if (usDAO.isExistUsername(username)) {
-                System.out.println("Username is existed. Update Failed");
-                return;
+
+            if (currentPassword == null || currentPassword.isEmpty()) {
+                currentPassword = user.getPassword();
+                isChangedPassword = false;
+            } else if (!usDAO.login(user.getUsername(), currentPassword)) {
+                throw new WrongPasswordException();
             }
+
+            // Email and username duplication must come first
+        } catch (WrongPasswordException e) {
+            request.setAttribute("exceptionType", "WrongPasswordException");
+            return false;
+        } catch (AccountDeactivatedException e) {
+            request.setAttribute("exceptionType", "AccountDeactivatedException");
+            return false;
+        } catch (AccountNotFoundException e) {
+            request.setAttribute("exceptionType", "AccountNotFoundException");
+            return false;
+        } catch (EmailDuplicationException e) {
+            request.setAttribute("exceptionType", "EmailDuplicationException");
+            return false;
+        } catch (UsernameDuplicationException e) {
+            request.setAttribute("exceptionType", "UsernameDuplicationException");
+            return false;
         }
 
         if (request.getParameter("pwdNew") != null && !request.getParameter("pwdNew").equals("")) {
@@ -215,22 +342,58 @@ public class ClientController extends HttpServlet {
         c.setPath("/");
         response.addCookie(c);
 
+        // Sending mail
+        try {
+            EmailSender es = new EmailSender();
+            if (isChangedPassword) {
+                System.out.println("Detect email change");
+                System.out.println("sending mail changing email");
+                es.setEmailTo(email);
+                es.sendToEmail(es.CHANGE_PASSWORD_NOTFICATION, es.changePasswordNotifcation());
+            }
+            if (isChangedEmail) {
+                System.out.println("Detect email change");
+                System.out.println("sending mail changing email");
+                es.setEmailTo(user.getEmail());
+                es.sendToEmail(es.CHANGE_EMAIL_NOTFICATION, es.changeEmailNotification(email));
+            }
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("update account with ID " + user.getID() + " successfully");
+        return true;
     }
 
-    private void updateClientAddress(HttpServletRequest request, HttpServletResponse response) {
+    private boolean updateClientAddress(HttpServletRequest request, HttpServletResponse response) {
         String phoneNumber = request.getParameter("txtPhoneNumber");
-        String newAddress = request.getParameter("txtAddress");
         Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
         UserDAO usDAO = new UserDAO();
         String username = currentUserCookie.getValue();
         User UpdateClient = usDAO.getUser(username);
-        System.out.println("User name :" + username);
-        System.out.println("User name :" + UpdateClient.getPhoneNumber());
-        if (!phoneNumber.equals(UpdateClient.getPhoneNumber())) {
-            if (usDAO.isExistPhone(phoneNumber)) {
-                System.out.println("Phone Number is existed. Update Failed");
-                return;
+
+        String newAddress = request.getParameter("txtAddress");
+        try {
+            if (newAddress.split(" - ").length != 3) {
+                throw new NotEnoughInformationException();
             }
+
+            System.out.println("User name :" + username);
+            System.out.println("User's Phone :" + UpdateClient.getPhoneNumber());
+            System.out.println("User's Address :" + newAddress);
+            // Phone number is unique
+            if (!phoneNumber.equals(UpdateClient.getPhoneNumber())) {
+                if (usDAO.isExistPhone(phoneNumber)) {
+                    throw new PhoneNumberDuplicationException();
+                }
+            }
+        } catch (PhoneNumberDuplicationException e) {
+            request.setAttribute("exceptionType", "PhoneNumberDuplicationException");
+            return false;
+        } catch (NotEnoughInformationException e) {
+            request.setAttribute("exceptionType", "NotEnoughInformationException");
+            return false;
         }
 
         UpdateClient.setAddress(newAddress);
@@ -239,26 +402,28 @@ public class ClientController extends HttpServlet {
         int kq = usDAO.updateUser(UpdateClient);
         if (kq == 0) {
             System.out.println("Update address and phone fail");
-        } else {
-            System.out.println("Update address and phone success");
+            return false;
         }
+        System.out.println("Update address and phone success");
+        return true;
 
     }
 
-    private void GetCartProduct(HttpServletRequest request, HttpServletResponse response) {
-        UserDAO uDao = new UserDAO();
+    private void updateCartProduct(HttpServletRequest request, HttpServletResponse response) {
+        // /Client/Cart/Update?ClientID=1&ProductID0=80&ProductQuan0=5&ProductID1=34&ProductQuan1=9&ListSize=2
         CartDAO cDAO = new CartDAO();
-
-        Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
-        String username = userCookie.getValue();
-        int ClientID = uDao.getUser(username).getID();
-
-        List<Cart> listCart = cDAO.getAllClientProduct(ClientID);
-        request.setAttribute("listCart", listCart);
+        int listSize = Integer.parseInt(request.getParameter("ListSize"));
+        for (int i = 0; i < listSize; i++) {
+            int ClientID = Integer.parseInt(request.getParameter("ClientID"));
+            int ProductID = Integer.parseInt(request.getParameter("ProductID" + i));
+            int ProductQuan = Integer.parseInt(request.getParameter("ProductQuan" + i));
+            cDAO.changeProductQuantity(ClientID, ProductID, ProductQuan);
+        }
     }
 
-    /// /Client/Cart/Delete/ProductID/<%= p.getID()%>/ClientID/<%= ClientID %>
+    // ---------------------------- DELETE SECTION ----------------------------
     private void deleteCartProduct(HttpServletRequest request, HttpServletResponse response) {
+        /// /Client/Cart/Delete/ProductID/<%= p.getID()%>/ClientID/<%= ClientID %>
         CartDAO cDAO = new CartDAO();
 
         int ClientID = -1;
@@ -275,85 +440,36 @@ public class ClientController extends HttpServlet {
         cDAO.deleteCart(ClientID, ProductID);
     }
 
-    // /Client/Cart/Update?ClientID=1&ProductID0=80&ProductQuan0=5&ProductID1=34&ProductQuan1=9&ListSize=2
-    private void updateCartProduct(HttpServletRequest request, HttpServletResponse response) {
-        CartDAO cDAO = new CartDAO();
-        int listSize = Integer.parseInt(request.getParameter("ListSize"));
-        for (int i = 0; i < listSize; i++) {
-            int ClientID = Integer.parseInt(request.getParameter("ClientID"));
-            int ProductID = Integer.parseInt(request.getParameter("ProductID" + i));
-            int ProductQuan = Integer.parseInt(request.getParameter("ProductQuan" + i));
-            cDAO.changeProductQuantity(ClientID, ProductID, ProductQuan);
+    // ------------------------- EXEPTION HANDLING SECTION -------------------------
+    private String checkException(HttpServletRequest request) {
+        if (request.getAttribute("exceptionType") == null) {
+            return "";
         }
-    }
+        String exception = "?err";
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request  servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String path = request.getRequestURI();
-        if (path.startsWith(CLIENT_ADD_TO_CART_URI)) {
-            if (request.getParameter(BTN_ADD_TO_CART) != null
-                    && request.getParameter(BTN_ADD_TO_CART).equals(SUBMIT_VALUE)) {
-                PostAddToCart(request, response);
-                int pID = Integer.parseInt(request.getParameter("ProductID"));
-                response.sendRedirect("/Product/Detail/ID/" + pID);
-                return;
-            }
+        switch ((String) request.getAttribute("exceptionType")) {
+            case "WrongPasswordException":
+            case "AccountNotFoundException":
+                exception = "AccNF";
+                break;
+            case "AccountDeactivatedException":
+                exception = "AccD";
+                break;
+            case "EmailDuplicationException":
+                exception = "Email";
+                break;
+            case "UsernameDuplicationException":
+                exception = "Username";
+                break;
+            case "PhoneNumberDuplicationException":
+                exception = "Phone";
+            case "NotEnoughInformationException":
+                exception = "NEInfo";
+            default:
+                break;
         }
-
-        if (path.startsWith(CLIENT_UPDATE_INFO_URI)) {
-            if (request.getParameter("btnUpdateInfo") != null
-                    && request.getParameter("btnUpdateInfo").equals("Submit")) {
-                System.out.println("Going update info");
-                updateClientInfomation(request, response);
-                response.sendRedirect(CLIENT_USER_URI);
-                return;
-            }
-        }
-        if (path.startsWith(CLIENT_UPDATE_ADDRESS_URI)) {
-            if (request.getParameter("btnUpdateAdress") != null
-                    && request.getParameter("btnUpdateAdress").equals("Submit")) {
-                System.out.println("Going update address");
-                updateClientAddress(request, response);
-                response.sendRedirect(CLIENT_USER_URI);
-                return;
-            }
-        }
-    }
-
-    private void PostAddToCart(HttpServletRequest request, HttpServletResponse response) {
-        UserDAO uDao = new UserDAO();
-
-        Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
-        String username = userCookie.getValue();
-
-        int pID = Integer.parseInt(request.getParameter("ProductID"));
-        int pQuan = Integer.parseInt(request.getParameter("ProductQuantity"));
-
-        // Assume having client Username and get Client ID from username
-        int ClientID = uDao.getUser(username).getID();
-
-        CartDAO cDAO = new CartDAO();
-        cDAO.addToCart(ClientID, pID, pQuan);
-
-    }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
+        exception += "=true";
+        return exception;
     }
 
 }

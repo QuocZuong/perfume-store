@@ -129,55 +129,16 @@ h1 {
 
 .main {
   display: flex;
-  margin-top: 100px;
-
-
+  margin: 100px 0;
+  justify-content: center;
 }
 
-.main .left {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-left: 70px;
-  width: 20%;
-  text-align: left;
-}
-
-.main .left h1 {
-  font-size: 2rem;
-}
-
-.main .left .list ul {
-  font-size: 1.2rem;
-  padding: 0;
-  margin-top: 40px;
-}
-
-.main .left .list ul li {
-  list-style-type: none;
-  font-size: 1.5rem;
-}
-
-
-.main .left .list ul li a {
-  color: black;
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  transition: border-bottom 0.3s ease-in-out;
-  cursor: pointer;
-}
-
-
-.main .left .list ul li a:hover {
-  border-bottom: 1px solid black;
-  transition: border-bottom 0.3s ease-in-out;
-  font-weight: bold;
-}
 
 .main .right {
   width: 80%;
   margin-top: 100px;
   max-width: 1500px;
+  margin-left: 25px;
 }
 
 .main .right strong {
@@ -215,118 +176,19 @@ h1 {
   height: 100px;
 }
 
-.main .right .address-page {
-  text-align: left;
-  margin-left: 200px;
-  display: none;
+.main .right .order-page .bottom-table td p{
+    text-align: left;
+    margin: 10px 0;
+    width: fit-content;
 }
 
-.main .right .address-page .default {
-  width: 50%;
-  display: flex;
-  justify-content: space-between;
+.main .right .order-page .bottom-table td p img{
+    width: 20px;
+    height: 20px;
+    margin-right: 15px;
 }
 
-.main .right .address-page .default a {
-  text-decoration: none;
-}
-
-.main .right .address-page .address p {
-  margin: 0;
-}
-
-.main .right .info-page {
-  display: none;
-}
-
-.main .right .info-page form {
-  width: 700px;
-  text-align: left;
-}
-
-.main .right .info-page form button {
-  margin-top: 30px;
-  background-color: transparent;
-  padding: 5px 20px 3px 20px;
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  font-size: 1.3rem;
-}
-
-.main .right .info-page form button:hover {
-  border: 1px solid black;
-}
-
-.main .right .info-page input {
-  height: 40px;
-  border: 1px solid rgba(0, 0, 0, 0.3);
-}
-
-.main .right .info-page .fullname {
-  display: flex;
-  justify-content: space-between;
-}
-
-.main .right .info-page .fullname div {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.main .right .info-page .fullname div input {
-  width: 100%;
-}
-
-.main .right .info-page .display-name {
-  margin: 20px 0;
-  text-align: left;
-  width: 100%;
-}
-
-.main .right .info-page .display-name input {
-  width: 100%;
-}
-
-.main .right .info-page .email {
-  margin: 20px 0;
-  text-align: left;
-  width: 100%;
-}
-
-.main .right .info-page .email input {
-  width: 100%;
-}
-
-.main .right .info-page fieldset {
-  border: 1px solid black;
-  padding: 10px;
-  text-align: left;
-}
-
-.main .right .info-page fieldset legend {
-  font-weight: bold;
-  margin-bottom: 10px;
-  float: none;
-  width: 190px;
-}
-
-.main .right .info-page fieldset input {
-  width: 100%;
-  margin-top: 5px;
-}
-
-.main .right .info-page legend {
-  font-weight: bold;
-  margin-bottom: 10px;
-  /* Add more styles as desired */
-}
-
-
-
-.main .right .info-page {}
-
-.main .right .info-page {}
-
-.main .right .info-page {}
+.main .right .order-page .bottom-table td p span
 
 .register {
   text-align: center;
@@ -344,11 +206,11 @@ h1 {
   font-size: 2vw;
 }
 
-.register input {
+.register input{
   border: none;
   border-bottom: 1px solid black;
-  margin-right: 20px;
-  padding-right: 70px;
+  width: 220px;
+  margin-right: 10px;
   outline: none;
 }
 
@@ -368,7 +230,7 @@ h1 {
 
 .social {
   text-align: center;
-  margin-bottom: 50px;
+  margin: 50px 0px;
 }
 
 .social a+a {
