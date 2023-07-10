@@ -177,6 +177,9 @@
 
         <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
         <script>
+        if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
+              window.location.replace(window.location.href);
+            }
             $(document).ready(function () {
                 $("input[name='user']").on("keydown", function (e) {
                     var regex = /^[a-zA-Z0-9]+$/;

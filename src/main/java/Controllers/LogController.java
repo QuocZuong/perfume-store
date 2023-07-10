@@ -36,6 +36,9 @@ public class LogController extends HttpServlet {
         String path = request.getRequestURI();
 
         if (path.startsWith(LOGIN_URI)) {
+            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            response.setHeader("Pragma", "no-cache");
+            response.setHeader("Expires", "0");
             request.getRequestDispatcher("/LOGIN_PAGE/logIn.jsp").forward(request, response);
             return;
         }

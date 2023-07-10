@@ -127,6 +127,12 @@ body {
     margin-right: 50px;
     width: 65%;
   }
+
+  .box .left .OFS{
+    padding: 15px 20px;
+    background-color: #fff0f0;
+    color:#f48e9d;
+  }
   
   .box .left img {
     width: 200px;

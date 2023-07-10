@@ -1,3 +1,4 @@
+<%@page import="DAOs.BrandDAO"%>
 <%@page import="DAOs.CartDAO"%>
 <%@page import="DAOs.UserDAO"%>
 <%@page import="DAOs.ProductDAO"%>
@@ -11,8 +12,10 @@
 
 <%! List<Cart> listCart = null;%>
 <%! ProductDAO pDAO = new ProductDAO();%>
+<%! BrandDAO bDAO = new BrandDAO(); %>
 <%! UserDAO uDao = new UserDAO();%>
 <%! CartDAO cDAO = new CartDAO(); %>
+<%! List<Product> listOutOfStock; %>
 <%! int Total;%>
 <%
     Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
@@ -20,6 +23,8 @@
     int ClientID = uDao.getUser(username).getID();
     Total = cDAO.getCartTotal(ClientID);
     listCart = (List<Cart>) request.getAttribute("listCart");
+    listOutOfStock = (List<Product>) request.getAttribute("listOutOfStock");
+
 %>
 
 <!DOCTYPE html>
@@ -57,7 +62,6 @@
             <li><a href="/">trang chủ</a></li>
             <li> <a href="/home/introduction">giới thiệu</a></li>
             <li><a href="/home/brand">thương hiệu</a></li>
-            <!-- This link to shop servlet file. DO NOT MODIFY the link -->
             <li><a href="/Product/List">sản phẩm</a></li>
             <li><a href="">blog</a></li>
           </ul>
@@ -78,11 +82,39 @@
             <div class="left w-100">
               <form action="/Client/Cart/Update" method="GET">
                 <input type="hidden" name="ClientID" value="<%= ClientID%>" />
+
+                <!--  Handling Product out of stock still in Client Cart -->
+                <c:if test='<%= listOutOfStock.size() != 0%>'>
+                  <%
+                                        int lastBrandID = -1, curBrandID;
+                  %>
+                  <c:forEach var="i" begin="0" end="<%= listOutOfStock.size() - 1%>">
+                    <%
+                                              Product opd = listOutOfStock.get((int) pageContext.getAttribute("i"));
+                                              curBrandID = opd.getBrandID();
+                    %>  
+
+                    <c:if test='<%= lastBrandID != curBrandID%>'>
+                      <% lastBrandID = curBrandID;%>
+
+                      <c:if test='<%= (int) pageContext.getAttribute("i") != 0%>'>
+                        <hr>
+                      </c:if>
+                      <p>Please choose other product from the same brand by visitting <a href="/Product/List/BrandID/<%= lastBrandID%>" target="_blank"><%= bDAO.getBrandName(lastBrandID)%></a></p>
+                      </c:if>
+                    <div class="OFS">
+                      <p>Bạn không thể thêm "<span><%= opd.getName()%></span>" vào giỏ hàng vì sản phẩm này không đủ số lượng hoặc đã hết hàng</p>
+                    </div>
+
+                  </c:forEach>
+                </c:if>
+
+                <!--  Showing list of product -->
                 <h1>Sản phẩm đã chọn</h1>
                 <table class="w-100">
 
                   <c:choose>
-                    <c:when test="<%= listCart.size() > 0%>">
+                    <c:when test='<%= listCart.size() > 0%>'>
                       <c:forEach var="i" begin="0" end="<%= listCart.size() - 1%>">
                         <%
                                                     Product p = pDAO.getProduct(listCart.get((int) pageContext.getAttribute("i")).getProductID());

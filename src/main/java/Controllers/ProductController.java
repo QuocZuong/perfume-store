@@ -148,7 +148,6 @@ public class ProductController extends HttpServlet {
      */
     private boolean handleProductDetail(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ProductDAO pDAO = new ProductDAO();
-        BrandDAO bDao = new BrandDAO();
 
         String data[] = request.getRequestURI().split("/");
 

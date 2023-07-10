@@ -42,6 +42,13 @@
         <link rel="icon" href="/RESOURCES/images/icons/icon.webp">
         <!--<link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css" rel="stylesheet" type="text/css" />-->
         <title>Nước hoa</title>
+
+        <!-- add disable pointer for btn -->
+        <style>
+            button:disabled{
+                cursor: not-allowed;
+            }
+        </style>
     </head>
     <body>
         <div class="container-fluid">
@@ -89,7 +96,7 @@
                             <form action="/Client/addToCart" method="POST">
                                 <input type="number" name="ProductQuantity" id="" value="1" >
                                 <input type="hidden" name="ProductID" value="<%= id%>">
-                                <button name="btnAddToCart" class="btnAddToCart" value="Submit" type="submit">THÊM VÀO GIỎ HÀNG</button>
+                                <button name="btnAddToCart" class="btnAddToCart" value="Submit" type="submit" <%= (quantity == 0 ? "disabled" : "") %>><%= (quantity == 0 ? "HẾT HÀNG" : "THÊM VÀO GIỎ HÀNG" ) %></button>
                             </form>
                         </div>
                     </div>
@@ -199,6 +206,7 @@
                 }
             });
         </script>
+        
         <script src="/RESOURCES/product/public/js/main.js"></script>
     </body>
 </html>

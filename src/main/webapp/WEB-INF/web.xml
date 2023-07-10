@@ -79,6 +79,10 @@
         <servlet-name>AdminController</servlet-name>
         <url-pattern>/Admin/*</url-pattern>
     </servlet-mapping>
+    <!--Error pages mapping-->
+    <error-page>
+        <location>/ERROR_PAGE/404Page.jsp</location>
+    </error-page>
     <session-config>
         <session-timeout>
             30

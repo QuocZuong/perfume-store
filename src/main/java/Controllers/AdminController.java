@@ -122,6 +122,9 @@ public class AdminController extends HttpServlet {
 
         // ---------------------------- DEFAULT SECTION ----------------------------
         if (path.startsWith(ADMIN_USER_URI)) { // Put this at the last
+            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            response.setHeader("Pragma", "no-cache");
+            response.setHeader("Expires", "0");
             request.getRequestDispatcher("/ADMIN_PAGE/admin.jsp").forward(request, response);
             return;
         }
@@ -362,11 +365,16 @@ public class AdminController extends HttpServlet {
 
         String uPassword = request.getParameter("txtPassword");
 
-        // Only hash the new password if the password is different from the user's old md5 password.
-        if (uPassword != uDAO.getUser(uID).getPassword()) {
+        // Only hash the new password if the password is different from the user's old
+        // md5 password.
+        System.out.println("Compare password: " + uPassword + " vs " + uDAO.getUser(uID).getPassword());
+
+        if (!uPassword.equals(uDAO.getUser(uID).getPassword())) {
+            System.out.println("New password: " + uPassword);
             uPassword = uDAO.getMD5hash(uPassword);
+            System.out.println("New hashed password: " + uPassword);
         }
-        
+
         String uPhoneNumber = request.getParameter("txtPhoneNumber");
         String uEmail = request.getParameter("txtEmail");
         String uAddress = request.getParameter("txtAddress");
@@ -375,10 +383,12 @@ public class AdminController extends HttpServlet {
         boolean isExistUsername = uDAO.isExistUsernameExceptItself(uUserName, uID);
         boolean isExistPhone = uDAO.isExistPhoneExceptItself(uPhoneNumber, uID);
         boolean isExistEmail = uDAO.isExistEmailExceptItself(uEmail, uID);
+
         if (isExistUsername || isExistPhone || isExistEmail) {
             System.out.println("Update fail because Username or Phone or Email exist");
             return;
         }
+
         User updateUser = new User(uID, uName, uUserName, uPassword, uEmail, uPhoneNumber, uAddress, uRole);
         uDAO.updateUser(updateUser);
     }
