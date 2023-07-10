@@ -3,13 +3,13 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
+    flex-direction: column;
 }
 
 .container .top{
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
     flex-direction: column;
 }
 
@@ -36,13 +36,9 @@
     text-align: center;
 }
 
-.bottom{
-    margin-top: 500px;
-}
-
 .wrapper{
-  position: fixed;
-  top: 50%;
+  position: relative;
+  top: 68%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
