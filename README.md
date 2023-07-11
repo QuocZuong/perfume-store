@@ -34,6 +34,7 @@ Bảng phân công công việc:
 |                   |                | Làm trang chi tiết sản phẩm                                      |                             |                                     |
 |                   |                | Làm trang giỏ hàng                                               |                             |                                     |
 |                   |                | Làm trang cho Client tương tác                                   |                             |                                     |
+|                   |                | Làm trang báo lỗi                                                |                             |                                     |
 |                   |                | Style những trang jsp trong ADMIN_PAGE                           |                             |                                     |
 |                   | *BackEnd*      | Làm ClientController                                             |                             |                                     |
 |                   |                | Làm AdminController                                              |                             |                                     |
