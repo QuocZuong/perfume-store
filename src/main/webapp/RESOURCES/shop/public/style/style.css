@@ -81,7 +81,6 @@ h1{
     font-size: 1.1rem;
 }
 
-
 .nav {
     display: flex;
     justify-content: space-between;
@@ -383,54 +382,47 @@ h1{
     margin-top: 70px;
 }
 
-.content .pagination .page-item{
-    width: 40px;
-    height: 40px;
-    margin: 5px;
+.content .pagination  li{
     display: flex;
     justify-content: center;
     align-items: center;
-}
-.content .pagination .page-item .page-link{
-    text-align: center;
-    padding: 8px 15px 15px 14px;
-    margin: 3px;
-    color: black;
-    border: none;
-    border: 1px solid transparent;
-    border-radius: 50%;
     width: 40px;
     height: 40px;
-    outline: none;
-}
-.content .pagination .page-item:first-child .page-link i {
-    margin-right: 2px;
-    vertical-align: middle;
-}
-
-.content .pagination .page-item:last-child .page-link i {
-    margin-left: 2px;
-    vertical-align: middle;
-}
-
-.content .pagination .page-item .page-link i {
-    font-size: 1rem;
-}
-
-.content .pagination .page-item .page-link.active {
-    border: 1px solid black;
-    outline: none;
-    background-color: transparent;
-}
-
-li.page-item.active {
-    border: 1px solid black;
     border-radius: 50%;
+    background-color: transparent;
+    text-align: center;
+    border: 1px solid transparent;
+    margin: 5px;
+    outline: none;
 }
 
-li.page-item.active a {
+.content .pagination li:hover{
+    border: 1px solid black;
+}
+
+.content .pagination li a{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background-color: transparent;
+    color: black;
+    text-align: center;
+}
+
+.content .pagination li .page-link:focus{
+    box-shadow:none;
+}
+
+.content .pagination li.active {
+    border: 1px solid black;
+    outline: none;
     background-color: transparent;
 }
+
 
 .register{
     text-align: center;

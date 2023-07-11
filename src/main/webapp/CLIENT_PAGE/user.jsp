@@ -250,11 +250,11 @@
                             <fieldset>
                                 <legend>Thay đổi mật khẩu</legend>
                                 <label for="pwdCurrent">Mật khẩu hiện tại (bỏ trống nếu không đổi)</label><br>
-                                <input type="password" id="pwdCurrent" name="pwdCurrent"><br><br>
+                                <input type="password" id="pwdCurrent" name="pwdCurrent" ><br><br>
                                 <label for="pwdNew">Mật khẩu mới (bỏ trống nếu không đổi)</label><br>
-                                <input type="password" id="pwdNew" name="pwdNew"><br><br>
+                                <input type="password" id="pwdNew" name="pwdNew" disabled="true"><br><br>
                                 <label for="pwdConfirmNew">Xác nhận mật khẩu mới</label><br>
-                                <input type="password" id="pwdConfirmNew" name="pwdConfirmNew"><br><br>
+                                <input type="password" id="pwdConfirmNew" name="pwdConfirmNew" disabled="true"><br><br>
                             </fieldset>
                             <button type="submit" name="btnUpdateInfo" value="Submit">Lưu thay đổi</button>
                         </form>
@@ -430,9 +430,9 @@
         <!--Jquery Validation-->
         <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
         <script>
-            $().ready(function () {
+            $(document).ready(function () {
                 $.validator.addMethod("regex", function (value, element, regex) {
-                    return !regex.test(value);
+                    return regex.test(value);
                 }, "Mật khẩu phải có ít nhất 6 kí tự.");
 
                 $("#formUpdateAccount").validate({
@@ -447,17 +447,64 @@
                         txtEmail: {
                             required: true,
                             email: true
-                        },
-                        pwdNew: {
-                            regex: /^.{6,}$/
-                        },
-                        pwdConfirmNew: {
-                            equalto: "#pwdNew"
                         }
-
                     }
+
                 });
             });
+
+            function requirechange(element) {
+                console.log("Value: " + $("input#pwdCurrent").val() + " |" + ($("input#pwdCurrent").val() !== ""));
+                if ($("input#pwdCurrent").val() !== "")
+                {
+                    $("input#pwdNew").prop("disabled", false);
+                    $("input#pwdConfirmNew").prop("disabled", false);
+
+                    $("input#pwdCurrent").rules("add", {
+                        required: true,
+                        regex: /^.{6,}$/
+                    });
+                    $("input#pwdNew").rules("add", {
+                        required: true,
+                        regex: /^.{6,}$/
+                    });
+                    $("input#pwdConfirmNew").rules("add", {
+                        required: true,
+                        regex: /^.{6,}$/,
+                        equalTo: "input#pwdNew"
+                    });
+                } else {
+                    $("input#pwdNew").prop("disabled", true);
+                    $("input#pwdConfirmNew").prop("disabled", true);
+
+                    $("input#pwdNew").val("");
+                    $("input#pwdConfirmNew").val("");
+
+                    //Remove all rules
+                    $("input#pwdCurrent").rules("remove");
+                    $("input#pwdNew").rules("remove");
+                    $("input#pwdConfirmNew").rules("remove");
+
+                }
+
+
+            }
+
+            $("input#pwdCurrent").on("input", function () {
+                requirechange("input#pwdCurrent");
+            });
+
+            $("input#pwdNew").on("input", function () {
+                requirechange("input#pwdNew");
+            });
+
+            $("input#pwdConfirmNew").on("input", function () {
+                requirechange("input#pwdConfirmNew");
+            });
+
+
+
+
         </script>
     </body>
 

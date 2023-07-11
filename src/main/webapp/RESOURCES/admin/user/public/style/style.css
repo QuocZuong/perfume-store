@@ -489,6 +489,14 @@ h1 {
 .copyright p {
   font-size: 1.2rem;
 }
+/* For underlined the anchor tag. Made by Nguyen Le Tai Duc, if you want to modified, contact me*/
+div.list li a.active {
+  border-bottom: 1px solid black !important;
+  transition: border-bottom 0.3s ease-in-out !important;
+  font-weight: bold !important;
+}
+/* For underlined the anchor tag */
+
 
 @media screen and (max-width: 700px) {
   h1 {

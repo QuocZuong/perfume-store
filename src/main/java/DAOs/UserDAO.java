@@ -112,7 +112,7 @@ public class UserDAO {
             rs.getString("Email"),
             rs.getString("PhoneNumber"),
             rs.getNString("Address"),
-            rs.getNString("Role"),
+            rs.getString("Role"),
             rs.getBoolean("Active"));
       }
     } catch (SQLException ex) {
@@ -139,13 +139,14 @@ public class UserDAO {
       if (rs.next()) {
         return new User(
             rs.getInt("ID"),
-            rs.getString("Name"),
+            rs.getNString("Name"),
             rs.getString("UserName"),
             rs.getString("Password"),
             rs.getString("Email"),
             rs.getString("PhoneNumber"),
-            rs.getString("Address"),
-            rs.getString("Role"));
+            rs.getNString("Address"),
+            rs.getString("Role"),
+            rs.getBoolean("Active"));
       }
     } catch (SQLException ex) {
       Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -161,23 +162,29 @@ public class UserDAO {
    *         {@code null} if an error occurs or the user is not found.
    */
   public User getUserByEmail(String email) {
+    if (email == null) {
+      return null;
+    }
+
     ResultSet rs = null;
 
     String sql = "SELECT * FROM [User] WHERE Email = ?";
     try {
       PreparedStatement ps = conn.prepareStatement(sql);
+      
       ps.setString(1, email);
       rs = ps.executeQuery();
       if (rs.next()) {
         return new User(
             rs.getInt("ID"),
-            rs.getString("Name"),
+            rs.getNString("Name"),
             rs.getString("UserName"),
             rs.getString("Password"),
             rs.getString("Email"),
             rs.getString("PhoneNumber"),
-            rs.getString("Address"),
-            rs.getString("Role"));
+            rs.getNString("Address"),
+            rs.getString("Role"),
+            rs.getBoolean("Active"));
       }
     } catch (SQLException ex) {
       Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);

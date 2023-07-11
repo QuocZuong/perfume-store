@@ -38,6 +38,7 @@
         <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css"
               rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+        <script src="https://kit.fontawesome.com/49a22e2b99.js" crossorigin="anonymous"></script>
         <title>
             <%= request.getAttribute("shopName")%>
         </title>
@@ -195,12 +196,12 @@
                             <ul class="pagination">
                                 <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>">
                                     <a class="page-link" href="${currentURL}/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link">
-                                        <div><i class="bi bi-skip-backward" id></i></div>
+                                        <i class="fa-solid fa-angles-left" style="color: #000000;"></i>
                                     </a>
                                 </li>
                                 <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>">
                                     <a class="page-link" href="${currentURL}/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link">
-                                        <div style="transform: rotate(180deg);"><i class="bi bi-play"></i></div>
+                                        <i class="fa-solid fa-angle-left" style="color: #000000;"></i>
                                     </a>
                                 </li>
 
@@ -220,12 +221,12 @@
 
                                 <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>">
                                     <a class="page-link" href="${currentURL}/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link">
-                                        <i class="bi bi-play"></i>
+                                        <i class="fa-solid fa-angle-right" style="color: #000000;"></i>
                                     </a>
                                 </li>
                                 <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>">
                                     <a class="page-link" href="${currentURL}/page/<%=numberOfPage%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link">
-                                        <i class="bi bi-skip-forward"></i>
+                                        <i class="fa-solid fa-angles-right" style="color: #000000;"></i>
                                     </a>
                                 </li>
                             </ul>

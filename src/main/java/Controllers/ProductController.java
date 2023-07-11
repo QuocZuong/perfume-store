@@ -18,10 +18,10 @@ public class ProductController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -42,14 +42,20 @@ public class ProductController extends HttpServlet {
         // Product/List/BrandID/page/2?Gender=Male&priceRange=1500000-3000000
         if (path.endsWith(LIST_URI)
                 || (path.startsWith(LIST_URI)
-                        && (request.getQueryString() != null && !request.getQueryString().isEmpty()))
+                && (request.getQueryString() != null && !request.getQueryString().isEmpty()))
                 || path.startsWith(LIST_URI + "/BrandID")
                 || path.startsWith(LIST_URI + "/page")) {
-            ProductFilter(request, response);
+            int kq = ProductFilter(request, response);
             // if ((int) request.getAttribute("page") > (int) request.getAttribute("numberOfPage")) {
             //     response.sendError(HttpServletResponse.SC_NOT_FOUND);
             // } else {
             // }
+            if (kq == 0) {
+                if (request.getAttribute("redirectPath") != null) {
+                    response.sendRedirect((String)request.getAttribute("redirectPath"));
+                }
+                return;
+            }
             request.getRequestDispatcher("/PRODUCT_PAGE/list.jsp").forward(request, response);
             return;
         }
@@ -87,7 +93,7 @@ public class ProductController extends HttpServlet {
      * Product/List/BrandID/2?Gender=Male&Price=low
      *
      */
-    private void ProductFilter(HttpServletRequest request, HttpServletResponse response) {
+    private int ProductFilter(HttpServletRequest request, HttpServletResponse response) {
         ProductDAO pDAO = new ProductDAO();
         BrandDAO bDao = new BrandDAO();
         ResultSet bdRs = bDao.getAll();
@@ -99,15 +105,16 @@ public class ProductController extends HttpServlet {
         String path = request.getRequestURL().toString();
         String data[] = path.split("/");
         final int ROWS = 20;
-        System.out.println("Search la:"+ Search);
+        System.out.println("Search la:" + Search);
         String brandID = null;
         int page = 1;
-
+        int tempPage = 1;
         for (int i = 0; i < data.length; i++) {
             if (data[i].equals("BrandID")) {
                 brandID = data[i + 1];
             } else if (data[i].equals("page")) {
                 page = Integer.parseInt(data[i + 1]);
+                tempPage = page;
             }
         }
         if (Search == null || Search.equals("")) {
@@ -116,7 +123,14 @@ public class ProductController extends HttpServlet {
         int NumberOfProduct = pDAO.GetNumberOfProduct(brandID, gender, price, Search);
         int NumberOfPage = NumberOfProduct / ROWS;
         NumberOfPage = (NumberOfProduct % ROWS == 0 ? NumberOfPage : NumberOfPage + 1);
-        
+
+        if (NumberOfPage < page) {
+            String redirectPath = path;
+            redirectPath = redirectPath.replace("/page/" + tempPage, "/page/1") + (request.getQueryString() == null ? "" : "?" + request.getQueryString());
+            request.setAttribute("redirectPath", redirectPath);
+            return 0;
+        }
+
         String root = path.replace(request.getRequestURI(), "");
         String currentURL = root + LIST_URI;
         currentURL += (brandID == null ? "" : "/BrandID/" + brandID);
@@ -126,7 +140,6 @@ public class ProductController extends HttpServlet {
 
         // System.out.println(String.format("BrandID: %s, gender: %s, price: %s",
         // brandID, gender, price));
-
         request.setAttribute("BrandID", brandID);
         request.setAttribute("gender", gender);
         request.setAttribute("price", price);
@@ -140,6 +153,7 @@ public class ProductController extends HttpServlet {
         request.setAttribute("PDResultSet", pDAO.getFilteredProduct(brandID, gender, price, page, Search));
         request.setAttribute("shopName", shop);
         request.setAttribute("BDResultSet", bdRs);
+        return 1;
     }
 
     /**
@@ -169,10 +183,10 @@ public class ProductController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
