@@ -1,6 +1,8 @@
 
 package Controllers;
 
+import static Controllers.ClientController.CLIENT_CART_URI;
+import Lib.EmailSender;
 import java.io.IOException;
 
 import jakarta.servlet.ServletException;
@@ -8,6 +10,9 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HomeController extends HttpServlet {
 
@@ -19,6 +24,9 @@ public class HomeController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException      if an I/O error occurs
      */
+    // ---------------------------- URI DECLARATION SECTION ----------------------------//
+    public static final String CLIENT_SUBSCRIBE_URL = "/home/subscribe";
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -58,7 +66,17 @@ public class HomeController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        String path = request.getRequestURI();
+        if (path.endsWith(CLIENT_SUBSCRIBE_URL)) {
+            System.out.println("vao controller subscribe");
+            if (request.getParameter("submitEmailBtn") != null
+                    && request.getParameter("submitEmailBtn").equals("Submit")) {
+                System.out.println("Going Subscribe");
+                sendEmailSubscribe(request, response);
+                response.sendRedirect(CLIENT_CART_URI);
+                return;
+            }
+        }
     }
 
     public String getSessionUserRole(HttpServletRequest request, HttpServletResponse response) {
@@ -75,6 +93,21 @@ public class HomeController extends HttpServlet {
             request.setAttribute("UserRole", "/Client/User");
         }else if(Role.equals("Admin")){
             request.setAttribute("UserRole", "/Admin");
+        }
+    }
+    
+     // ------------------------- SEND EMAIL SUBSCRIBE -------------------------
+    private void sendEmailSubscribe(HttpServletRequest request, HttpServletResponse response){
+        String emailTo = request.getParameter("txtEmailSubscribe");
+        EmailSender es = new EmailSender();
+        es.setEmailTo(emailTo);
+        String html = es.getEmailSubscribe();
+        String subject = "ĐĂNG KÝ NHẬN TIN TỪ XXVI STORE THÀNH CÔNG!";
+        try {
+            es.sendToEmail(subject, html);
+        } catch (UnsupportedEncodingException ex) {
+            System.out.println("Send mail fail");
+            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

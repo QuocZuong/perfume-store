@@ -96,7 +96,7 @@
                             <form action="/Client/addToCart" method="POST">
                                 <input type="number" name="ProductQuantity" id="" value="1" >
                                 <input type="hidden" name="ProductID" value="<%= id%>">
-                                <button name="btnAddToCart" class="btnAddToCart" value="Submit" type="submit" <%= (quantity == 0 ? "disabled" : "") %>><%= (quantity == 0 ? "HẾT HÀNG" : "THÊM VÀO GIỎ HÀNG" ) %></button>
+                                <button name="btnAddToCart" class="btnAddToCart" value="Submit" type="submit" <%= (quantity == 0 ? "disabled" : "")%>><%= (quantity == 0 ? "HẾT HÀNG" : "THÊM VÀO GIỎ HÀNG")%></button>
                             </form>
                         </div>
                     </div>
@@ -124,9 +124,9 @@
                 <div class="col-md-12 register">
                     <h1>Đăng ký thành viên để nhận khuyến mại</h1>
                     <p>Theo dõi chúng tôi để nhận thêm nhiều ưu đãi</p>
-                    <form action="">
-                        <input type="text" name="" id="" placeholder="nhập email">
-                        <button>ĐĂNG KÝ</button>
+                    <form action="/home/subscribe" method="POST">
+                        <input type="text" name="txtEmailSubscribe" id="" placeholder="nhập email" required="true">
+                        <button type="submit" name="submitEmailBtn" value="Submit" class="enter">ĐĂNG KÝ</button>
                     </form>
                 </div>
             </div>
@@ -206,7 +206,7 @@
                 }
             });
         </script>
-        
+
         <script src="/RESOURCES/product/public/js/main.js"></script>
     </body>
 </html>

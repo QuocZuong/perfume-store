@@ -125,9 +125,9 @@
                 <div class="col-md-12 register">
                     <h1>Đăng ký thành viên để nhận khuyến mại</h1>
                     <p>Theo dõi chúng tôi để nhận thêm nhiều ưu đãi</p>
-                    <form action="">
-                        <input type="text" placeholder="nhập email">
-                        <button>ĐĂNG KÝ</button>
+                    <form action="/home/subscribe" method="POST">
+                        <input type="text" name="txtEmailSubscribe" id="" placeholder="nhập email" required="true">
+                        <button type="submit" name="submitEmailBtn" value="Submit" class="enter">ĐĂNG KÝ</button>
                     </form>
                 </div>
             </div>

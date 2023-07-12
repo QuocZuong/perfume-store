@@ -47,7 +47,7 @@
                                      height="64"></a>
                     <div class="account">
                         <a><img src="/RESOURCES/images/icons/search.png" alt=""></a>
-                        <a href="<%= ((String)request.getAttribute("UserRole") == null ? "/Client" : (String)request.getAttribute("UserRole")) %>"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+                        <a href="<%= ((String) request.getAttribute("UserRole") == null ? "/Client" : (String) request.getAttribute("UserRole"))%>"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
                         <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
                     </div>
                 </div>
@@ -96,9 +96,9 @@
                 <div class="col-md-12 register">
                     <h1>Đăng ký thành viên để nhận khuyến mại</h1>
                     <p>Theo dõi chúng tôi để nhận thêm nhiều ưu đãi</p>
-                    <form action="">
-                        <input type="text" name="" id="" placeholder="nhập email">
-                        <button>ĐĂNG KÝ</button>
+                    <form action="/home/subscribe" method="POST">
+                        <input type="text" name="txtEmailSubscribe" id="" placeholder="nhập email" required="true">
+                        <button type="submit" name="submitEmailBtn" value="Submit" class="enter">ĐĂNG KÝ</button>
                     </form>
                 </div>
             </div>
