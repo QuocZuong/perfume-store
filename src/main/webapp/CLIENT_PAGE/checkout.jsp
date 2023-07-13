@@ -138,7 +138,7 @@
             </div>
         </div>
 
-        <div class="row mt-5">
+        <div class="row mt-5 bottom">
             <p>Cảm ơn bạn đã đặt hàng tại XXIV STORE. Để hoàn tất đặt hàng bạn vui lòng chuyển khoản
                 trước 100% giá trị đón hàng.<br/> Thông tin chuyển khoản sẽ hiện lên khi bạn hoàn tất việc đặt hàng.</p>
         </div>

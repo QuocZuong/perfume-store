@@ -305,6 +305,11 @@ h1 {
   border-color: black;
 }
 
+.bottom p{
+    font-family: "Arial", sans-serif;
+    text-decoration: none;
+}
+
 .register {
   text-align: center;
   margin: 100px 0 100px 0;
