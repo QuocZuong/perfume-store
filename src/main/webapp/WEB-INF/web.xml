@@ -83,6 +83,10 @@
     <error-page>
         <location>/ERROR_PAGE/404Page.jsp</location>
     </error-page>
+    <error-page>
+        <error-code>403</error-code>
+        <location>/ERROR_PAGE/403Page.jsp</location>
+    </error-page>
     <session-config>
         <session-timeout>
             30

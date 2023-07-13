@@ -93,7 +93,7 @@ public class ProductController extends HttpServlet {
      * Product/List/BrandID/2?Gender=Male&Price=low
      *
      */
-    private int ProductFilter(HttpServletRequest request, HttpServletResponse response) {
+    private int ProductFilter(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ProductDAO pDAO = new ProductDAO();
         BrandDAO bDao = new BrandDAO();
         ResultSet bdRs = bDao.getAll();
@@ -111,7 +111,13 @@ public class ProductController extends HttpServlet {
         int tempPage = 1;
         for (int i = 0; i < data.length; i++) {
             if (data[i].equals("BrandID")) {
-                brandID = data[i + 1];
+                try {
+                        brandID = data[i + 1];
+                        Integer.parseInt(brandID); 
+                    } catch (NumberFormatException e) {
+                        response.sendRedirect("/Product/List");
+                        return 0;
+                    }
             } else if (data[i].equals("page")) {
                 page = Integer.parseInt(data[i + 1]);
                 tempPage = page;
