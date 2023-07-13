@@ -170,7 +170,7 @@
                                     <c:otherwise>
                                         <a href="/Product/List" class="backToStore">
                                             <div id="come-back-link">
-                                                <span>Quay trở lại cửa hàng</span>
+                                               Quay trở lại cửa hàng
                                             </div>
                                         </a>
                                     </c:otherwise>
@@ -193,7 +193,7 @@
                                             <span><%= pDAO.IntegerToMoney(Total)%><span>₫</span></span>
                                         </div>
                                         <div>
-                                            <a href="/Client/Cart/Checkout" class="text-decoration-none"><button>TIẾN HÀNH THANH TOÁN</button></a>
+                                            <a href="/Client/Cart/Checkout" class="text-decoration-none"><button class="btn-checkout">TIẾN HÀNH THANH TOÁN</button></a>
                                         </div>
                                     </div>
                                     <div class="drop-down">

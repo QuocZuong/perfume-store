@@ -228,6 +228,10 @@ a:has(#come-back-link) {
     width: 300px;
     height: 50px;
     border: solid 1px black;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: black;
 }
 
 .backToStore{
@@ -235,13 +239,16 @@ a:has(#come-back-link) {
     width: 300px !important;
 }
 
-#come-back-link span {
-    color: black;
-    opacity: 1;
-    width: fit-content;
-    font-size: 1rem;
-    font-weight: 400;
-    text-transform: uppercase;
+#come-back-link:hover{
+    color: white;
+    background-color: black;
+    border: 1px solid black;
+}
+
+.btn-checkout:hover{
+    border: .5px solid black;
+    color: black !important;
+    background-color: white !important;
 }
 
 #no-product-header {
@@ -284,6 +291,8 @@ a:has(#come-back-link) {
     color: white;
     margin-top: 20px;
     padding: 10px 20px;
+    border: .5px solid black;
+
 }
 
 .box .right .drop-down {

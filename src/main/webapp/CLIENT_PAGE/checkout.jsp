@@ -126,12 +126,6 @@
                                         <div class="d-flex justify-content-start">
                                             <button type="submit" name="btnSubmitCheckOut" value="Submit" class="btn rounded-0 mt-3 w-100" >ĐẶT HÀNG</button>
                                         </div>
-                                        <div id="popup" class="popup">
-                                            <div class="popup-content">
-                                                <h3>Pop-up Title</h3>
-                                                <p>Pop-up message goes here.</p>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
 
