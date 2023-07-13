@@ -212,7 +212,7 @@ public class UserDAO {
 
   public ResultSet getFilteredUserForAdminSearch(int page, String Search) {
     String sql = "SELECT * FROM [User]\n"
-        + "WHERE ID LIKE ? OR Name LIKE ?\n"
+        + "WHERE ID LIKE ? OR UserName LIKE ?\n"
         + "ORDER BY ID\n"
         + "OFFSET ? ROWS\n"
         + "FETCH NEXT ? ROWS ONLY";
@@ -241,7 +241,7 @@ public class UserDAO {
 
     String sql = "SELECT COUNT(*) AS CountRow FROM [User]\n"
         + "WHERE ID LIKE ?\n"
-        + "OR Name LIKE ?\n";
+        + "OR UserName LIKE ?\n";
     try {
       PreparedStatement ps = conn.prepareStatement(sql);
 

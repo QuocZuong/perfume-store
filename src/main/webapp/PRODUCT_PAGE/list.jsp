@@ -240,9 +240,9 @@
                 <div class="col-md-12 register">
                     <h1>Đăng ký thành viên để nhận khuyến mại</h1>
                     <p>Theo dõi chúng tôi để nhận thêm nhiều ưu đãi</p>
-                    <form action="">
-                        <input type="text" name="" id="" placeholder="nhập email">
-                        <button>ĐĂNG KÝ</button>
+                    <form action="/home/subscribe" method="POST">
+                        <input type="text" name="txtEmailSubscribe" id="" placeholder="nhập email" required="true">
+                        <button type="submit" name="submitEmailBtn" value="Submit" class="enter">ĐĂNG KÝ</button>
                     </form>
                 </div>
             </div>
@@ -304,13 +304,13 @@
                 let SearchURL = document.getElementById("inputSearch").value;
             <%! String searchTxT;%>
             <%
-                    if (request.getQueryString() != null) {
-                        if (request.getQueryString().startsWith("txtSearch")) {
-                            searchTxT = "txtSearch=";
-                        } else {
-                            searchTxT = "&txtSearch=";
-                        }
+                if (request.getQueryString() != null) {
+                    if (request.getQueryString().startsWith("txtSearch")) {
+                        searchTxT = "txtSearch=";
+                    } else {
+                        searchTxT = "&txtSearch=";
                     }
+                }
             %>
                 document.getElementById("SearchProduct").href = "${currentURL}/page/1<%= (request.getQueryString() == null ? "?txtSearch=" : "?" + request.getQueryString().replace("&txtSearch=" + request.getParameter("txtSearch"), "").replace("txtSearch=" + request.getParameter("txtSearch"), "") + searchTxT)%>" + SearchURL;
                     }

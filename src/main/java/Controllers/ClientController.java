@@ -29,6 +29,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ClientController extends HttpServlet {
 
@@ -44,6 +46,7 @@ public class ClientController extends HttpServlet {
     public static final String CLIENT_UPDATE_ADDRESS_URI = "/Client/Update/Address";
     public static final String CLIENT_CHECKOUT_URI = "/Client/Checkout";
     public static final String CLIENT_ORDER_DETAIL_URI = "/Client/Order/Detail/ID";
+    
     public static final String BTN_ADD_TO_CART = "btnAddToCart";
     public static final String SUBMIT_VALUE = "Submit";
 
@@ -167,6 +170,8 @@ public class ClientController extends HttpServlet {
                 return;
             }
         }
+        
+        
     }
 
     /* CRUD */
@@ -501,5 +506,5 @@ public class ClientController extends HttpServlet {
         exception += "=true";
         return exception;
     }
-
+   
 }
