@@ -41,6 +41,11 @@
         <link rel="stylesheet" href="/RESOURCES/product/public/style/style.css" type="text/css">
         <link rel="icon" href="/RESOURCES/images/icons/icon.webp">
         <!--<link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css" rel="stylesheet" type="text/css" />-->
+        <!-- Add zoom picture plugin -->
+        <link rel="stylesheet" href="/RESOURCES/VenoBox-2.0.4/dist/venobox.min.css" />
+        <link rel="stylesheet" href="/RESOURCES/VenoBox-2.0.4/dist/venobox.min.css" type="text/css" media="screen" />
+
+
         <title>Nước hoa</title>
 
         <!-- add disable pointer for btn -->
@@ -79,7 +84,8 @@
                 <div class="col-md-12 main">
                     <div class="info">
                         <div class="left">
-                            <img src="<%= imgURL%>" alt="" class="product-img" id="productImg">
+                            <a class="venobox" href="<%= imgURL%>"><img class=" product-img"  id="productImg" src="<%= imgURL%>" alt="perfume"/></a>
+                            
                         </div>
                         <div class="right">
                             <p id="brandName"><%= brandName%></p>
@@ -206,7 +212,10 @@
                 }
             });
         </script>
-
         <script src="/RESOURCES/product/public/js/main.js"></script>
+        <!-- Add zoom picture plugin -->
+        <link rel="stylesheet" href="/RESOURCES/VenoBox-2.0.4/dist/venobox.min.js" />
+        <script type="text/javascript" src="/RESOURCES/VenoBox-2.0.4/dist/venobox.min.js"></script>
+
     </body>
 </html>
