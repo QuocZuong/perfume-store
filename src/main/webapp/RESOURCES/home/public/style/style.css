@@ -126,15 +126,14 @@ h1{
   transition: border-bottom 0.3s ease-in-out;
 }
 
-.nav a {
-  margin-left: -290px;
+.nav .iconPage {
+  margin-left: -330px;
 }
 
 .nav .account {
   display: flex;
   align-items: center;
   padding-right: 2rem;
-
 }
 
 .nav .account a {

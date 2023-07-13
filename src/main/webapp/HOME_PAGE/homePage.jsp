@@ -48,7 +48,7 @@
                         <li><a href="/Product/List">sản phẩm</a></li>
                         <li><a href="">blog</a></li>
                     </ul>
-                    <a href="/"><img src="/RESOURCES/images/icons/icon.webp" alt=""
+                    <a href="/" class="iconPage"><img src="/RESOURCES/images/icons/icon.webp" alt=""
                                      height="64"></a>
                     <div class="account">
                         <a><img src="/RESOURCES/images/icons/search.png" alt=""></a>

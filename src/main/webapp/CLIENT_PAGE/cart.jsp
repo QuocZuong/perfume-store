@@ -175,7 +175,6 @@
                                         </a>
                                     </c:otherwise>
                                 </c:choose>
-
                             </form>
                         </div>
 
