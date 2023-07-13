@@ -76,7 +76,7 @@
                 </div>
                 <div class="role">
                     <label>Role *</label>
-                    <select name="txtRole">
+                    <select name="txtRole" class="roleSelect">
                         <option value="Client" <%= (us.getRole().equals("Client")) ? "selected" : ""%>>Client</option>
                         <option value="Admin" <%= (us.getRole().equals("Admin")) ? "selected" : ""%>>Admin</option>
                     </select>

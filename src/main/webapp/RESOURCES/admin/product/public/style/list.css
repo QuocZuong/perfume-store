@@ -1,36 +1,90 @@
 td.description .content.hide {
-    position: relative;
-    width: 180px; 
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  
-  td.description .expand-btn {
-    bottom: 0;
-    right: 0;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    margin: 0;
-    padding: 0;
-    font-weight: bold;
-  }
+  position: relative;
+  width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
-  a{
-    text-decoration: none !important;
-    color: black !important;
-    border: 1px solid black !important;
-    padding: 5px 10px !important;
-  }
+td.description .expand-btn {
+  bottom: 0;
+  right: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  font-weight: bold;
+}
 
-
-  .faded{
-    opacity: 0.4;
-  }
+/*  a{
+  text-decoration: none !important;
+  color: black !important;
+  border: 1px solid black !important;
+  padding: 5px 10px !important;
+}*/
 
 
-  /* .rowTable .fade{
-    background: rgba(255,255,255,0.4);
-  } */
-  
+.faded{
+  opacity: 0.4;
+}
+
+h1{
+  text-align: center;
+}
+
+.pagination{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 70px;
+}
+
+.pagination  li{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: transparent;
+  text-align: center;
+  border: 1px solid transparent;
+  margin: 5px;
+  outline: none;
+}
+
+.pagination li a:hover{
+  color: black;
+  border: 1px solid black;
+  border-radius: 50% !important;
+}
+
+.pagination li a{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background-color: transparent;
+  color: black;
+  text-align: center;
+}
+
+.pagination li .page-link:focus{
+  box-shadow:none;
+}
+
+.pagination li.active a {
+  border: 1px solid black;
+  outline: none;
+  background-color: transparent !important;
+  color: black;
+}
+
+
+/* .rowTable .fade{
+background: rgba(255,255,255,0.4);
+} */

@@ -314,13 +314,19 @@
         </div>
         <!-- This is funtion search -->
         <script>
+
+            let input = document.getElementById("inputSearch");
+            input.addEventListener("input",()=>{
+                console.log(input.value);
+            })
+
             function changeLink() {
                 let SearchURL = document.getElementById("inputSearch").value;
                 console.log(SearchURL);
-                <%! String searchTxT;%>
                 <%
+                String searchTxT = "";
                 if (request.getQueryString() != null) {
-                    if (request.getQueryString().startsWith("txtSearch")) {
+                    if (request.getQueryString().startsWith("txtSearch") || request.getQueryString().startsWith("errPNF")) {
                         searchTxT = "txtSearch=";
                     } else {
                         searchTxT = "&txtSearch=";
@@ -328,22 +334,25 @@
                 }
                 %>
                 let url = "${currentURL}/page/1";
-                let queryString = <%= request.getQueryString() %>;
-                if (queryString === null)
-                {
-                    console.log(true);
-                    url += "?txtSearch=" + SearchURL;
-                } else {
-                    console.log(false);
-                    url += "?";
-                    queryString = queryString.replaceAll("&errPNF=true", "");
-                    queryString = queryString.replaceAll("errPNF=true", "");
-                    queryString = queryString.replaceAll("&txtSearch=<%=request.getParameter("txtSearch")%>", "");
-                    queryString = queryString.replaceAll("txtSearch=<%=request.getParameter("txtSearch")%>", "");
-                    url += queryString + <%=searchTxT%> + SearchURL;
-                    console.log(queryString + <%=searchTxT%> + SearchURL);
-
-                }
+                
+                <%
+                    String urljava = "";
+                    if(request.getQueryString() == null){
+                        urljava = "?txtSearch=";
+                        System.out.println(urljava);
+                    }
+                    else{
+                        urljava = request.getQueryString();
+                        urljava = urljava.replace("&errPNF=true", "");
+                        urljava = urljava.replace("errPNF=true", "");
+                        urljava = urljava.replace("&txtSearch=" + request.getParameter("txtSearch"), "");
+                        urljava = urljava.replace("txtSearch=" + request.getParameter("txtSearch"), "");
+                        urljava += searchTxT;
+                        urljava = "?" + urljava;
+                        System.out.println(urljava);
+                    }
+                %>
+                url = url + "<%= urljava %>" + SearchURL;               
                 document.getElementById("SearchProduct").href = url;
             }
         </script>
@@ -353,7 +362,37 @@
             integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>
         <script src="/RESOURCES/shop/public/js/main.js"></script>
+        <script>
+            $(document).ready(function () {
+                $.validator.addMethod("emailCustom", function (value, element, toggler) {
+                    if (toggler) {
+                        let regex = /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/;
+                        let result = regex.test(value);
+                        return result;
+                    }
+                    return true;
+                }, "Vui lòng nhập đúng định dạng email");
 
+                $("form[action='/home/subscribe']").validate({
+                    rules: {
+                        txtEmailSubscribe: {
+                            required: true,
+                        }
+                    },
+                    messages: {
+                        txtEmailSubscribe: {
+                            required: "Vui lòng nhập email"
+                        }
+                    },
+
+                    errorPlacement: function (error, element) {
+                        error.addClass("text-danger d-block m-0");
+                        error.insertAfter(element.next());
+                    }
+
+                });
+            });
+        </script>
 
     </body>
 

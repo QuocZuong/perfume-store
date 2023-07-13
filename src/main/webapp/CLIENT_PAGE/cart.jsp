@@ -333,5 +333,36 @@
             crossorigin="anonymous"
         ></script>
         <script src="/RESOURCES/cart/public/js/main.js"></script>
+        <script>
+      $(document).ready(function () {
+        $.validator.addMethod("emailCustom", function (value, element, toggler) {
+          if (toggler) {
+            let regex = /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/;
+            let result = regex.test(value);
+            return result;
+          }
+          return true;
+        }, "Vui lòng nhập đúng định dạng email");
+
+        $("form[action='/home/subscribe']").validate({
+          rules: {
+            txtEmailSubscribe: {
+              required: true,
+            }
+          },
+          messages: {
+            txtEmailSubscribe: {
+              required: "Vui lòng nhập email"
+            }
+          },
+
+          errorPlacement: function (error, element) {
+            error.addClass("text-danger d-block m-0");
+            error.insertAfter(element.next());
+          }
+
+        });
+      });
+    </script>
     </body>
 </html>

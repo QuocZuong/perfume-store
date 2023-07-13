@@ -100,8 +100,8 @@
                                     <div class="d-flex flex-column flex-wrap w-100">
                                         <input type="text" name="txtUsername" value="<%= username%>" placeholder="Tên người dùng">
                                         <input type="text" name="txtEmail" value="<%= email%>" placeholder="Email">
-                                        <input type="text" name="txtPhone" id="phone" class="" value="<%= phone%>" placeholder="Số điện thoại">
-                                        <input type="text" name="txtAddress" id="address" value="<%= address%>" placeholder="Địa chỉ">
+                                        <input type="text" name="txtPhone" id="txtPhone" class="" value="<%= (phone == null ? "" : phone)%>" placeholder="Số điện thoại">
+                                        <input type="text" name="txtAddress" id="txtAddress" value="<%= (address == null ? "" : address)%>" placeholder="Địa chỉ">
                                     </div>
 
                                     <h2 class="text-start mt-2 mb-0 mt-5 hidden" id="header-address">giao đến địa chỉ</h2>
@@ -120,8 +120,8 @@
                                             </select>
                                         </div>
 
-                                        <input type="text"  name="txtNewAddress" class="hidden" id="txtAddress" value="<%= address%>">
-                                        <input type="text" name="txtNewPhone" class="hidden" id="txtPhone" value="<%= phone%>" placeholder="Số điện thoại tuỳ chọn">
+                                        <input type="text"  name="txtNewAddress" class="hidden" id="txtNewAddress" value="<%= (address == null ? "" : address)%>">
+                                        <input type="text" name="txtNewPhone" class="hidden" id="txtNewPhone" value="<%= (phone == null ? "" : phone)%>" placeholder="Số điện thoại tuỳ chọn">
 
                                         <div class="d-flex justify-content-start">
                                             <button type="submit" name="btnSubmitCheckOut" value="Submit" class="btn rounded-0 mt-3 w-100" >ĐẶT HÀNG</button>
@@ -292,67 +292,120 @@
                     result += (ward === DefaultWard ? "" : sp + ward);
                     $("#result").text(result);
                     console.log("update value success");
-                    $("input#txtAddress").val(result);
+                    $("input#txtNewAddress").val(result);
                 }
             };
         </script>
+
+
+        <!--Jquery Validation-->
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
         <script>
             $(document).ready(function () {
                 $("form").validate({
                     rules: {
-                        
-                    },
-                    messages: {
-                        txtPassword: {
-                            minlength: "Password must be at least 6 characters long"
-                        },
-                        txtPhoneNumber: {
-                            digits: "Phone number must contain only digits",
-                            maxlength: "Phone number must not exceed 10 digits"
-                        },
-                        txtEmail: {
-                            email: "Please enter a valid email address",
-                            maxlength: "Email must not exceed 100 characters"
+                        txtPhone: {
+                            required: true
                         },
                         txtAddress: {
-                            maxlength: "Address must not exceed 500 characters"
+                            required: true
                         }
-                    }
+                    },
+                
                 });
             });
 
             function requirechange(element) {
-                if ($("input#rdoCustomAddress").val() == "no")
+                if ($("input#rdoCustomAddress:checked").val() == "no")
                 {
-                    $("input#txtPhone").val("");
-                    $("input#txtAddress").val("");
-                    
-                    $("input#phone").rules("add", {
-                        required: true,
-                    });
-                    $("input#address").rules("add", {
-                        required: true,
-                    });
-
-                    //remove all rule
+                    //Remove all rules
                     $("input#txtPhone").rules("remove");
                     $("input#txtAddress").rules("remove");
+                    $("input#txtNewPhone").rules("remove");
+                    $("input#txtNewAddress").rules("remove");
+                    
 
-                } else if ($("input#rdoCustomAddress").val() == "yes"){
-                    //add rule
+                    //Hide the error label
+                    $("label#txtNewPhone-error").hide();
+                    $("label#txtNewAddress-error").hide();
+                    $("label#txtPhone-error").show();
+                    $("label#txtAddress-error").show();
+
+                    $("input#txtNewPhone").val("");
+                    $("input#txtNewAddress").val("");
+                    console.log("apply no rule");
                     $("input#txtPhone").rules("add", {
                         required: true,
+
                     });
                     $("input#txtAddress").rules("add", {
                         required: true,
-                    });
+                    }); 
+
+
+                } else if ($("input#rdoCustomAddress:checked").val() == "yes") {
 
                     //Remove all rules
-                    $("input#phone").rules("remove");
-                    $("input#address").rules("remove");
+                    $("input#txtPhone").rules("remove");
+                    $("input#txtAddress").rules("remove");
+                    $("input#txtNewPhone").rules("remove");
+                    $("input#txtNewAddress").rules("remove");
+
+                 $("label#txtNewPhone-error").show();
+                    $("label#txtNewAddress-error").show();
+                    $("label#txtPhone-error").hide();
+                    $("label#txtAddress-error").hide();
+
+                    console.log("apply yes rule");
+                    //add rule
+                    $("input#txtNewPhone").rules("add", {
+                        required: true,
+                    });
+                    $("input#txtNewAddress").rules("add", {
+                        required: true,
+                    });
 
                 }
             }
+            ;
+
+            $("input#rdoCustomAddress").on("input", function () {
+                console.log($("input#rdoCustomAddress:checked").val());
+                requirechange("input#rdoCustomAddress:checked");
+            });
+
+
+        </script>
+        <script>
+            $(document).ready(function () {
+                $.validator.addMethod("emailCustom", function (value, element, toggler) {
+                    if (toggler) {
+                        let regex = /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/;
+                        let result = regex.test(value);
+                        return result;
+                    }
+                    return true;
+                }, "Vui lòng nhập đúng định dạng email");
+
+                $("form[action='/home/subscribe']").validate({
+                    rules: {
+                        txtEmailSubscribe: {
+                            required: true,
+                        }
+                    },
+                    messages: {
+                        txtEmailSubscribe: {
+                            required: "Vui lòng nhập email"
+                        }
+                    },
+
+                    errorPlacement: function (error, element) {
+                        error.addClass("text-danger d-block m-0");
+                        error.insertAfter(element.next());
+                    }
+
+                });
+            });
         </script>
     </body>
 

@@ -185,6 +185,37 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
                 integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>
+        <script>
+      $(document).ready(function () {
+        $.validator.addMethod("emailCustom", function (value, element, toggler) {
+          if (toggler) {
+            let regex = /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/;
+            let result = regex.test(value);
+            return result;
+          }
+          return true;
+        }, "Vui lòng nhập đúng định dạng email");
+
+        $("form[action='/home/subscribe']").validate({
+          rules: {
+            txtEmailSubscribe: {
+              required: true,
+            }
+          },
+          messages: {
+            txtEmailSubscribe: {
+              required: "Vui lòng nhập email"
+            }
+          },
+
+          errorPlacement: function (error, element) {
+            error.addClass("text-danger d-block m-0");
+            error.insertAfter(element.next());
+          }
+
+        });
+      });
+    </script>
     </body>
 
 </html>
