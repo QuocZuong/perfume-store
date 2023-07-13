@@ -123,182 +123,185 @@
                                         <input type="text"  name="txtNewAddress" class="hidden" id="txtAddress" value="<%= address%>">
                                         <input type="text" name="txtNewPhone" class="hidden" value="<%= phone%>" placeholder="Số điện thoại tuỳ chọn">
 
-                                        <div class="d-flex justify-content-star">
-                                            <button type="submit" name="btnSubmitCheckOut" value="Submit"
-                                                    class="btn rounded-0 mt-3 w-100">ĐẶT HÀNG</button>
+                                        <div class="d-flex justify-content-start">
+                                            <button type="submit" name="btnSubmitCheckOut" value="Submit" class="btn rounded-0 mt-3 w-100" >ĐẶT HÀNG</button>
                                         </div>
-
+                                        <div id="popup" class="popup">
+                                            <div class="popup-content">
+                                                <h3>Pop-up Title</h3>
+                                                <p>Pop-up message goes here.</p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
+                            </div>
                         </form>
                     </div>
+                </div>
+            </div>
 
+            <div class="row mt-5 bottom">
+                <p>Cảm ơn bạn đã đặt hàng tại XXIV STORE. Để hoàn tất đặt hàng bạn vui lòng chuyển khoản
+                    trước 100% giá trị đón hàng.<br/> Thông tin chuyển khoản sẽ hiện lên khi bạn hoàn tất việc đặt hàng.</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 register">
+                    <h1>Đăng ký thành viên để nhận khuyến mại</h1>
+                    <p>Theo dõi chúng tôi để nhận thêm nhiều ưu đãi</p>
+                    <form action="/home/subscribe" method="POST">
+                        <input type="text" name="txtEmailSubscribe" id="" placeholder="nhập email" required="true">
+                        <button type="submit" name="submitEmailBtn" value="Submit" class="enter">ĐĂNG KÝ</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 social">
+                    <a href=""><img src="/RESOURCES/images/icons/instagram.png" alt="" /></a>
+                    <a href=""><img src="/RESOURCES/images/icons/facebook.png" alt="" /></a>
+                    <a href=""><img src="/RESOURCES/images/icons/youtube.png" alt="" /></a>
+                    <a href=""><img src="/RESOURCES/images/icons/location-pin.png" alt="" /></a>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 footer">
+                    <div>
+                        <h2>xxiv store</h2>
+                        <ul>
+                            <li><a href="">ưu đãi thành viên</a></li>
+                            <li><a href="">tài khoản</a></li>
+                            <li><a href="">tuyển dụng</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h2>chính sách bán hàng</h2>
+                        <ul>
+                            <li><a href="">phương thức vận chuyển</a></li>
+                            <li><a href="">câu hỏi thường gặp</a></li>
+                            <li><a href="">điều khoản và điện kiện sử dụng</a></li>
+                            <li><a href="">điều khoản và điều kiện bán hàng</a></li>
+                            <li><a href="">thông báo pháp lý</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h2>thông tin chung</h2>
+                        <ul>
+                            <li><a href="">giới thiệu</a></li>
+                            <li><a href="">blog</a></li>
+                            <li><a href="">liên hệ</a></li>
+                            <li><a href="">sản phẩm</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 copyright">
+                    <p>&copy; xxiv 2023 | all right reserved</p>
                 </div>
             </div>
         </div>
 
-        <div class="row mt-5 bottom">
-            <p>Cảm ơn bạn đã đặt hàng tại XXIV STORE. Để hoàn tất đặt hàng bạn vui lòng chuyển khoản
-                trước 100% giá trị đón hàng.<br/> Thông tin chuyển khoản sẽ hiện lên khi bạn hoàn tất việc đặt hàng.</p>
-        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
+        <script src="/RESOURCES/checkout/public/js/main.js"></script>
 
-        <div class="row">
-            <div class="col-md-12 register">
-                <h1>Đăng ký thành viên để nhận khuyến mại</h1>
-                <p>Theo dõi chúng tôi để nhận thêm nhiều ưu đãi</p>
-                <form action="/home/subscribe" method="POST">
-                    <input type="text" name="txtEmailSubscribe" id="" placeholder="nhập email" required="true">
-                    <button type="submit" name="submitEmailBtn" value="Submit" class="enter">ĐĂNG KÝ</button>
-                </form>
-            </div>
-        </div>
+        <!--VietName Province APU-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 
-        <div class="row">
-            <div class="col-md-12 social">
-                <a href=""><img src="/RESOURCES/images/icons/instagram.png" alt="" /></a>
-                <a href=""><img src="/RESOURCES/images/icons/facebook.png" alt="" /></a>
-                <a href=""><img src="/RESOURCES/images/icons/youtube.png" alt="" /></a>
-                <a href=""><img src="/RESOURCES/images/icons/location-pin.png" alt="" /></a>
-            </div>
-        </div>
+        <script >
+            const host = "https://provinces.open-api.vn/api/";
+            let City = '<%= Tinh%>';
+            let District = '<%= QuanHuyen%>';
+            let Ward = '<%= PhuongXa%>';
+            let DefaultCity = 'Chọn tỉnh thành';
+            let DefaultDistrict = 'Chọn quận huyện';
+            let DefaultWard = 'Chọn phường xã';
+            var callAPI = (api) => {
+                return axios.get(api)
+                        .then((response) => {
+                            renderData(response.data, "city");
+                            if (City !== "")
+                            {
+                                $(`select option[value='` + City + `']`).prop("selected", true);
+                                callApiDistrict(host + "p/" + $("#city").find(':selected').data('id') + "?depth=2");
+                            }
+                        });
+            };
+            callAPI('https://provinces.open-api.vn/api/?depth=1');
+            var callApiDistrict = (api) => {
+                return axios.get(api)
+                        .then((response) => {
+                            renderData(response.data.districts, "district", DefaultDistrict);
+                            if (District !== "")
+                            {
+                                $(`select option[value='` + District + `']`).prop("selected", true);
+                                callApiWard(host + "d/" + $("#district").find(':selected').data('id') + "?depth=2");
+                            }
+                        });
+            };
+            var callApiWard = (api) => {
+                return axios.get(api)
+                        .then((response) => {
+                            renderData(response.data.wards, "ward", DefaultWard);
+                            if (Ward !== "")
+                            {
+                                $(`select option[value='` + Ward + `']`).prop("selected", true);
+                            }
+                        });
+            };
+            var renderData = (array, select, msg = DefaultCity) => {
+                let row = ' <option disable value="">' + msg + '</option>';
+                array.forEach((e) => {
+                    let code = e.code;
+                    let name = e.name;
+                    row += `<option data-id="` + code + `" value="` + name + `">` + name + `</option>`;
+                });
+                document.querySelector("#" + select).innerHTML = row;
+            };
 
-        <div class="row">
-            <div class="col-md-12 footer">
-                <div>
-                    <h2>xxiv store</h2>
-                    <ul>
-                        <li><a href="">ưu đãi thành viên</a></li>
-                        <li><a href="">tài khoản</a></li>
-                        <li><a href="">tuyển dụng</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h2>chính sách bán hàng</h2>
-                    <ul>
-                        <li><a href="">phương thức vận chuyển</a></li>
-                        <li><a href="">câu hỏi thường gặp</a></li>
-                        <li><a href="">điều khoản và điện kiện sử dụng</a></li>
-                        <li><a href="">điều khoản và điều kiện bán hàng</a></li>
-                        <li><a href="">thông báo pháp lý</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h2>thông tin chung</h2>
-                    <ul>
-                        <li><a href="">giới thiệu</a></li>
-                        <li><a href="">blog</a></li>
-                        <li><a href="">liên hệ</a></li>
-                        <li><a href="">sản phẩm</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12 copyright">
-                <p>&copy; xxiv 2023 | all right reserved</p>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
-    crossorigin="anonymous"></script>
-    <script src="/RESOURCES/checkout/public/js/main.js"></script>
-
-    <!--VietName Province APU-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
-
-    <script >
-        const host = "https://provinces.open-api.vn/api/";
-        let City = '<%= Tinh%>';
-        let District = '<%= QuanHuyen%>';
-        let Ward = '<%= PhuongXa%>';
-        let DefaultCity = 'Chọn tỉnh thành';
-        let DefaultDistrict = 'Chọn quận huyện';
-        let DefaultWard = 'Chọn phường xã';
-        var callAPI = (api) => {
-            return axios.get(api)
-                    .then((response) => {
-                        renderData(response.data, "city");
-                        if (City !== "")
-                        {
-                            $(`select option[value='` + City + `']`).prop("selected", true);
-                            callApiDistrict(host + "p/" + $("#city").find(':selected').data('id') + "?depth=2");
-                        }
-                    });
-        };
-        callAPI('https://provinces.open-api.vn/api/?depth=1');
-        var callApiDistrict = (api) => {
-            return axios.get(api)
-                    .then((response) => {
-                        renderData(response.data.districts, "district", DefaultDistrict);
-                        if (District !== "")
-                        {
-                            $(`select option[value='` + District + `']`).prop("selected", true);
-                            callApiWard(host + "d/" + $("#district").find(':selected').data('id') + "?depth=2");
-                        }
-                    });
-        };
-        var callApiWard = (api) => {
-            return axios.get(api)
-                    .then((response) => {
-                        renderData(response.data.wards, "ward", DefaultWard);
-                        if (Ward !== "")
-                        {
-                            $(`select option[value='` + Ward + `']`).prop("selected", true);
-                        }
-                    });
-        };
-        var renderData = (array, select, msg = DefaultCity) => {
-            let row = ' <option disable value="">' + msg + '</option>';
-            array.forEach((e) => {
-                let code = e.code;
-                let name = e.name;
-                row += `<option data-id="` + code + `" value="` + name + `">` + name + `</option>`;
-            });
-            document.querySelector("#" + select).innerHTML = row;
-        };
-
-        function resetData(select, msg = DefaultCity) {
-            let row = '<option disable value="">' + msg + '</option>';
-            document.querySelector("#" + select).innerHTML = row;
-        }
-
-
-        $("#city").change(() => {
-            resetData("district", DefaultDistrict);
-            resetData("ward", DefaultWard);
-            callApiDistrict(host + "p/" + $("#city").find(':selected').data('id') + "?depth=2");
-            printResult();
-        });
-        $("#district").change(() => {
-            resetData("ward", DefaultWard);
-            callApiWard(host + "d/" + $("#district").find(':selected').data('id') + "?depth=2");
-            printResult();
-        });
-        $("#ward").change(() => {
-            printResult();
-        });
-        var printResult = () => {
-            if ($("#district").find(':selected').data('id') != "" && $("#city").find(':selected').data('id') != "" &&
-                    $("#ward").find(':selected').data('id') != "") {
-
-                let city = $("#city option:selected").text();
-                let district = $("#district option:selected").text();
-                let ward = $("#ward option:selected").text();
-                let sp = " - ";
-                let result = (city === DefaultCity ? "" : city);
-                result += (district === DefaultDistrict ? "" : sp + district);
-                result += (ward === DefaultWard ? "" : sp + ward);
-                $("#result").text(result);
-                console.log("update value success");
-                $("input#txtAddress").val(result);
+            function resetData(select, msg = DefaultCity) {
+                let row = '<option disable value="">' + msg + '</option>';
+                document.querySelector("#" + select).innerHTML = row;
             }
-        };
-    </script>
-</body>
+
+
+            $("#city").change(() => {
+                resetData("district", DefaultDistrict);
+                resetData("ward", DefaultWard);
+                callApiDistrict(host + "p/" + $("#city").find(':selected').data('id') + "?depth=2");
+                printResult();
+            });
+            $("#district").change(() => {
+                resetData("ward", DefaultWard);
+                callApiWard(host + "d/" + $("#district").find(':selected').data('id') + "?depth=2");
+                printResult();
+            });
+            $("#ward").change(() => {
+                printResult();
+            });
+            var printResult = () => {
+                if ($("#district").find(':selected').data('id') != "" && $("#city").find(':selected').data('id') != "" &&
+                        $("#ward").find(':selected').data('id') != "") {
+
+                    let city = $("#city option:selected").text();
+                    let district = $("#district option:selected").text();
+                    let ward = $("#ward option:selected").text();
+                    let sp = " - ";
+                    let result = (city === DefaultCity ? "" : city);
+                    result += (district === DefaultDistrict ? "" : sp + district);
+                    result += (ward === DefaultWard ? "" : sp + ward);
+                    $("#result").text(result);
+                    console.log("update value success");
+                    $("input#txtAddress").val(result);
+                }
+            };
+        </script>
+    </body>
 
 </html>
