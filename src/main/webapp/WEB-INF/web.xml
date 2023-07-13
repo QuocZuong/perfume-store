@@ -81,6 +81,7 @@
     </servlet-mapping>
     <!--Error pages mapping-->
     <error-page>
+        <error-code>404</error-code>
         <location>/ERROR_PAGE/404Page.jsp</location>
     </error-page>
     <error-page>

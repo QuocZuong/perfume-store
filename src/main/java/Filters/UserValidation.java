@@ -55,7 +55,8 @@ public class UserValidation implements Filter {
 		for (String folder : FOLDER_URL_LIST) {
 			if (URI.startsWith(folder)) {
 				System.out.println("User trying to go to folder links, so redirect to home page");
-				res.sendRedirect("/");
+				// DO NOT MODIFIED
+				res.sendError(403);
 				return;
 			}
 		}
@@ -75,6 +76,12 @@ public class UserValidation implements Filter {
 
 		// --------------------------PREVENT UNAUTHORISED USER----------------------
 		if (URI.startsWith("/Client")) {
+            if (isAdmin) {
+                System.out.println("Going admin");
+                res.sendRedirect("/Admin");
+				return;
+            }
+
 			if (!isClient) {
 				System.out.println("Not Client, so redirect to /Log/Login");
 				res.sendRedirect("/Log/Login");
@@ -86,7 +93,7 @@ public class UserValidation implements Filter {
 		if (URI.startsWith("/Admin")) {
 			if (!isAdmin) {
 				System.out.println("Not Admin, so redirect to home page");
-				res.sendRedirect("/");
+				res.sendError(403);
 				return;
 			}
 		}

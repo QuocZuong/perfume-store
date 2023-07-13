@@ -90,6 +90,9 @@
                                         <td class="<%= us.isActive() ? " " : "faded"%>">
                                             <a href="/Admin/User/Update/ID/<%= us.getID()%>" class="<%= us.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0">Update</a>
                                         </td>
+                                         <td class="<%= us.isActive() ? " " : "faded"%>">
+                                            <a href="/Admin/User/Detail/ID/<%= us.getID()%>" class="<%= us.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0">Detail</a>
+                                        </td>
                                         <td class="buttonStatus <%= us.isActive() ? "" : "unfaded"%>">
                                             <a href="/Admin/User/<%= us.isActive() ? "Delete" : "Restore"%>/ID/<%=  us.getID()%>" class="btn btn-outline-<%= us.isActive() ? "danger" : "success"%> rounded-0"> <%= us.isActive() ? "Delete" : "Restore"%></a>
                                         </td>

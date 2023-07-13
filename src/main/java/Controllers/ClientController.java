@@ -91,19 +91,12 @@ public class ClientController extends HttpServlet {
             return;
         }
 
-        boolean isAdmin = ((Cookie) request.getSession().getAttribute("userCookie")).getName().equals("Admin");
-
         if (path.startsWith(CLIENT_USER_URI)) {
             response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
             response.setHeader("Pragma", "no-cache");
             response.setHeader("Expires", "0");
-            if (isAdmin) {
-                System.out.println("Going admin");
-                response.sendRedirect("/Admin");
-            } else {
-                System.out.println("Going user");
-                request.getRequestDispatcher("/CLIENT_PAGE/user.jsp").forward(request, response);
-            }
+            System.out.println("Going user");
+            request.getRequestDispatcher("/CLIENT_PAGE/user.jsp").forward(request, response);
             return;
         }
 
@@ -375,8 +368,8 @@ public class ClientController extends HttpServlet {
         try {
             EmailSender es = new EmailSender();
             if (isChangedPassword) {
-                System.out.println("Detect email change");
-                System.out.println("sending mail changing email");
+                System.out.println("Detect password change");
+                System.out.println("sending mail changing password");
                 es.setEmailTo(email);
                 es.sendToEmail(es.CHANGE_PASSWORD_NOTFICATION, es.changePasswordNotifcation());
             }

@@ -6,7 +6,9 @@ import java.util.List;
 
 import javax.security.auth.login.AccountNotFoundException;
 
+import Models.Order;
 import Models.Product;
+import DAOs.OrderDAO;
 import DAOs.ProductDAO;
 import Exceptions.AccountDeactivatedException;
 import Exceptions.EmailDuplicationException;
@@ -36,8 +38,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, // 1MB
         maxFileSize = 1024 * 1024 * 5, // 5MB
@@ -58,6 +58,9 @@ public class AdminController extends HttpServlet {
     public static final String ADMIN_USER_UPDATE_URI = "/Admin/User/Update";
     public static final String ADMIN_USER_DELETE_URI = "/Admin/User/Delete";
     public static final String ADMIN_USER_RESTORE_URI = "/Admin/User/Restore";
+    public static final String ADMIN_CLIENT_DETAIL_URI = "/Admin/User/Detail";
+    public static final String ADMIN_CLIENT_ORDER_URI = "/Admin/User/OrderDetail";
+
 
     public static final String ADMIN_UPDATE_INFO_URI = "/Admin/Update/Info";
 
@@ -133,6 +136,17 @@ public class AdminController extends HttpServlet {
             response.sendRedirect(ADMIN_USER_LIST_URI);
             return;
         }
+        
+        if(path.startsWith(ADMIN_CLIENT_DETAIL_URI)){
+            clientDetail(request, response);
+            request.getRequestDispatcher("/ADMIN_PAGE/User/detail.jsp").forward(request, response);
+            return;
+        }
+        if(path.startsWith(ADMIN_CLIENT_ORDER_URI)){
+            OrderDetail(request, response);
+            request.getRequestDispatcher("/ADMIN_PAGE/User/orderdetail.jsp").forward(request, response);
+            return;
+        }
 
         // ---------------------------- DEFAULT SECTION ----------------------------
         if (path.startsWith(ADMIN_USER_URI)) { // Put this at the last
@@ -144,7 +158,11 @@ public class AdminController extends HttpServlet {
         }
     }
 
-    /**
+    
+
+
+
+	/**
      * Handles the HTTP <code>POST</code> method.
      *
      * @param request servlet request
@@ -338,6 +356,25 @@ public class AdminController extends HttpServlet {
         request.setAttribute("listUser", listUser);
         request.setAttribute("Search", Search);
     }
+
+    private void clientDetail(HttpServletRequest request, HttpServletResponse response) {
+        OrderDAO oDAO = new OrderDAO();
+        UserDAO uDAO = new UserDAO();
+        String URI = request.getRequestURI();
+        String data[] = URI.split("/");
+        int ClientID = -1;
+        for(int i = 0; i < data.length; i++){
+            if (data[i].equals("ID")) {
+                ClientID = Integer.parseInt(data[i + 1]);
+            }
+        }
+        List<Order> orderList = oDAO.getOrderByClientId(ClientID);
+        User client = uDAO.getUser(ClientID);
+        request.setAttribute("client", client);
+        request.setAttribute("orderList", orderList);
+    }
+    private void OrderDetail(HttpServletRequest request, HttpServletResponse response) {
+	}
 
     // ---------------------------- UPDATE SECTION ----------------------------
     private void updateProduct(HttpServletRequest request, HttpServletResponse response)
