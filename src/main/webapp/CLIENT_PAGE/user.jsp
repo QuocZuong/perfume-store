@@ -120,12 +120,13 @@
                 <div class="right">
                     <div class="account-page">
                         <p>Xin chào <b><strong><%=  (user.getName() != null && !user.getName().isEmpty()) ? user.getName() : user.getUsername()%></strong></b> (không phải tài khoản
-                            <b><strong><%=  (user.getName() != null && !user.getName().isEmpty()) ? user.getName() : user.getUsername()%></strong></b>? Hãy <a href="">thoát ra</a> và đăng nhập vào tài
+                            <b><strong><%=  (user.getName() != null && !user.getName().isEmpty()) ? user.getName() : user.getUsername()%></strong></b>? Hãy <a href="/Log/Logout">thoát ra</a> và đăng nhập vào tài
                             khoản của bạn)</p>
                         <p>
-                            Từ trang quản lý tài khoản bạn có thể xem <a href="">đơn hàng mới</a>, quản lý <a
-                                href="">địa chỉ giao hàng và thanh toán</a>, và <a href="">sửa mật khẩu và thông tin
-                                tài khoản</a>.
+                            Từ trang quản lý tài khoản bạn có thể xem
+                            <a  class="account-link" data-page="order-page">đơn hàng mới</a>,
+                            quản lý <a  class="account-link" data-page="address-page">địa chỉ giao hàng và thanh toán</a>,
+                            và <a  class="account-link" data-page="info-page">sửa mật khẩu và thông tin tài khoản</a>.
                         </p>
                     </div>
                     <div class="order-page">
