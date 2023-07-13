@@ -107,9 +107,9 @@
                                     </c:forEach>
                                     <tr class="bottom-table">
                                         <td colspan="6">
-                                            <p><img src="/RESOURCES/images/icons/smartphone.png" alt="alt"/><span><%=OrderInfor.getPhoneNumber()%></span></p>
-                                            <p><img src="/RESOURCES/images/icons/location-pin.png" alt="alt"/><span><%=OrderInfor.getAddress()%></span></p>
-                                            <p><img src="/RESOURCES/images/icons/email.png" alt="alt"/><span><%=OrderInfor.getNote()%></span></p>
+                                            <p><img src="/RESOURCES/images/icons/smartphone.png" alt="alt"/><span class="info"><%=OrderInfor.getPhoneNumber()%></span></p>
+                                            <p><img src="/RESOURCES/images/icons/location-pin.png" alt="alt"/><span class="info"><%=OrderInfor.getAddress()%></span></p>
+                                            <p><img src="/RESOURCES/images/icons/email.png" alt="alt"/><span class="info"><%=OrderInfor.getNote()%></span></p>
                                         </td>
                                     </tr>
                                 </c:if>
@@ -181,7 +181,7 @@
 
         </div>
 
-
+            <script src="/RESOURCES/user/public/js/order_detail.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
                 integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>
