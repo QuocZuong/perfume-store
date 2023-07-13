@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import Exceptions.ProductNotFoundException;
+
 public class ProductDAO {
 
   private Connection conn;
@@ -97,17 +99,16 @@ public class ProductDAO {
     String description = datas[9];
 
     Product pd = new Product(
-      name,
-      brandID,
-      price,
-      gender,
-      smell,
-      quantity,
-      releaseYear,
-      volume,
-      imgURL,
-      description
-    );
+        name,
+        brandID,
+        price,
+        gender,
+        smell,
+        quantity,
+        releaseYear,
+        volume,
+        imgURL,
+        description);
 
     result = addProduct(pd);
     return result;
@@ -120,13 +121,10 @@ public class ProductDAO {
     String sp = DB.DataManager.Separator;
 
     try (
-      OutputStream os = new FileOutputStream(
-        "C:\\Users\\Acer\\OneDrive\\Desktop\\#SU23\\PRJ301\\SQLproject\\perfume-store\\src\\main\\java\\BackUp\\backup_Product_data.txt"
-      );
-      PrintWriter outPrint = new PrintWriter(
-        new OutputStreamWriter(os, "UTF-8")
-      );
-    ) {
+        OutputStream os = new FileOutputStream(
+            "C:\\Users\\Acer\\OneDrive\\Desktop\\#SU23\\PRJ301\\SQLproject\\perfume-store\\src\\main\\java\\BackUp\\backup_Product_data.txt");
+        PrintWriter outPrint = new PrintWriter(
+            new OutputStreamWriter(os, "UTF-8"));) {
       StringBuilder strOUT = new StringBuilder("");
       String string = null;
 
@@ -189,47 +187,44 @@ public class ProductDAO {
   }
 
   public String convertToStringData(
-    String pName,
-    String bName,
-    String pPrice,
-    String Gender,
-    String Smell,
-    String Quantity,
-    String ReleaseYear,
-    String Volume,
-    String ImgURL,
-    String Description
-  ) {
+      String pName,
+      String bName,
+      String pPrice,
+      String Gender,
+      String Smell,
+      String Quantity,
+      String ReleaseYear,
+      String Volume,
+      String ImgURL,
+      String Description) {
     // "NAME~BRANDNAME(string)~PRICE(INT)~Gender(string)~Smell(String)~Quantity(int)~ReleaseYear(smallint)~Volume(INT)~URL(Srtring)~Description",
     String sep = DB.DataManager.Separator;
-    String out =
-      pName +
-      sep +
-      bName +
-      sep +
-      pPrice +
-      sep +
-      Gender +
-      sep +
-      Smell +
-      sep +
-      Quantity +
-      sep +
-      ReleaseYear +
-      sep +
-      Volume +
-      sep +
-      ImgURL +
-      sep +
-      Description;
+    String out = pName +
+        sep +
+        bName +
+        sep +
+        pPrice +
+        sep +
+        Gender +
+        sep +
+        Smell +
+        sep +
+        Quantity +
+        sep +
+        ReleaseYear +
+        sep +
+        Volume +
+        sep +
+        ImgURL +
+        sep +
+        Description;
     return out;
   }
 
   /* --------------------------- READ SECTION --------------------------- */
   public List<Product> getProductByOrderID(int id) {
     ResultSet rs = null;
-    String sql =
-      "SELECT * FROM  Product, OrderDetail WHERE Product.ID = OrderDetail.ProductID";
+    String sql = "SELECT * FROM  Product, OrderDetail WHERE Product.ID = OrderDetail.ProductID";
 
     List<Product> pdList = new LinkedList<>();
 
@@ -371,35 +366,33 @@ public class ProductDAO {
   }
 
   public ResultSet getFilteredProduct(
-    String BrandID,
-    String Gender,
-    String price,
-    int page,
-    String Search
-  ) {
-    String sql =
-      "SELECT \n" +
-      "p.ID,\n" +
-      "p.[Name],\n" +
-      "p.[BrandID],\n" +
-      "p.Price,\n" +
-      "p.Gender,\n" +
-      "p.Quantity,\n" +
-      "p.ReleaseYear,\n" +
-      "p.Volume,\n" +
-      "p.ImgURL,\n" +
-      "p.[Description],\n" +
-      "p.Active\n" +
-      "FROM Product p, Brand b\n" +
-      "WHERE BrandID LIKE ?\n" + // 1
-      "AND Gender LIKE ?\n" + // 2
-      "AND Price between ? AND ?\n" + // 3,4
-      "AND Active = 1\n" +
-      "AND (p.[Name] LIKE ? OR b.[Name] LIKE ?)\n" + // 5, 6
-      "AND p.BrandID = b.ID\n" +
-      "ORDER BY p.ID\n" +
-      "OFFSET ? ROWS\n" + // 7
-      "FETCH NEXT ? ROWS ONLY"; // 8
+      String BrandID,
+      String Gender,
+      String price,
+      int page,
+      String Search) {
+    String sql = "SELECT \n" +
+        "p.ID,\n" +
+        "p.[Name],\n" +
+        "p.[BrandID],\n" +
+        "p.Price,\n" +
+        "p.Gender,\n" +
+        "p.Quantity,\n" +
+        "p.ReleaseYear,\n" +
+        "p.Volume,\n" +
+        "p.ImgURL,\n" +
+        "p.[Description],\n" +
+        "p.Active\n" +
+        "FROM Product p, Brand b\n" +
+        "WHERE BrandID LIKE ?\n" + // 1
+        "AND Gender LIKE ?\n" + // 2
+        "AND Price between ? AND ?\n" + // 3,4
+        "AND Active = 1\n" +
+        "AND (p.[Name] LIKE ? OR b.[Name] LIKE ?)\n" + // 5, 6
+        "AND p.BrandID = b.ID\n" +
+        "ORDER BY p.ID\n" +
+        "OFFSET ? ROWS\n" + // 7
+        "FETCH NEXT ? ROWS ONLY"; // 8
 
     final int ROWS = 20;
     final int OFFSET = ROWS * (page - 1);
@@ -436,11 +429,10 @@ public class ProductDAO {
   }
 
   public ResultSet getFilteredProductForAdmin(int page) {
-    String sql =
-      "SELECT * FROM Product\n" +
-      "ORDER BY ID\n" +
-      "OFFSET ? ROWS\n" +
-      "FETCH NEXT ? ROWS ONLY";
+    String sql = "SELECT * FROM Product\n" +
+        "ORDER BY ID\n" +
+        "OFFSET ? ROWS\n" +
+        "FETCH NEXT ? ROWS ONLY";
 
     final int ROWS = 20;
     final int OFFSET = ROWS * (page - 1);
@@ -459,12 +451,11 @@ public class ProductDAO {
   }
 
   public ResultSet getFilteredProductForAdminSearch(int page, String Search) {
-    String sql =
-      "SELECT * FROM Product\n" +
-      "WHERE ID LIKE ? OR Name LIKE ?\n" +
-      "ORDER BY ID\n" +
-      "OFFSET ? ROWS\n" +
-      "FETCH NEXT ? ROWS ONLY";
+    String sql = "SELECT * FROM Product\n" +
+        "WHERE ID LIKE ? OR Name LIKE ?\n" +
+        "ORDER BY ID\n" +
+        "OFFSET ? ROWS\n" +
+        "FETCH NEXT ? ROWS ONLY";
 
     final int ROWS = 20;
     final int OFFSET = ROWS * (page - 1);
@@ -505,11 +496,10 @@ public class ProductDAO {
   }
 
   public int GetNumberOfProduct(
-    String BrandID,
-    String Gender,
-    String price,
-    String Search
-  ) {
+      String BrandID,
+      String Gender,
+      String price,
+      String Search) throws ProductNotFoundException {
     BrandID = BrandID == null ? "%" : BrandID;
     Gender = Gender == null ? "%" : Gender;
     String low = "0";
@@ -523,14 +513,13 @@ public class ProductDAO {
 
     ResultSet rs = null;
 
-    String sql =
-      "SELECT COUNT(*) AS CountRow FROM Product, Brand\n" +
-      "WHERE BrandID LIKE ?\n" +
-      "AND Gender LIKE ?\n" +
-      "AND Price between ? AND ?\n" +
-      "AND Active = 1\n" +
-      "AND (Product.[Name] LIKE ? OR Brand.[Name] LIKE ?)\n" +
-      "AND Product.BrandID = Brand.ID";
+    String sql = "SELECT COUNT(*) AS CountRow FROM Product, Brand\n" +
+        "WHERE BrandID LIKE ?\n" +
+        "AND Gender LIKE ?\n" +
+        "AND Price between ? AND ?\n" +
+        "AND Active = 1\n" +
+        "AND (Product.[Name] LIKE ? OR Brand.[Name] LIKE ?)\n" +
+        "AND Product.BrandID = Brand.ID";
 
     try {
       PreparedStatement ps = conn.prepareStatement(sql);
@@ -543,18 +532,20 @@ public class ProductDAO {
       ps.setNString(6, "%" + Search + "%");
       rs = ps.executeQuery();
       System.out.println(
-        String.format(
-          "BrandID: %s, gender: %s, low: %s, high: %s",
-          BrandID,
-          Gender,
-          low,
-          high
-        )
-      );
+          String.format(
+              "BrandID: %s, gender: %s, low: %s, high: %s",
+              BrandID,
+              Gender,
+              low,
+              high));
       if (rs.next()) {
-        return rs.getInt("CountRow");
+        if( rs.getInt("CountRow")==0)
+        {
+          throw new ProductNotFoundException();
+        }
+        return  rs.getInt("CountRow");
       }
-    } catch (Exception e) {
+    } catch (SQLException e) {
       e.printStackTrace();
     }
 
@@ -564,10 +555,9 @@ public class ProductDAO {
   public int GetNumberOfProductForSearch(String Search) {
     ResultSet rs = null;
 
-    String sql =
-      "SELECT COUNT(*) AS CountRow FROM Product\n" +
-      "WHERE ID LIKE ?\n" +
-      "OR Name LIKE ?\n";
+    String sql = "SELECT COUNT(*) AS CountRow FROM Product\n" +
+        "WHERE ID LIKE ?\n" +
+        "OR Name LIKE ?\n";
     try {
       PreparedStatement ps = conn.prepareStatement(sql);
 
@@ -671,32 +661,30 @@ public class ProductDAO {
     String description = datas[9];
 
     Product pd = new Product(
-      productID,
-      name,
-      brandID,
-      price,
-      gender,
-      smell,
-      quantity,
-      releaseYear,
-      volume,
-      imgURL,
-      description
-    );
+        productID,
+        name,
+        brandID,
+        price,
+        gender,
+        smell,
+        quantity,
+        releaseYear,
+        volume,
+        imgURL,
+        description);
 
     result = updateProduct(pd);
     return result;
   }
 
   public int updateProduct(Product product) {
-    String sql =
-      "UPDATE Product SET [Name]=?,\n" +
-      " [BrandID]=?, [Price]=?, [Gender]=?,\n" +
-      " [Smell]=?, [Quantity]=?,\n" +
-      " [ReleaseYear]=?, [Volume]=?,\n" +
-      " [ImgURL]=?, \n" +
-      " [Description]=?\n" +
-      " WHERE ID = ?";
+    String sql = "UPDATE Product SET [Name]=?,\n" +
+        " [BrandID]=?, [Price]=?, [Gender]=?,\n" +
+        " [Smell]=?, [Quantity]=?,\n" +
+        " [ReleaseYear]=?, [Volume]=?,\n" +
+        " [ImgURL]=?, \n" +
+        " [Description]=?\n" +
+        " WHERE ID = ?";
     int result = 0;
 
     try {
@@ -734,14 +722,20 @@ public class ProductDAO {
   /* --------------------------- DELETE SECTION --------------------------- */
   public int deleteProduct(int productId) {
     String sql = "UPDATE Product SET Active = 0 WHERE ID = ?";
+    int kq = 0;
     try {
       PreparedStatement ps = conn.prepareStatement(sql);
       ps.setInt(1, productId);
-      return ps.executeUpdate();
+
+      // Delete all product in Cart too
+      kq = ps.executeUpdate();
+      CartDAO cDAO = new CartDAO();
+      cDAO.deleteAllDeletedProduct();
+      return kq;
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return 0;
+    return 1;
   }
 
   /*--------------------------- CONVERSION SECTION --------------------------- */
@@ -776,11 +770,10 @@ public class ProductDAO {
 
   /*--------------------------- FILE SECTION --------------------------- */
   public void copyImg(
-    Part imagePart,
-    String Local_destination,
-    String Target_destination,
-    String filename
-  ) {
+      Part imagePart,
+      String Local_destination,
+      String Target_destination,
+      String filename) {
     File IMG = new File(Target_destination);
     if (!IMG.exists()) {
       IMG.mkdir();
@@ -788,11 +781,9 @@ public class ProductDAO {
     try {
       InputStream imageInputStream = imagePart.getInputStream();
       OutputStream outputStream = new FileOutputStream(
-        Local_destination + filename
-      );
+          Local_destination + filename);
       OutputStream outputStreamTarget = new FileOutputStream(
-        Target_destination + filename
-      );
+          Target_destination + filename);
       byte[] buffer = new byte[1024];
       int bytes;
       while ((bytes = imageInputStream.read(buffer)) != -1) {

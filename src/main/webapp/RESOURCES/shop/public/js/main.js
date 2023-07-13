@@ -1,6 +1,10 @@
 const storage = document.getElementById("products");
 let brandStorage = document.getElementById("box-brand");
-let products = Array.from(storage.getElementsByClassName("product"));
+let products = [];
+// Handling if the products is empty
+if (storage !== null && storage.getElementsByClassName("product") !== null) {
+    products = Array.from(storage.getElementsByClassName("product"));
+}
 const searchBox = document.getElementById("searchBox");
 const selection = document.getElementById("top");
 const radioButtons = document.querySelectorAll('input[name="priceRange"]');
@@ -196,6 +200,7 @@ if (storedClickedValue) {
 }
 
 window.addEventListener("load", function () {
+    console.log("loading successfully");
     const spinnerContainer = document.querySelector(".spinner-container");
     const container = document.querySelector(".container-fluid");
 
@@ -214,21 +219,21 @@ const closeBtn = document.querySelector(".close-search-box");
 const inputSearch = document.getElementById("inputSearch");
 
 searchBoxTop.addEventListener("click", () => {
-  searchDiv.classList.add("show");
-  setTimeout(() => {
-    inputSearch.focus();
-  }, 100);
+    searchDiv.classList.add("show");
+    setTimeout(() => {
+        inputSearch.focus();
+    }, 100);
 });
 
 closeBtn.addEventListener("click", () => {
-  searchDiv.classList.remove("show");
+    searchDiv.classList.remove("show");
 });
 
 function handleKeyDown(event) {
-  if (event.key === "Enter") {
-    event.preventDefault();
-    document.getElementById("SearchProduct").click();
-  }
+    if (event.key === "Enter") {
+        event.preventDefault();
+        document.getElementById("SearchProduct").click();
+    }
 }
 
 enableScroll();

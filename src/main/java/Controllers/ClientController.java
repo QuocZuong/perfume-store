@@ -46,17 +46,17 @@ public class ClientController extends HttpServlet {
     public static final String CLIENT_UPDATE_ADDRESS_URI = "/Client/Update/Address";
     public static final String CLIENT_CHECKOUT_URI = "/Client/Checkout";
     public static final String CLIENT_ORDER_DETAIL_URI = "/Client/Order/Detail/ID";
-    
+
     public static final String BTN_ADD_TO_CART = "btnAddToCart";
     public static final String SUBMIT_VALUE = "Submit";
 
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -80,7 +80,12 @@ public class ClientController extends HttpServlet {
 
         if (path.startsWith(CLIENT_CART_CHECKOUT_URI)) {
             System.out.println("Going checkout");
-            request.getRequestDispatcher("/CLIENT_PAGE/checkout.jsp").forward(request, response);
+            boolean kq = handleCheckout(request, response);
+            if (kq){
+                request.getRequestDispatcher("/CLIENT_PAGE/checkout.jsp").forward(request, response);
+            }else{
+                response.sendRedirect(CLIENT_CART_URI);
+            }
             return;
         }
 
@@ -114,10 +119,10 @@ public class ClientController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -163,8 +168,7 @@ public class ClientController extends HttpServlet {
                 return;
             }
         }
-        
-        
+
     }
 
     /* CRUD */
@@ -194,6 +198,11 @@ public class ClientController extends HttpServlet {
         String username = currentUserCookie.getValue();
         int ClientID = usDAO.getUser(username).getID();
         ArrayList<int[]> CartProductQuan = cDAO.getAllCartProductQuantity(ClientID);
+
+        if (CartProductQuan.size() == 0) {
+            System.out.println("The cart is empty");
+            return false;
+        }
 
         for (int i = 0; i < CartProductQuan.size(); i++) {
             int ProductID = CartProductQuan.get(i)[0];
@@ -244,7 +253,8 @@ public class ClientController extends HttpServlet {
         if (listOutOfStock.size() != 0) {
             for (int i = 0; i < listOutOfStock.size(); i++) {
                 cDAO.deleteCart(ClientID, listOutOfStock.get(i).getID());
-                System.out.println("delete product " + listOutOfStock.get(i).getName() + " from cart user ID:" + ClientID);
+                System.out.println(
+                        "delete product " + listOutOfStock.get(i).getName() + " from cart user ID:" + ClientID);
                 if (listCart.size() != 0) {
                     for (int j = 0; j < listCart.size(); j++) {
                         if (listCart.get(j).getProductID() == listOutOfStock.get(i).getID()) {
@@ -272,13 +282,13 @@ public class ClientController extends HttpServlet {
     // ---------------------------- UPDATE SECTION ----------------------------
     private boolean updateClientInfomation(HttpServletRequest request, HttpServletResponse response) {
         /*
-     * txtFullname
-     * txtUserName
-     * txtEmail
-     * pwdCurrent
-     * pwdNew
-     * pwdConfirmNew
-     * btnUpdateInfo (value = Submit)
+         * txtFullname
+         * txtUserName
+         * txtEmail
+         * pwdCurrent
+         * pwdNew
+         * pwdConfirmNew
+         * btnUpdateInfo (value = Submit)
          */
 
         String fullname = request.getParameter("txtFullname");
@@ -317,7 +327,7 @@ public class ClientController extends HttpServlet {
             if (currentPassword == null || currentPassword.equals("")) {
                 currentPassword = user.getPassword();
                 isChangedPassword = false;
-                //check if currentPassword is true
+                // check if currentPassword is true
             } else if (!usDAO.login(user.getUsername(), currentPassword)) {
                 throw new WrongPasswordException();
             }
@@ -499,5 +509,30 @@ public class ClientController extends HttpServlet {
         exception += "=true";
         return exception;
     }
-   
+
+    private boolean handleCheckout(HttpServletRequest request, HttpServletResponse response) {
+        UserDAO usDAO = new UserDAO();
+        CartDAO cDAO = new CartDAO();
+        ProductDAO pDAO = new ProductDAO();
+
+        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+        String username = currentUserCookie.getValue();
+        int ClientID = usDAO.getUser(username).getID();
+        ArrayList<int[]> CartProductQuan = cDAO.getAllCartProductQuantity(ClientID);
+
+        if (CartProductQuan.size() == 0) {
+            System.out.println("The cart is empty");
+            return false;
+        }
+        for (int i = 0; i < CartProductQuan.size(); i++) {
+            int ProductID = CartProductQuan.get(i)[0];
+            int Quantity = CartProductQuan.get(i)[1];
+            int StoreQuan = pDAO.getProduct(ProductID).getQuantity();
+            if (StoreQuan < Quantity) {
+                System.out.println("Kho khong du so luong san pham co ID:" + ProductID);
+                return false;
+            }
+        }
+        return true;
+    }
 }

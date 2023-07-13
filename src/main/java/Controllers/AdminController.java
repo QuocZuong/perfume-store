@@ -327,6 +327,8 @@ public class AdminController extends HttpServlet {
                 String userName = rs.getString("UserName");
                 String password = rs.getString("Password");
                 String phoneNumber = rs.getString("PhoneNumber");
+                // String phoneNumber = rs.getString("PhoneNumber") == null ? "" : rs.getString("PhoneNumber");
+                // String phoneNumber = null;
                 String email = rs.getString("Email");
                 String address = rs.getString("Address");
                 String role = rs.getString("Role");

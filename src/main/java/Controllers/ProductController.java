@@ -2,6 +2,7 @@ package Controllers;
 
 import DAOs.BrandDAO;
 import DAOs.ProductDAO;
+import Exceptions.ProductNotFoundException;
 import Models.Product;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -55,6 +56,10 @@ public class ProductController extends HttpServlet {
                 if (request.getAttribute("redirectPath") != null) {
                     response.sendRedirect((String) request.getAttribute("redirectPath"));
                 }
+                return;
+            }
+            if (kq == 2) {
+                response.sendRedirect(LIST_URI + checkException(request));
                 return;
             }
             request.getRequestDispatcher("/PRODUCT_PAGE/list.jsp").forward(request, response);
@@ -126,11 +131,21 @@ public class ProductController extends HttpServlet {
         if (Search == null || Search.equals("")) {
             Search = "%";
         }
-        int NumberOfProduct = pDAO.GetNumberOfProduct(brandID, gender, price, Search);
+        int NumberOfProduct = -1;
+
+        // Handle
+        try {
+            NumberOfProduct = pDAO.GetNumberOfProduct(brandID, gender, price, Search);
+        } catch (ProductNotFoundException e) {
+            System.out.println("Khong co san pham nao ca");
+            request.setAttribute("exceptionType", "ProductNotFoundException");
+            return 2;
+        }
+
         int NumberOfPage = NumberOfProduct / ROWS;
         NumberOfPage = (NumberOfProduct % ROWS == 0 ? NumberOfPage : NumberOfPage + 1);
 
-        if (NumberOfPage < page) {
+        if (NumberOfPage < page && NumberOfProduct != 0) {
             String redirectPath = path;
             redirectPath = redirectPath.replace("/page/" + tempPage, "/page/1")
                     + (request.getQueryString() == null ? "" : "?" + request.getQueryString());
@@ -199,4 +214,41 @@ public class ProductController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
     }
+
+    // ------------------------- EXEPTION HANDLING SECTION -------------------------
+    private String checkException(HttpServletRequest request) {
+        if (request.getAttribute("exceptionType") == null) {
+            return "";
+        }
+        String exception = "?err";
+
+        switch ((String) request.getAttribute("exceptionType")) {
+            case "WrongPasswordException":
+            case "AccountNotFoundException":
+                exception += "AccNF";
+                break;
+            case "ProductNotFoundException":
+                exception += "PNF";
+                break;
+            case "AccountDeactivatedException":
+                exception += "AccD";
+                break;
+            case "EmailDuplicationException":
+                exception += "Email";
+                break;
+            case "UsernameDuplicationException":
+                exception += "Username";
+                break;
+            case "PhoneNumberDuplicationException":
+                exception += "Phone";
+            case "NotEnoughInformationException":
+                exception += "NEInfo";
+
+            default:
+                break;
+        }
+        exception += "=true";
+        return exception;
+    }
+
 }

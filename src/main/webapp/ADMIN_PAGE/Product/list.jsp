@@ -15,11 +15,14 @@
 <%! int currentPage, numberOfPage;%>
 <%! boolean isAdmin;%>
 
+
 <%
     rs = pDAO.getAllForAdmin();
     listProduct = (ArrayList<Product>) request.getAttribute("listProduct");
     currentPage = (int) request.getAttribute("page");
     numberOfPage = (int) request.getAttribute("numberOfPage");
+
+
 %>
 <!DOCTYPE html>
 <html>
@@ -57,8 +60,8 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-10 offset-1">
-                <input id="inputSearch" type="text" name="txtSearch" value="<%= (request.getParameter("txtSearch") != null ? request.getParameter("txtSearch") : "")%>">
-                <a class="page-link" href="" id="Search" onclick="changeLink();">Search</a>
+                    <input id="inputSearch" type="text" name="txtSearch" value="<%= (request.getParameter("txtSearch") != null ? request.getParameter("txtSearch") : "")%>">
+                    <a class="page-link" href="" id="Search" onclick="changeLink();">Search</a>
                     <table class="table" id="table">
                         <thead>
                             <tr>
@@ -138,9 +141,9 @@
             </ul>
         </nav>
         <script>
-            function changeLink(){
+            function changeLink() {
                 let SearchURL = document.getElementById("inputSearch").value;
-                document.getElementById("Search").href = "/Admin/Product/List/page/1?txtSearch="+SearchURL;
+                document.getElementById("Search").href = "/Admin/Product/List/page/1?txtSearch=" + SearchURL;
             }
         </script>
         <script src="/RESOURCES/admin/product/public/js/list.js"></script>

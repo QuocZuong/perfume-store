@@ -11,10 +11,16 @@
 <%! ProductDAO pdao = new ProductDAO();%>
 <%! BrandDAO bdao = new BrandDAO();%>
 <%! ResultSet rs = null;%>
+
+<%! boolean isProductNotFound;%>
 <%! int currentPage, numberOfPage;%>
 <%
     currentPage = (int) request.getAttribute("page");
     numberOfPage = (int) request.getAttribute("numberOfPage");
+
+    // Handling exception
+    String err = "err";
+    isProductNotFound = (request.getParameter(err + "PNF") == null ? false : Boolean.parseBoolean(request.getParameter(err + "PNF")));
 %>
 
 <!DOCTYPE html>
@@ -72,7 +78,7 @@
                     </div>
                     <div class="search-box">
                         <div class="search-box-first">
-                            <a href="" id="SearchProduct" onclick="changeLink()">
+                            <a href="" id="SearchProduct" onclick="changeLink()" >
                                 <img src="/RESOURCES/images/icons/search.png" alt="">
                             </a>
                             <input id="inputSearch" type="text" name="txtSearch" placeholder="Tìm kiếm" value="<%= (request.getParameter("txtSearch") != null ? request.getParameter("txtSearch") : "")%>" autofocus onkeydown="handleKeyDown(event)">
@@ -144,44 +150,52 @@
 
                         </div>
 
-                        <div class="products" id="products">
-                            <div class="top" id="top">
-                                <select name="sorting" id="sorting" class="sorting" autofocus
-                                        onchange="callSorting(this.value)">
-                                    <option value="all"><button type="button">Tất cả</button></option>
-                                    <option value="lowToHigh"><button type="button">Thứ tự theo giá:
-                                        thấp đến cao</button></option>
-                                    <option value="highToLow"><button type="button">Thứ tự theo giá: cao
-                                        đến thấp</button></option>
-                                </select>
-                            </div>
-
-                            <% rs = (ResultSet) request.getAttribute("PDResultSet");
-
-                                while (rs != null
-                                        && rs.next()) {%>
-
-                            <a href="/Product/Detail/ID/<%=  rs.getInt("ID")%>">
-                                <div class="product">
-                                    <img src="<%= rs.getNString("ImgURL")%>" alt="" class="product-img">
-                                    <span class="product-brand">
-                                        <%= bdao.getBrandName(rs.getInt("BrandID"))%>
-                                    </span>
-                                    <span class="product-name">
-                                        <%= rs.getNString("Name")%> 
-                                    </span>
-                                    <span class="product-price">
-                                        <%= pdao.getPrice(rs.getInt("ID"))%> <span>đ</span>
-                                    </span>
+                        <c:choose>
+                            <c:when  test="<%= isProductNotFound%>">
+                                <div> 
+                                    <h1 class="display-6">Không tìm thấy sản phẩm nào khớp với lựa chọn của bạn.</h1>
                                 </div>
-                            </a>
+                            </c:when>
+                            <c:otherwise>
 
-                            <%
+                                <div class="products" id="products">
+                                    <div class="top" id="top">
+                                        <select name="sorting" id="sorting" class="sorting" autofocus
+                                                onchange="callSorting(this.value)">
+                                            <option value="all"><button type="button">Tất cả</button></option>
+                                            <option value="lowToHigh"><button type="button">Thứ tự theo giá:
+                                                thấp đến cao</button></option>
+                                            <option value="highToLow"><button type="button">Thứ tự theo giá: cao
+                                                đến thấp</button></option>
+                                        </select>
+                                    </div>
 
-                                }
+                                    <% rs = (ResultSet) request.getAttribute("PDResultSet");
 
-                            %>
-                        </div>
+                                        while (rs != null
+                                                && rs.next()) {%>
+
+                                    <a href="/Product/Detail/ID/<%=  rs.getInt("ID")%>">
+                                        <div class="product">
+                                            <img src="<%= rs.getNString("ImgURL")%>" alt="" class="product-img">
+                                            <span class="product-brand">
+                                                <%= bdao.getBrandName(rs.getInt("BrandID"))%>
+                                            </span>
+                                            <span class="product-name">
+                                                <%= rs.getNString("Name")%> 
+                                            </span>
+                                            <span class="product-price">
+                                                <%= pdao.getPrice(rs.getInt("ID"))%> <span>đ</span>
+                                            </span>
+                                        </div>
+                                    </a>
+                                    <%
+                                        }
+                                    %>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>       
+
 
                     </div>
                     <!--                    <ul class="pagination">
@@ -302,8 +316,9 @@
         <script>
             function changeLink() {
                 let SearchURL = document.getElementById("inputSearch").value;
-            <%! String searchTxT;%>
-            <%
+                console.log(SearchURL);
+                <%! String searchTxT;%>
+                <%
                 if (request.getQueryString() != null) {
                     if (request.getQueryString().startsWith("txtSearch")) {
                         searchTxT = "txtSearch=";
@@ -311,9 +326,26 @@
                         searchTxT = "&txtSearch=";
                     }
                 }
-            %>
-                document.getElementById("SearchProduct").href = "${currentURL}/page/1<%= (request.getQueryString() == null ? "?txtSearch=" : "?" + request.getQueryString().replace("&txtSearch=" + request.getParameter("txtSearch"), "").replace("txtSearch=" + request.getParameter("txtSearch"), "") + searchTxT)%>" + SearchURL;
-                    }
+                %>
+                let url = "${currentURL}/page/1";
+                let queryString = <%= request.getQueryString() %>;
+                if (queryString === null)
+                {
+                    console.log(true);
+                    url += "?txtSearch=" + SearchURL;
+                } else {
+                    console.log(false);
+                    url += "?";
+                    queryString = queryString.replaceAll("&errPNF=true", "");
+                    queryString = queryString.replaceAll("errPNF=true", "");
+                    queryString = queryString.replaceAll("&txtSearch=<%=request.getParameter("txtSearch")%>", "");
+                    queryString = queryString.replaceAll("txtSearch=<%=request.getParameter("txtSearch")%>", "");
+                    url += queryString + <%=searchTxT%> + SearchURL;
+                    console.log(queryString + <%=searchTxT%> + SearchURL);
+
+                }
+                document.getElementById("SearchProduct").href = url;
+            }
         </script>
 
         <script

@@ -85,6 +85,19 @@ public class CartDAO {
         return 0;
     }
 
+    public int deleteAllDeletedProduct() {
+        String sql = "Delete from Cart\n" + //
+                "Where ProductID in (Select ID from Product Where Active = 0)";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            return ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(CartDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
+
     /**
      * Retrieves all cart items from the database for a given client ID.
      *

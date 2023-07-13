@@ -53,7 +53,27 @@
         </style>
     </head>
     <body>
+    
         <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12 nav">
+                    <ul>
+                        <li><a href="/">trang chủ</a></li>
+                        <li> <a href="/home/introduction">giới thiệu</a></li>
+                        <li><a href="/home/brand">thương hiệu</a></li>
+                        <!-- This link to shop servlet file. DO NOT MODIFY the link -->
+                        <li><a href="/Product/List">sản phẩm</a></li>
+                        <li><a href="">blog</a></li>
+                    </ul>
+                    <a href="/"><img src="/RESOURCES/images/icons/icon.webp" alt="" height="64"></a>
+                    <div class="account">
+                        <a><img src="/RESOURCES/images/icons/search.png" alt=""></a>
+                        <a href="/Log/Login"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+                        <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
+                    </div>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-md-10 offset-1">
                     <input id="inputSearch" type="text" name="txtSearch" value="<%= (request.getParameter("txtSearch") != null ? request.getParameter("txtSearch") : "")%>">
@@ -64,10 +84,11 @@
                                 <td>User ID</td>
                                 <td>Name</td>
                                 <td>Username</td>
-                                <td>Phone Number</td>
                                 <td>Email</td>
+                                <td style="width: 10%;">Phone Number</td>
                                 <td>Address</td>
                                 <td>Role</td>
+                                <td></td>
                                 <td></td>
                                 <td></td>
                             </tr>
@@ -81,9 +102,9 @@
                                     %>
                                     <tr class="rowTable  ">
                                         <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getID()%></td>
-                                        <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getName()%></td>
-                                        <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getUsername()%></td>
-                                        <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getPhoneNumber()%></td>
+                                        <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getName() == null ? "" : us.getName()%></td>
+                                        <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getUsername() == null ? "" : us.getUsername()%></td>
+                                        <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getPhoneNumber() == null ? "" : us.getPhoneNumber()%></td>
                                         <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getEmail()%></td>
                                         <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getAddress()%></td>
                                         <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getRole()%></td>
@@ -91,7 +112,7 @@
                                             <a href="/Admin/User/Update/ID/<%= us.getID()%>" class="<%= us.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0">Update</a>
                                         </td>
                                          <td class="<%= us.isActive() ? " " : "faded"%>">
-                                            <a href="/Admin/User/Detail/ID/<%= us.getID()%>" class="<%= us.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0">Detail</a>
+                                            <a href="/Admin/User/Detail/ID/<%= us.getID()%>" class="<%= us.isActive() && !us.getRole().equals("Admin")? "" : "disabled"%> btn btn-outline-info rounded-0">Order</a>
                                         </td>
                                         <td class="buttonStatus <%= us.isActive() ? "" : "unfaded"%>">
                                             <a href="/Admin/User/<%= us.isActive() ? "Delete" : "Restore"%>/ID/<%=  us.getID()%>" class="btn btn-outline-<%= us.isActive() ? "danger" : "success"%> rounded-0"> <%= us.isActive() ? "Delete" : "Restore"%></a>

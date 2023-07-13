@@ -212,86 +212,94 @@
 
 
         <script>
-            $(document).ready(function () {
-                $.validator.addMethod("emailCustom", function (value, element, toggler) {
-                    if (toggler) {
-                        let regex = /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/;
-                        return regex.test(value);
-                    }
-                    return true;
-                }, "Vui lòng nhập đúng định dạng email");
+      $(document).ready(function () {
+        $.validator.addMethod("emailCustom", function (value, element, toggler) {
+          if (toggler) {
+            let regex = /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/;
+            let result = regex.test(value);
+            return result;
+          }
+          return true;
+        }, "Vui lòng nhập đúng định dạng email");
 
-                $("#signInForm").validate({
-                    rules: {
-                        txtUsername: {
-                            required: true
-                        },
-                        txtPassword: {
-                            required: true
-                        }
-                    },
-                    messages: {
-                        txtUsername: {
-                            required: "Vui lòng nhập tên đăng nhập hoặc email",
-                        },
-                        txtPassword: {
-                            required: "Vui lòng nhập mật khẩu",
-                        }
-                    },
+        $("#signInForm").validate({
+          rules: {
+            txtUsername: {
+              required: true,
+            },
+            txtPassword: {
+              required: true
+            }
+          },
+          messages: {
+            txtUsername: {
+              required: "Vui lòng nhập tên đăng nhập hoặc email"
+            },
+            txtPassword: {
+              required: "Vui lòng nhập mật khẩu"
+            }
+          },
 
-                    errorPlacement: function (error, element) {
-                        error.addClass("text-danger d-block");
-                        error.insertAfter(element.next());
-                    }
-                });
+          errorPlacement: function (error, element) {
+            error.addClass("text-danger d-block m-0");
+            error.insertAfter(element.next());
+          }
 
-                $("#signUpForm").validate({
-                    rules: {
-                        txtEmail: {
-                            required: true,
-                            email: true
-                        }
-                    },
-                    messages: {
-                        txtEmail: {
-                            required: "Vui lòng nhập email",
-                            email: "Vui lòng nhập đúng định dạng email"
-                        }
-                    },
+        });
 
-                    errorPlacement: function (error, element) {
-                        error.addClass("text-danger d-block");
-                        error.insertBefore(element.next());
-                    }
-                });
+        $("#signUpForm").validate({
+          rules: {
+            txtEmail: {
+              required: true,
+              email: true
+            }
+          },
+          messages: {
+            txtEmail: {
+              required: "Vui lòng nhập email",
+              email: "Vui lòng nhập đúng định dạng email"
+            }
+          },
 
-                function changeValidationMethod(element) {
-                    let regex = /.*@.*/;
-                    let value = $("input#txtUsername").val();
-                    const hasEmailRule = $("#txtUsername").rules().emailCustom;
-                    console.log('has rule:' + hasEmailRule);
-                    console.log(value);
-                    console.log('testing regex:' + regex.test(value));
-                    if (regex.test(value))
-                    {
-                        if (!hasEmailRule) {
-                            $("#txtUsername").rules("add", {
-                                emailCustom: true
-                            });
-                        }
-                    } else {
-                        if (hasEmailRule) {
-                            $("#txtUsername").rules("remove", "emailCustom");
-                        }
-                    }
-                }
+          errorPlacement: function (error, element) {
+            error.addClass("text-danger d-block");
+            error.insertAfter(element);
+          }
 
-                $("button[type='submit']").on("click", function () {
-                    changeValidationMethod("#txtUsername");
-                });
+        });
 
-            });
-        </script>
+        function changeValidationMethod(element) {
+          let regex = /.*@.*/;
+          let value = $("input#txtUsername").val();
+          const hasEmailRule = $("#txtUsername").rules().emailCustom;
+          console.log('has rule:' + hasEmailRule);
+          console.log(value);
+          console.log('testing regex:' + regex.test(value));
+
+          if (regex.test(value))
+          {
+            if (!hasEmailRule) {
+              $("#txtUsername").rules("add", {
+                emailCustom: true
+              });
+            }
+          } else {
+            if (hasEmailRule) {
+              $("#txtUsername").rules("remove", "emailCustom");
+            }
+          }
+        }
+
+        $("button[type='submit']").on("click", function () {
+          changeValidationMethod("#txtUsername");
+
+          $("input#txtUsername").on("change", function () {
+            changeValidationMethod("#txtUsername");
+          });
+        });
+
+      });
+    </script>
 
     </body>
 

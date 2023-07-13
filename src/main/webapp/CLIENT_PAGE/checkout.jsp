@@ -77,9 +77,9 @@
                                 <hr>
                                 <div class="d-flex flex-row">
                                     <div class="d-flex flex-column col-5">
-                                        <label><input type="radio" name="rdoCustomAddress" value="no" class="form-check-input" checked=""> Sử
+                                        <label><input type="radio" name="rdoCustomAddress" id="rdoCustomAddress" value="no" class="form-check-input" checked=""> Sử
                                             dụng địa chỉ mặc định</label>
-                                        <label><input type="radio" name="rdoCustomAddress" value="yes" class="form-check-input"> Địa chỉ giao
+                                        <label><input type="radio" name="rdoCustomAddress" id="rdoCustomAddress" value="yes" class="form-check-input"> Địa chỉ giao
                                             hàng khác</label>
                                     </div>
 
@@ -101,7 +101,7 @@
                                         <input type="text" name="txtUsername" value="<%= username%>" placeholder="Tên người dùng">
                                         <input type="text" name="txtEmail" value="<%= email%>" placeholder="Email">
                                         <input type="text" name="txtPhone" id="phone" class="" value="<%= phone%>" placeholder="Số điện thoại">
-                                        <input type="text" name="txtAddress" value="<%= address%>" placeholder="Địa chỉ">
+                                        <input type="text" name="txtAddress" id="address" value="<%= address%>" placeholder="Địa chỉ">
                                     </div>
 
                                     <h2 class="text-start mt-2 mb-0 mt-5 hidden" id="header-address">giao đến địa chỉ</h2>
@@ -121,7 +121,7 @@
                                         </div>
 
                                         <input type="text"  name="txtNewAddress" class="hidden" id="txtAddress" value="<%= address%>">
-                                        <input type="text" name="txtNewPhone" class="hidden" value="<%= phone%>" placeholder="Số điện thoại tuỳ chọn">
+                                        <input type="text" name="txtNewPhone" class="hidden" id="txtPhone" value="<%= phone%>" placeholder="Số điện thoại tuỳ chọn">
 
                                         <div class="d-flex justify-content-start">
                                             <button type="submit" name="btnSubmitCheckOut" value="Submit" class="btn rounded-0 mt-3 w-100" >ĐẶT HÀNG</button>
@@ -295,6 +295,64 @@
                     $("input#txtAddress").val(result);
                 }
             };
+        </script>
+        <script>
+            $(document).ready(function () {
+                $("form").validate({
+                    rules: {
+                        
+                    },
+                    messages: {
+                        txtPassword: {
+                            minlength: "Password must be at least 6 characters long"
+                        },
+                        txtPhoneNumber: {
+                            digits: "Phone number must contain only digits",
+                            maxlength: "Phone number must not exceed 10 digits"
+                        },
+                        txtEmail: {
+                            email: "Please enter a valid email address",
+                            maxlength: "Email must not exceed 100 characters"
+                        },
+                        txtAddress: {
+                            maxlength: "Address must not exceed 500 characters"
+                        }
+                    }
+                });
+            });
+
+            function requirechange(element) {
+                if ($("input#rdoCustomAddress").val() == "no")
+                {
+                    $("input#txtPhone").val("");
+                    $("input#txtAddress").val("");
+                    
+                    $("input#phone").rules("add", {
+                        required: true,
+                    });
+                    $("input#address").rules("add", {
+                        required: true,
+                    });
+
+                    //remove all rule
+                    $("input#txtPhone").rules("remove");
+                    $("input#txtAddress").rules("remove");
+
+                } else if ($("input#rdoCustomAddress").val() == "yes"){
+                    //add rule
+                    $("input#txtPhone").rules("add", {
+                        required: true,
+                    });
+                    $("input#txtAddress").rules("add", {
+                        required: true,
+                    });
+
+                    //Remove all rules
+                    $("input#phone").rules("remove");
+                    $("input#address").rules("remove");
+
+                }
+            }
         </script>
     </body>
 
