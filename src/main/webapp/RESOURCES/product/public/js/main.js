@@ -2,9 +2,18 @@ document.addEventListener("DOMContentLoaded", function () {
     let addToCartButton = document.getElementById("addToCartButton");
     let imgProduct = document.getElementById("productImg");
     let destination = document.getElementById("destination");
+    const suggestBox = document.querySelector(".suggest-product");
+    const productWrapper = document.querySelectorAll(".product-wrapper");
     new VenoBox({
         selector: '.venobox'
     });
+    
+    
+    
+    if(productWrapper.length === 0 || productWrapper.length === null){
+        console.log("hihi")
+        suggestBox.style.display = "none";
+    }
 
     addToCartButton.addEventListener("click", function (event) {
         event.preventDefault();

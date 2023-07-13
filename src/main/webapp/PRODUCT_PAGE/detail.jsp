@@ -1,13 +1,17 @@
+<%@page import="java.util.List"%>
+<%@page import="java.sql.ResultSet"%>
 <%@page import="DAOs.ProductDAO"%>
 <%@page import="DAOs.BrandDAO"%>
 <%@page import="Models.Product"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-
+<%! ProductDAO pdao = new ProductDAO();%>
+<%! BrandDAO bdao = new BrandDAO();%>
+<%! ResultSet rs = null;%>
 <%! ProductDAO pDAO = new ProductDAO(); %>
 <%! BrandDAO bDao = new BrandDAO();%>
 <%
     Product pd = (Product) request.getAttribute("product");
-
+    
     int id = pd.getID();
     String name = pd.getName();
     String brandName = bDao.getBrandName(pd.getBrandID());
@@ -19,7 +23,7 @@
     int volume = pd.getVolume();
     String imgURL = pd.getImgURL();
     String description = pd.getDescription();
-
+    List<Product> productSuggestList = pDAO.getProductsByBrandName(pd.getBrandID(), name);
 %>
 
 <!DOCTYPE html>
@@ -85,7 +89,7 @@
                     <div class="info">
                         <div class="left">
                             <a class="venobox" href="<%= imgURL%>"><img class=" product-img"  id="productImg" src="<%= imgURL%>" alt="perfume"/></a>
-                            
+
                         </div>
                         <div class="right">
                             <p id="brandName"><%= brandName%></p>
@@ -121,6 +125,29 @@
                                 <hr>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <div class="suggest-product">
+                    <h1>Sản phẩm liên quan</h1>
+                    <div class="suggest-product-list">
+                    <%
+                        for (Product product : productSuggestList) {
+                        String productBrandName = bDao.getBrandName(product.getBrandID());
+                        String productSuggestPrice = pDAO.IntegerToMoney(product.getPrice());
+                    %>
+                    <a class="product-wrapper" href="/Product/Detail/ID/<%=product.getID()%>">
+                        <div class="product">
+                            <img src="<%=product.getImgURL()%>" alt="" class="product-img">
+                            <span class="product-brand"><%=productBrandName%></span>
+                            <hr>
+                            <span class="product-name"><%=product.getName()%></span>
+                            <span class="product-price"><%=productSuggestPrice%> <span>đ</span></span>
+                        </div>
+                    </a>
+                    <%
+                        }
+                    %>
                     </div>
                 </div>
             </div>

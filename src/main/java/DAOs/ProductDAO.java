@@ -637,6 +637,41 @@ public class ProductDAO {
     return price;
   }
 
+  public List<Product> getProductsByBrandName(int brandID, String brandName) {
+        String sql = "SELECT * FROM [projectPRJ].[dbo].[Product] WHERE BrandID = ? AND Active = 1 ORDER BY [Quantity] DESC";
+        ResultSet rs = null;
+        List<Product> list = new LinkedList<>();
+        int count = 0;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, brandID);
+            rs = ps.executeQuery();
+            while (rs.next() && count < 4) {
+                if (!rs.getNString("Name").equals(brandName)) {
+                    count++;
+                    Product pd = new Product();
+                    pd.setID(rs.getInt("ID"));
+                    pd.setName(rs.getNString("Name"));
+                    pd.setBrandID(rs.getInt("BrandID"));
+                    pd.setPrice(rs.getInt("Price"));
+                    pd.setGender(rs.getNString("Gender"));
+                    pd.setSmell(rs.getNString("Smell"));
+                    pd.setQuantity(rs.getInt("Quantity"));
+                    pd.setReleaseYear(rs.getInt("ReleaseYear"));
+                    pd.setVolume(rs.getInt("Volume"));
+                    pd.setImgURL(rs.getNString("ImgURL"));
+                    pd.setDescription(rs.getNString("Description"));
+                    pd.setActive(rs.getBoolean("Active"));
+                    list.add(pd);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+
   /* --------------------------- UPDATE SECTION --------------------------- */
   public int updateProduct(int productID, String data) {
     int result = 0;
