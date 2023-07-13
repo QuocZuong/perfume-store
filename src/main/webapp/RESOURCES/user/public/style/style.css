@@ -364,6 +364,10 @@ h1 {
   /* Add more styles as desired */
 }
 
+.main .right .account-page p a{
+    cursor: pointer;
+}
+
 
 
 .main .right .info-page {}
