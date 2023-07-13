@@ -144,7 +144,7 @@ public class AdminController extends HttpServlet {
         }
         if(path.startsWith(ADMIN_CLIENT_ORDER_URI)){
             OrderDetail(request, response);
-            request.getRequestDispatcher("/ADMIN_PAGE/User/orderdetail.jsp").forward(request, response);
+            request.getRequestDispatcher("/ADMIN_PAGE/User/orderDetail.jsp").forward(request, response);
             return;
         }
 
@@ -158,7 +158,6 @@ public class AdminController extends HttpServlet {
         }
     }
 
-    
 
 
 
@@ -373,7 +372,24 @@ public class AdminController extends HttpServlet {
         request.setAttribute("client", client);
         request.setAttribute("orderList", orderList);
     }
+    
     private void OrderDetail(HttpServletRequest request, HttpServletResponse response) {
+        UserDAO uDAO = new UserDAO();
+        OrderDAO oDAO = new OrderDAO();
+        String URI = request.getRequestURI();
+        String data[] = URI.split("/");
+        int OrderID = -1;
+        for(int i = 0; i < data.length; i++){
+            if (data[i].equals("ID")) {
+                OrderID = Integer.parseInt(data[i + 1]);
+            }
+        }
+        List<String[]> orderDetail = oDAO.getOrderDetailByOrderID(OrderID);
+        Order OrderInfor = oDAO.getOrderByOrderId(OrderID);
+        User client = uDAO.getUser(OrderInfor.getClientID());
+        request.setAttribute("client", client);
+        request.setAttribute("OrderInfor", OrderInfor);
+        request.setAttribute("OrderDetail", orderDetail);
 	}
 
     // ---------------------------- UPDATE SECTION ----------------------------

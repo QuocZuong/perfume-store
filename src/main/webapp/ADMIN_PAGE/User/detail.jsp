@@ -24,7 +24,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+       <title><%= client.getUsername() %>'s Detail</title>
         <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
         <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
         <!--        <script>
@@ -54,39 +54,44 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-10 offset-1">
-                      <c:choose>
-                            <c:when test="<%=orders.size() == 0%>">
-                                <p>Khách hàng chưa có đơn hàng nào</p>
-                            </c:when>
-                            <c:otherwise>
-                                <table class="table">
-                                    <thead class="thead-dark">
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Ngày mua hàng</th>
-                                            <th scope="col">Tổng tiền</th>
-                                            <th scope="col"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
+                    <div>
+                        <h1 class="display-6">Thông tin khách hàng: <%= client.getUsername()%></h1>
+                    </div>
 
-                                            <c:if test="<%=orders.size() != 0%>">
-                                                <c:forEach var="i" begin="0" end="<%=orders.size() - 1%>">
-                                                <tr>
-                                                    <th scope="row"><%=orders.get((int) pageContext.getAttribute("i")).getID()%></th>
-                                                    <td><%=orders.get((int) pageContext.getAttribute("i")).getDate()%></td>
-                                                    <td><%=pDAO.IntegerToMoney(orders.get((int) pageContext.getAttribute("i")).getSum())%></td>
-                                                    <td><a href="/Admin/User/OrderDetail/ID/<%=orders.get((int) pageContext.getAttribute("i")).getID()%>" target="_blank">Xem chi tiết</a></td>
-                                                </tr>
-                                            </c:forEach>
-                                        </c:if>
+                    <c:choose>
+                        <c:when test="<%=orders.size() == 0%>">
+                            <p>Khách hàng chưa có đơn hàng nào</p>
+                        </c:when>
+                        <c:otherwise>
+                            <table class="table">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Ngày mua hàng</th>
+                                        <th scope="col">Tổng tiền</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
 
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </c:otherwise>
-                        </c:choose>
+                                        <c:if test="<%=orders.size() != 0%>">
+                                            <c:forEach var="i" begin="0" end="<%=orders.size() - 1%>">
+                                            <tr>
+                                                <th scope="row"><%=orders.get((int) pageContext.getAttribute("i")).getID()%></th>
+                                                <td><%=orders.get((int) pageContext.getAttribute("i")).getDate()%></td>
+                                                <td><%=pDAO.IntegerToMoney(orders.get((int) pageContext.getAttribute("i")).getSum())%></td>
+                                                <td><a href="/Admin/User/OrderDetail/ID/<%=orders.get((int) pageContext.getAttribute("i")).getID()%>" target="_blank">Xem chi tiết</a></td>
+                                            </tr>
+                                        </c:forEach>
+                                    </c:if>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </c:otherwise>
+                    </c:choose>
+
                 </div>
             </div>
         </div>

@@ -18,10 +18,10 @@ public class ProductController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -42,17 +42,18 @@ public class ProductController extends HttpServlet {
         // Product/List/BrandID/page/2?Gender=Male&priceRange=1500000-3000000
         if (path.endsWith(LIST_URI)
                 || (path.startsWith(LIST_URI)
-                && (request.getQueryString() != null && !request.getQueryString().isEmpty()))
+                        && (request.getQueryString() != null && !request.getQueryString().isEmpty()))
                 || path.startsWith(LIST_URI + "/BrandID")
                 || path.startsWith(LIST_URI + "/page")) {
             int kq = ProductFilter(request, response);
-            // if ((int) request.getAttribute("page") > (int) request.getAttribute("numberOfPage")) {
-            //     response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            // if ((int) request.getAttribute("page") > (int)
+            // request.getAttribute("numberOfPage")) {
+            // response.sendError(HttpServletResponse.SC_NOT_FOUND);
             // } else {
             // }
             if (kq == 0) {
                 if (request.getAttribute("redirectPath") != null) {
-                    response.sendRedirect((String)request.getAttribute("redirectPath"));
+                    response.sendRedirect((String) request.getAttribute("redirectPath"));
                 }
                 return;
             }
@@ -91,7 +92,6 @@ public class ProductController extends HttpServlet {
     /**
      * Get the attributes from the request URL then set it to the request.
      * Product/List/BrandID/2?Gender=Male&Price=low
-     *
      */
     private int ProductFilter(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ProductDAO pDAO = new ProductDAO();
@@ -112,12 +112,12 @@ public class ProductController extends HttpServlet {
         for (int i = 0; i < data.length; i++) {
             if (data[i].equals("BrandID")) {
                 try {
-                        brandID = data[i + 1];
-                        Integer.parseInt(brandID); 
-                    } catch (NumberFormatException e) {
-                        response.sendRedirect("/Product/List");
-                        return 0;
-                    }
+                    brandID = data[i + 1];
+                    Integer.parseInt(brandID);
+                } catch (NumberFormatException e) {
+                    response.sendRedirect("/Product/List");
+                    return 0;
+                }
             } else if (data[i].equals("page")) {
                 page = Integer.parseInt(data[i + 1]);
                 tempPage = page;
@@ -132,7 +132,8 @@ public class ProductController extends HttpServlet {
 
         if (NumberOfPage < page) {
             String redirectPath = path;
-            redirectPath = redirectPath.replace("/page/" + tempPage, "/page/1") + (request.getQueryString() == null ? "" : "?" + request.getQueryString());
+            redirectPath = redirectPath.replace("/page/" + tempPage, "/page/1")
+                    + (request.getQueryString() == null ? "" : "?" + request.getQueryString());
             request.setAttribute("redirectPath", redirectPath);
             return 0;
         }
@@ -189,10 +190,10 @@ public class ProductController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
