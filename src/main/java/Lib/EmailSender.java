@@ -13,7 +13,10 @@ public class EmailSender {
 
     private final String ACCOUNT = "quoczuong2003@gmail.com";
     private final String PASSWORD = "qvcqfobbvbqbkwxm";
-
+    /* account back-up 
+       quoczuong@gmail.com
+       blwdycwxviquhbhn
+    */
     // public final String GENERATE_PASSWORD_SUBJECT = "Your account at XXVI Store
     // has been created!";
     public final String GENERATE_PASSWORD_SUBJECT = "Tài khoản của bạn đã được tạo tại trang web XXVI Store";

@@ -62,9 +62,12 @@
     <body>
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-10 offset-1">
-                    <input id="inputSearch" type="text" name="txtSearch" value="<%= (request.getParameter("txtSearch") != null ? request.getParameter("txtSearch") : "")%>">
-                    <a class="page-link" href="" id="Search" onclick="changeLink();">Search</a>
+                <div class="col-md-10 offset-1 d-flex justify-content-center align-items-center flex-column">
+
+                    <div class="search-box-first">
+                        <a class="page-link" href="" id="Search" onclick="changeLink();"><img src="/RESOURCES/images/icons/search.png" alt=""></a>
+                        <input id="inputSearch" type="text" name="txtSearch" placeholder="Tìm kiếm" value="<%= (request.getParameter("txtSearch") != null ? request.getParameter("txtSearch") : "")%>" autofocus onkeydown="handleKeyDown(event)">
+                    </div>
                     <table class="table" id="table">
                         <thead>
                             <tr>

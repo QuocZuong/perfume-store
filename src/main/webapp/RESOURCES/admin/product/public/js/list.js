@@ -16,3 +16,9 @@ boxes.forEach((box) => {
   });
 });
 
+function handleKeyDown(event) {
+  if (event.key === "Enter") {
+      event.preventDefault();
+      document.getElementById("Search").click();
+  }
+}

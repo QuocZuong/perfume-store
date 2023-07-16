@@ -212,7 +212,7 @@ public class UserDAO {
 
   public ResultSet getFilteredUserForAdminSearch(int page, String Search) {
     String sql = "SELECT * FROM [User]\n"
-        + "WHERE ID LIKE ? OR UserName LIKE ?\n"
+        + "WHERE ID LIKE ? OR UserName LIKE ? OR Name LIKE ?\n"
         + "ORDER BY ID\n"
         + "OFFSET ? ROWS\n"
         + "FETCH NEXT ? ROWS ONLY";
@@ -224,8 +224,9 @@ public class UserDAO {
       PreparedStatement ps = conn.prepareStatement(sql);
       ps.setString(1, Search);
       ps.setNString(2, "%" + Search + "%");
-      ps.setInt(3, OFFSET);
-      ps.setInt(4, ROWS);
+      ps.setNString(3, "%" + Search + "%");
+      ps.setInt(4, OFFSET);
+      ps.setInt(5, ROWS);
 
       rs = ps.executeQuery();
     } catch (SQLException e) {

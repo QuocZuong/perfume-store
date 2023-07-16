@@ -95,7 +95,6 @@
                     </ul>
                     <a href="/"><img src="/RESOURCES/images/icons/icon.webp" alt="" height="64"></a>
                     <div class="account">
-                        <a><img src="/RESOURCES/images/icons/search.png" alt=""></a>
                         <a href="/Log/Login"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
                         <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
                     </div>
@@ -505,38 +504,38 @@
 
         </script>
         <script>
-                $(document).ready(function () {
-                    $.validator.addMethod("emailCustom", function (value, element, toggler) {
-                        if (toggler) {
-                            let regex = /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/;
-                            let result = regex.test(value);
-                            return result;
+            $(document).ready(function () {
+                $.validator.addMethod("emailCustom", function (value, element, toggler) {
+                    if (toggler) {
+                        let regex = /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/;
+                        let result = regex.test(value);
+                        return result;
+                    }
+                    return true;
+                }, "Vui lòng nhập đúng định dạng email");
+
+                $("form[action='/home/subscribe']").validate({
+                    rules: {
+                        txtEmailSubscribe: {
+                            required: true,
+                            email: true
                         }
-                        return true;
-                    }, "Vui lòng nhập đúng định dạng email");
-
-                    $("form[action='/home/subscribe']").validate({
-                        rules: {
-                            txtEmailSubscribe: {
-                                required: true,
-                                email:true
-                            }
-                        },
-                        messages: {
-                            txtEmailSubscribe: {
-                                required: "Vui lòng nhập email",
-                                email: "Vui lòng nhập đúng định dạng email"
-                            }
-                        },
-
-                        errorPlacement: function (error, element) {
-                            error.addClass("text-danger d-block mt-3");
-                            error.insertAfter(element.next());
+                    },
+                    messages: {
+                        txtEmailSubscribe: {
+                            required: "Vui lòng nhập email",
+                            email: "Vui lòng nhập đúng định dạng email"
                         }
+                    },
 
-                    });
+                    errorPlacement: function (error, element) {
+                        error.addClass("text-danger d-block mt-3");
+                        error.insertAfter(element.next());
+                    }
+
                 });
-            </script>
+            });
+        </script>
     </body>
 
 </html>

@@ -10,6 +10,8 @@ body {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    margin-top: 50px;
+
 }
 
 form{
@@ -45,6 +47,10 @@ form fieldset  label{
 
 form fieldset  input{
     margin-right: 10px;
+}
+
+form textarea{
+    padding: 5px 10px;
 }
 
 form .btnUpdateUser{

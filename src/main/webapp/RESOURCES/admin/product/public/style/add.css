@@ -1,7 +1,6 @@
 body {
     padding: 0;
     margin: 0;
-    box-sizing: border-box;
     font-family: "Josefin Sans", sans-serif;
 }
 
@@ -10,6 +9,7 @@ body {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    margin-top: 50px;
 }
 
 form{
@@ -23,7 +23,7 @@ form > div{
 }
 
 form input{
-    padding: 5px 0;
+    padding: 5px 10px;
 }
 
 form fieldset {
@@ -36,7 +36,11 @@ form fieldset legend {
     font-family: "Josefin Sans", sans-serif;
     margin-bottom: 5px;
     float: none;
-    width:70px;
+    width:92px;
+}
+
+form fieldset legend span{
+    color: red;
 }
 
 form fieldset  label{
@@ -45,6 +49,15 @@ form fieldset  label{
 
 form fieldset  input{
     margin-right: 10px;
+}
+
+form div label:first-child:after {
+  content: " *";
+  color: red;
+}
+
+form textarea{
+    padding: 5px 10px;
 }
 
 form .btnAddProduct{
@@ -61,6 +74,10 @@ form button:hover {
 
 input[type="file"] {
     display: none;
+}
+
+input{
+    padding-left: 20px;
 }
 
 .image img{

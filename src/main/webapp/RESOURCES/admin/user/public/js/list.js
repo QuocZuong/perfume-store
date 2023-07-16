@@ -29,3 +29,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
+
+function handleKeyDown(event) {
+  if (event.key === "Enter") {
+      event.preventDefault();
+      document.getElementById("Search").click();
+  }
+}

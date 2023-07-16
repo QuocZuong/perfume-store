@@ -194,8 +194,10 @@ public class AdminController extends HttpServlet {
                 if (updateUser(request, response)) {
                     response.sendRedirect(ADMIN_USER_LIST_URI);
                 } else {
-                    System.out.println(ADMIN_USER_UPDATE_URI + "/ID/"+request.getAttribute("errUserID") + checkException(request));
-                    response.sendRedirect(ADMIN_USER_UPDATE_URI + "/ID/"+request.getAttribute("errUserID") + checkException(request));
+                    System.out.println(ADMIN_USER_UPDATE_URI + "/ID/" + request.getAttribute("errUserID")
+                            + checkException(request));
+                    response.sendRedirect(ADMIN_USER_UPDATE_URI + "/ID/" + request.getAttribute("errUserID")
+                            + checkException(request));
                 }
             }
             return;
@@ -336,11 +338,8 @@ public class AdminController extends HttpServlet {
                 boolean active = rs.getBoolean("Active");
 
                 // Create a new User object and add it to the list
-                User user = new User(id, name, userName, password, phoneNumber, email, address, role);
+                User user = new User(id, name, userName, password, phoneNumber, email, address, role,active);
 
-                if (!active) {
-                    user.setActive(false);
-                }
 
                 listUser.add(user);
             }
@@ -451,6 +450,7 @@ public class AdminController extends HttpServlet {
         boolean isChangedEmail = false;
         boolean isChangedPassword = false;
         boolean isChangedUsername = false;
+        boolean isChangedRoleSelf = false;
 
         // Only hash the new password if the password is different from the user's old
         // md5 password.
@@ -479,6 +479,12 @@ public class AdminController extends HttpServlet {
         boolean isExistPhone = uDAO.isExistPhoneExceptItself(uPhoneNumber, uID);
         boolean isExistEmail = uDAO.isExistEmailExceptItself(uEmail, uID);
 
+        if (uID == (uDAO.getUser(((Cookie) request.getSession().getAttribute("userCookie")).getValue()).getID())) {
+            if (uRole.equals("Client")) {
+                isChangedRoleSelf = true;
+            }
+        }
+
         try {
             if (isExistUsername || isExistPhone || isExistEmail) {
                 request.setAttribute("errUserID", uID);
@@ -504,6 +510,32 @@ public class AdminController extends HttpServlet {
             System.out.println("Email dup");
             request.setAttribute("exceptionType", "EmailDuplicationException");
             return false;
+        }
+
+        User updateUser = new User(uID, uName, uUserName, uPassword, uEmail, uPhoneNumber, uAddress, uRole);
+        int kq = uDAO.updateUser(updateUser);
+
+        if (kq == 0) {
+            System.out.println("Failed to update the user with ID " + uID + " to database");
+            return false;
+        }
+        // Change cookie
+        if (isChangedRoleSelf) {
+            Cookie[] cookies = request.getCookies();
+
+            for (Cookie c : cookies) {
+                if (c.getName().equals("Admin")) {
+                    c.setMaxAge(0);
+                    c.setPath("/");
+                    response.addCookie(c);
+                }
+            }
+
+            Cookie newC = new Cookie("Client", uUserName);
+            newC.setMaxAge(3 * 24 * 60 * 60);
+            newC.setPath("/");
+            request.getSession().setAttribute("userCookie", newC);
+            response.addCookie(newC);
         }
 
         // Sending mail
@@ -532,9 +564,8 @@ public class AdminController extends HttpServlet {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        User updateUser = new User(uID, uName, uUserName, uPassword, uEmail, uPhoneNumber, uAddress, uRole);
-        uDAO.updateUser(updateUser);
         System.out.println("update account with ID " + updateUser.getID() + " successfully");
+
         return true;
     }
 

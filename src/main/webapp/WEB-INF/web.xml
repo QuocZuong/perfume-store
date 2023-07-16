@@ -37,9 +37,18 @@
         <filter-name>UserValidation</filter-name>
         <filter-class>Filters.UserValidation</filter-class>
     </filter>
+    
     <filter-mapping>
         <filter-name>UserValidation</filter-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/Log/Login/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>UserValidation</filter-name>
+        <url-pattern>/Client/*</url-pattern>
+    </filter-mapping>
+     <filter-mapping>
+        <filter-name>UserValidation</filter-name>
+        <url-pattern>/Admin/*</url-pattern>
     </filter-mapping>
     <!--Controller defintion-->
     <servlet>

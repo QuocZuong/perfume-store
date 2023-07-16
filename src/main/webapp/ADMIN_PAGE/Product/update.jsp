@@ -102,7 +102,7 @@
                 </div>
                 <div class="description">
                     <label>Description <span class="text-danger">*</span></label>
-                    <textarea name="txtProductDescription" cols="30" rows="10"><%= pd.getDescription()%></textarea>
+                    <textarea name="txtProductDescription" cols="30" rows="4"><%= pd.getDescription()%></textarea>
                 </div>
                 <button type="submit" name="btnUpdateProduct" value="Submit" class="btnUpdateProduct">Update Product</button>
             </form>
@@ -141,46 +141,106 @@
         <!--Jquery Validation-->
         <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
         <script>
-                            $().ready(function () {
-                                $("form").validate({
-                                    rules: {
-                                        txtProductName: {
-                                            required: true,
-                                            maxlength: 300
-                                        },
-                                        txtBrandName: {
-                                            required: true,
-                                            maxlength: 50
-                                        },
-                                        txtProductPrice: {
-                                            required: true,
-                                            number: true
-                                        },
-                                        rdoGender: {
-                                            required: true
-                                        },
-                                        txtProductSmell: {
-                                            required: true,
-                                            maxlength: 200
-                                        },
-                                        txtProductQuantity: {
-                                            required: true,
-                                            digits: true
-                                        },
-                                        txtProductReleaseYear: {
-                                            required: true,
-                                            range: [1900, 2100]
-                                        },
-                                        txtProductVolume: {
-                                            required: true,
-                                            digits: true
-                                        },
-                                        fileProductImg: {
-                                            required: true
-                                        }
-                                    }
-                                });
-                            });
+            $(document).ready(function () {
+                $.validator.addMethod("requiredFile", function (value, element) {
+                    return element.files.length !== 0;
+                }, "Vui lòng chọn ảnh sản phẩm");
+
+                $("form").validate({
+                    rules: {
+                        txtProductName: {
+                            required: true,
+                            maxlength: 300
+                        },
+                        txtBrandName: {
+                            required: true,
+                            maxlength: 50
+                        },
+                        txtProductPrice: {
+                            required: true,
+                            number: true
+                        },
+                        rdoGender: {
+                            required: true
+                        },
+                        txtProductSmell: {
+                            required: true,
+                            maxlength: 200
+                        },
+                        txtProductQuantity: {
+                            required: true,
+                            digits: true
+                        },
+                        txtProductReleaseYear: {
+                            required: true,
+                            range: [1900, (new Date().getFullYear())]
+                        },
+                        txtProductVolume: {
+                            required: true,
+                            digits: true
+                        },
+                        fileProductImg: {
+                            requiredFile: true,
+                            accept: "image/jpeg, image/pjpeg"
+                        },
+                        txtProductDescription: {
+                            required: true
+                        }
+                    },
+                    messages: {
+                        txtProductName: {
+                            required: "Vui lòng nhập tên sản phẩm",
+                            maxlength: "Tên sản phẩm không được vượt quá 300 ký tự"
+                        },
+                        txtBrandName: {
+                            required: "Vui lòng nhập tên thương hiệu",
+                            maxlength: "Tên thương hiệu không được vượt quá 50 ký tự"
+                        },
+                        txtProductPrice: {
+                            required: "Vui lòng nhập giá sản phẩm",
+                            number: "Giá sản phẩm phải là số"
+                        },
+                        rdoGender: {
+                            required: "Vui lòng chọn giới tính"
+                        },
+                        txtProductSmell: {
+                            required: "Vui lòng nhập hương thơm",
+                            maxlength: "Hương thơm không được vượt quá 200 ký tự"
+                        },
+                        txtProductQuantity: {
+                            required: "Vui lòng nhập số lượng",
+                            digits: "Số lượng phải là số nguyên"
+                        },
+                        txtProductReleaseYear: {
+                            required: "Vui lòng nhập năm phát hành",
+                            range: "Năm phát hành phải nằm trong khoảng 1900 đến năm hiện tại"
+                        },
+                        txtProductVolume: {
+                            required: "Vui lòng nhập dung tích",
+                            digits: "Dung tích phải là số nguyên"
+                        },
+                        fileProductImg: {
+                            requiredFile: "Vui lòng chọn ảnh sản phẩm",
+                            accept: "Vui lòng chọn file ảnh"
+                        },
+                        txtProductDescription: {
+                            required: "Vui lòng nhập thông tin mùi hương"
+                        }
+                    },
+
+                    errorPlacement: function (error, element) {
+                        error.addClass("text-danger d-block mt-2");
+
+                        if (element.attr('name') === 'rdoGender') {
+                            // error.insertAfter($("#gender-input"));
+                            error.insertAfter(element.parent());
+                            return;
+                        }
+
+                        error.insertAfter(element);
+                    }
+                });
+            });
         </script>
     </body>
 

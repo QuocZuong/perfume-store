@@ -69,7 +69,6 @@
                     </ul>
                     <a href="/"><img src="/RESOURCES/images/icons/icon.webp" alt="" height="64"></a>
                     <div class="account">
-                        <a><img src="/RESOURCES/images/icons/search.png" alt=""></a>
                         <a href="/Log/Login"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
                         <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
                     </div>
@@ -223,7 +222,6 @@
                             error.addClass("text-danger d-block mt-3");
                             error.insertAfter(element.next());
                         }
-
                     });
                 });
             </script>

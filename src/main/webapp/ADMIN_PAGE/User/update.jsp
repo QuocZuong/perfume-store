@@ -8,13 +8,24 @@
 <%@ taglib  uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
 <%! BrandDAO bDAO = new BrandDAO();  %>
 <%! ProductDAO pDAO = new ProductDAO(); %>
-<%! User us;%>
 
-<% us = (User) request.getAttribute("UserUpdate");%>
+<%! User us;%>
+<%! String Tinh, QuanHuyen, PhuongXa;%>
+<% us = (User) request.getAttribute("UserUpdate");
+    Tinh = "";
+    QuanHuyen = "";
+    PhuongXa ="";
+    if (us.getAddress() != null && !us.getAddress().equals("") && us.getAddress().split(" - ").length == 3) {
+        String Address[] = us.getAddress().split(" - ");
+        Tinh = Address[0];
+        QuanHuyen = Address[1];
+        PhuongXa = Address[2];
+    }
+%>
+
 
 <%! boolean isExistedPhone, isExistEmail, isExistedUsername;%>
-<%
-    // Handling execption
+<%    // Handling execption
     String err = "err";
     isExistedPhone = (request.getParameter(err + "Phone") == null ? false : Boolean.parseBoolean(request.getParameter(err + "Phone")));
     isExistEmail = (request.getParameter(err + "Email") == null ? false : Boolean.parseBoolean(request.getParameter(err + "Email")));
@@ -82,7 +93,7 @@
                 </div>
                 <div class="name">
                     <label>Name *</label>
-                    <input type="text" name="txtName" value="<%= us.getName()%>">
+                    <input type="text" name="txtName" value="<%= us.getName() == null ? "" : us.getName()%>">
                 </div>
                 <div class="username">
                     <label>Username *</label>
@@ -94,7 +105,7 @@
                 </div>
                 <div class="phone">
                     <label>Phone Number *</label>
-                    <input type="text" name="txtPhoneNumber" value="<%= us.getPhoneNumber()%>">
+                    <input type="text" name="txtPhoneNumber" value="<%= us.getPhoneNumber() == null ? "" : us.getPhoneNumber()%>">
                 </div>
                 <div class="email">
                     <label>Email *</label>
@@ -102,7 +113,18 @@
                 </div>
                 <div class="address">
                     <label>Address *</label>
-                    <input type="text" name="txtAddress" value="<%= us.getAddress()%>">
+                    <select id="city" class="form-select">
+                        <option value="" selected>Chọn tỉnh thành</option>           
+                    </select>
+
+                    <select id="district" class="form-select">
+                        <option value="" selected>Chọn quận huyện</option>
+                    </select>
+
+                    <select id="ward" class="form-select">
+                        <option value="" selected>Chọn phường xã</option>
+                    </select>
+                    <input type="text" name="txtAddress" id="txtAddress" value="<%= us.getAddress() == null ? "" : us.getAddress()%>" readonly="true">
                 </div>
                 <div class="role">
                     <label>Role *</label>
@@ -128,7 +150,106 @@
         <script src="/RESOURCES/admin/public/js/main.js"></script>
 
 
+        <!--VietName Province APU-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 
+        <script >
+            const host = "https://provinces.open-api.vn/api/";
+            let City = '<%= Tinh%>';
+            let District = '<%= QuanHuyen%>';
+            let Ward = '<%= PhuongXa%>';
+            let DefaultCity = 'Chọn tỉnh thành';
+            let DefaultDistrict = 'Chọn quận huyện';
+            let DefaultWard = 'Chọn phường xã';
+
+            var callAPI = (api) => {
+                return axios.get(api)
+                        .then((response) => {
+                            renderData(response.data, "city");
+                            if (City !== "")
+                            {
+                                $(`select option[value='` + City + `']`).prop("selected", true);
+                                callApiDistrict(host + "p/" + $("#city").find(':selected').data('id') + "?depth=2");
+                            }
+                        });
+            };
+            callAPI('https://provinces.open-api.vn/api/?depth=1');
+            var callApiDistrict = (api) => {
+                return axios.get(api)
+                        .then((response) => {
+                            renderData(response.data.districts, "district", DefaultDistrict);
+                            if (District !== "")
+                            {
+                                $(`select option[value='` + District + `']`).prop("selected", true);
+                                callApiWard(host + "d/" + $("#district").find(':selected').data('id') + "?depth=2");
+                            }
+                        });
+            };
+            var callApiWard = (api) => {
+                return axios.get(api)
+                        .then((response) => {
+                            renderData(response.data.wards, "ward", DefaultWard);
+                            if (Ward !== "")
+                            {
+                                $(`select option[value='` + Ward + `']`).prop("selected", true);
+                            }
+                        });
+            };
+            var renderData = (array, select, msg = DefaultCity) => {
+                let row = ' <option disable value="">' + msg + '</option>';
+                array.forEach((e) => {
+                    let code = e.code;
+                    let name = e.name;
+                    row += `<option data-id="` + code + `" value="` + name + `">` + name + `</option>`;
+                });
+                document.querySelector("#" + select).innerHTML = row;
+            };
+
+            function resetData(select, msg = DefaultCity) {
+                let row = '<option disable value="">' + msg + '</option>';
+                document.querySelector("#" + select).innerHTML = row;
+            }
+
+
+            $("#city").change(() => {
+                resetData("district", DefaultDistrict);
+                resetData("ward", DefaultWard);
+                callApiDistrict(host + "p/" + $("#city").find(':selected').data('id') + "?depth=2");
+                printResult();
+            });
+            $("#district").change(() => {
+                resetData("ward", DefaultWard);
+                callApiWard(host + "d/" + $("#district").find(':selected').data('id') + "?depth=2");
+                printResult();
+            });
+            $("#ward").change(() => {
+                printResult();
+            });
+            var printResult = () => {
+                if ($("#district").find(':selected').data('id') != "" && $("#city").find(':selected').data('id') != "" &&
+                        $("#ward").find(':selected').data('id') != "") {
+
+                    let city = $("#city option:selected").text();
+                    let district = $("#district option:selected").text();
+                    let ward = $("#ward option:selected").text();
+                    let sp = " - ";
+                    let result = (city === DefaultCity ? "" : city);
+                    result += (district === DefaultDistrict ? "" : sp + district);
+                    result += (ward === DefaultWard ? "" : sp + ward);
+
+                    if (city !== DefaultCity && district !== DefaultDistrict && ward !== DefaultWard) {
+                        $("#result").text(result);
+                        console.log("update value success");
+                        $("input#txtAddress").val(result);
+                    } else {
+                        $("#result").text("");
+                        console.log("update value null");
+                        $("input#txtAddress").val("");
+                    }
+                }
+            };
+        </script>
         <!--Jquery Validation-->
         <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
         <script>
@@ -136,7 +257,6 @@
                 $("form").validate({
                     rules: {
                         txtName: {
-                            required: true,
                             maxlength: 50
                         },
                         txtUsername: {
@@ -148,9 +268,9 @@
                             minlength: 6
                         },
                         txtPhoneNumber: {
-                            required: true,
-                            digits: true,
-                            maxlength: 10
+                            number: true,
+                            maxlength: 10,
+                            minlength: 10
                         },
                         txtEmail: {
                             required: true,
@@ -158,7 +278,6 @@
                             maxlength: 100
                         },
                         txtAddress: {
-                            required: true,
                             maxlength: 500
                         },
                         txtRole: {
@@ -188,3 +307,5 @@
 
     </body>
 </html>
+
+

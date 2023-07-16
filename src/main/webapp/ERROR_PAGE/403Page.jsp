@@ -30,8 +30,8 @@
             <div class="top">
                 <h1>4<img src="/RESOURCES/images/icons/perfume.png" alt="alt"/>3</h1>
                 <img src="/RESOURCES/images/icons/frown.png">
-                <h3>The server is down!</h3>
-                <p>Please back to home</p>
+                <h3>Access denied...</h3>
+                <p>You don't have permission to view this page</p>
             </div>
             <div class="bottom">
                 <div class="wrapper">

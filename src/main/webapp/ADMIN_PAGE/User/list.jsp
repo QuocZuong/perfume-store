@@ -78,9 +78,12 @@
             </div>
 
             <div class="row">
-                <div class="col-md-10 offset-1">
-                    <input id="inputSearch" type="text" name="txtSearch" value="<%= (request.getParameter("txtSearch") != null ? request.getParameter("txtSearch") : "")%>">
-                    <a class="page-link" href="" id="Search" onclick="changeLink();">Search</a>
+                <div class="col-md-10 offset-1 d-flex justify-content-center align-items-center flex-column">
+
+                    <div class="search-box-first">
+                        <a class="page-link" href="" id="Search" onclick="changeLink();"><img src="/RESOURCES/images/icons/search.png" alt=""></a>
+                        <input id="inputSearch" type="text" name="txtSearch" placeholder="Tìm kiếm" value="<%= (request.getParameter("txtSearch") != null ? request.getParameter("txtSearch") : "")%>" autofocus onkeydown="handleKeyDown(event)">
+                    </div>
                     <table class="table" id="table">
                         <thead>
                             <tr>
@@ -162,6 +165,6 @@
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>
-        <script src="/RESOURCES/admin/public/js/list.js"></script>
+        <script src="/RESOURCES/admin/user/public/js/list.js"></script>
     </body>
 </html>

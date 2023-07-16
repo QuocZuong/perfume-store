@@ -26,7 +26,8 @@ public class HomeController extends HttpServlet {
      */
     // ---------------------------- URI DECLARATION SECTION ----------------------------//
     public static final String CLIENT_SUBSCRIBE_URL = "/home/subscribe";
-    
+    public static final String HOME_URI = "/";
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -73,7 +74,7 @@ public class HomeController extends HttpServlet {
                     && request.getParameter("submitEmailBtn").equals("Submit")) {
                 System.out.println("Going Subscribe");
                 sendEmailSubscribe(request, response);
-                response.sendRedirect(CLIENT_CART_URI);
+                response.sendRedirect(HOME_URI);
                 return;
             }
         }

@@ -58,7 +58,6 @@
                     </ul>
                     <a href="/"><img src="/RESOURCES/images/icons/icon.webp" alt="" height="64"></a>
                     <div class="account">
-                        <a><img src="/RESOURCES/images/icons/search.png" alt=""></a>
                         <a href="/Log/Login"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
                         <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
                     </div>
@@ -219,11 +218,6 @@
                 return axios.get(api)
                         .then((response) => {
                             renderData(response.data, "city");
-                            if (City !== "")
-                            {
-                                $(`select option[value='` + City + `']`).prop("selected", true);
-                                callApiDistrict(host + "p/" + $("#city").find(':selected').data('id') + "?depth=2");
-                            }
                         });
             };
             callAPI('https://provinces.open-api.vn/api/?depth=1');
@@ -231,21 +225,12 @@
                 return axios.get(api)
                         .then((response) => {
                             renderData(response.data.districts, "district", DefaultDistrict);
-                            if (District !== "")
-                            {
-                                $(`select option[value='` + District + `']`).prop("selected", true);
-                                callApiWard(host + "d/" + $("#district").find(':selected').data('id') + "?depth=2");
-                            }
                         });
             };
             var callApiWard = (api) => {
                 return axios.get(api)
                         .then((response) => {
                             renderData(response.data.wards, "ward", DefaultWard);
-                            if (Ward !== "")
-                            {
-                                $(`select option[value='` + Ward + `']`).prop("selected", true);
-                            }
                         });
             };
             var renderData = (array, select, msg = DefaultCity) => {
@@ -285,16 +270,21 @@
                     let city = $("#city option:selected").text();
                     let district = $("#district option:selected").text();
                     let ward = $("#ward option:selected").text();
-                    console.log("city:"+city);
-                    console.log("district:"+district);
-                    console.log("ward:"+ward);
+                    
                     let sp = " - ";
                     let result = (city === DefaultCity ? "" : city);
                     result += (district === DefaultDistrict ? "" : sp + district);
                     result += (ward === DefaultWard ? "" : sp + ward);
-                    $("#result").text(result);
-                    console.log("update value success");
-                    $("input#txtNewAddress").val(result);
+
+                    if(city !== DefaultCity && district !== DefaultDistrict && ward !== DefaultWard){
+                        $("#result").text(result);
+                        console.log("update value success");
+                        $("input#txtNewAddress").val(result);
+                    }else{
+                        $("#result").text("");
+                        console.log("update value null");
+                        $("input#txtNewAddress").val("");
+                    }
                 }
             };
         </script>
@@ -317,6 +307,9 @@
                 });
             });
 
+            let tempNewAddress;
+            let tempNewPhone;
+
             function requirechange(element) {
                 if ($("input#rdoCustomAddress:checked").val() == "no")
                 {
@@ -333,8 +326,12 @@
                     $("label#txtPhone-error").show();
                     $("label#txtAddress-error").show();
 
+                    tempNewAddress = $("input#txtNewPhone").val();
+                    tempNewPhone = $("input#txtNewAddress").val();
+
                     $("input#txtNewPhone").val("");
                     $("input#txtNewAddress").val("");
+
                     console.log("apply no rule");
                     $("input#txtPhone").rules("add", {
                         required: true,
@@ -346,6 +343,10 @@
 
 
                 } else if ($("input#rdoCustomAddress:checked").val() == "yes") {
+
+                    $("input#txtNewPhone").val(tempNewAddress);
+                    $("input#txtNewAddress").val(tempNewPhone);
+                    
 
                     //Remove all rules
                     $("input#txtPhone").rules("remove");
@@ -362,9 +363,12 @@
                     //add rule
                     $("input#txtNewPhone").rules("add", {
                         required: true,
+                        maxlength: 10,
+                        minlength: 10,
+                        number: true
                     });
                     $("input#txtNewAddress").rules("add", {
-                        required: true,
+                        required: true 
                     });
 
                 }
