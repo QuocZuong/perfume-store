@@ -4,11 +4,22 @@
 <%@page import="DAOs.BrandDAO"%>
 <%@page import="Models.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib  uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
 <%! BrandDAO bDAO = new BrandDAO();  %>
 <%! ProductDAO pDAO = new ProductDAO(); %>
 <%! User us;%>
 
 <% us = (User) request.getAttribute("UserUpdate");%>
+
+<%! boolean isExistedPhone, isExistEmail, isExistedUsername;%>
+<%
+    // Handling execption
+    String err = "err";
+    isExistedPhone = (request.getParameter(err + "Phone") == null ? false : Boolean.parseBoolean(request.getParameter(err + "Phone")));
+    isExistEmail = (request.getParameter(err + "Email") == null ? false : Boolean.parseBoolean(request.getParameter(err + "Email")));
+    isExistedUsername = (request.getParameter(err + "Username") == null ? false : Boolean.parseBoolean(request.getParameter(err + "Username")));
+%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -42,7 +53,26 @@
         <title>Cập nhật người dùng</title>
     </head>
     <body>
+        <!--Execption Handling-->
+        <c:choose>
+            <c:when test='<%= isExistedPhone%>'>
+                <h1 class="alert alert-danger">
+                    Số điện thọai  đã tồn tại
+                </h1>
+            </c:when>
+            <c:when test='<%= isExistedUsername%>'>
+                <h1 class="alert alert-danger">
+                    Tên đăng nhập đã tồn tại
+                </h1>
+            </c:when>
 
+            <c:when test='<%= isExistEmail%>'>
+                <h1 class="alert alert-danger">
+                    Email đã tồn tại
+                </h1>
+            </c:when>
+        </c:choose>
+        <!--Execption Handling-->
         <div class="container">
             <h1>Update User</h1>
             <form action="/Admin/User/Update" method="POST">

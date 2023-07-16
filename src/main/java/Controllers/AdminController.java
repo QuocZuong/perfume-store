@@ -61,7 +61,6 @@ public class AdminController extends HttpServlet {
     public static final String ADMIN_CLIENT_DETAIL_URI = "/Admin/User/Detail";
     public static final String ADMIN_CLIENT_ORDER_URI = "/Admin/User/OrderDetail";
 
-
     public static final String ADMIN_UPDATE_INFO_URI = "/Admin/Update/Info";
 
     public static final String IMGUR_API_ENDPOINT = "https://api.imgur.com/3/image";
@@ -70,10 +69,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -136,13 +135,13 @@ public class AdminController extends HttpServlet {
             response.sendRedirect(ADMIN_USER_LIST_URI);
             return;
         }
-        
-        if(path.startsWith(ADMIN_CLIENT_DETAIL_URI)){
+
+        if (path.startsWith(ADMIN_CLIENT_DETAIL_URI)) {
             clientDetail(request, response);
             request.getRequestDispatcher("/ADMIN_PAGE/User/detail.jsp").forward(request, response);
             return;
         }
-        if(path.startsWith(ADMIN_CLIENT_ORDER_URI)){
+        if (path.startsWith(ADMIN_CLIENT_ORDER_URI)) {
             OrderDetail(request, response);
             request.getRequestDispatcher("/ADMIN_PAGE/User/orderDetail.jsp").forward(request, response);
             return;
@@ -158,16 +157,13 @@ public class AdminController extends HttpServlet {
         }
     }
 
-
-
-
-	/**
+    /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -195,8 +191,12 @@ public class AdminController extends HttpServlet {
         if (path.startsWith(ADMIN_USER_UPDATE_URI)) {
             if (request.getParameter("btnUpdateUser") != null
                     && request.getParameter("btnUpdateUser").equals("Submit")) {
-                updateUser(request, response);
-                response.sendRedirect(ADMIN_USER_LIST_URI);
+                if (updateUser(request, response)) {
+                    response.sendRedirect(ADMIN_USER_LIST_URI);
+                } else {
+                    System.out.println(ADMIN_USER_UPDATE_URI + "/ID/"+request.getAttribute("errUserID") + checkException(request));
+                    response.sendRedirect(ADMIN_USER_UPDATE_URI + "/ID/"+request.getAttribute("errUserID") + checkException(request));
+                }
             }
             return;
         }
@@ -327,7 +327,8 @@ public class AdminController extends HttpServlet {
                 String userName = rs.getString("UserName");
                 String password = rs.getString("Password");
                 String phoneNumber = rs.getString("PhoneNumber");
-                // String phoneNumber = rs.getString("PhoneNumber") == null ? "" : rs.getString("PhoneNumber");
+                // String phoneNumber = rs.getString("PhoneNumber") == null ? "" :
+                // rs.getString("PhoneNumber");
                 // String phoneNumber = null;
                 String email = rs.getString("Email");
                 String address = rs.getString("Address");
@@ -364,7 +365,7 @@ public class AdminController extends HttpServlet {
         String URI = request.getRequestURI();
         String data[] = URI.split("/");
         int ClientID = -1;
-        for(int i = 0; i < data.length; i++){
+        for (int i = 0; i < data.length; i++) {
             if (data[i].equals("ID")) {
                 ClientID = Integer.parseInt(data[i + 1]);
             }
@@ -374,14 +375,14 @@ public class AdminController extends HttpServlet {
         request.setAttribute("client", client);
         request.setAttribute("orderList", orderList);
     }
-    
+
     private void OrderDetail(HttpServletRequest request, HttpServletResponse response) {
         UserDAO uDAO = new UserDAO();
         OrderDAO oDAO = new OrderDAO();
         String URI = request.getRequestURI();
         String data[] = URI.split("/");
         int OrderID = -1;
-        for(int i = 0; i < data.length; i++){
+        for (int i = 0; i < data.length; i++) {
             if (data[i].equals("ID")) {
                 OrderID = Integer.parseInt(data[i + 1]);
             }
@@ -392,7 +393,7 @@ public class AdminController extends HttpServlet {
         request.setAttribute("client", client);
         request.setAttribute("OrderInfor", OrderInfor);
         request.setAttribute("OrderDetail", orderDetail);
-	}
+    }
 
     // ---------------------------- UPDATE SECTION ----------------------------
     private void updateProduct(HttpServletRequest request, HttpServletResponse response)
@@ -467,7 +468,7 @@ public class AdminController extends HttpServlet {
         if (!uEmail.equals(uDAO.getUser(uID).getEmail())) {
             isChangedEmail = true;
         }
-        if(!uUserName.equals(uDAO.getUser(uID).getUsername())){
+        if (!uUserName.equals(uDAO.getUser(uID).getUsername())) {
             isChangedUsername = true;
         }
 
@@ -480,6 +481,7 @@ public class AdminController extends HttpServlet {
 
         try {
             if (isExistUsername || isExistPhone || isExistEmail) {
+                request.setAttribute("errUserID", uID);
                 if (isExistUsername) {
                     throw new UsernameDuplicationException();
                 }
@@ -491,12 +493,15 @@ public class AdminController extends HttpServlet {
                 }
             }
         } catch (UsernameDuplicationException ex) {
+            System.out.println("user name dup");
             request.setAttribute("exceptionType", "UsernameDuplicationException");
             return false;
         } catch (PhoneNumberDuplicationException ex) {
+            System.out.println("phone dup");
             request.setAttribute("exceptionType", "PhoneNumberDuplicationException");
             return false;
         } catch (EmailDuplicationException ex) {
+            System.out.println("Email dup");
             request.setAttribute("exceptionType", "EmailDuplicationException");
             return false;
         }
@@ -509,16 +514,16 @@ public class AdminController extends HttpServlet {
                 System.out.println("sending mail changing password");
                 es.setEmailTo(uEmail);
                 es.sendToEmail(es.CHANGE_PASSWORD_NOTFICATION,
-                es.changePasswordNotifcation());
+                        es.changePasswordNotifcation());
             }
             if (isChangedEmail) {
                 System.out.println("Detect email change");
                 System.out.println("sending mail changing email");
                 es.setEmailTo(uDAO.getUser(uID).getEmail());
                 es.sendToEmail(es.CHANGE_EMAIL_NOTFICATION,
-                es.changeEmailNotification(uEmail));
+                        es.changeEmailNotification(uEmail));
             }
-            if(isChangedUsername){
+            if (isChangedUsername) {
                 System.out.println("Detect username change");
                 System.out.println("sending mail changing username");
                 es.setEmailTo(uEmail);
@@ -656,7 +661,7 @@ public class AdminController extends HttpServlet {
                 if (usDAO.isExistUsername(username)) {
                     throw new UsernameDuplicationException();
                 }
-            } else{
+            } else {
                 isChangedUsername = false;
             }
 
@@ -730,7 +735,7 @@ public class AdminController extends HttpServlet {
                 es.sendToEmail(es.CHANGE_EMAIL_NOTFICATION,
                         es.changeEmailNotification(email));
             }
-            if(isChangedUsername){
+            if (isChangedUsername) {
                 System.out.println("Detect username change");
                 System.out.println("sending mail changing username");
                 es.setEmailTo(email);
@@ -874,7 +879,8 @@ public class AdminController extends HttpServlet {
         File tempFile = File.createTempFile("temp", null);
         tempFile.deleteOnExit();
 
-        try ( InputStream inputStream = part.getInputStream();  OutputStream outputStream = new FileOutputStream(tempFile)) {
+        try (InputStream inputStream = part.getInputStream();
+                OutputStream outputStream = new FileOutputStream(tempFile)) {
             byte[] buffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = inputStream.read(buffer)) != -1) {
@@ -915,6 +921,7 @@ public class AdminController extends HttpServlet {
                 break;
             case "PhoneNumberDuplicationException":
                 exception += "Phone";
+                break;
             case "NotEnoughInformationException":
                 exception += "NEInfo";
             default:

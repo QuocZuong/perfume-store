@@ -55,6 +55,14 @@ form .btnUpdateUser{
   font-size: 1.3rem;
 }
 
+form .btnUpdateProduct{
+    margin-top: 15px;
+    padding: 5px 20px 3px 20px;
+    background-color: transparent;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    font-size: 1.3rem;
+  }
+
 form #preview-img{
     margin: 10px 0;
 }

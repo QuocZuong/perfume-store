@@ -25,7 +25,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title><%= client.getUsername() %>'s Order Detail</title>
+        <title>Chi tiết đơn hàng của <%= client.getUsername() %></title>
         <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
         <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 
@@ -92,5 +92,6 @@
                 </div>
             </div>
         </div>
+        <script src="/RESOURCES/admin/user/public/js/list.js"></script>
     </body>
 </html>

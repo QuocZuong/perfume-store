@@ -46,19 +46,19 @@
             <h1>Update Product</h1>
             <form action="/Admin/Product/Update" method="POST" enctype="multipart/form-data">
                 <div class="id">
-                    <label>Product ID *</label>
+                    <label>Product ID <span class="text-danger">*</span></label>
                     <input type="number" name="txtProductID" readonly="true" value="<%= pd.getID()%>">
                 </div>
                 <div class="name">
-                    <label>Product name *</label>
+                    <label>Product name <span class="text-danger">*</span></label>
                     <input type="text" name="txtProductName" value="<%= pd.getName()%>">
                 </div>
                 <div class="brand">
-                    <label>Product brand *</label>
+                    <label>Product brand <span class="text-danger">*</span></label>
                     <input type="text" name="txtBrandName" value="<%= bDAO.getBrandName(pd.getBrandID())%>" >
                 </div>
                 <div class="price">
-                    <label>Product price *</label>
+                    <label>Product price <span class="text-danger"><span class="text-danger">*</span></span></label>
                     <input type="text" name="txtProductPrice"  value="<%= pDAO.IntegerToMoney(pd.getPrice()).replace(".", ",")%>">
                 </div>
                 <div class="gender">
@@ -78,30 +78,30 @@
                     </div>
                 </div>
                 <div class="smell">
-                    <label>Smell *</label>
+                    <label>Smell <span class="text-danger">*</span></label>
                     <input type="text" name="txtProductSmell" value="<%= pd.getSmell()%>">
                 </div>
                 <div class="quantity">
-                    <label>Quantity *</label>
+                    <label>Quantity <span class="text-danger">*</span></label>
                     <input type="number" name="txtProductQuantity" value="<%= pd.getQuantity()%>">
                 </div>
                 <div class="releaseyear">
-                    <label>Release Year *</label>
+                    <label>Release Year <span class="text-danger">*</span></label>
                     <input type="number" name="txtProductReleaseYear" value="<%= pd.getReleaseYear()%>">
                 </div>
                 <div class="volume">
-                    <label>Volume: *</label>
+                    <label>Volume: <span class="text-danger">*</span></label>
                     <input type="number" name="txtProductVolume" value="<%= pd.getVolume()%>">
                 </div>
                 <div class="image">
                     <label class="custom-file-upload">
                         <input type="file" name="fileProductImg" onchange="onFileSelected(event)" >
-                        <img src="/RESOURCES/images/icons/cloud-computing.png" alt="alt"/> Upload Image *
+                        <img src="/RESOURCES/images/icons/cloud-computing.png" alt="alt"/> Upload Image <span class="text-danger">*</span>
                     </label>
                     <img id="preview-img" src="<%= pd.getImgURL()%>"  alt="alt"/>
                 </div>
                 <div class="description">
-                    <label>Smell *</label>
+                    <label>Description <span class="text-danger">*</span></label>
                     <textarea name="txtProductDescription" cols="30" rows="10"><%= pd.getDescription()%></textarea>
                 </div>
                 <button type="submit" name="btnUpdateProduct" value="Submit" class="btnUpdateProduct">Update Product</button>

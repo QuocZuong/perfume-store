@@ -25,7 +25,7 @@
                 color:red;
             }
         </style>
-        <title>Thêm sản phẩm</title>
+        <title>Thêm người dùng</title>
     </head>
     <body>
         <div class="container">

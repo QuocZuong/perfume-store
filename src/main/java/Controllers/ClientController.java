@@ -223,6 +223,8 @@ public class ClientController extends HttpServlet {
         if (newPhone != null && !newPhone.equals("")) {
             Phone = newPhone;
         }
+
+
         String Note = request.getParameter("txtNote");
         int Total = cDAO.getCartTotal(ClientID);
         String now = new SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date());

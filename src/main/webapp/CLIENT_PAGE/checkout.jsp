@@ -42,7 +42,7 @@
         <link rel="icon" href="/RESOURCES/images/icons/icon.webp" />
         <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css" rel="stylesheet"
               type="text/css" />
-        <title>Checkout</title>
+        <title>Thanh toán</title>
     </head>
 
     <body>
@@ -55,7 +55,6 @@
                         <li><a href="/home/brand">thương hiệu</a></li>
                         <!-- This link to shop servlet file. DO NOT MODIFY the link -->
                         <li><a href="/Product/List">sản phẩm</a></li>
-                        <li><a href="">blog</a></li>
                     </ul>
                     <a href="/"><img src="/RESOURCES/images/icons/icon.webp" alt="" height="64"></a>
                     <div class="account">
@@ -100,8 +99,8 @@
                                     <div class="d-flex flex-column flex-wrap w-100">
                                         <input type="text" name="txtUsername" value="<%= username%>" placeholder="Tên người dùng">
                                         <input type="text" name="txtEmail" value="<%= email%>" placeholder="Email">
-                                        <input type="text" name="txtPhone" id="txtPhone" class="" value="<%= (phone == null ? "" : phone)%>" placeholder="Số điện thoại">
-                                        <input type="text" name="txtAddress" id="txtAddress" value="<%= (address == null ? "" : address)%>" placeholder="Địa chỉ">
+                                        <input type="text" name="txtPhone" id="txtPhone" class="" value="<%= (phone == null ? "" : phone)%>" placeholder="Số điện thoại"  readonly="true">
+                                        <input type="text" name="txtAddress" id="txtAddress" value="<%= (address == null ? "" : address)%>" placeholder="Địa chỉ" readonly="true">
                                     </div>
 
                                     <h2 class="text-start mt-2 mb-0 mt-5 hidden" id="header-address">giao đến địa chỉ</h2>
@@ -120,7 +119,7 @@
                                             </select>
                                         </div>
 
-                                        <input type="text"  name="txtNewAddress" class="hidden" id="txtNewAddress" value="<%= (address == null ? "" : address)%>">
+                                        <input type="text"  name="txtNewAddress" class="hidden" id="txtNewAddress" value="<%= (address == null ? "" : address)%>"  readonly="true">
                                         <input type="text" name="txtNewPhone" class="hidden" id="txtNewPhone" value="<%= (phone == null ? "" : phone)%>" placeholder="Số điện thoại tuỳ chọn">
 
                                         <div class="d-flex justify-content-start">
@@ -286,6 +285,9 @@
                     let city = $("#city option:selected").text();
                     let district = $("#district option:selected").text();
                     let ward = $("#ward option:selected").text();
+                    console.log("city:"+city);
+                    console.log("district:"+district);
+                    console.log("ward:"+ward);
                     let sp = " - ";
                     let result = (city === DefaultCity ? "" : city);
                     result += (district === DefaultDistrict ? "" : sp + district);
@@ -311,7 +313,7 @@
                             required: true
                         }
                     },
-                
+
                 });
             });
 
@@ -323,7 +325,7 @@
                     $("input#txtAddress").rules("remove");
                     $("input#txtNewPhone").rules("remove");
                     $("input#txtNewAddress").rules("remove");
-                    
+
 
                     //Hide the error label
                     $("label#txtNewPhone-error").hide();
@@ -340,7 +342,7 @@
                     });
                     $("input#txtAddress").rules("add", {
                         required: true,
-                    }); 
+                    });
 
 
                 } else if ($("input#rdoCustomAddress:checked").val() == "yes") {
@@ -351,7 +353,7 @@
                     $("input#txtNewPhone").rules("remove");
                     $("input#txtNewAddress").rules("remove");
 
-                 $("label#txtNewPhone-error").show();
+                    $("label#txtNewPhone-error").show();
                     $("label#txtNewAddress-error").show();
                     $("label#txtPhone-error").hide();
                     $("label#txtAddress-error").hide();
@@ -391,16 +393,18 @@
                     rules: {
                         txtEmailSubscribe: {
                             required: true,
+                            email: true
                         }
                     },
                     messages: {
                         txtEmailSubscribe: {
-                            required: "Vui lòng nhập email"
+                            required: "Vui lòng nhập email",
+                            email: "Vui lòng nhập đúng định dạng email"
                         }
                     },
 
                     errorPlacement: function (error, element) {
-                        error.addClass("text-danger d-block m-0");
+                        error.addClass("text-danger d-block mt-3");
                         error.insertAfter(element.next());
                     }
 

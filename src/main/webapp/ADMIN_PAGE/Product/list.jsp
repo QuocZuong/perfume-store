@@ -28,7 +28,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Danh sách sản phẩm</title>
         <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
         <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
         <!--        <script>
@@ -120,8 +120,8 @@
             </div>
         </div>
 
-        <h1>num page: ${numberOfPage}</h1>
-        <h1>page:  <%= currentPage%> </h1>
+        <h1 class="d-none">num page: ${numberOfPage}</h1>
+        <h1 class="d-none">page:  <%= currentPage%> </h1>
 
         <nav aria-label="...">
             <ul class="pagination">

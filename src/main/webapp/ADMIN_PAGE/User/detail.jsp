@@ -49,6 +49,7 @@
                 height: 50px;
             }
         </style>
+        <title>Chi tiết người dùng</title>
     </head>
     <body>
         <div class="container-fluid">

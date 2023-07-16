@@ -52,7 +52,7 @@
             rel="stylesheet"
             type="text/css" 
             />
-        <title>Sản phẩm đã chọn</title>
+        <title>Giỏ hàng</title>
     </head>
     <body>
         <div class="container-fluid">
@@ -63,7 +63,6 @@
                         <li> <a href="/home/introduction">giới thiệu</a></li>
                         <li><a href="/home/brand">thương hiệu</a></li>
                         <li><a href="/Product/List">sản phẩm</a></li>
-                        <li><a href="">blog</a></li>
                     </ul>
                     <a href="/"><img src="/RESOURCES/images/icons/icon.webp" alt=""
                                      height="64"></a>
@@ -333,36 +332,49 @@
             crossorigin="anonymous"
         ></script>
         <script src="/RESOURCES/cart/public/js/main.js"></script>
-        <script>
-      $(document).ready(function () {
-        $.validator.addMethod("emailCustom", function (value, element, toggler) {
-          if (toggler) {
-            let regex = /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/;
-            let result = regex.test(value);
-            return result;
-          }
-          return true;
-        }, "Vui lòng nhập đúng định dạng email");
+        <script src="/RESOURCES/home/public/js/main.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+                    integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+            crossorigin="anonymous"></script>
 
-        $("form[action='/home/subscribe']").validate({
-          rules: {
-            txtEmailSubscribe: {
-              required: true,
-            }
-          },
-          messages: {
-            txtEmailSubscribe: {
-              required: "Vui lòng nhập email"
-            }
-          },
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 
-          errorPlacement: function (error, element) {
-            error.addClass("text-danger d-block m-0");
-            error.insertAfter(element.next());
-          }
+            <script src="/RESOURCES/admin/product/public/js/main.js"></script>
+            <!--Jquery Validation-->
+            <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+            <script>
+                $(document).ready(function () {
+                    $.validator.addMethod("emailCustom", function (value, element, toggler) {
+                        if (toggler) {
+                            let regex = /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/;
+                            let result = regex.test(value);
+                            return result;
+                        }
+                        return true;
+                    }, "Vui lòng nhập đúng định dạng email");
 
-        });
-      });
-    </script>
+                    $("form[action='/home/subscribe']").validate({
+                        rules: {
+                            txtEmailSubscribe: {
+                                required: true,
+                                email:true
+                            }
+                        },
+                        messages: {
+                            txtEmailSubscribe: {
+                                required: "Vui lòng nhập email",
+                                email: "Vui lòng nhập đúng định dạng email"
+                            }
+                        },
+
+                        errorPlacement: function (error, element) {
+                            error.addClass("text-danger d-block mt-3");
+                            error.insertAfter(element.next());
+                        }
+
+                    });
+                });
+            </script>
     </body>
 </html>

@@ -26,7 +26,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Danh sách người dùng</title>
         <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
         <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
         <!--        <script>
@@ -130,8 +130,8 @@
             </div>
         </div>
 
-        <h1>num page: ${numberOfPage}</h1>
-        <h1>page:  <%= currentPage%> </h1>
+        <h1 class="d-none">num page: ${numberOfPage}</h1>
+        <h1 class="d-none">page:  <%= currentPage%> </h1>
         <nav aria-label="...">
             <ul class="pagination">
                 <li class="page-item"><a class="page-link" href="/Admin/User/List/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-left" style="color: #000000;"></i></a></li>
