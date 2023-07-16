@@ -66,24 +66,24 @@
                     <h1>Add Product</h1>
                     <form action="/Admin/Product/Add" id="Add-form" method="POST" enctype="multipart/form-data">
                         <div class="name">
-                            <label>Product name</label>
+                            <label class="required">Product name</label>
                             <input type="text" name="txtProductName">
                         </div>
                         <div class="brand">
-                            <label>Product brand</label>
+                            <label class="required">Product brand</label>
                             <input type="text" name="txtBrandName">
                         </div>
                         <div class="price">
-                            <label>Product price</label>
+                            <label class="required">Product price</label>
                             <input type="text" name="txtProductPrice">
                         </div>
-                        <div class="gender">
+                        <div class="gender" class="required">
                             <fieldset>
                                 <legend>
                                     Gender <span>*</span>
                                 </legend>
-                                <input type="radio" name="rdoGender" value="Nam" id="nam">
-                                <label for="nam">Nam</label>
+                                <input  type="radio" name="rdoGender" value="Nam" id="nam">
+                                <label  for="nam">Nam</label>
                                 <input type="radio" name="rdoGender" value="Nữ" id="nu">
                                 <label for="nu">Nữ</label>
                                 <input type="radio" name="rdoGender" value="Unisex" id="unisex">
@@ -91,29 +91,30 @@
                             </fieldset>
                         </div>
                         <div class="smell">
-                            <label>Smell</label>
+                            <label class="required">Smell</label>
                             <input type="text" name="txtProductSmell">
                         </div>
                         <div class="quantity">
-                            <label>Quantity</label>
+                            <label class="required">Quantity</label>
                             <input type="number" name="txtProductQuantity">
                         </div>
                         <div class="releaseyear">
-                            <label>Release Year</label>
+                            <label class="required">Release Year</label>
                             <input type="number" name="txtProductReleaseYear">
                         </div>
                         <div class="volume">
-                            <label>Volume</label>
+                            <label class="required">Volume</label>
                             <input type="number" name="txtProductVolume">
                         </div>
                         <div class="image">
-                            <label class="custom-file-upload">
-                                <img src="/RESOURCES/images/icons/cloud-computing.png" alt="alt"/> Upload Image
+                            <label class="custom-file-upload" >
+                                <img src="/RESOURCES/images/icons/cloud-computing.png" class="required" alt="alt"/>
+                                <label class="required">Upload Image</label>
                                 <input type="file" name="fileProductImg" >
                             </label>
                         </div>
-                        <div class="description">
-                            <label>Smell</label>
+                        <div class="description required">
+                            <label class="required">Description</label>
                             <textarea name="txtProductDescription" cols="30" rows="4"></textarea>
                         </div>
 
@@ -133,7 +134,12 @@
             <!-- Custom Script -->
             <script src="/RESOURCES/admin/product/public/js/add.js"></script>
             <!--Jquery Validation-->
-            <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+            <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+
+
+            <!-- <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script> -->
             <script>
                 $(document).ready(function () {
                     $.validator.addMethod("requiredFile", function (value, element) {
@@ -175,7 +181,7 @@
                             },
                             fileProductImg: {
                                 requiredFile: true,
-                                accept: "image/jpeg, image/pjpeg"
+                                accept: "image/*"
                             },
                             txtProductDescription: {
                                 required: true
@@ -214,14 +220,15 @@
                                 digits: "Dung tích phải là số nguyên"
                             },
                             fileProductImg: {
-                                required: "Vui lòng chọn ảnh sản phẩm"
+                                required: "Vui lòng chọn ảnh sản phẩm",
+                                accept: "Vui lòng chọn file hình ảnh"
                             },
                             txtProductDescription: {
                                 required: "Vui lòng nhập thông tin mùi hương"
                             }
-                        }
-
-                        function errorPlacement (error, element) {
+                        },
+                        
+                        errorPlacement:function (error, element) {
                             error.addClass("text-danger d-block mt-2");
 
                             if (element.attr('name') === 'rdoGender') {
@@ -231,7 +238,7 @@
                             }
                             if (element.attr('name') === 'fileProductImg') {
                                 // error.insertAfter($("#gender-input"));
-                                error.insertBefore(element.parent());
+                                error.insertAfter(element.parent());
                                 return;
                             }
 

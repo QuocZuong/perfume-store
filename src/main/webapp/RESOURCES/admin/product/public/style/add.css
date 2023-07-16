@@ -51,7 +51,7 @@ form fieldset input {
     margin-right: 10px;
 }
 
-form div label:first-child:after {
+form .required:after {
     content: " *";
     color: red;
 }
