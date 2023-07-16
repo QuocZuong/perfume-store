@@ -218,7 +218,7 @@ h1 {
   flex-flow: column nowrap;
   background-color: white;
   margin-top: 1.6rem;
-  top: 585px;
+  top: 30px;
   opacity: 0;
   height: 0px;
   overflow: hidden;
@@ -233,10 +233,9 @@ h1 {
   right: 58px;
 }
 
-.nav .account button img {
+.nav .account img {
   width: 23px;
   height: 23px;
-  opacity: 0.7;
 }
 
 .drop-down-show {

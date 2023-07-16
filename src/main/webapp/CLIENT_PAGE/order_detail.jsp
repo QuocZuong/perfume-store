@@ -83,7 +83,7 @@
                     <div class="order-page">
                         <c:if test="<%= CheckOutSuccess != null %>">
                             <div class="CheckOutSuccess">
-                                <h1 class="display-4">THANH TOÁN THÀNH CÔNG</h1>
+                                <h1 class="display-4 mb-10">THANH TOÁN THÀNH CÔNG</h1>
                             </div>
                         </c:if>
                         <table class="table">
@@ -113,7 +113,9 @@
                                         <td colspan="6">
                                             <p><img src="/RESOURCES/images/icons/smartphone.png" alt="alt"/><span class="info"><%=OrderInfor.getPhoneNumber()%></span></p>
                                             <p><img src="/RESOURCES/images/icons/location-pin.png" alt="alt"/><span class="info"><%=OrderInfor.getAddress()%></span></p>
-                                            <p><img src="/RESOURCES/images/icons/email.png" alt="alt"/><span class="info"><%=OrderInfor.getNote()%></span></p>
+                                            <c:if test="<%= (OrderInfor.getNote() != null && !OrderInfor.getNote().equals(""))%>">
+                                                <p><img src="/RESOURCES/images/icons/email.png" alt="alt"/><span class="info"><%=OrderInfor.getNote()%></span></p>
+                                            </c:if>
                                         </td>
                                     </tr>
                                 </c:if>
@@ -121,7 +123,7 @@
                         </table>
                         <!-- -->
                          <c:if test="<%= CheckOutSuccess != null %>"> 
-                            <a href="/Product/List">QUAY LẠI TRANG SẢN PHẨM</a>
+                            <a href="/Product/List" class="btn btn-outline-dark rounded-0">QUAY LẠI TRANG SẢN PHẨM</a>
                         </c:if>
                     </div>
 

@@ -831,7 +831,7 @@ public class AdminController extends HttpServlet {
 
     // ---------------------------- CLOUD SECTION ----------------------------
     private String uploadImageToClound(Part imagePart) throws IOException {
-        String imgURL = "fail";
+        String imgURL = "/RESOURCES/images/icons/default-perfume.png";
         File imageFile = convertPartToFile(imagePart);
         // File imageFile = new File("D:\\Images\\Anime Image\\Untitled.png");
 
@@ -895,8 +895,10 @@ public class AdminController extends HttpServlet {
             System.out.println("Image uploaded successfully. Image URL: " + imageUrl);
 
         } else {
-            System.out.println("Error occurred while uploading the image. Response Code: " + responseCode);
+            System.out.println("Error occurred while uploading the image. Response Cod");
         }
+
+
         URLconn.disconnect();
         fileInputStream.close();
         return imgURL;

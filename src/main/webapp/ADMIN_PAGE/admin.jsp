@@ -1,5 +1,4 @@
 <%@page import="DAOs.ProductDAO"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="Models.Order"%>
 <%@page import="java.util.List"%>
@@ -7,6 +6,9 @@
 <%@page import="Models.User"%>
 <%@page import="DAOs.UserDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+
 <%! ProductDAO pDAO = new ProductDAO();  %>
 <%! UserDAO usDAO = new UserDAO();%>
 <%!String fullname, username, email, Tinh = "", QuanHuyen = "", PhuongXa = "";%>

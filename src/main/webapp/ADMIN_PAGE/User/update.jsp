@@ -89,7 +89,6 @@
             <ul class="shadow position-absolute align-items-start ps-1 pt-2">
               <li class="py-3 text-dark"><a href="/Admin/User/List">Danh sách người dùng</a></li>
             </ul>
-            
             <a href="/Client/User"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
             <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
 
@@ -118,6 +117,7 @@
         </c:choose>
         <!--Execption Handling-->
             </div>
+            <div class="container mt-5">
             <div class="row">
             <h1>Update User</h1>
             <form action="/Admin/User/Update" method="POST">
@@ -170,6 +170,7 @@
                 <button type="submit" name="btnUpdateUser" value="Submit" class="btnUpdateUser">Update User</button>
             </form>
             </div>
+        </div> 
         </div>
         
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
@@ -179,8 +180,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 
-        <script src="/RESOURCES/admin/public/js/main.js"></script>
-
+        <script src="/RESOURCES/admin/user/public/js/update.js"></script>
 
         <!--VietName Province APU-->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>

@@ -136,7 +136,7 @@ h1 {
   flex-flow:column nowrap;
   background-color: white;
   margin-top: 1.6rem;
-  top: 585px;
+  top: 30px;
   opacity: 0;
   height: 0px;
   overflow: hidden;
