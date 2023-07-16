@@ -5,7 +5,7 @@ body {
     font-family: "Josefin Sans", sans-serif;
 }
 
-.container{
+.container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -14,17 +14,17 @@ body {
 
 }
 
-form{
+form {
     width: 700px;
 }
 
-form > div{
+form>div {
     display: flex;
     flex-direction: column;
     margin: 15px 0;
 }
 
-form input{
+form input {
     padding: 5px 10px;
 }
 
@@ -38,50 +38,50 @@ form fieldset legend {
     font-family: "Josefin Sans", sans-serif;
     margin-bottom: 5px;
     float: none;
-    width:70px;
+    width: 70px;
 }
 
-form fieldset  label{
+form fieldset label {
     margin-right: 20px;
 }
 
-form fieldset  input{
+form fieldset input {
     margin-right: 10px;
 }
 
-form textarea{
+form textarea {
     padding: 5px 10px;
 }
 
-form .btnUpdateUser{
-  margin-top: 15px;
-  padding: 5px 20px 3px 20px;
-  background-color: transparent;
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  font-size: 1.3rem;
-}
-
-form .btnUpdateProduct{
+form .btnUpdateUser {
     margin-top: 15px;
     padding: 5px 20px 3px 20px;
     background-color: transparent;
     border: 1px solid rgba(0, 0, 0, 0.3);
     font-size: 1.3rem;
-  }
+}
 
-form #preview-img{
+form .btnUpdateProduct {
+    margin-top: 15px;
+    padding: 5px 20px 3px 20px;
+    background-color: transparent;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    font-size: 1.3rem;
+}
+
+form #preview-img {
     margin: 10px 0;
 }
 
 form button:hover {
-  border: 1px solid black;
+    border: 1px solid black;
 }
 
 input[type="file"] {
     display: none;
 }
 
-.image img{
+.image img {
     width: 20px;
     height: 20px;
     margin-right: 5px;
@@ -92,4 +92,105 @@ input[type="file"] {
     display: inline-block;
     padding: 6px 12px;
     cursor: pointer;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    width: 100%;
+    border-bottom: 1px solid black;
+}
+
+.nav ul {
+    float: left;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding-left: 2rem;
+}
+
+.nav li a {
+    font-size: 1.2rem;
+    margin: 0 10px;
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+    transition: border-bottom 0.3s ease-in-out;
+    color: black;
+    list-style-type: none;
+    text-decoration: none;
+}
+
+.nav li a:first-child {
+    border-bottom: 1px solid transparent;
+}
+
+.nav li a:hover {
+    border-bottom: 1px solid black;
+    transition: border-bottom 0.3s ease-in-out;
+}
+
+.nav .iconPage {
+    margin-left: -235px;
+}
+
+.nav .account {
+    display: flex;
+    align-items: center;
+    padding-right: 2rem;
+}
+
+.nav .account a {
+    margin: 0 10px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.nav .account #product-dropdown-btn,
+.nav .account #user-dropdown-btn {
+    margin-right: 10px;
+}
+
+.nav .account #product-dropdown-btn+ul,
+.nav .account #user-dropdown-btn+ul {
+    display: flex;
+    flex-flow: column nowrap;
+    background-color: white;
+    margin-top: 1.6rem;
+    top: 585px;
+    opacity: 0;
+    height: 0px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.nav .account #product-dropdown-btn+ul {
+    right: 105px;
+}
+
+.nav .account #user-dropdown-btn+ul {
+    right: 58px;
+}
+
+.nav .account button img {
+    width: 23px;
+    height: 23px;
+    opacity: 0.7;
+}
+
+.drop-down-show {
+    opacity: 0.95 !important;
+}
+
+.nav .account #product-dropdown-btn+ul.drop-down-show {
+    height: 108px !important;
+}
+
+.nav .account #user-dropdown-btn+ul.drop-down-show {
+    height: 61px !important;
 }

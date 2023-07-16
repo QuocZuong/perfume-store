@@ -24,10 +24,10 @@ public class LogController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -36,13 +36,10 @@ public class LogController extends HttpServlet {
         String path = request.getRequestURI();
 
         if (path.startsWith(LOGIN_URI)) {
-            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-            response.setHeader("Pragma", "no-cache");
-            response.setHeader("Expires", "0");
             request.getRequestDispatcher("/LOGIN_PAGE/logIn.jsp").forward(request, response);
             return;
         }
-        System.out.println("going logout controller");
+
         if (path.startsWith(LOGOUT_URI)) {
             System.out.println("going logout");
             logout(request, response);
@@ -55,10 +52,10 @@ public class LogController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -179,7 +176,7 @@ public class LogController extends HttpServlet {
     // ------------------------- EXEPTION HANDLING SECTION -------------------------
     private String checkException(HttpServletRequest request) {
         String exception = "";
-        
+
         if (request.getAttribute("exceptionType") == null) {
             return "";
         }

@@ -28,8 +28,41 @@
         <title>Thêm sản phẩm</title>
     </head>
     <body>
-        <div class="container">
-            <h1>Add Product</h1>
+        <div class="container-fluid">
+            <div class="row">
+        <div class="col-md-12 nav">
+          <ul>
+            <li><a href="/">trang chủ</a></li>
+            <li> <a href="/home/introduction">giới thiệu</a></li>
+            <li><a href="/home/brand">thương hiệu</a></li>
+            <!-- This link to shop servlet file. DO NOT MODIFY the link -->
+            <li><a href="/Product/List">sản phẩm</a></li>
+          </ul>
+          <a href="/" class="iconPage"><img src="/RESOURCES/images/icons/icon.webp" alt=""
+                                            height="64"></a>
+          <div class="account">
+            <button class="droppown-btn bg-transparent border-0" id="product-dropdown-btn"><img src="/RESOURCES/images/icons/shopping-bag-alone.png" alt="">
+            </button>
+            <ul class="shadow position-absolute align-items-start ps-1 pt-2">
+              <li class="py-3 text-dark"><a href="/Admin/Product/Add">Thêm sản phẩm</a></li>
+              <li class="pb-3 text-dark"><a href="/Admin/Product/List">Danh sách sản phẩm</a></li>
+            </ul>
+            
+            <button class="droppown-btn bg-transparent border-0" id="user-dropdown-btn"><img src="/RESOURCES/images/icons/group.png" alt="">
+            </button>
+            <ul class="shadow position-absolute align-items-start ps-1 pt-2">
+              <li class="py-3 text-dark"><a href="/Admin/User/List">Danh sách người dùng</a></li>
+            </ul>
+            
+            <a href="/Client/User"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+            <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
+
+          </div>
+        </div>
+      </div>
+
+            <div class="row">
+                <h1>Add Product</h1>
             <form action="/Admin/Product/Add" method="POST" enctype="multipart/form-data">
                 <div class="name">
                     <label>Product name</label>
@@ -84,6 +117,7 @@
                 </div>
                 <button type="submit" name="btnAddProduct" value="Submit" class="btnAddProduct">Add Product</button>
             </form>
+            </div>
         </div>
 
 
@@ -101,6 +135,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/additional-methods.min.js"></script>
 
+        <script src="/RESOURCES/admin/product/public/js/add.js"></script>
         <script>
             $(document).ready(function () {
                 $.validator.addMethod("requiredFile", function (value, element) {
@@ -141,8 +176,7 @@
                             digits: true
                         },
                         fileProductImg: {
-                            requiredFile: true,
-                            accept: "image/jpeg, image/pjpeg"
+                            required: true
                         },
                         txtProductDescription: {
                             required: true

@@ -149,9 +149,6 @@ public class AdminController extends HttpServlet {
 
         // ---------------------------- DEFAULT SECTION ----------------------------
         if (path.startsWith(ADMIN_USER_URI)) { // Put this at the last
-            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-            response.setHeader("Pragma", "no-cache");
-            response.setHeader("Expires", "0");
             request.getRequestDispatcher("/ADMIN_PAGE/admin.jsp").forward(request, response);
             return;
         }

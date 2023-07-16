@@ -42,6 +42,7 @@
               rel="stylesheet"
               integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
               crossorigin="anonymous">
+        <link rel="stylesheet" href="/RESOURCES/admin/user/public/style/detail.css">
 
         <style>
             img{
@@ -53,6 +54,37 @@
     </head>
     <body>
         <div class="container-fluid">
+            <div class="row">
+        <div class="col-md-12 nav">
+          <ul>
+            <li><a href="/">trang chủ</a></li>
+            <li> <a href="/home/introduction">giới thiệu</a></li>
+            <li><a href="/home/brand">thương hiệu</a></li>
+            <!-- This link to shop servlet file. DO NOT MODIFY the link -->
+            <li><a href="/Product/List">sản phẩm</a></li>
+          </ul>
+          <a href="/" class="iconPage"><img src="/RESOURCES/images/icons/icon.webp" alt=""
+                                            height="64"></a>
+          <div class="account">
+            <button class="droppown-btn bg-transparent border-0" id="product-dropdown-btn"><img src="/RESOURCES/images/icons/shopping-bag-alone.png" alt="">
+            </button>
+            <ul class="shadow position-absolute align-items-start ps-1 pt-2">
+              <li class="py-3 text-dark"><a href="/Admin/Product/Add">Thêm sản phẩm</a></li>
+              <li class="pb-3 text-dark"><a href="/Admin/Product/List">Danh sách sản phẩm</a></li>
+            </ul>
+            
+            <button class="droppown-btn bg-transparent border-0" id="user-dropdown-btn"><img src="/RESOURCES/images/icons/group.png" alt="">
+            </button>
+            <ul class="shadow position-absolute align-items-start ps-1 pt-2">
+              <li class="py-3 text-dark"><a href="/Admin/User/List">Danh sách người dùng</a></li>
+            </ul>
+            
+            <a href="/Client/User"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+            <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
+
+          </div>
+        </div>
+      </div>
             <div class="row">
                 <div class="col-md-10 offset-1">
                     <div>
@@ -96,5 +128,7 @@
                 </div>
             </div>
         </div>
+
+        <script src="/RESOURCES/admin/user/public/js/detail.js">
     </body>
 </html>

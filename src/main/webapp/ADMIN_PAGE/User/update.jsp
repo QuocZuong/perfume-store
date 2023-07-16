@@ -64,7 +64,40 @@
         <title>Cập nhật người dùng</title>
     </head>
     <body>
-        <!--Execption Handling-->
+        <div class="container-fluid">
+            <div class="row">
+        <div class="col-md-12 nav">
+          <ul>
+            <li><a href="/">trang chủ</a></li>
+            <li> <a href="/home/introduction">giới thiệu</a></li>
+            <li><a href="/home/brand">thương hiệu</a></li>
+            <!-- This link to shop servlet file. DO NOT MODIFY the link -->
+            <li><a href="/Product/List">sản phẩm</a></li>
+          </ul>
+          <a href="/" class="iconPage"><img src="/RESOURCES/images/icons/icon.webp" alt=""
+                                            height="64"></a>
+          <div class="account">
+            <button class="droppown-btn bg-transparent border-0" id="product-dropdown-btn"><img src="/RESOURCES/images/icons/shopping-bag-alone.png" alt="">
+            </button>
+            <ul class="shadow position-absolute align-items-start ps-1 pt-2">
+              <li class="py-3 text-dark"><a href="/Admin/Product/Add">Thêm sản phẩm</a></li>
+              <li class="pb-3 text-dark"><a href="/Admin/Product/List">Danh sách sản phẩm</a></li>
+            </ul>
+            
+            <button class="droppown-btn bg-transparent border-0" id="user-dropdown-btn"><img src="/RESOURCES/images/icons/group.png" alt="">
+            </button>
+            <ul class="shadow position-absolute align-items-start ps-1 pt-2">
+              <li class="py-3 text-dark"><a href="/Admin/User/List">Danh sách người dùng</a></li>
+            </ul>
+            
+            <a href="/Client/User"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+            <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
+
+          </div>
+        </div>
+      </div>
+            <div class="row">
+            <!--Execption Handling-->
         <c:choose>
             <c:when test='<%= isExistedPhone%>'>
                 <h1 class="alert alert-danger">
@@ -84,7 +117,8 @@
             </c:when>
         </c:choose>
         <!--Execption Handling-->
-        <div class="container">
+            </div>
+            <div class="row">
             <h1>Update User</h1>
             <form action="/Admin/User/Update" method="POST">
                 <div class="id">
@@ -135,11 +169,9 @@
                 </div>
                 <button type="submit" name="btnUpdateUser" value="Submit" class="btnUpdateUser">Update User</button>
             </form>
-
+            </div>
         </div>
-
-
-
+        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
                 integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>

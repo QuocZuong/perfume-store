@@ -42,7 +42,7 @@ public class UserValidation implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain)
             throws IOException, ServletException {
-        System.out.println("Vao do filter");
+
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
 
@@ -51,6 +51,14 @@ public class UserValidation implements Filter {
 
         final String URI = req.getRequestURI();
         final String URL = req.getRequestURL().toString();
+        
+        res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+        res.setHeader("Pragma", "no-cache"); // HTTP 1.0.
+        res.setDateHeader("Expires", 0); // Proxies.
+        
+        // --------------------------EXCLUDE URL PARTERN----------------------
+        System.out.println("Current URL:" + URL);
+        System.out.println("Vao do filter");
 
         // --------------------------PREVENT FOLDER LINKS----------------------
         for (String folder : FOLDER_URL_LIST) {
@@ -93,7 +101,6 @@ public class UserValidation implements Filter {
         // --------------------------PREVENT UNAUTHORISED ADMIN----------------------
         if (URI.startsWith("/Admin")) {
             if (!isAdmin) {
-                System.out.println("Not Admin, so redirect to home page");
                 res.sendError(403);
                 return;
             }

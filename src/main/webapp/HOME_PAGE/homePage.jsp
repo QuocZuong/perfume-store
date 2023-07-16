@@ -1,5 +1,16 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="jakarta.servlet.http.Cookie"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
+
+<%
+    Cookie currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
+    boolean isAdmin = false;
+
+    if (currentUserCookie != null) {
+        isAdmin = currentUserCookie.getName().equals("Admin");
+    }
+%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -38,23 +49,62 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-12 nav">
-                    <ul>
-                        <li><a href="/">trang chủ</a></li>
-                        <li> <a href="/home/introduction">giới thiệu</a></li>
-                        <li><a href="/home/brand">thương hiệu</a></li>
-                        <!-- This link to shop servlet file. DO NOT MODIFY the link -->
-                        <li><a href="/Product/List">sản phẩm</a></li>
-                    </ul>
-                    <a href="/" class="iconPage"><img src="/RESOURCES/images/icons/icon.webp" alt=""
-                                     height="64"></a>
-                    <div class="account">
-                        <a href="/Client/User"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
-                        <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
+            <c:choose>
+                <c:when test="<%= isAdmin%>">
+
+                    <div class="row">
+                        <div class="col-md-12 nav">
+                            <ul>
+                                <li><a href="/">trang chủ</a></li>
+                                <li> <a href="/home/introduction">giới thiệu</a></li>
+                                <li><a href="/home/brand">thương hiệu</a></li>
+                                <!-- This link to shop servlet file. DO NOT MODIFY the link -->
+                                <li><a href="/Product/List">sản phẩm</a></li>
+                            </ul>
+                            <a href="/" class="iconPage"><img src="/RESOURCES/images/icons/icon.webp" alt=""
+                                                              height="64"></a>
+                            
+                            <div class="account">
+                                <button class="droppown-btn bg-transparent border-0" id="product-dropdown-btn"><img src="/RESOURCES/images/icons/shopping-bag-alone.png" alt="">
+                                </button>
+                                <ul class="shadow position-absolute align-items-start ps-1 pt-2">
+                                    <li class="py-3 text-dark"><a href="/Admin/Product/Add">Thêm sản phẩm</a></li>
+                                    <li class="pb-3 text-dark"><a href="/Admin/Product/List">Danh sách sản phẩm</a></li>
+                                </ul>
+
+                                <button class="droppown-btn bg-transparent border-0" id="user-dropdown-btn"><img src="/RESOURCES/images/icons/group.png" alt="">
+                                </button>
+                                <ul class="shadow position-absolute align-items-start ps-1 pt-2">
+                                    <li class="py-3 text-dark"><a href="/Admin/User/List">Danh sách người dùng</a></li>
+                                </ul>
+
+                                <a href="/Client/User"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+                                <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
+
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </c:when>
+                <c:otherwise>
+                    <div class="row">
+                        <div class="col-md-12 nav">
+                            <ul>
+                                <li><a href="/">trang chủ</a></li>
+                                <li> <a href="/home/introduction">giới thiệu</a></li>
+                                <li><a href="/home/brand">thương hiệu</a></li>
+                                <!-- This link to shop servlet file. DO NOT MODIFY the link -->
+                                <li><a href="/Product/List">sản phẩm</a></li>
+                            </ul>
+                            <a href="/" class="iconPage"><img src="/RESOURCES/images/icons/icon.webp" alt=""
+                                                              height="64"></a>
+                            <div class="account">
+                                <a href="/Client/User"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+                                <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
+                            </div>
+                        </div>
+                    </div>
+                </c:otherwise>
+            </c:choose>
 
             <div class="row">
                 <div class="col-md-12 brand">
@@ -129,7 +179,7 @@
                                     <span class="product-price">4.800.000 <span>đ</span></span>
                                 </div>
                             </a>
-                            
+
                             <a href="/Product/Detail/ID/128">
                                 <div class="card">
                                     <img src="https://xxivstore.com/wp-content/uploads/2020/09/eau-de-minthe-eau-de-parfum-75ml-e87-600x600.png" alt="" class="product-img">
@@ -237,7 +287,7 @@
                                     <span class="product-price">7.000.000 <span>đ</span></span>
                                 </div>
                             </a>
-                            
+
                             <a href="/Product/Detail/ID/419">
                                 <div class="card">
                                     <img src="https://xxivstore.com/wp-content/uploads/2021/12/Dama1-600x600.png" alt="" class="product-img">
@@ -552,15 +602,15 @@
             crossorigin="anonymous"></script>
             <script src="/RESOURCES/home/public/js/main.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+                    integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
             crossorigin="anonymous"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 
-    <script src="/RESOURCES/admin/product/public/js/main.js"></script>
-    <!--Jquery Validation-->
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+            <script src="/RESOURCES/admin/product/public/js/main.js"></script>
+            <!--Jquery Validation-->
+            <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
             <script>
                 $(document).ready(function () {
                     $.validator.addMethod("emailCustom", function (value, element, toggler) {
@@ -576,7 +626,7 @@
                         rules: {
                             txtEmailSubscribe: {
                                 required: true,
-                                email:true
+                                email: true
                             }
                         },
                         messages: {

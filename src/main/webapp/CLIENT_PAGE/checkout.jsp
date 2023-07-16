@@ -42,6 +42,17 @@
         <link rel="icon" href="/RESOURCES/images/icons/icon.webp" />
         <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css" rel="stylesheet"
               type="text/css" />
+        <style>
+            .inputHide{
+                cursor:not-allowed;
+                pointer-events: none ;
+            }
+            
+            label.error{
+                color: red;
+                margin-top: 10px;
+            }
+        </style>
         <title>Thanh toán</title>
     </head>
 
@@ -74,7 +85,7 @@
                                 <h1 class="mb-4">Checkout</h1>
                                 <hr>
                                 <div class="d-flex flex-row">
-                                    <div class="d-flex flex-column col-5">
+                                    <div class="d-flex flex-column col-4">
                                         <label><input type="radio" name="rdoCustomAddress" id="rdoCustomAddress" value="no" class="form-check-input" checked=""> Sử
                                             dụng địa chỉ mặc định</label>
                                         <label><input type="radio" name="rdoCustomAddress" id="rdoCustomAddress" value="yes" class="form-check-input"> Địa chỉ giao
@@ -83,7 +94,7 @@
 
                                     <div class="d-flex flex-column ms-5">
                                         <label for="txtNote" class="d-block w-100">Ghi chú đơn hàng (tuỳ chọn)</label>
-                                        <textarea name="txtNote" cols="60" rows="2" class="border-1"
+                                        <textarea name="txtNote" cols="57" rows="2" class="border-1"
                                                   placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn."></textarea>
                                     </div>
                                 </div>
@@ -98,8 +109,8 @@
                                     <div class="d-flex flex-column flex-wrap w-100">
                                         <input type="text" name="txtUsername" value="<%= username%>" placeholder="Tên người dùng">
                                         <input type="text" name="txtEmail" value="<%= email%>" placeholder="Email">
-                                        <input type="text" name="txtPhone" id="txtPhone" class="" value="<%= (phone == null ? "" : phone)%>" placeholder="Số điện thoại"  readonly="true">
-                                        <input type="text" name="txtAddress" id="txtAddress" value="<%= (address == null ? "" : address)%>" placeholder="Địa chỉ" readonly="true">
+                                        <input class="inputHide" type="text" name="txtPhone" id="txtPhone" class="" value="<%= (phone == null ? "" : phone)%>" placeholder="Số điện thoại"  readonly="true">
+                                        <input class="inputHide" type="text" name="txtAddress" id="txtAddress" value="<%= (address == null ? "" : address)%>" placeholder="Địa chỉ" readonly="true">
                                     </div>
 
                                     <h2 class="text-start mt-2 mb-0 mt-5 hidden" id="header-address">giao đến địa chỉ</h2>
@@ -107,13 +118,13 @@
                                     <div class="d-flex flex-column flex-wrap w-100 mt-2">
 
                                         <div class="w-100 d-flex">
-                                            <select id="city" class="hidden form-select">
+                                            <select id="city" class="hidden form-select m-2">
                                                 <option value="" selected>Chọn tỉnh thành</option>           
                                             </select>
-                                            <select id="district" class="hidden form-select">
+                                            <select id="district" class="hidden form-select m-2">
                                                 <option value="" selected>Chọn quận huyện</option>
                                             </select>
-                                            <select id="ward" class="hidden form-select">
+                                            <select id="ward" class="hidden form-select m-2">
                                                 <option value="" selected>Chọn phường xã</option>
                                             </select>
                                         </div>
@@ -303,6 +314,14 @@
                             required: true
                         }
                     },
+                    messages: {
+                        txtPhone: {
+                            required: "Thiếu số điện thoại mặc định vui lòng cập nhật hoặc chọn giao bằng số điện thoại khác"
+                        },
+                         txtAddress: {
+                            required: "Thiếu địa chỉ mặc định vui lòng cập nhật hoặc chọn giao bằng địa chỉ khác"
+                        }
+                    },
 
                 });
             });
@@ -335,10 +354,15 @@
                     console.log("apply no rule");
                     $("input#txtPhone").rules("add", {
                         required: true,
-
+                        messages: {
+                            required: "Thiếu số điện thoại mặc định vui lòng cập nhật hoặc chọn giao bằng số điện thoại khác"
+                        }
                     });
                     $("input#txtAddress").rules("add", {
                         required: true,
+                        messages: {
+                            required: "Thiếu địa chỉ mặc định vui lòng cập nhật hoặc chọn giao bằng địa chỉ khác"
+                        }
                     });
 
 
@@ -365,12 +389,20 @@
                         required: true,
                         maxlength: 10,
                         minlength: 10,
-                        number: true
+                        number: true,
+                        messages: {
+                            required: "Vui lòng nhập số điện thoại",
+                            number: "Số điện thoại không hợp lệ",
+                            maxlength: "Số điện thoại phải là 10 chữ số",
+                            minlength: "Số điện thoại phải là 10 chữ số"
+                        }
                     });
                     $("input#txtNewAddress").rules("add", {
-                        required: true 
+                        required: true,
+                        messages: {
+                            required: "Vui lòng nhập địa chỉ"
+                        }
                     });
-
                 }
             }
             ;

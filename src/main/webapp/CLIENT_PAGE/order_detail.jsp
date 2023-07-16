@@ -15,6 +15,7 @@
 <%!String fullname, username, email;%>
 <%! List<String[]> order;%>
 <%!Order OrderInfor;%>
+<%! String CheckOutSuccess; %>
 
 <%
     Cookie currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
@@ -25,6 +26,7 @@
     ProductDAO pDAO = new ProductDAO();
     OrderInfor = (Order) request.getAttribute("OrderInfor");
     order = (List<String[]>) (request.getAttribute("OrderDetail"));
+    CheckOutSuccess = (String)request.getParameter("CheckOutSuccess");
 %>
 
 <!DOCTYPE html>
@@ -79,6 +81,11 @@
             <div class="main">
                 <div class="right">
                     <div class="order-page">
+                        <c:if test="<%= CheckOutSuccess != null %>">
+                            <div class="CheckOutSuccess">
+                                <h1 class="display-4">THANH TOÁN THÀNH CÔNG</h1>
+                            </div>
+                        </c:if>
                         <table class="table">
                             <thead class="thead-dark">
                                 <tr>
@@ -91,7 +98,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-
                                 <c:if test="<%=  order.size() > 0%>">
                                     <c:forEach var="i" begin="0" end="<%= order.size() - 1%>">
                                         <tr>
@@ -113,6 +119,10 @@
                                 </c:if>
                             </tbody>
                         </table>
+                        <!-- -->
+                         <c:if test="<%= CheckOutSuccess != null %>"> 
+                            <a href="/Product/List">QUAY LẠI TRANG SẢN PHẨM</a>
+                        </c:if>
                     </div>
 
                 </div>

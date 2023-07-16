@@ -1,6 +1,6 @@
 td.description .content.hide {
   position: relative;
-  width: 180px; 
+  width: 180px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -17,31 +17,31 @@ td.description .expand-btn {
   font-weight: bold;
 }
 
-a{
-/*    text-decoration: none !important;
+a {
+  /*    text-decoration: none !important;
   color: black !important;
   border: 1px solid black !important;
   padding: 5px 10px !important;*/
 }
 
 
-.faded{
+.faded {
   opacity: 0.4;
 }
 
-h1{
-    text-align: center;
+h1 {
+  text-align: center;
 }
 
-.pagination{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-        margin-top: 70px;
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 70px;
 
 }
 
-.pagination  li{
+.pagination li {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -55,12 +55,12 @@ h1{
   outline: none;
 }
 
-.pagination li a:hover{
+.pagination li a:hover {
   border: 1px solid black;
   border-radius: 50% !important;
 }
 
-.pagination li a{
+.pagination li a {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -73,8 +73,8 @@ h1{
   text-align: center;
 }
 
-.pagination li .page-link:focus{
-  box-shadow:none;
+.pagination li .page-link:focus {
+  box-shadow: none;
 }
 
 .pagination li.active a {
@@ -89,22 +89,22 @@ h1{
   background: rgba(255,255,255,0.4);
 } */
 
-.bottom-table td p{
+.bottom-table td p {
   text-align: left;
   margin: 10px 0;
   width: fit-content;
 }
 
-.bottom-table td p img{
+.bottom-table td p img {
   width: 20px;
   height: 20px;
   margin-right: 15px;
 }
 
-.search-box-first{
+.search-box-first {
   font-size: 1.2rem;
   margin: 17px 0 27px 0;
-  padding: 5px 20px; 
+  padding: 5px 20px;
   width: 100%;
   height: 50px;
   background-color: #ececec;
@@ -116,16 +116,16 @@ h1{
   justify-content: center;
 }
 
-.search-box-first:hover{
-  background-color:#dfdfdf;
+.search-box-first:hover {
+  background-color: #dfdfdf;
 }
 
-.search-box-first a img{
+.search-box-first a img {
   width: 25px;
   height: 25px;
 }
 
-.search-box-first #Search{
+.search-box-first #Search {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -139,13 +139,114 @@ h1{
   outline: none;
 }
 
-.search-box-first #inputSearch{
+.search-box-first #inputSearch {
   width: 90%;
   font-size: 1.2rem;
-  padding: 5px 10px; 
+  padding: 5px 10px;
   width: 100%;
   height: 50px;
   background-color: transparent;
   border: none;
   outline: none;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  width: 100%;
+  border-bottom: 1px solid black;
+}
+
+.nav ul {
+  float: left;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding-left: 2rem;
+}
+
+.nav li a {
+  font-size: 1.2rem;
+  margin: 0 10px;
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+  transition: border-bottom 0.3s ease-in-out;
+  color: black;
+  list-style-type: none;
+  text-decoration: none;
+}
+
+.nav li a:first-child {
+  border-bottom: 1px solid transparent;
+}
+
+.nav li a:hover {
+  border-bottom: 1px solid black;
+  transition: border-bottom 0.3s ease-in-out;
+}
+
+.nav .iconPage {
+  margin-left: -235px;
+}
+
+.nav .account {
+  display: flex;
+  align-items: center;
+  padding-right: 2rem;
+}
+
+.nav .account a {
+  margin: 0 10px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.nav .account #product-dropdown-btn,
+.nav .account #user-dropdown-btn {
+  margin-right: 10px;
+}
+
+.nav .account #product-dropdown-btn+ul,
+.nav .account #user-dropdown-btn+ul {
+  display: flex;
+  flex-flow: column nowrap;
+  background-color: white;
+  margin-top: 1.6rem;
+  top: 585px;
+  opacity: 0;
+  height: 0px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.nav .account #product-dropdown-btn+ul {
+  right: 105px;
+}
+
+.nav .account #user-dropdown-btn+ul {
+  right: 58px;
+}
+
+.nav .account button img {
+  width: 23px;
+  height: 23px;
+  opacity: 0.7;
+}
+
+.drop-down-show {
+  opacity: 0.95 !important;
+}
+
+.nav .account #product-dropdown-btn+ul.drop-down-show {
+  height: 108px !important;
+}
+
+.nav .account #user-dropdown-btn+ul.drop-down-show {
+  height: 61px !important;
 }

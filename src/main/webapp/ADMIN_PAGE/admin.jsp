@@ -29,7 +29,6 @@
     isExistUsername = (request.getParameter(err + "Username") == null ? false : Boolean.parseBoolean(request.getParameter(err + "Username")));
 
     isUpdateAccountExecption = isAccountNotFound || isAccountDeactivated || isExistEmail || isExistUsername;
-
 %>
 
 <!DOCTYPE html>
@@ -64,24 +63,36 @@
             <h1 class="d-none"><%= user.getEmail()%></h1>
             <h1 class="d-none"><%= user.getPassword()%></h1>
             <div class="row">
-                <div class="col-md-12 nav">
-                    <ul>
-                        <li><a href="/">trang chủ</a></li>
-                        <li> <a href="/home/introduction">giới thiệu</a></li>
-                        <li><a href="/home/brand">thương hiệu</a></li>
-                        <!-- This link to shop servlet file. DO NOT MODIFY the link -->
-                        <li><a href="/Product/List">sản phẩm</a></li>
-                        <li><a href="">blog</a></li>
-                    </ul>
-                    <a href="/"><img src="/RESOURCES/images/icons/icon.webp" alt="" height="64"></a>
-                    <div class="account">
-                        <a><img src="/RESOURCES/images/icons/search.png" alt=""></a>
-                        <a href="/Log/Login"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
-                        <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
-                    </div>
-                </div>
-            </div>
+        <div class="col-md-12 nav">
+          <ul>
+            <li><a href="/">trang chủ</a></li>
+            <li> <a href="/home/introduction">giới thiệu</a></li>
+            <li><a href="/home/brand">thương hiệu</a></li>
+            <!-- This link to shop servlet file. DO NOT MODIFY the link -->
+            <li><a href="/Product/List">sản phẩm</a></li>
+          </ul>
+          <a href="/" class="iconPage"><img src="/RESOURCES/images/icons/icon.webp" alt=""
+                                            height="64"></a>
+          <div class="account">
+            <button class="droppown-btn bg-transparent border-0" id="product-dropdown-btn"><img src="/RESOURCES/images/icons/shopping-bag-alone.png" alt="">
+            </button>
+            <ul class="shadow position-absolute align-items-start ps-1 pt-2">
+              <li class="py-3 text-dark"><a href="/Admin/Product/Add">Thêm sản phẩm</a></li>
+              <li class="pb-3 text-dark"><a href="/Admin/Product/List">Danh sách sản phẩm</a></li>
+            </ul>
+            
+            <button class="droppown-btn bg-transparent border-0" id="user-dropdown-btn"><img src="/RESOURCES/images/icons/group.png" alt="">
+            </button>
+            <ul class="shadow position-absolute align-items-start ps-1 pt-2">
+              <li class="py-3 text-dark"><a href="/Admin/User/List">Danh sách người dùng</a></li>
+            </ul>
+            
+            <a href="/Client/User"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+            <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
 
+          </div>
+        </div>
+      </div>
 
             <div class="main">
                 <div class="left">
@@ -109,7 +120,7 @@
                         <div class="d-flex flex-wrap h-100 gap-5">
                             <div class="w-25 h-25">
                                 <a href="/Admin/Product/Add" class="text-decoration-none">
-                                    <button class="btn btn-outline-dark d-flex w-100 h-100 justify-content-center align-items-center rounded-0">
+                                    <button class="btn btn-outline-dark d-flex w-100 h-100 justify-content-center align-items-center rounded-0 fn-btn">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag-plus-fill" viewBox="0 0 16 16">
                                         <path fill-rule="evenodd" d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5v-.5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0zM8.5 8a.5.5 0 0 0-1 0v1.5H6a.5.5 0 0 0 0 1h1.5V12a.5.5 0 0 0 1 0v-1.5H10a.5.5 0 0 0 0-1H8.5V8z"/>
                                         </svg>
@@ -120,7 +131,7 @@
 
                             <div class="w-25 h-25">
                                 <a href="/Admin/Product/List" class="text-decoration-none">
-                                    <button class="btn btn-outline-dark d-flex w-100 h-100 justify-content-center align-items-center rounded-0">
+                                    <button class="btn btn-outline-dark d-flex w-100 h-100 justify-content-center align-items-center rounded-0 fn-btn">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag-plus-fill" viewBox="0 0 16 16">
                                         <path fill-rule="evenodd" d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5v-.5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0zM8.5 8a.5.5 0 0 0-1 0v1.5H6a.5.5 0 0 0 0 1h1.5V12a.5.5 0 0 0 1 0v-1.5H10a.5.5 0 0 0 0-1H8.5V8z"/>
                                         </svg>
@@ -131,7 +142,7 @@
 
                             <div class="w-25 h-25">
                                 <a href="/Admin/User/List" class="text-decoration-none">
-                                    <button class="btn btn-outline-dark d-flex w-100 h-100 justify-content-center align-items-center rounded-0">
+                                    <button class="btn btn-outline-dark d-flex w-100 h-100 justify-content-center align-items-center rounded-0 fn-btn">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
                                         <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
                                         </svg>

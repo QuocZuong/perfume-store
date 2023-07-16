@@ -81,9 +81,9 @@ public class ClientController extends HttpServlet {
         if (path.startsWith(CLIENT_CART_CHECKOUT_URI)) {
             System.out.println("Going checkout");
             boolean kq = handleCheckout(request, response);
-            if (kq){
+            if (kq) {
                 request.getRequestDispatcher("/CLIENT_PAGE/checkout.jsp").forward(request, response);
-            }else{
+            } else {
                 response.sendRedirect(CLIENT_CART_URI);
             }
             return;
@@ -163,7 +163,12 @@ public class ClientController extends HttpServlet {
             if (request.getParameter("btnSubmitCheckOut") != null
                     && request.getParameter("btnSubmitCheckOut").equals("Submit")) {
                 System.out.println("Going Checkout");
-                ClientCheckout(request, response);
+                if (ClientCheckout(request, response)) {
+                    int OrderID = (int)request.getAttribute("OrderID");
+                    String CheckOutSuccess = (String)request.getAttribute("CheckOutSuccess");
+                    response.sendRedirect(CLIENT_ORDER_DETAIL_URI + "/" + OrderID + CheckOutSuccess);
+                    return;
+                }
                 response.sendRedirect(CLIENT_CART_URI);
                 return;
             }
@@ -193,6 +198,7 @@ public class ClientController extends HttpServlet {
         UserDAO usDAO = new UserDAO();
         CartDAO cDAO = new CartDAO();
         ProductDAO pDAO = new ProductDAO();
+        OrderDAO oDAO = new OrderDAO();
 
         Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
         String username = currentUserCookie.getValue();
@@ -224,7 +230,6 @@ public class ClientController extends HttpServlet {
             Phone = newPhone;
         }
 
-
         String Note = request.getParameter("txtNote");
         int Total = cDAO.getCartTotal(ClientID);
         String now = new SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date());
@@ -235,6 +240,8 @@ public class ClientController extends HttpServlet {
             return false;
         } else {
             System.out.println("Thanh toan thanh cong");
+            request.setAttribute("OrderID", oDAO.getMaxOrderID());
+            request.setAttribute("CheckOutSuccess", "?CheckOutSuccess=true");
             return true;
         }
 
