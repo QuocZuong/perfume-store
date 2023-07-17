@@ -48,19 +48,18 @@ public class UserValidation implements Filter {
         boolean isAdmin = isAdmin(req, res);
         boolean isClient = isClient(req, res);
 
-		revalidateUserRoleSession(req, res);
-				
+        revalidateUserRoleSession(req, res);
+
         final String URI = req.getRequestURI();
         final String URL = req.getRequestURL().toString();
-        
+
         res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
         res.setHeader("Pragma", "no-cache"); // HTTP 1.0.
         res.setDateHeader("Expires", 0); // Proxies.
-        
+
         // --------------------------EXCLUDE URL PARTERN----------------------
 //        System.out.println("Current URL:" + URL);
 //        System.out.println("Vao do filter");
-
         // --------------------------PREVENT FOLDER LINKS----------------------
         for (String folder : FOLDER_URL_LIST) {
             if (URI.startsWith(folder)) {
@@ -131,22 +130,22 @@ public class UserValidation implements Filter {
             sendProcessingError(problem, response);
         }
     }
-		
-	public void revalidateUserRoleSession(HttpServletRequest request, HttpServletResponse response) {
-		boolean isAnonymous = !isAdmin(request, response) && !isClient(request, response);
-		
-		if (isAnonymous) {
-			Cookie userCookie = (Cookie) request.getSession().getAttribute("userCookie");
-			
-			if (userCookie != null) {
-				request.getSession().setAttribute("userCookie", null);
-			}
-		}
-	}
-		
+
+    public void revalidateUserRoleSession(HttpServletRequest request, HttpServletResponse response) {
+        boolean isAnonymous = !isAdmin(request, response) && !isClient(request, response);
+
+        if (isAnonymous) {
+            Cookie userCookie = (Cookie) request.getSession().getAttribute("userCookie");
+
+            if (userCookie != null) {
+                request.getSession().setAttribute("userCookie", null);
+            }
+        }
+    }
+
     public boolean isAdmin(HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
-				
+
         if (cookies != null) {
             for (int i = 0; i < cookies.length; i++) {
                 if (cookies[i].getName().equals("Admin")) {

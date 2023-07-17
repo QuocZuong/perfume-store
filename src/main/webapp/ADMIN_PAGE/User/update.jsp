@@ -58,6 +58,9 @@
         width:20%;
         height: 20%;
       }
+      .alert{
+        z-index:-99 !important;
+      }
 
     </style>
 

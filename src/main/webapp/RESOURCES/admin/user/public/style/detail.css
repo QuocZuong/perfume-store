@@ -82,7 +82,7 @@ body::-webkit-scrollbar-thumb:hover {
   flex-flow:column nowrap;
   background-color: white;
   margin-top: 1.6rem;
-  top: 585px;
+  top: 30px;
   opacity: 0;
   height: 0px;
   overflow: hidden;
@@ -96,9 +96,12 @@ body::-webkit-scrollbar-thumb:hover {
    right: 58px;
 }
 
-.nav .account button img {
+.nav .account img {
   width: 23px;
   height: 23px;
+}
+
+.nav .account button img {
   opacity: 0.7;
 }
 

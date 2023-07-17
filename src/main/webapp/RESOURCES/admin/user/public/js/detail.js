@@ -31,8 +31,10 @@ document.addEventListener('click', function (event) {
 
 function isClickedOutside(event, element) {
   if (event.target.closest(element)) {
+    console.log("Clicked inside");
     return false;
   }
 
+  console.log("Clicked outside");
   return true;
 }

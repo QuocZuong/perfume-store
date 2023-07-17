@@ -263,6 +263,10 @@ h1 {
   height: 23px;
 }
 
+.nav .account button img {
+  opacity: 0.7;
+}
+
 .drop-down-show {
   opacity: 0.95 !important;
 }

@@ -53,6 +53,11 @@
         <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css"
               rel="stylesheet" type="text/css" />
         <title>Tài khoản</title>
+         <style>
+            .alert{
+                z-index:-99 !important;
+            }
+        </style>
     </head>
 
     <body>
@@ -110,9 +115,7 @@
                 </div>
                 <div class="right">
                     <div class="account-page">
-                        <p>Xin chào <b><strong><%= fullname%></strong></b> (không phải tài khoản
-                            <b><strong><%= fullname%></strong></b>? Hãy <a href="/Log/Logout">thoát ra</a> và đăng nhập vào tài
-                            khoản của bạn)</p>
+                      <p>Xin chào <b><strong><%=  (user.getName() != null && !user.getName().isEmpty()) ? user.getName() : user.getUsername()%></strong></b> (không phải tài khoản<b><strong><%=  (user.getName() != null && !user.getName().isEmpty()) ? user.getName() : user.getUsername()%></strong></b>? Hãy <a href="/Log/Logout">thoát ra</a> và đăng nhập vào tài khoản của bạn)</p>
                         <p>
                             Từ trang quản lý tài khoản bạn có thể  <button class="text-primary border-0 bg-transparent" id="btn-management">quản lý dữ liệu hệ thống</button><br> và <button class="text-primary border-0 bg-transparent">sửa mật khẩu và thông tin
                                 tài khoản</button>.

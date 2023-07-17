@@ -127,8 +127,6 @@
 
                 </div>
             </div>
-        </div>
-
-        <script src="/RESOURCES/admin/user/public/js/detail.js">
+        <script src="/RESOURCES/admin/user/public/js/detail.js"></script>
     </body>
 </html>

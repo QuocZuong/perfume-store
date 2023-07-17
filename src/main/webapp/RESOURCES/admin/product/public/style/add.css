@@ -192,11 +192,14 @@ input {
     right: 58px;
 }
 
-.nav .account button img {
+.nav .account img {
     width: 23px;
     height: 23px;
+  }
+  
+  .nav .account button img {
     opacity: 0.7;
-}
+  }
 
 .drop-down-show {
     opacity: 0.95 !important;

@@ -159,6 +159,15 @@ button:hover{
     align-items: center;
     padding-right: 2rem;
   }
+
+  .nav .account img {
+    width: 23px;
+    height: 23px;
+  }
+  
+  .nav .account button img {
+    opacity: 0.7;
+  }
   
   .nav .account a {
     margin: 0 10px;
