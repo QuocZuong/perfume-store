@@ -170,13 +170,13 @@
             <!--Execption Handling-->
             <c:choose>
               <c:when test='<%= isNotEnoughInfomation%>'>
-                <h2 class="alert alert-danger">
-                  Vui lòng chọn đầy đủ tỉnh thành, quận huyện, phường xã.
+                <h2 class="alert alert-danger text-center">
+                  Vui lòng chọn đầy đủ tỉnh thành, quận huyện, phường xã
                 </h2>
               </c:when>
               <c:when test='<%= isExistPhone%>'>
-                <h2 class="alert alert-danger">
-                  Số điện thoại đã tồn tại.
+                <h2 class="alert alert-danger text-center">
+                  Số điện thoại đã tồn tại
                 </h2>
               </c:when>
             </c:choose>
@@ -221,23 +221,23 @@
             <!--Execption Handling-->
             <c:choose>
               <c:when test='<%= isAccountNotFound%>'>
-                <h2 class="alert alert-danger">
-                  Sai mật khẩu hiện tại.
+                <h2 class="alert alert-danger text-center">
+                  Sai mật khẩu hiện tại
                 </h2>
               </c:when>
               <c:when test='<%= isAccountDeactivated%>'>
-                <h2 class="alert alert-danger">
-                  Tài khoản đã bị vô hiệu hóa.
+                <h2 class="alert alert-danger text-center">
+                  Tài khoản đã bị vô hiệu hóa
                 </h2>
               </c:when>
               <c:when test='<%= isExistEmail%>'>
-                <h2 class="alert alert-danger">
-                  Email đã tồn tại.
+                <h2 class="alert alert-danger text-center">
+                  Email đã tồn tại
                 </h2>
               </c:when>
               <c:when test='<%= isExistUsername%>'>
-                <h2 class="alert alert-danger">
-                  Tên đăng nhập đã tồn tại.
+                <h2 class="alert alert-danger text-center">
+                  Tên đăng nhập đã tồn tại
                 </h2>
               </c:when>
             </c:choose>

@@ -102,18 +102,18 @@
         <!--Execption Handling-->
         <c:choose>
           <c:when test='<%= isExistedPhone%>'>
-            <h1 class="alert alert-danger">
-              Số điện thọai  đã tồn tại
+            <h1 class="alert alert-danger text-center">
+              Số điện thoại đã tồn tại
             </h1>
           </c:when>
           <c:when test='<%= isExistedUsername%>'>
-            <h1 class="alert alert-danger">
+            <h1 class="alert alert-danger text-center">
               Tên đăng nhập đã tồn tại
             </h1>
           </c:when>
 
           <c:when test='<%= isExistEmail%>'>
-            <h1 class="alert alert-danger">
+            <h1 class="alert alert-danger text-center">
               Email đã tồn tại
             </h1>
           </c:when>

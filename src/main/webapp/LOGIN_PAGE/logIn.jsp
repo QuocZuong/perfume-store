@@ -61,18 +61,18 @@
         <!--Execption Handling-->
         <c:choose>
           <c:when test='<%= isAccountNotFound%>'>
-            <h1 class="alert alert-danger">
+            <h1 class="alert alert-danger text-center">
               Sai tên đăng nhập hoặc mật khẩu
             </h1>
           </c:when>
           <c:when test='<%= isAccountDeactivated%>'>
-            <h1 class="alert alert-danger">
-              Tài khoản đã bị vô hiệu hóa.
+            <h1 class="alert alert-danger text-center">
+              Tài khoản đã bị vô hiệu hóa
             </h1>
           </c:when>
 
           <c:when test='<%= isExistEmail%>'>
-            <h1 class="alert alert-danger">
+            <h1 class="alert alert-danger text-center">
               Email đã tồn tại
             </h1>
           </c:when>

@@ -70,3 +70,23 @@ function isClickedOutside(event, element) {
 
   return true;
 }
+
+// Hide/Show div depending on button clicked
+
+const accountLinks = document.querySelectorAll('.account-link');
+
+accountLinks.forEach((link) => {
+  link.addEventListener('click', (e) => {
+    console.log("clicked");
+
+    const targetPage = link.getAttribute('data-page');
+    if (targetPage === "manager-page") {
+      hideAllPage();
+      currentActiveLink = showPage(1, currentActiveLink);
+    }
+    if (targetPage === "info-page") {
+      hideAllPage();
+      currentActiveLink = showPage(2, currentActiveLink);
+    }
+  });
+});
