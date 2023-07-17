@@ -678,14 +678,17 @@ public class UserDAO {
     String generatedPassword = PasswordGenerator.generateStrongPassword(12);
     System.out.println("New password:" + generatedPassword);
 
-    String sql = "Insert into [User] (UserName,Password, Email, Role) values (?, ?, ?, ?)";
+    String sql = "Insert into [User] (Name, UserName, Password, PhoneNumber, Email, Address, Role) values (?, ?, ?, ?, ?, ?, ?)";
 
     try {
       PreparedStatement ps = conn.prepareStatement(sql);
-      ps.setString(1, username);
-      ps.setString(2, getMD5hash(generatedPassword));
-      ps.setString(3, email);
-      ps.setString(4, "Client");
+      ps.setString(1, "");
+      ps.setString(2, username);
+      ps.setString(3, getMD5hash(generatedPassword));
+      ps.setString(4, "");
+      ps.setString(5, email);
+      ps.setString(6, "");
+      ps.setString(7, "Client");
 
       result = ps.executeUpdate();
 

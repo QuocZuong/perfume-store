@@ -189,7 +189,7 @@ public class ClientController extends HttpServlet {
         
         int pID = Integer.parseInt(request.getParameter("ProductID"));
         int pQuan = Integer.parseInt(request.getParameter("ProductQuantity"));
-
+        
         // Assume having client Username and get Client ID from username
         int ClientID = uDao.getUser(username).getID();
         

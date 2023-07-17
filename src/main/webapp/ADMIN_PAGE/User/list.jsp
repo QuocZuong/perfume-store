@@ -171,6 +171,7 @@
         <script>
             function changeLink() {
                 let SearchURL = document.getElementById("inputSearch").value;
+                SearchURL = encodeURIComponent(SearchURL);
                 document.getElementById("Search").href = "/Admin/User/List/page/1?txtSearch=" + SearchURL;
             }
         </script>

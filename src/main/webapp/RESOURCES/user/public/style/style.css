@@ -489,6 +489,10 @@ h1 {
   font-size: 1.2rem;
 }
 
+label.error {
+  color: red;
+}
+
 /* For underlined the anchor tag. Made by Nguyen Le Tai Duc, if you want to modified, contact me*/
 div.list li a.active {
   border-bottom: 1px solid black !important;

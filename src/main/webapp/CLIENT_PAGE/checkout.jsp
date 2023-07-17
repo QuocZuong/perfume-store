@@ -305,10 +305,15 @@
         <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
         <script>
             $(document).ready(function () {
+                 $.validator.addMethod("regex", function (value, element, regex) {
+          return regex.test(value);
+        }, "Wrong input.");
+
                 $("form").validate({
                     rules: {
                         txtPhone: {
-                            required: true
+                            required: true,
+                            regex: /(^$|^0[1-9][\d]{8}$)/
                         },
                         txtAddress: {
                             required: true
@@ -316,7 +321,8 @@
                     },
                     messages: {
                         txtPhone: {
-                            required: "Thiếu số điện thoại mặc định vui lòng cập nhật hoặc chọn giao bằng số điện thoại khác"
+                            required: "Thiếu số điện thoại mặc định. Vui lòng cập nhật hoặc chọn giao bằng số điện thoại khác",
+                            regex: "Số điện thoại không hợp lệ"
                         },
                          txtAddress: {
                             required: "Thiếu địa chỉ mặc định vui lòng cập nhật hoặc chọn giao bằng địa chỉ khác"

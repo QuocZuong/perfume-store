@@ -388,10 +388,6 @@
             $("input#pwdConfirmNew").on("input", function () {
                 requirechange("input#pwdConfirmNew");
             });
-
-
-
-
         </script>
     </body>
 

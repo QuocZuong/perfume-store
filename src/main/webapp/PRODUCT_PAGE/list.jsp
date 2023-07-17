@@ -321,6 +321,7 @@
 
             function changeLink() {
                 let SearchURL = document.getElementById("inputSearch").value;
+                SearchURL = encodeURIComponent(SearchURL);
                 console.log(SearchURL);
                 <%
                 String searchTxT = "";
