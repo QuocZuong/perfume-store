@@ -309,6 +309,22 @@
                             required: true,
                             email: true
                         }
+                    },
+                    messages: {
+                        txtFullname: {
+                            maxlength: "Họ và tên không được vượt quá 50 kí tự."
+                        },
+                        txtUserName: {
+                            required: "Tên hiển thị không được để trống.",
+                            maxlength: "Tên hiển thị không được vượt quá 50 kí tự."
+                        },
+                        txtEmail: {
+                            required: "Email không được để trống.",
+                            email: "Email không hợp lệ."
+                        }
+                    },
+                    errorPlacement: function (error, element) {
+                        error.addClass("text-danger");
                     }
 
                 });
@@ -323,16 +339,29 @@
 
                     $("input#pwdCurrent").rules("add", {
                         required: true,
-                        regex: /^.{6,}$/
+                        regex: /^.{6,}$/,
+                        messages: {
+                            required: "Vui lòng nhập mật khẩu hiện tại",
+                            regex: "Mật khẩu phải có ít nhất 6 kí tự."
+                        }
                     });
                     $("input#pwdNew").rules("add", {
                         required: true,
-                        regex: /^.{6,}$/
+                        regex: /^.{6,}$/,
+                        messages: {
+                            required: "Vui lòng nhập mật khẩu mới",
+                            regex: "Mật khẩu phải có ít nhất 6 kí tự."
+                        }
                     });
                     $("input#pwdConfirmNew").rules("add", {
                         required: true,
                         regex: /^.{6,}$/,
-                        equalTo: "input#pwdNew"
+                        equalTo: "input#pwdNew",
+                        messages: {
+                            required: "Vui lòng nhập lại mật khẩu mới",
+                            regex: "Mật khẩu phải có ít nhất 6 kí tự.",
+                            equalTo: "Mật khẩu mới không khớp. Vui lòng nhập lại."
+                        }
                     });
                 } else {
                     $("input#pwdNew").prop("disabled", true);

@@ -173,6 +173,42 @@
                         fileProductImg: {
                             required: true
                         }
+                    },
+                    messages: {
+                        txtProductName: {
+                            required: "Vui lòng nhập tên sản phẩm",
+                            maxlength: "Tên sản phẩm không được vượt quá 300 ký tự"
+                        },
+                        txtBrandName: {
+                            required: "Vui lòng nhập tên thương hiệu",
+                            maxlength: "Tên thương hiệu không được vượt quá 50 ký tự"
+                        },
+                        txtProductPrice: {
+                            required: "Vui lòng nhập giá sản phẩm",
+                            number: "Giá sản phẩm phải là số"
+                        },
+                        rdoGender: {
+                            required: "Vui lòng chọn giới tính"
+                        },
+                        txtProductSmell: {
+                            required: "Vui lòng nhập hương thơm",
+                            maxlength: "Hương thơm không được vượt quá 200 ký tự"
+                        },
+                        txtProductQuantity: {
+                            required: "Vui lòng nhập số lượng",
+                            digits: "Số lượng phải là số nguyên"
+                        },
+                        txtProductReleaseYear: {
+                            required: "Vui lòng nhập năm phát hành",
+                            range: "Năm phát hành phải nằm trong khoảng 1900 - 2100"
+                        },
+                        txtProductVolume: {
+                            required: "Vui lòng nhập dung tích",
+                            digits: "Dung tích phải là số nguyên"
+                        },
+                        fileProductImg: {
+                            required: "Vui lòng chọn ảnh sản phẩm"
+                        }
                     }
                 });
             });

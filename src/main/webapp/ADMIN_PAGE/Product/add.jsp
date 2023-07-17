@@ -113,7 +113,7 @@
                                 <input type="file" name="fileProductImg" id="imgInput" >
                             </label>
                         </div>
-                        <div class="description required">
+                        <div class="description">
                             <label class="required">Description</label>
                             <textarea name="txtProductDescription" cols="30" rows="4"></textarea>
                         </div>
