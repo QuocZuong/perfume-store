@@ -193,3 +193,12 @@ input {
 .nav .account #user-dropdown-btn+ul.drop-down-show {
     height: 61px !important;
 }
+
+.custom-file-upload label{
+    cursor: pointer;
+    min-width: 500px;
+}
+
+.custom-file-upload #imgInput{
+    width: 50px;
+}

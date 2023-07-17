@@ -38,7 +38,11 @@ form fieldset legend {
     font-family: "Josefin Sans", sans-serif;
     margin-bottom: 5px;
     float: none;
-    width: 70px;
+    width: 90px;
+}
+
+form fieldset legend span{
+    color: red;;
 }
 
 form fieldset label {
@@ -78,7 +82,7 @@ form button:hover {
 }
 
 input[type="file"] {
-    display: none;
+   visibility:hidden;
 }
 
 .image img {
@@ -162,7 +166,7 @@ input[type="file"] {
     flex-flow: column nowrap;
     background-color: white;
     margin-top: 1.6rem;
-    top: 585px;
+    top: 30px;
     opacity: 0;
     height: 0px;
     overflow: hidden;
@@ -177,10 +181,9 @@ input[type="file"] {
     right: 58px;
 }
 
-.nav .account button img {
+.nav .account  img {
     width: 23px;
     height: 23px;
-    opacity: 0.7;
 }
 
 .drop-down-show {
@@ -197,4 +200,8 @@ input[type="file"] {
 
 .container{
     width: 50%;
+}
+form .required:after {
+    content: " *";
+    color: red;
 }

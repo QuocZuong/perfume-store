@@ -89,7 +89,7 @@ public class LogController extends HttpServlet {
     public boolean login(HttpServletRequest request, HttpServletResponse response) {
         String us = request.getParameter("txtUsername");
         String pw = request.getParameter("txtPassword");
-        // boolean remember = request.getParameter("txtRememberPassword") != null;
+        boolean remember = request.getParameter("txtRememberPassword") != null;
         UserDAO dao = new UserDAO();
 
         boolean hasUser = false;
@@ -121,12 +121,11 @@ public class LogController extends HttpServlet {
             boolean isAdmin = dao.isAdmin(username);
 
             Cookie c = new Cookie(isAdmin == true ? "Admin" : "Client", username);
-            // if (remember) {
-            //     c.setMaxAge(24 * 60 * 60 * 30);
-            // } else {
-            //     c.setMaxAge(60 * 60 * 1);
-            // }
-            c.setMaxAge(24 * 60 * 60 * 3);
+            if (remember) {
+                c.setMaxAge(24 * 60 * 60 * 30);
+            } else {
+                c.setMaxAge(24 * 60 * 60);
+            }
             c.setPath("/");
             request.getSession().setAttribute("userCookie", c);
             response.addCookie(c);

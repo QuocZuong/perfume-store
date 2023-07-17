@@ -77,7 +77,7 @@
                             <label class="required">Product price</label>
                             <input type="text" name="txtProductPrice">
                         </div>
-                        <div class="gender" class="required">
+                        <div class="gender">
                             <fieldset>
                                 <legend>
                                     Gender <span>*</span>
@@ -109,8 +109,8 @@
                         <div class="image">
                             <label class="custom-file-upload" >
                                 <img src="/RESOURCES/images/icons/cloud-computing.png" class="required" alt="alt"/>
-                                <label class="required">Upload Image</label>
-                                <input type="file" name="fileProductImg" >
+                                <label for="imgInput" class="required" id="filename">Upload Image</label>
+                                <input type="file" name="fileProductImg" id="imgInput" >
                             </label>
                         </div>
                         <div class="description required">
@@ -227,8 +227,8 @@
                                 required: "Vui lòng nhập thông tin mùi hương"
                             }
                         },
-                        
-                        errorPlacement:function (error, element) {
+
+                        errorPlacement: function (error, element) {
                             error.addClass("text-danger d-block mt-2");
 
                             if (element.attr('name') === 'rdoGender') {
@@ -245,6 +245,15 @@
                             error.insertAfter(element);
                         }
                     });
+                });
+
+                $("input[type=file][name=fileProductImg]").on("change", function () {
+                    let fname = $('input[type=file][name=fileProductImg]').val().replace(/C:\\fakepath\\/i, '')
+                    if(fname !== ""){
+                        $("#filename").text(fname);
+                        return;
+                    }
+                    $("#filename").text("Upload Image");
                 });
             </script>
     </body>
