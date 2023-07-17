@@ -196,7 +196,7 @@
                                         <option value="" selected>Chọn phường xã</option>
                                     </select>
                                     <input  type="text" name="txtAddress" id="txtAddress" readonly="true" value="<%= user.getAddress() %>">
-                                    <input style="width:100%" type="text" name="txtPhoneNumber" id="txtPhoneNumber" value="<%= user.getPhoneNumber()%>"> 
+                                    <input style="width:100%" type="text" name="txtPhoneNumber" id="txtPhoneNumber" value="<%= user.getPhoneNumber()%>" placeholder="Số điện thoại"> 
                                 </div>
                                 <button type="submit" name="btnUpdateAdress" value="Submit"> <h4>Sửa</h4> </button>
                             </form>

@@ -626,7 +626,7 @@ div.list li a.active {
   width: 100%;
 }
 
-.error {
+label.error {
   color: red;
 }
 
