@@ -34,23 +34,23 @@ function showPage(index, activeLink) {
 
 const accountLinks = document.querySelectorAll('.account-link');
 
-    accountLinks.forEach((link) => {
-        link.addEventListener('click', (e) => {
-            console.log("clicked");
-            e.preventDefault();
-            const targetPage = link.getAttribute('data-page');
-            if(targetPage === "order-page"){
-                hideAllPage();
-                currentActiveLink = showPage(1, currentActiveLink);
-            }
-            if(targetPage === "address-page"){
-                hideAllPage();
-                currentActiveLink =showPage(2, currentActiveLink);
-            }
-            if(targetPage === "info-page"){
-                hideAllPage();
-                currentActiveLink =showPage(3, currentActiveLink);
-            }
-        });
-    });
+accountLinks.forEach((link) => {
+  link.addEventListener('click', (e) => {
+    console.log("clicked");
+    e.preventDefault();
+    const targetPage = link.getAttribute('data-page');
+    if (targetPage === "order-page") {
+      hideAllPage();
+      currentActiveLink = showPage(1, currentActiveLink);
+    }
+    if (targetPage === "address-page") {
+      hideAllPage();
+      currentActiveLink = showPage(2, currentActiveLink);
+    }
+    if (targetPage === "info-page") {
+      hideAllPage();
+      currentActiveLink = showPage(3, currentActiveLink);
+    }
+  });
+});
 
