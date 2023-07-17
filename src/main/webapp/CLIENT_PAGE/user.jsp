@@ -78,12 +78,6 @@
 
 
         <div class="container-fluid">
-            <h1 class="d-none"><%= user.getName()%></h1>
-            <h1 class="d-none"><%= user.getUsername()%></h1>
-            <h1 class="d-none"><%= user.getEmail()%></h1>
-            <h1 class="d-none">|<%= Tinh%>|</h1>            
-            <h1 class="d-none">|<%= QuanHuyen%>|</h1>            
-            <h1 class="d-none">|<%= PhuongXa%>|</h1>
             <div class="row">
                 <div class="col-md-12 nav">
                     <ul>
@@ -107,25 +101,28 @@
                     <h1>Tài khoản của tôi</h1>
                     <div class="list">
                         <ul>
-                            <li><a class="<%= isUpdateAccountExecption ? "" : "active"%>">Trang tài khoản</a></li>
+                            <li><a class="<%= isUpdateAccountExecption || isUpdateAddressExecption ? "" : "active"%>">Trang tài khoản</a></li>
                             <li><a class="">Đơn hàng</a></li>
-                            <li><a class="">Địa chỉ</a></li>
+                            <li><a class="<%= isUpdateAddressExecption ? "active" : ""%>">Địa chỉ</a></li>
                             <li><a class="<%= isUpdateAccountExecption ? "active" : ""%>">Tài khoản</a></li>
                             <li><a href="/Log/Logout">Đăng xuất</a></li>
                         </ul>
                     </div>
                 </div>
                 <div class="right">
+
                     <div class="account-page">
                         <p>Xin chào <b><strong><%=  (user.getName() != null && !user.getName().isEmpty()) ? user.getName() : user.getUsername()%></strong></b> (không phải tài khoản
-                            <b><strong><%=  (user.getName() != null && !user.getName().isEmpty()) ? user.getName() : user.getUsername()%></strong></b>? Hãy <a href="">thoát ra</a> và đăng nhập vào tài
+                            <b><strong><%=  (user.getName() != null && !user.getName().isEmpty()) ? user.getName() : user.getUsername()%></strong></b>? Hãy <a href="/Log/Logout">thoát ra</a> và đăng nhập vào tài
                             khoản của bạn)</p>
                         <p>
-                            Từ trang quản lý tài khoản bạn có thể xem <a href="">đơn hàng mới</a>, quản lý <a
-                                href="">địa chỉ giao hàng và thanh toán</a>, và <a href="">sửa mật khẩu và thông tin
-                                tài khoản</a>.
+                            Từ trang quản lý tài khoản bạn có thể xem
+                            <a  class="account-link" data-page="order-page">đơn hàng mới</a>,
+                            quản lý <a  class="account-link" data-page="address-page">địa chỉ giao hàng và thanh toán</a>,
+                            và <a  class="account-link" data-page="info-page">sửa mật khẩu và thông tin tài khoản</a>.
                         </p>
                     </div>
+
                     <div class="order-page">
                         <c:choose>
                             <c:when test='<%=orders.size() == 0%>'>
@@ -164,6 +161,22 @@
                     </div>
                     <div class="address-page">
                         <p>Các địa chỉ bên dưới mặc định sẽ được sử dụng ở trang thanh toán sản phẩm.</p>
+                        
+                        
+                        <!--Execption Handling-->
+                        <c:choose>
+                            <c:when test='<%= isNotEnoughInfomation%>'>
+                                <h2 class="alert alert-danger">
+                                    Vui lòng chọn đầy đủ tỉnh thành, quận huyện, phường xã.
+                                </h2>
+                            </c:when>
+                            <c:when test='<%= isExistPhone%>'>
+                                <h2 class="alert alert-danger">
+                                   Số điện thoại đã tồn tại.
+                                </h2>
+                            </c:when>
+                        </c:choose>
+                        <!--Execption Handling-->
                         <div class="default">
 
                             <!-- Add new Form. Maybe Change later-->
@@ -182,8 +195,8 @@
                                     <select id="ward" class="form-select">
                                         <option value="" selected>Chọn phường xã</option>
                                     </select>
+                                    <input  type="text" name="txtAddress" id="txtAddress" readonly="true" value="<%= user.getAddress() %>">
                                     <input style="width:100%" type="text" name="txtPhoneNumber" id="txtPhoneNumber" value="<%= user.getPhoneNumber()%>"> 
-                                    <input  type="hidden" name="txtAddress" id="txtAddress" >
                                 </div>
                                 <button type="submit" name="btnUpdateAdress" value="Submit"> <h4>Sửa</h4> </button>
                             </form>
@@ -204,24 +217,24 @@
                         <!--Execption Handling-->
                         <c:choose>
                             <c:when test='<%= isAccountNotFound%>'>
-                                <h1 class="alert alert-danger">
-                                    Sai mật khẩu hiện tại
-                                </h1>
+                                <h2 class="alert alert-danger">
+                                    Sai mật khẩu hiện tại.
+                                </h2>
                             </c:when>
                             <c:when test='<%= isAccountDeactivated%>'>
-                                <h1 class="alert alert-danger">
+                                <h2 class="alert alert-danger">
                                     Tài khoản đã bị vô hiệu hóa.
-                                </h1>
+                                </h2>
                             </c:when>
                             <c:when test='<%= isExistEmail%>'>
-                                <h1 class="alert alert-danger">
-                                    Email đã tồn tại
-                                </h1>
+                                <h2 class="alert alert-danger">
+                                    Email đã tồn tại.
+                                </h2>
                             </c:when>
                             <c:when test='<%= isExistUsername%>'>
-                                <h1 class="alert alert-danger">
-                                    Tên đăng nhập đã tồn tại
-                                </h1>
+                                <h2 class="alert alert-danger">
+                                    Tên đăng nhập đã tồn tại.
+                                </h2>
                             </c:when>
                         </c:choose>
                         <!--Execption Handling-->
@@ -418,9 +431,15 @@
                     let result = (city === DefaultCity ? "" : city);
                     result += (district === DefaultDistrict ? "" : sp + district);
                     result += (ward === DefaultWard ? "" : sp + ward);
-                    $("#result").text(result);
-                    console.log("update value success");
-                    $("input#txtAddress").val(result);
+                    if(city !== DefaultCity && district !== DefaultDistrict && ward !== DefaultWard){
+                        $("#result").text(result);
+                        console.log("update value success");
+                        $("input#txtAddress").val(result);
+                    }else{
+                        $("#result").text("");
+                        console.log("update value null");
+                        $("input#txtAddress").val("");
+                    }
                 }
             };
         </script>

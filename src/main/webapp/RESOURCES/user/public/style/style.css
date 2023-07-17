@@ -303,6 +303,7 @@ h1 {
 .main .right .info-page input {
   height: 40px;
   border: 1px solid rgba(0, 0, 0, 0.3);
+  padding: 0 10px;
 }
 
 .main .right .info-page .fullname {

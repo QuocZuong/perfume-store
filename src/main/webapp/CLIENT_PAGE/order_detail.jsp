@@ -55,11 +55,6 @@
 
 
         <div class="container-fluid">
-            <h1><%= user.getName()%></h1>
-            <h1><%= user.getUsername()%></h1>
-            <h1><%= user.getEmail()%></h1>
-            <h1><%= user.getPassword()%></h1>
-            <h1> Order size la <%= order.size()%> </h1>
             <div class="row">
                 <div class="col-md-12 nav">
                     <ul>

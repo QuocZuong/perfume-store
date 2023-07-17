@@ -323,9 +323,6 @@
                             email: "Email không hợp lệ."
                         }
                     },
-                    errorPlacement: function (error, element) {
-                        error.addClass("text-danger");
-                    }
 
                 });
             });
