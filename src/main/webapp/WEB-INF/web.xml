@@ -37,9 +37,12 @@
         <filter-name>UserValidation</filter-name>
         <filter-class>Filters.UserValidation</filter-class>
     </filter>
-    
-    <!-- Filter Controller mapping -->
     <filter-mapping>
+        <filter-name>UserValidation</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping> 
+    <!-- Filter Controller mapping -->
+    <!-- <filter-mapping>
         <filter-name>UserValidation</filter-name>
         <url-pattern>/</url-pattern>
     </filter-mapping> 
@@ -62,7 +65,7 @@
     <filter-mapping>
         <filter-name>UserValidation</filter-name>
         <url-pattern>/Admin/*</url-pattern>
-    </filter-mapping>
+    </filter-mapping> -->
 
     <!-- Filter for prevent folder -->
     <!-- <filter-mapping>

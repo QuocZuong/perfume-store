@@ -81,7 +81,7 @@
             <div class="main">
                 <div class="right">
                     <div class="order-page">
-                        <c:if test="<%= CheckOutSuccess != null %>">
+                        <c:if test='<%= CheckOutSuccess != null %>'>
                             <div class="CheckOutSuccess">
                                 <h1 class="display-4 mb-10">THANH TOÁN THÀNH CÔNG</h1>
                             </div>
@@ -98,7 +98,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <c:if test="<%=  order.size() > 0%>">
+                                <c:if test='<%=  order.size() > 0%>'>
                                     <c:forEach var="i" begin="0" end="<%= order.size() - 1%>">
                                         <tr>
                                             <th scope="row"><%=(int) pageContext.getAttribute("i") + 1%></th>
@@ -113,7 +113,7 @@
                                         <td colspan="6">
                                             <p><img src="/RESOURCES/images/icons/smartphone.png" alt="alt"/><span class="info"><%=OrderInfor.getPhoneNumber()%></span></p>
                                             <p><img src="/RESOURCES/images/icons/location-pin.png" alt="alt"/><span class="info"><%=OrderInfor.getAddress()%></span></p>
-                                            <c:if test="<%= (OrderInfor.getNote() != null && !OrderInfor.getNote().equals(""))%>">
+                                            <c:if test='<%= (OrderInfor.getNote() != null && !OrderInfor.getNote().equals(""))%>'>
                                                 <p><img src="/RESOURCES/images/icons/email.png" alt="alt"/><span class="info"><%=OrderInfor.getNote()%></span></p>
                                             </c:if>
                                         </td>
@@ -122,7 +122,7 @@
                             </tbody>
                         </table>
                         <!-- -->
-                         <c:if test="<%= CheckOutSuccess != null %>"> 
+                         <c:if test='<%= CheckOutSuccess != null %>'> 
                             <a href="/Product/List" class="btn btn-outline-dark rounded-0">QUAY LẠI TRANG SẢN PHẨM</a>
                         </c:if>
                     </div>

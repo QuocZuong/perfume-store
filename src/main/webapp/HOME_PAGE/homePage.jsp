@@ -50,7 +50,7 @@
             </div>
 
             <c:choose>
-                <c:when test="<%= isAdmin%>">
+                <c:when test='<%= isAdmin%>'>
 
                     <div class="row">
                         <div class="col-md-12 nav">

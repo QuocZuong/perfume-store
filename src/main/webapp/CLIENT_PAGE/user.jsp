@@ -128,7 +128,7 @@
                     </div>
                     <div class="order-page">
                         <c:choose>
-                            <c:when test="<%=orders.size() == 0%>">
+                            <c:when test='<%=orders.size() == 0%>'>
                                 <p>Bạn chưa có đơn hàng nào</p>
                             </c:when>
 
@@ -145,7 +145,7 @@
                                     <tbody>
                                         <tr>
 
-                                            <c:if test="<%=orders.size() != 0%>">
+                                            <c:if test='<%=orders.size() != 0%>'>
                                                 <c:forEach var="i" begin="0" end="<%=orders.size() - 1%>">
                                                 <tr>
                                                     <th scope="row"><%=orders.get((int) pageContext.getAttribute("i")).getID()%></th>

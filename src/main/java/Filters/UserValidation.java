@@ -23,8 +23,7 @@ public class UserValidation implements Filter {
     private FilterConfig filterConfig = null;
     private boolean debug = true;
     private final UserDAO userDAO = new UserDAO();
-    private final String[] FOLDER_URL_LIST = {"/ADMIN_PAGE", "/CLIENT_PAGE", "/LOGIN_PAGE", "/PRODUCT_PAGE",
-        "/USER_PAGE"};
+    private final String[] FOLDER_URL_LIST = {"/ADMIN_PAGE", "/CLIENT_PAGE", "/LOGIN_PAGE", "/PRODUCT_PAGE", "/USER_PAGE"};
 
     public UserValidation() {
     }

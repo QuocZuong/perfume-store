@@ -159,7 +159,7 @@
                                 </table>
                                 <input type="hidden" name="ListSize" value="<%= listCart.size()%>" />
                                 <c:choose>
-                                    <c:when test="<%= listCart.size() > 0%>">
+                                    <c:when test='<%= listCart.size() > 0%>'>
                                         <div>
                                             <button type="submit" class="btn-disabled"><span>Cập nhật giỏ hàng</span></button>
                                         </div>
@@ -177,7 +177,7 @@
                         </div>
 
                         <c:choose>
-                            <c:when test="<%= listCart.size() > 0%>">
+                            <c:when test='<%= listCart.size() > 0%>'>
                                 <div class="right">
                                     <div class="checkout">
                                         <h2>Phiếu thanh toán</h2>

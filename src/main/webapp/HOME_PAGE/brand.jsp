@@ -71,7 +71,7 @@
                             boolean hasRow = rs.isBeforeFirst();
                             pageContext.setAttribute("hasRow", hasRow);
                         %>
-                        <c:if test="${hasRow}">
+                        <c:if test='${hasRow}'>
                             <div class="brands">
                                 <h3><%= c%></h3>
                                 <%

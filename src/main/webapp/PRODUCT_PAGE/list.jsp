@@ -220,10 +220,10 @@
 
                                 <c:forEach var="i" begin="${page-2<0?0:page-2}" end="${page+2 +1}">
                                     <c:choose>
-                                        <c:when test="${i==page}">
+                                        <c:when test='${i==page}'>
                                             <li class="page-item active"><a href="${currentURL}/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
                                             </c:when>
-                                            <c:when test="${i>0 && i<=numberOfPage}"> 
+                                            <c:when test='${i>0 && i<=numberOfPage}'> 
                                             <li class="page-item"><a href="${currentURL}/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
                                             </c:when>
                                             <c:otherwise>

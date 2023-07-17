@@ -97,7 +97,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                        <c:if test="<%=  order.size() > 0%>">
+                        <c:if test='<%=  order.size() > 0%>'>
                             <c:forEach var="i" begin="0" end="<%= order.size() - 1%>">
                                 <tr>
                                     <th scope="row"><%=(int) pageContext.getAttribute("i") + 1%></th>
@@ -112,8 +112,8 @@
                                 <td colspan="6">
                                     <p><img src="/RESOURCES/images/icons/smartphone.png" alt="alt"/><span class="info"><%=OrderInfor.getPhoneNumber()%></span></p>
                                     <p><img src="/RESOURCES/images/icons/location-pin.png" alt="alt"/><span class="info"><%=OrderInfor.getAddress()%></span></p>
-                                    <c:if test="<%= (OrderInfor.getNote() != null && !OrderInfor.getNote().equals(""))%>">
-                                        <p><img src="/RESOURCES/images/icons/note.png" alt="alt"/><span class="info"><%=OrderInfor.getNote()%></span></p>
+                                    <c:if test='<%= (OrderInfor.getNote() != null && !OrderInfor.getNote().equals(""))%>'>
+                                        <p><img src="/RESOURCES/images/icons/email.png" alt="alt"/><span class="info"><%=OrderInfor.getNote()%></span></p>
                                     </c:if>
                                 </td>
                             </tr>

@@ -114,7 +114,7 @@
                         </thead>
 
                         <tbody>
-                            <c:if test="<%= (listUser.size() != 0)%>">
+                            <c:if test='<%= (listUser.size() != 0)%>'>
                                 <c:forEach var="i" begin="0" end="<%= listUser.size() - 1%>">
                                     <%
                                         User us = listUser.get((int) pageContext.getAttribute("i"));
@@ -154,10 +154,10 @@
                 <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>"><a class="page-link" href="/Admin/User/List/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></a></li>
                     <c:forEach var="i" begin="${page-2<0?0:page-2}" end="${page+2 +1}">
                         <c:choose>
-                            <c:when test="${i==page}">
+                            <c:when test='${i==page}'>
                             <li class="page-item active"><a href="/Admin/User/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
                             </c:when>
-                            <c:when test="${i>0 && i<=numberOfPage}"> 
+                            <c:when test='${i>0 && i<=numberOfPage}'> 
                             <li class="page-item"><a href="/Admin/User/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
                             </c:when>
                             <c:otherwise>

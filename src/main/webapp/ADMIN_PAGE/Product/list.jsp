@@ -120,7 +120,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <c:if test="<%= (listProduct.size() != 0)%>">
+                            <c:if test='<%= (listProduct.size() != 0)%>'>
                                 <c:forEach var="i" begin="0" end="<%= listProduct.size() - 1%>">
                                     <%
                                         Product pd = listProduct.get((int) pageContext.getAttribute("i"));
