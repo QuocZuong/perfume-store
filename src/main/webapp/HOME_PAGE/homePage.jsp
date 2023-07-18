@@ -321,7 +321,7 @@
                                     <img src="https://xxivstore.com/wp-content/uploads/2020/07/558153_1_4-e1594898257731-600x530.png" alt="" class="product-img">
                                     <span class="product-brand">Dior</span>
                                     <hr>
-                                    <span class="product-name">Miss Dior Blooming Bouquet EDT</span>
+                                    <span class="product-name">Miss Dior Blooming</span>
                                     <span class="product-price">3.600.000 <span>đ</span></span>
                                 </div>
                             </a>
