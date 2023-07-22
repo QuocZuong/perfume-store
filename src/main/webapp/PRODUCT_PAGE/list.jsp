@@ -11,10 +11,16 @@
 <%! ProductDAO pdao = new ProductDAO();%>
 <%! BrandDAO bdao = new BrandDAO();%>
 <%! ResultSet rs = null;%>
+
+<%! boolean isProductNotFound;%>
 <%! int currentPage, numberOfPage;%>
 <%
     currentPage = (int) request.getAttribute("page");
     numberOfPage = (int) request.getAttribute("numberOfPage");
+
+    // Handling exception
+    String err = "err";
+    isProductNotFound = (request.getParameter(err + "PNF") == null ? false : Boolean.parseBoolean(request.getParameter(err + "PNF")));
 %>
 
 <!DOCTYPE html>
@@ -38,6 +44,7 @@
         <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css"
               rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+        <script src="https://kit.fontawesome.com/49a22e2b99.js" crossorigin="anonymous"></script>
         <title>
             <%= request.getAttribute("shopName")%>
         </title>
@@ -58,7 +65,6 @@
                         <li><a href="/home/brand">thương hiệu</a></li>
                         <!-- This link to shop servlet file. DO NOT MODIFY the link -->
                         <li><a href="/Product/List">sản phẩm</a></li>
-                        <li><a href="">blog</a></li>
                     </ul>
                     <a href="/"><img src="/RESOURCES/images/icons/icon.webp" alt=""
                                      height="64"></a>
@@ -71,7 +77,7 @@
                     </div>
                     <div class="search-box">
                         <div class="search-box-first">
-                            <a href="" id="SearchProduct" onclick="changeLink()">
+                            <a href="" id="SearchProduct" onclick="changeLink()" >
                                 <img src="/RESOURCES/images/icons/search.png" alt="">
                             </a>
                             <input id="inputSearch" type="text" name="txtSearch" placeholder="Tìm kiếm" value="<%= (request.getParameter("txtSearch") != null ? request.getParameter("txtSearch") : "")%>" autofocus onkeydown="handleKeyDown(event)">
@@ -143,44 +149,52 @@
 
                         </div>
 
-                        <div class="products" id="products">
-                            <div class="top" id="top">
-                                <select name="sorting" id="sorting" class="sorting" autofocus
-                                        onchange="callSorting(this.value)">
-                                    <option value="all"><button type="button">Tất cả</button></option>
-                                    <option value="lowToHigh"><button type="button">Thứ tự theo giá:
-                                        thấp đến cao</button></option>
-                                    <option value="highToLow"><button type="button">Thứ tự theo giá: cao
-                                        đến thấp</button></option>
-                                </select>
-                            </div>
-
-                            <% rs = (ResultSet) request.getAttribute("PDResultSet");
-
-                                while (rs != null
-                                        && rs.next()) {%>
-
-                            <a href="/Product/Detail/ID/<%=  rs.getInt("ID")%>">
-                                <div class="product">
-                                    <img src="<%= rs.getNString("ImgURL")%>" alt="" class="product-img">
-                                    <span class="product-brand">
-                                        <%= bdao.getBrandName(rs.getInt("BrandID"))%>
-                                    </span>
-                                    <span class="product-name">
-                                        <%= rs.getNString("Name")%> 
-                                    </span>
-                                    <span class="product-price">
-                                        <%= pdao.getPrice(rs.getInt("ID"))%> <span>đ</span>
-                                    </span>
+                        <c:choose>
+                            <c:when  test="<%= isProductNotFound%>">
+                                <div> 
+                                    <h1 class="display-6">Không tìm thấy sản phẩm nào khớp với lựa chọn của bạn.</h1>
                                 </div>
-                            </a>
+                            </c:when>
+                            <c:otherwise>
 
-                            <%
+                                <div class="products" id="products">
+                                    <div class="top" id="top">
+                                        <select name="sorting" id="sorting" class="sorting" autofocus
+                                                onchange="callSorting(this.value)">
+                                            <option value="all"><button type="button">Tất cả</button></option>
+                                            <option value="lowToHigh"><button type="button">Thứ tự theo giá:
+                                                thấp đến cao</button></option>
+                                            <option value="highToLow"><button type="button">Thứ tự theo giá: cao
+                                                đến thấp</button></option>
+                                        </select>
+                                    </div>
 
-                                }
+                                    <% rs = (ResultSet) request.getAttribute("PDResultSet");
 
-                            %>
-                        </div>
+                                        while (rs != null
+                                                && rs.next()) {%>
+
+                                    <a href="/Product/Detail/ID/<%=  rs.getInt("ID")%>">
+                                        <div class="product">
+                                            <img src="<%= rs.getNString("ImgURL")%>" alt="" class="product-img">
+                                            <span class="product-brand">
+                                                <%= bdao.getBrandName(rs.getInt("BrandID"))%>
+                                            </span>
+                                            <span class="product-name">
+                                                <%= rs.getNString("Name")%> 
+                                            </span>
+                                            <span class="product-price">
+                                                <%= pdao.getPrice(rs.getInt("ID"))%> <span>đ</span>
+                                            </span>
+                                        </div>
+                                    </a>
+                                    <%
+                                        }
+                                    %>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>       
+
 
                     </div>
                     <!--                    <ul class="pagination">
@@ -195,21 +209,21 @@
                             <ul class="pagination">
                                 <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>">
                                     <a class="page-link" href="${currentURL}/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link">
-                                        <div><i class="bi bi-skip-backward" id></i></div>
+                                        <i class="fa-solid fa-angles-left" style="color: #000000;"></i>
                                     </a>
                                 </li>
                                 <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>">
                                     <a class="page-link" href="${currentURL}/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link">
-                                        <div style="transform: rotate(180deg);"><i class="bi bi-play"></i></div>
+                                        <i class="fa-solid fa-angle-left" style="color: #000000;"></i>
                                     </a>
                                 </li>
 
                                 <c:forEach var="i" begin="${page-2<0?0:page-2}" end="${page+2 +1}">
                                     <c:choose>
-                                        <c:when test="${i==page}">
+                                        <c:when test='${i==page}'>
                                             <li class="page-item active"><a href="${currentURL}/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
                                             </c:when>
-                                            <c:when test="${i>0 && i<=numberOfPage}"> 
+                                            <c:when test='${i>0 && i<=numberOfPage}'> 
                                             <li class="page-item"><a href="${currentURL}/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
                                             </c:when>
                                             <c:otherwise>
@@ -220,12 +234,12 @@
 
                                 <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>">
                                     <a class="page-link" href="${currentURL}/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link">
-                                        <i class="bi bi-play"></i>
+                                        <i class="fa-solid fa-angle-right" style="color: #000000;"></i>
                                     </a>
                                 </li>
                                 <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>">
                                     <a class="page-link" href="${currentURL}/page/<%=numberOfPage%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link">
-                                        <i class="bi bi-skip-forward"></i>
+                                        <i class="fa-solid fa-angles-right" style="color: #000000;"></i>
                                     </a>
                                 </li>
                             </ul>
@@ -239,9 +253,9 @@
                 <div class="col-md-12 register">
                     <h1>Đăng ký thành viên để nhận khuyến mại</h1>
                     <p>Theo dõi chúng tôi để nhận thêm nhiều ưu đãi</p>
-                    <form action="">
-                        <input type="text" name="" id="" placeholder="nhập email">
-                        <button>ĐĂNG KÝ</button>
+                    <form action="/home/subscribe" method="POST">
+                        <input type="text" name="txtEmailSubscribe" id="" placeholder="nhập email" required="true">
+                        <button type="submit" name="submitEmailBtn" value="Submit" class="enter">ĐĂNG KÝ</button>
                     </form>
                 </div>
             </div>
@@ -299,20 +313,48 @@
         </div>
         <!-- This is funtion search -->
         <script>
+
+            let input = document.getElementById("inputSearch");
+            input.addEventListener("input",()=>{
+                console.log(input.value);
+            })
+
             function changeLink() {
                 let SearchURL = document.getElementById("inputSearch").value;
-            <%! String searchTxT;%>
-            <%
-                    if (request.getQueryString() != null) {
-                        if (request.getQueryString().startsWith("txtSearch")) {
-                            searchTxT = "txtSearch=";
-                        } else {
-                            searchTxT = "&txtSearch=";
-                        }
+                SearchURL = encodeURIComponent(SearchURL);
+                console.log(SearchURL);
+                <%
+                String searchTxT = "";
+                if (request.getQueryString() != null) {
+                    if (request.getQueryString().startsWith("txtSearch") || request.getQueryString().startsWith("errPNF")) {
+                        searchTxT = "txtSearch=";
+                    } else {
+                        searchTxT = "&txtSearch=";
                     }
-            %>
-                document.getElementById("SearchProduct").href = "${currentURL}/page/1<%= (request.getQueryString() == null ? "?txtSearch=" : "?" + request.getQueryString().replace("&txtSearch=" + request.getParameter("txtSearch"), "").replace("txtSearch=" + request.getParameter("txtSearch"), "") + searchTxT)%>" + SearchURL;
+                }
+                %>
+                let url = "${currentURL}/page/1";
+                
+                <%
+                    String urljava = "";
+                    if(request.getQueryString() == null){
+                        urljava = "?txtSearch=";
+                        System.out.println(urljava);
                     }
+                    else{
+                        urljava = request.getQueryString();
+                        urljava = urljava.replace("&errPNF=true", "");
+                        urljava = urljava.replace("errPNF=true", "");
+                        urljava = urljava.replace("&txtSearch=" + request.getParameter("txtSearch"), "");
+                        urljava = urljava.replace("txtSearch=" + request.getParameter("txtSearch"), "");
+                        urljava += searchTxT;
+                        urljava = "?" + urljava;
+                        System.out.println(urljava);
+                    }
+                %>
+                url = url + "<%= urljava %>" + SearchURL;               
+                document.getElementById("SearchProduct").href = url;
+            }
         </script>
 
         <script
@@ -320,7 +362,49 @@
             integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>
         <script src="/RESOURCES/shop/public/js/main.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+                    integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+            crossorigin="anonymous"></script>
 
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+
+            <script src="/RESOURCES/admin/product/public/js/main.js"></script>
+            <!--Jquery Validation-->
+            <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+            <script>
+                $(document).ready(function () {
+                    $.validator.addMethod("emailCustom", function (value, element, toggler) {
+                        if (toggler) {
+                            let regex = /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/;
+                            let result = regex.test(value);
+                            return result;
+                        }
+                        return true;
+                    }, "Vui lòng nhập đúng định dạng email");
+
+                    $("form[action='/home/subscribe']").validate({
+                        rules: {
+                            txtEmailSubscribe: {
+                                required: true,
+                                email:true
+                            }
+                        },
+                        messages: {
+                            txtEmailSubscribe: {
+                                required: "Vui lòng nhập email",
+                                email: "Vui lòng nhập đúng định dạng email"
+                            }
+                        },
+
+                        errorPlacement: function (error, element) {
+                            error.addClass("text-danger d-block mt-3");
+                            error.insertAfter(element.next());
+                        }
+
+                    });
+                });
+            </script>
 
     </body>
 

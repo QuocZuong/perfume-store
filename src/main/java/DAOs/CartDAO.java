@@ -1,6 +1,8 @@
 package DAOs;
 
 import Models.Cart;
+import Models.Product;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -82,6 +84,19 @@ public class CartDAO {
         }
         return 0;
     }
+
+    public int deleteAllDeletedProduct() {
+        String sql = "Delete from Cart\n" + //
+                "Where ProductID in (Select ID from Product Where Active = 0)";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            return ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(CartDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
 
     /**
      * Retrieves all cart items from the database for a given client ID.
@@ -174,6 +189,31 @@ public class CartDAO {
         } catch (SQLException ex) {
             Logger.getLogger(CartDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return out;
+    }
+
+    public List<Product> getAllOutOfStockProductIDFromCart(int ClientID){
+        ProductDAO pDAO = new ProductDAO();
+        ResultSet rs = null;
+        List<Product> out = new ArrayList<>();
+        try {
+            // String sql = "SELECT Cart.ProductID, Cart.Quantity as CartQuantity FROM Cart WHERE ClientID = ?";
+            String sql ="Select ProductID from Cart, Product\n" + 
+                    "Where Cart.ProductID = Product.ID\n" + 
+                    "And ClientID = ?\n" + 
+                    "AND(Product.Quantity = 0 Or Cart.Quantity > Product.Quantity)\n"+
+                    "Order by Product.BrandID";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, ClientID);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int ProductID = rs.getInt("ProductID");
+                Product pd = pDAO.getProduct(ProductID);
+                out.add(pd);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }        
         return out;
     }
 

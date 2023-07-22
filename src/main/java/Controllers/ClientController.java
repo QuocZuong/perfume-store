@@ -22,12 +22,15 @@ import Exceptions.WrongPasswordException;
 import Lib.EmailSender;
 import Models.Cart;
 import Models.Order;
+import Models.Product;
 import Models.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ClientController extends HttpServlet {
 
@@ -43,70 +46,72 @@ public class ClientController extends HttpServlet {
     public static final String CLIENT_UPDATE_ADDRESS_URI = "/Client/Update/Address";
     public static final String CLIENT_CHECKOUT_URI = "/Client/Checkout";
     public static final String CLIENT_ORDER_DETAIL_URI = "/Client/Order/Detail/ID";
+    
     public static final String BTN_ADD_TO_CART = "btnAddToCart";
     public static final String SUBMIT_VALUE = "Submit";
 
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String path = request.getRequestURI();
         System.out.println("Request Path URI " + path);
-
+        
         if (path.startsWith(CLIENT_CART_DELETE_URI)) {
             System.out.println("Going delete");
             deleteCartProduct(request, response);
             response.sendRedirect(CLIENT_CART_URI);
             return;
         }
-
+        
         if (path.startsWith(CLIENT_CART_UPDATE_URI)) {
             System.out.println("Going update");
             updateCartProduct(request, response);
             response.sendRedirect(CLIENT_CART_URI);
             return;
         }
-
+        
         if (path.startsWith(CLIENT_CART_CHECKOUT_URI)) {
             System.out.println("Going checkout");
-            request.getRequestDispatcher("/CLIENT_PAGE/checkout.jsp").forward(request, response);
+            boolean kq = handleCheckout(request, response);
+            if (kq) {
+                request.getRequestDispatcher("/CLIENT_PAGE/checkout.jsp").forward(request, response);
+            } else {
+                response.sendRedirect(CLIENT_CART_URI);
+            }
             return;
         }
-
+        
         if (path.startsWith(CLIENT_CART_URI)) {
             System.out.println("Going cart");
             GetCartProduct(request, response);
             request.getRequestDispatcher("/CLIENT_PAGE/cart.jsp").forward(request, response);
             return;
         }
-
-        boolean isAdmin = ((Cookie) request.getSession().getAttribute("userCookie")).getName().equals("Admin");
-
+        
         if (path.startsWith(CLIENT_USER_URI)) {
-            if (isAdmin) {
-                System.out.println("Going admin");
-                response.sendRedirect("/Admin");
-            } else {
-                System.out.println("Going user");
-                request.getRequestDispatcher("/CLIENT_PAGE/user.jsp").forward(request, response);
-            }
+            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            response.setHeader("Pragma", "no-cache");
+            response.setHeader("Expires", "0");
+            System.out.println("Going user");
+            request.getRequestDispatcher("/CLIENT_PAGE/user.jsp").forward(request, response);
             return;
         }
-
+        
         if (path.startsWith(CLIENT_ORDER_DETAIL_URI)) {
             System.out.println("Going Order Detail");
             ClientOrderDetail(request, response);
             request.getRequestDispatcher("/CLIENT_PAGE/order_detail.jsp").forward(request, response);
             return;
         }
-
+        
         System.out.println("Going home");
         response.sendRedirect("/");
     }
@@ -114,10 +119,10 @@ public class ClientController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -126,7 +131,7 @@ public class ClientController extends HttpServlet {
         if (path.startsWith(CLIENT_ADD_TO_CART_URI)) {
             if (request.getParameter(BTN_ADD_TO_CART) != null
                     && request.getParameter(BTN_ADD_TO_CART).equals(SUBMIT_VALUE)) {
-
+                
                 PostAddToCart(request, response);
                 int pID = Integer.parseInt(request.getParameter("ProductID"));
                 response.sendRedirect("/Product/Detail/ID/" + pID);
@@ -149,8 +154,11 @@ public class ClientController extends HttpServlet {
             if (request.getParameter("btnUpdateAdress") != null
                     && request.getParameter("btnUpdateAdress").equals("Submit")) {
                 System.out.println("Going update address");
-                updateClientAddress(request, response);
-                response.sendRedirect(CLIENT_USER_URI);
+                if (updateClientAddress(request, response)) {
+                    response.sendRedirect(CLIENT_USER_URI);
+                } else {
+                    response.sendRedirect(CLIENT_USER_URI + checkException(request));
+                }
                 return;
             }
         }
@@ -158,41 +166,53 @@ public class ClientController extends HttpServlet {
             if (request.getParameter("btnSubmitCheckOut") != null
                     && request.getParameter("btnSubmitCheckOut").equals("Submit")) {
                 System.out.println("Going Checkout");
-                ClientCheckout(request, response);
+                if (ClientCheckout(request, response)) {
+                    int OrderID = (int) request.getAttribute("OrderID");
+                    String CheckOutSuccess = (String) request.getAttribute("CheckOutSuccess");
+                    response.sendRedirect(CLIENT_ORDER_DETAIL_URI + "/" + OrderID + CheckOutSuccess);
+                    return;
+                }
                 response.sendRedirect(CLIENT_CART_URI);
                 return;
             }
         }
+        
     }
 
     /* CRUD */
     // ---------------------------- CREATE SECTION ----------------------------
     private void PostAddToCart(HttpServletRequest request, HttpServletResponse response) {
         UserDAO uDao = new UserDAO();
-
+        
         Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
         String username = userCookie.getValue();
-
+        
         int pID = Integer.parseInt(request.getParameter("ProductID"));
         int pQuan = Integer.parseInt(request.getParameter("ProductQuantity"));
-
+        
         // Assume having client Username and get Client ID from username
         int ClientID = uDao.getUser(username).getID();
-
+        
         CartDAO cDAO = new CartDAO();
         cDAO.addToCart(ClientID, pID, pQuan);
     }
-
+    
     private boolean ClientCheckout(HttpServletRequest request, HttpServletResponse response) {
         UserDAO usDAO = new UserDAO();
         CartDAO cDAO = new CartDAO();
         ProductDAO pDAO = new ProductDAO();
-
+        OrderDAO oDAO = new OrderDAO();
+        
         Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
         String username = currentUserCookie.getValue();
         int ClientID = usDAO.getUser(username).getID();
         ArrayList<int[]> CartProductQuan = cDAO.getAllCartProductQuantity(ClientID);
-
+        
+        if (CartProductQuan.size() == 0) {
+            System.out.println("The cart is empty");
+            return false;
+        }
+        
         for (int i = 0; i < CartProductQuan.size(); i++) {
             int ProductID = CartProductQuan.get(i)[0];
             int Quantity = CartProductQuan.get(i)[1];
@@ -212,6 +232,7 @@ public class ClientController extends HttpServlet {
         if (newPhone != null && !newPhone.equals("")) {
             Phone = newPhone;
         }
+        
         String Note = request.getParameter("txtNote");
         int Total = cDAO.getCartTotal(ClientID);
         String now = new SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date());
@@ -222,24 +243,42 @@ public class ClientController extends HttpServlet {
             return false;
         } else {
             System.out.println("Thanh toan thanh cong");
+            request.setAttribute("OrderID", oDAO.getMaxOrderID());
+            request.setAttribute("CheckOutSuccess", "?CheckOutSuccess=true");
             return true;
         }
-
+        
     }
 
     // ---------------------------- READ SECTION ----------------------------
     private void GetCartProduct(HttpServletRequest request, HttpServletResponse response) {
         UserDAO uDao = new UserDAO();
         CartDAO cDAO = new CartDAO();
-
         Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
         String username = userCookie.getValue();
         int ClientID = uDao.getUser(username).getID();
-
         List<Cart> listCart = cDAO.getAllClientProduct(ClientID);
         request.setAttribute("listCart", listCart);
+        // Handling out of stock
+        List<Product> listOutOfStock = cDAO.getAllOutOfStockProductIDFromCart(ClientID);
+        request.setAttribute("listOutOfStock", listOutOfStock);
+        if (listOutOfStock.size() != 0) {
+            for (int i = 0; i < listOutOfStock.size(); i++) {
+                cDAO.deleteCart(ClientID, listOutOfStock.get(i).getID());
+                System.out.println(
+                        "delete product " + listOutOfStock.get(i).getName() + " from cart user ID:" + ClientID);
+                if (listCart.size() != 0) {
+                    for (int j = 0; j < listCart.size(); j++) {
+                        if (listCart.get(j).getProductID() == listOutOfStock.get(i).getID()) {
+                            listCart.remove(j);
+                        }
+                    }
+                }
+            }
+        }
+        
     }
-
+    
     private void ClientOrderDetail(HttpServletRequest request, HttpServletResponse response) {
         String path = request.getRequestURI();
         String[] data = path.split("/");
@@ -263,20 +302,21 @@ public class ClientController extends HttpServlet {
          * pwdConfirmNew
          * btnUpdateInfo (value = Submit)
          */
-
+        
         String fullname = request.getParameter("txtFullname");
-
+        
         String username = request.getParameter("txtUserName");
         String email = request.getParameter("txtEmail");
         String currentPassword = request.getParameter("pwdCurrent");
         String newPassword = "";
         Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
-
+        
         UserDAO usDAO = new UserDAO();
         User user = usDAO.getUser(currentUserCookie.getValue());
-
+        
         boolean isChangedEmail = true;
         boolean isChangedPassword = true;
+        boolean isChangedUsername = true;
         // Username, email, phone number is unique
         try {
             if (!email.equals(user.getEmail())) {
@@ -286,16 +326,20 @@ public class ClientController extends HttpServlet {
             } else {
                 isChangedEmail = false;
             }
-
+            
             if (!username.equals(user.getUsername())) {
                 if (usDAO.isExistUsername(username)) {
                     throw new UsernameDuplicationException();
                 }
+                
+            } else {
+                isChangedUsername = false;
             }
-
-            if (currentPassword == null || currentPassword.isEmpty()) {
+            
+            if (currentPassword == null || currentPassword.equals("")) {
                 currentPassword = user.getPassword();
                 isChangedPassword = false;
+                // check if currentPassword is true
             } else if (!usDAO.login(user.getUsername(), currentPassword)) {
                 throw new WrongPasswordException();
             }
@@ -317,13 +361,13 @@ public class ClientController extends HttpServlet {
             request.setAttribute("exceptionType", "UsernameDuplicationException");
             return false;
         }
-
-        if (request.getParameter("pwdNew") != null && !request.getParameter("pwdNew").equals("")) {
-            newPassword = usDAO.getMD5hash(request.getParameter("pwdNew"));
+        if (isChangedPassword && request.getParameter("pwdNew") != null && !request.getParameter("pwdNew").equals("")) {
+            newPassword = request.getParameter("pwdNew");
+            newPassword = usDAO.getMD5hash(newPassword);
         } else {
             newPassword = user.getPassword();
         }
-
+        
         User updateUser = new User(
                 user.getID(),
                 fullname,
@@ -333,7 +377,7 @@ public class ClientController extends HttpServlet {
                 user.getPhoneNumber(),
                 user.getAddress(),
                 user.getRole());
-
+        
         usDAO.updateUser(updateUser);
 
         // Update cookie
@@ -346,8 +390,8 @@ public class ClientController extends HttpServlet {
         try {
             EmailSender es = new EmailSender();
             if (isChangedPassword) {
-                System.out.println("Detect email change");
-                System.out.println("sending mail changing email");
+                System.out.println("Detect password change");
+                System.out.println("sending mail changing password");
                 es.setEmailTo(email);
                 es.sendToEmail(es.CHANGE_PASSWORD_NOTFICATION, es.changePasswordNotifcation());
             }
@@ -357,28 +401,34 @@ public class ClientController extends HttpServlet {
                 es.setEmailTo(user.getEmail());
                 es.sendToEmail(es.CHANGE_EMAIL_NOTFICATION, es.changeEmailNotification(email));
             }
-
+            if (isChangedUsername) {
+                System.out.println("Detect username change");
+                System.out.println("sending mail changing username");
+                es.setEmailTo(email);
+                es.sendToEmail(es.CHANGE_USERNAME_NOTFICATION, es.changeUsernameNotification(username));
+            }
+            
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-
+        
         System.out.println("update account with ID " + user.getID() + " successfully");
         return true;
     }
-
+    
     private boolean updateClientAddress(HttpServletRequest request, HttpServletResponse response) {
         String phoneNumber = request.getParameter("txtPhoneNumber");
         Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
         UserDAO usDAO = new UserDAO();
         String username = currentUserCookie.getValue();
         User UpdateClient = usDAO.getUser(username);
-
+        
         String newAddress = request.getParameter("txtAddress");
         try {
             if (newAddress.split(" - ").length != 3) {
                 throw new NotEnoughInformationException();
             }
-
+            
             System.out.println("User name :" + username);
             System.out.println("User's Phone :" + UpdateClient.getPhoneNumber());
             System.out.println("User's Address :" + newAddress);
@@ -395,10 +445,10 @@ public class ClientController extends HttpServlet {
             request.setAttribute("exceptionType", "NotEnoughInformationException");
             return false;
         }
-
+        
         UpdateClient.setAddress(newAddress);
         UpdateClient.setPhoneNumber(phoneNumber);
-
+        
         int kq = usDAO.updateUser(UpdateClient);
         if (kq == 0) {
             System.out.println("Update address and phone fail");
@@ -406,9 +456,9 @@ public class ClientController extends HttpServlet {
         }
         System.out.println("Update address and phone success");
         return true;
-
+        
     }
-
+    
     private void updateCartProduct(HttpServletRequest request, HttpServletResponse response) {
         // /Client/Cart/Update?ClientID=1&ProductID0=80&ProductQuan0=5&ProductID1=34&ProductQuan1=9&ListSize=2
         CartDAO cDAO = new CartDAO();
@@ -425,11 +475,11 @@ public class ClientController extends HttpServlet {
     private void deleteCartProduct(HttpServletRequest request, HttpServletResponse response) {
         /// /Client/Cart/Delete/ProductID/<%= p.getID()%>/ClientID/<%= ClientID %>
         CartDAO cDAO = new CartDAO();
-
+        
         int ClientID = -1;
         int ProductID = -1;
         String data[] = request.getRequestURI().split("/");
-
+        
         for (int i = 0; i < data.length; i++) {
             if (data[i].equals("ClientID")) {
                 ClientID = Integer.parseInt(data[i + 1]);
@@ -446,30 +496,56 @@ public class ClientController extends HttpServlet {
             return "";
         }
         String exception = "?err";
-
+        
         switch ((String) request.getAttribute("exceptionType")) {
             case "WrongPasswordException":
             case "AccountNotFoundException":
-                exception = "AccNF";
+                exception += "AccNF";
                 break;
             case "AccountDeactivatedException":
-                exception = "AccD";
+                exception += "AccD";
                 break;
             case "EmailDuplicationException":
-                exception = "Email";
+                exception += "Email";
                 break;
             case "UsernameDuplicationException":
-                exception = "Username";
+                exception += "Username";
                 break;
             case "PhoneNumberDuplicationException":
-                exception = "Phone";
+                exception += "Phone";
+                break;
             case "NotEnoughInformationException":
-                exception = "NEInfo";
+                exception += "NEInfo";
             default:
                 break;
         }
         exception += "=true";
         return exception;
     }
-
+    
+    private boolean handleCheckout(HttpServletRequest request, HttpServletResponse response) {
+        UserDAO usDAO = new UserDAO();
+        CartDAO cDAO = new CartDAO();
+        ProductDAO pDAO = new ProductDAO();
+        
+        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+        String username = currentUserCookie.getValue();
+        int ClientID = usDAO.getUser(username).getID();
+        ArrayList<int[]> CartProductQuan = cDAO.getAllCartProductQuantity(ClientID);
+        
+        if (CartProductQuan.size() == 0) {
+            System.out.println("The cart is empty");
+            return false;
+        }
+        for (int i = 0; i < CartProductQuan.size(); i++) {
+            int ProductID = CartProductQuan.get(i)[0];
+            int Quantity = CartProductQuan.get(i)[1];
+            int StoreQuan = pDAO.getProduct(ProductID).getQuantity();
+            if (StoreQuan < Quantity) {
+                System.out.println("Kho khong du so luong san pham co ID:" + ProductID);
+                return false;
+            }
+        }
+        return true;
+    }
 }

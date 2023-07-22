@@ -126,15 +126,14 @@ h1{
   transition: border-bottom 0.3s ease-in-out;
 }
 
-.nav a {
-  margin-left: -290px;
+.nav .iconPage {
+  margin-left: -235px;
 }
 
 .nav .account {
   display: flex;
   align-items: center;
   padding-right: 2rem;
-
 }
 
 .nav .account a {
@@ -145,7 +144,49 @@ h1{
   cursor: pointer;
 }
 
-.brand{
+.nav .account #product-dropdown-btn,
+.nav .account #user-dropdown-btn {
+  margin-right: 10px;
+}
+
+.nav .account #product-dropdown-btn + ul,
+.nav .account #user-dropdown-btn + ul {
+  display: flex;
+  flex-flow:column nowrap;
+  background-color: white;
+  margin-top: 1.6rem;
+  top: 585px;
+  opacity: 0;
+  height: 0px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.nav .account #product-dropdown-btn + ul {
+   right: 105px;
+}
+.nav .account #user-dropdown-btn + ul  {
+   right: 58px;
+}
+
+.nav .account button img {
+  width: 23px;
+  height: 23px;
+  opacity: 0.7;
+}
+
+.drop-down-show {
+  opacity: 0.95 !important;
+}
+
+.nav .account #product-dropdown-btn + ul.drop-down-show {
+  height: 108px !important;
+}
+.nav .account #user-dropdown-btn + ul.drop-down-show {
+  height: 61px !important;
+}
+
+.brand {
   text-align: center;
   padding-top: 5rem;
   display: flex;
@@ -223,51 +264,51 @@ h1{
 }
 
 .product .classify button.active {
-border-bottom: 1px solid black;
-transition: border-bottom 0.3s ease-in-out;
+  border-bottom: 1px solid black;
+  transition: border-bottom 0.3s ease-in-out;
 }
 
 .product .classify button:hover {
-border-bottom: 1px solid black;
-transition: border-bottom 0.3s ease-in-out;
+  border-bottom: 1px solid black;
+  transition: border-bottom 0.3s ease-in-out;
 }
 
 .product-container {
-text-align: center;
-display: flex;
-justify-content: center;
-align-items: center;
-flex-direction: column;
-height: 930px; 
-margin-bottom: 30px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 930px;
+  margin-bottom: 30px;
 }
 
 .product {
-text-align: center;
-display: flex;
-justify-content: center;
-align-items: center;
-flex-direction: column;
-min-height: 926px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 926px;
 
 }
 
 .product .item {
-display: flex;
-justify-content: center;
-align-items: center;
-overflow: hidden;
-width: 1300px;
-opacity: 0;
-visibility: hidden;
-max-height: 0;
-transition: max-height 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  width: 1300px;
+  opacity: 0;
+  visibility: hidden;
+  max-height: 0;
+  transition: max-height 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .product .item.active {
-opacity: 1;
-visibility: visible;
-max-height: 390px;
+  opacity: 1;
+  visibility: visible;
+  max-height: 390px;
 }
 
 .product .item .card{
@@ -472,7 +513,6 @@ max-height: 390px;
 .social{
   text-align: center;
   margin-top: 30px;
-
 }
 
 .social a + a{
@@ -542,11 +582,11 @@ max-height: 390px;
 }
 
 .copyright p{
-      font-size: 1.2rem;
-  }
+  font-size: 1.2rem;
+}
 
 @media screen and (max-width: 700px) {
-      h1{
-          font-size: 100px;
-      }
+  h1{
+    font-size: 100px;
+  }
 }

@@ -40,7 +40,56 @@
     <filter-mapping>
         <filter-name>UserValidation</filter-name>
         <url-pattern>/*</url-pattern>
+    </filter-mapping> 
+    <!-- Filter Controller mapping -->
+    <!-- <filter-mapping>
+        <filter-name>UserValidation</filter-name>
+        <url-pattern>/</url-pattern>
+    </filter-mapping> 
+     <filter-mapping>
+        <filter-name>UserValidation</filter-name>
+        <url-pattern>/home/*</url-pattern>
+    </filter-mapping> 
+     <filter-mapping>
+        <filter-name>UserValidation</filter-name>
+        <url-pattern>/Product/*</url-pattern>
     </filter-mapping>
+    <filter-mapping>
+        <filter-name>UserValidation</filter-name>
+        <url-pattern>/Client/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>UserValidation</filter-name>
+        <url-pattern>/Log/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>UserValidation</filter-name>
+        <url-pattern>/Admin/*</url-pattern>
+    </filter-mapping> -->
+
+    <!-- Filter for prevent folder -->
+    <!-- <filter-mapping>
+        <filter-name>UserValidation</filter-name>
+        <url-pattern>/ADMIN_PAGE/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>UserValidation</filter-name>
+        <url-pattern>/CLIENT_PAGE/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>UserValidation</filter-name>
+        <url-pattern>/LOGIN_PAGE/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>UserValidation</filter-name>
+        <url-pattern>/PRODUCT_PAGE/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>UserValidation</filter-name>
+        <url-pattern>/USER_PAGE/*</url-pattern>
+    </filter-mapping> -->
+    
+
     <!--Controller defintion-->
     <servlet>
         <servlet-name>HomeController</servlet-name>
@@ -79,6 +128,15 @@
         <servlet-name>AdminController</servlet-name>
         <url-pattern>/Admin/*</url-pattern>
     </servlet-mapping>
+    <!--Error pages mapping-->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/ERROR_PAGE/404Page.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>403</error-code>
+        <location>/ERROR_PAGE/403Page.jsp</location>
+    </error-page>
     <session-config>
         <session-timeout>
             30

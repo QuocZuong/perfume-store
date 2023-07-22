@@ -25,10 +25,42 @@
                 color:red;
             }
         </style>
-        <title>Thêm sản phẩm</title>
+        <title>Thêm người dùng</title>
     </head>
     <body>
         <div class="container">
+        <div class="row">
+        <div class="col-md-12 nav">
+          <ul>
+            <li><a href="/">trang chủ</a></li>
+            <li> <a href="/home/introduction">giới thiệu</a></li>
+            <li><a href="/home/brand">thương hiệu</a></li>
+            <!-- This link to shop servlet file. DO NOT MODIFY the link -->
+            <li><a href="/Product/List">sản phẩm</a></li>
+          </ul>
+          <a href="/" class="iconPage"><img src="/RESOURCES/images/icons/icon.webp" alt=""
+                                            height="64"></a>
+          <div class="account">
+            <button class="droppown-btn bg-transparent border-0" id="product-dropdown-btn"><img src="/RESOURCES/images/icons/shopping-bag-alone.png" alt="">
+            </button>
+            <ul class="shadow position-absolute align-items-start ps-1 pt-2">
+              <li class="py-3 text-dark"><a href="/Admin/Product/Add">Thêm sản phẩm</a></li>
+              <li class="pb-3 text-dark"><a href="/Admin/Product/List">Danh sách sản phẩm</a></li>
+            </ul>
+            
+            <button class="droppown-btn bg-transparent border-0" id="user-dropdown-btn"><img src="/RESOURCES/images/icons/group.png" alt="">
+            </button>
+            <ul class="shadow position-absolute align-items-start ps-1 pt-2">
+              <li class="py-3 text-dark"><a href="/Admin/User/List">Danh sách người dùng</a></li>
+            </ul>
+            
+            <a href="/Client/User"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+            <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
+
+          </div>
+        </div>
+      </div>
+            <div class="row">
             <h1>Add Product</h1>
             <form action="/Admin/Product/Add" method="POST" enctype="multipart/form-data">
                 <div class="name">
@@ -88,6 +120,7 @@
                 </div>
                 <button type="submit" name="btnAddProduct" value="Submit" class="btnAddProduct">Add Product</button>
             </form>
+            </div>
         </div>
 
 
@@ -139,6 +172,42 @@
                         },
                         fileProductImg: {
                             required: true
+                        }
+                    },
+                    messages: {
+                        txtProductName: {
+                            required: "Vui lòng nhập tên sản phẩm",
+                            maxlength: "Tên sản phẩm không được vượt quá 300 ký tự"
+                        },
+                        txtBrandName: {
+                            required: "Vui lòng nhập tên thương hiệu",
+                            maxlength: "Tên thương hiệu không được vượt quá 50 ký tự"
+                        },
+                        txtProductPrice: {
+                            required: "Vui lòng nhập giá sản phẩm",
+                            number: "Giá sản phẩm phải là số"
+                        },
+                        rdoGender: {
+                            required: "Vui lòng chọn giới tính"
+                        },
+                        txtProductSmell: {
+                            required: "Vui lòng nhập hương thơm",
+                            maxlength: "Hương thơm không được vượt quá 200 ký tự"
+                        },
+                        txtProductQuantity: {
+                            required: "Vui lòng nhập số lượng",
+                            digits: "Số lượng phải là số nguyên"
+                        },
+                        txtProductReleaseYear: {
+                            required: "Vui lòng nhập năm phát hành",
+                            range: "Năm phát hành phải nằm trong khoảng 1900 - 2100"
+                        },
+                        txtProductVolume: {
+                            required: "Vui lòng nhập dung tích",
+                            digits: "Dung tích phải là số nguyên"
+                        },
+                        fileProductImg: {
+                            required: "Vui lòng chọn ảnh sản phẩm"
                         }
                     }
                 });

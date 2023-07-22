@@ -1,11 +1,18 @@
-
-
-
 <%@page import="java.sql.ResultSet"%>
 <%@page import="DAOs.BrandDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="jakarta.servlet.http.Cookie"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib  uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
+
+<%
+    Cookie currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
+    boolean isAdmin = false;
+
+    if (currentUserCookie != null) {
+        isAdmin = currentUserCookie.getName().equals("Admin");
+    }
+%>
 
 
 <%! BrandDAO bDAO = new BrandDAO();%>
@@ -33,25 +40,62 @@
     <body>
         <div class="container-fluid">
 
-            <div class="row">
-                <div class="col-md-12 nav">
-                    <ul>
-                        <li><a href="/">trang chủ</a></li>
-                        <li> <a href="/home/introduction">giới thiệu</a></li>
-                        <li><a href="/home/brand">thương hiệu</a></li>
-                        <!-- This link to shop servlet file. DO NOT MODIFY the link -->
-                        <li><a href="/Product/List">sản phẩm</a></li>
-                        <li><a href="">blog</a></li>
-                    </ul>
-                    <a href="/"><img src="/RESOURCES/images/icons/icon.webp" alt=""
-                                     height="64"></a>
-                    <div class="account">
-                        <a><img src="/RESOURCES/images/icons/search.png" alt=""></a>
-                        <a href="<%= ((String)request.getAttribute("UserRole") == null ? "/Client" : (String)request.getAttribute("UserRole")) %>"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
-                        <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
+            <c:choose>
+                <c:when test='<%= isAdmin%>'>
+
+                    <div class="row">
+                        <div class="col-md-12 nav">
+                            <ul>
+                                <li><a href="/">trang chủ</a></li>
+                                <li> <a href="/home/introduction">giới thiệu</a></li>
+                                <li><a href="/home/brand">thương hiệu</a></li>
+                                <!-- This link to shop servlet file. DO NOT MODIFY the link -->
+                                <li><a href="/Product/List">sản phẩm</a></li>
+                            </ul>
+                            <a href="/" class="iconPage"><img src="/RESOURCES/images/icons/icon.webp" alt=""
+                                                              height="64"></a>
+                            
+                            <div class="account">
+                                <button class="droppown-btn bg-transparent border-0" id="product-dropdown-btn"><img src="/RESOURCES/images/icons/shopping-bag-alone.png" alt="">
+                                </button>
+                                <ul class="shadow position-absolute align-items-start ps-1 pt-2">
+                                    <li class="py-3 text-dark"><a href="/Admin/Product/Add">Thêm sản phẩm</a></li>
+                                    <li class="pb-3 text-dark"><a href="/Admin/Product/List">Danh sách sản phẩm</a></li>
+                                </ul>
+
+                                <button class="droppown-btn bg-transparent border-0" id="user-dropdown-btn"><img src="/RESOURCES/images/icons/group.png" alt="">
+                                </button>
+                                <ul class="shadow position-absolute align-items-start ps-1 pt-2">
+                                    <li class="py-3 text-dark"><a href="/Admin/User/List">Danh sách người dùng</a></li>
+                                </ul>
+
+                                <a href="/Client/User"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+                                <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
+
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </c:when>
+                <c:otherwise>
+                    <div class="row">
+                        <div class="col-md-12 nav">
+                            <ul>
+                                <li><a href="/">trang chủ</a></li>
+                                <li> <a href="/home/introduction">giới thiệu</a></li>
+                                <li><a href="/home/brand">thương hiệu</a></li>
+                                <!-- This link to shop servlet file. DO NOT MODIFY the link -->
+                                <li><a href="/Product/List">sản phẩm</a></li>
+                            </ul>
+                            <a href="/" class="iconPage"><img src="/RESOURCES/images/icons/icon.webp" alt=""
+                                                              height="64"></a>
+                            <div class="account">
+                                <a href="/Client/User"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+                                <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
+                            </div>
+                        </div>
+                    </div>
+                </c:otherwise>
+            </c:choose>
 
 
             <div class="main">
@@ -73,7 +117,7 @@
                             boolean hasRow = rs.isBeforeFirst();
                             pageContext.setAttribute("hasRow", hasRow);
                         %>
-                        <c:if test="${hasRow}">
+                        <c:if test='${hasRow}'>
                             <div class="brands">
                                 <h3><%= c%></h3>
                                 <%
@@ -96,9 +140,9 @@
                 <div class="col-md-12 register">
                     <h1>Đăng ký thành viên để nhận khuyến mại</h1>
                     <p>Theo dõi chúng tôi để nhận thêm nhiều ưu đãi</p>
-                    <form action="">
-                        <input type="text" name="" id="" placeholder="nhập email">
-                        <button>ĐĂNG KÝ</button>
+                    <form action="/home/subscribe" method="POST">
+                        <input type="text" name="txtEmailSubscribe" id="" placeholder="nhập email" required="true">
+                        <button type="submit" name="submitEmailBtn" value="Submit" class="enter">ĐĂNG KÝ</button>
                     </form>
                 </div>
             </div>
@@ -158,5 +202,48 @@
             integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>
         <script src="/RESOURCES/brand/public/js/main.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+                    integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+            crossorigin="anonymous"></script>
+
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+
+            <script src="/RESOURCES/admin/product/public/js/main.js"></script>
+            <!--Jquery Validation-->
+            <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+            <script>
+                $(document).ready(function () {
+                    $.validator.addMethod("emailCustom", function (value, element, toggler) {
+                        if (toggler) {
+                            let regex = /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/;
+                            let result = regex.test(value);
+                            return result;
+                        }
+                        return true;
+                    }, "Vui lòng nhập đúng định dạng email");
+
+                    $("form[action='/home/subscribe']").validate({
+                        rules: {
+                            txtEmailSubscribe: {
+                                required: true,
+                                email:true
+                            }
+                        },
+                        messages: {
+                            txtEmailSubscribe: {
+                                required: "Vui lòng nhập email",
+                                email: "Vui lòng nhập đúng định dạng email"
+                            }
+                        },
+
+                        errorPlacement: function (error, element) {
+                            error.addClass("text-danger d-block mt-3");
+                            error.insertAfter(element.next());
+                        }
+
+                    });
+                });
+            </script>
     </body>
 </html>

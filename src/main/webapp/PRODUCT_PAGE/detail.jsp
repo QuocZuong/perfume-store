@@ -1,13 +1,17 @@
+<%@page import="java.util.List"%>
+<%@page import="java.sql.ResultSet"%>
 <%@page import="DAOs.ProductDAO"%>
 <%@page import="DAOs.BrandDAO"%>
 <%@page import="Models.Product"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-
+<%! ProductDAO pdao = new ProductDAO();%>
+<%! BrandDAO bdao = new BrandDAO();%>
+<%! ResultSet rs = null;%>
 <%! ProductDAO pDAO = new ProductDAO(); %>
 <%! BrandDAO bDao = new BrandDAO();%>
 <%
     Product pd = (Product) request.getAttribute("product");
-
+    
     int id = pd.getID();
     String name = pd.getName();
     String brandName = bDao.getBrandName(pd.getBrandID());
@@ -19,7 +23,7 @@
     int volume = pd.getVolume();
     String imgURL = pd.getImgURL();
     String description = pd.getDescription();
-
+    List<Product> productSuggestList = pDAO.getProductsByBrandName(pd.getBrandID(), name);
 %>
 
 <!DOCTYPE html>
@@ -41,7 +45,18 @@
         <link rel="stylesheet" href="/RESOURCES/product/public/style/style.css" type="text/css">
         <link rel="icon" href="/RESOURCES/images/icons/icon.webp">
         <!--<link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css" rel="stylesheet" type="text/css" />-->
-        <title>Nước hoa</title>
+        <!-- Add zoom picture plugin -->
+        <link rel="stylesheet" href="/RESOURCES/VenoBox-2.0.4/dist/venobox.min.css" />
+        <link rel="stylesheet" href="/RESOURCES/VenoBox-2.0.4/dist/venobox.min.css" type="text/css" media="screen" />
+
+        <title><%= name%></title>
+
+        <!-- add disable pointer for btn -->
+        <style>
+            button:disabled{
+                cursor: not-allowed;
+            }
+        </style>
     </head>
     <body>
         <div class="container-fluid">
@@ -54,12 +69,10 @@
                         <li><a href="/home/brand">thương hiệu</a></li>
                         <!-- This link to shop servlet file. DO NOT MODIFY the link -->
                         <li><a href="/Product/List">sản phẩm</a></li>
-                        <li><a href="">blog</a></li>
                     </ul>
                     <a href="/"><img src="/RESOURCES/images/icons/icon.webp" alt=""
                                      height="64"></a>
                     <div class="account">
-                        <a><img src="/RESOURCES/images/icons/search.png" alt=""></a>
                         <a href="/Log/Login"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
                         <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
                     </div>
@@ -72,7 +85,8 @@
                 <div class="col-md-12 main">
                     <div class="info">
                         <div class="left">
-                            <img src="<%= imgURL%>" alt="" class="product-img" id="productImg">
+                            <a class="venobox" href="<%= imgURL%>"><img class=" product-img"  id="productImg" src="<%= imgURL%>" alt="perfume"/></a>
+
                         </div>
                         <div class="right">
                             <p id="brandName"><%= brandName%></p>
@@ -89,7 +103,7 @@
                             <form action="/Client/addToCart" method="POST">
                                 <input type="number" name="ProductQuantity" id="" value="1" >
                                 <input type="hidden" name="ProductID" value="<%= id%>">
-                                <button name="btnAddToCart" class="btnAddToCart" value="Submit" type="submit">THÊM VÀO GIỎ HÀNG</button>
+                                <button name="btnAddToCart" class="btnAddToCart" value="Submit" type="submit" <%= (quantity == 0 ? "disabled" : "")%>><%= (quantity == 0 ? "HẾT HÀNG" : "THÊM VÀO GIỎ HÀNG")%></button>
                             </form>
                         </div>
                     </div>
@@ -110,6 +124,29 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="suggest-product">
+                    <h1>Sản phẩm liên quan</h1>
+                    <div class="suggest-product-list">
+                    <%
+                        for (Product product : productSuggestList) {
+                        String productBrandName = bDao.getBrandName(product.getBrandID());
+                        String productSuggestPrice = pDAO.IntegerToMoney(product.getPrice());
+                    %>
+                    <a class="product-wrapper" href="/Product/Detail/ID/<%=product.getID()%>">
+                        <div class="product">
+                            <img src="<%=product.getImgURL()%>" alt="" class="product-img">
+                            <span class="product-brand"><%=productBrandName%></span>
+                            <hr>
+                            <span class="product-name"><%=product.getName()%></span>
+                            <span class="product-price"><%=productSuggestPrice%> <span>đ</span></span>
+                        </div>
+                    </a>
+                    <%
+                        }
+                    %>
+                    </div>
+                </div>
             </div>
 
 
@@ -117,9 +154,9 @@
                 <div class="col-md-12 register">
                     <h1>Đăng ký thành viên để nhận khuyến mại</h1>
                     <p>Theo dõi chúng tôi để nhận thêm nhiều ưu đãi</p>
-                    <form action="">
-                        <input type="text" name="" id="" placeholder="nhập email">
-                        <button>ĐĂNG KÝ</button>
+                    <form action="/home/subscribe" method="POST">
+                        <input type="text" name="txtEmailSubscribe" id="" placeholder="nhập email" required="true">
+                        <button type="submit" name="submitEmailBtn" value="Submit" class="enter">ĐĂNG KÝ</button>
                     </form>
                 </div>
             </div>
@@ -200,5 +237,52 @@
             });
         </script>
         <script src="/RESOURCES/product/public/js/main.js"></script>
+        <!-- Add zoom picture plugin -->
+        <link rel="stylesheet" href="/RESOURCES/VenoBox-2.0.4/dist/venobox.min.js" />
+        <script type="text/javascript" src="/RESOURCES/VenoBox-2.0.4/dist/venobox.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+                    integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+            crossorigin="anonymous"></script>
+
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+
+            <script src="/RESOURCES/admin/product/public/js/main.js"></script>
+            <!--Jquery Validation-->
+            <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+            <script>
+                $(document).ready(function () {
+                    $.validator.addMethod("emailCustom", function (value, element, toggler) {
+                        if (toggler) {
+                            let regex = /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/;
+                            let result = regex.test(value);
+                            return result;
+                        }
+                        return true;
+                    }, "Vui lòng nhập đúng định dạng email");
+
+                    $("form[action='/home/subscribe']").validate({
+                        rules: {
+                            txtEmailSubscribe: {
+                                required: true,
+                                email:true
+                            }
+                        },
+                        messages: {
+                            txtEmailSubscribe: {
+                                required: "Vui lòng nhập email",
+                                email: "Vui lòng nhập đúng định dạng email"
+                            }
+                        },
+
+                        errorPlacement: function (error, element) {
+                            error.addClass("text-danger d-block mt-3");
+                            error.insertAfter(element.next());
+                        }
+
+                    });
+                });
+            </script>
+
     </body>
 </html>

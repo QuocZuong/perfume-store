@@ -1,17 +1,28 @@
-
 package Controllers;
 
 import Models.User;
 import DAOs.UserDAO;
 import java.util.List;
+
+import javax.security.auth.login.AccountNotFoundException;
+
+import Models.Order;
 import Models.Product;
+import DAOs.OrderDAO;
 import DAOs.ProductDAO;
+import Exceptions.AccountDeactivatedException;
+import Exceptions.EmailDuplicationException;
+import Exceptions.PhoneNumberDuplicationException;
+import Exceptions.UsernameDuplicationException;
+import Exceptions.WrongPasswordException;
+import Lib.EmailSender;
 import java.sql.ResultSet;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,6 +34,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -46,6 +58,10 @@ public class AdminController extends HttpServlet {
     public static final String ADMIN_USER_UPDATE_URI = "/Admin/User/Update";
     public static final String ADMIN_USER_DELETE_URI = "/Admin/User/Delete";
     public static final String ADMIN_USER_RESTORE_URI = "/Admin/User/Restore";
+    public static final String ADMIN_CLIENT_DETAIL_URI = "/Admin/User/Detail";
+    public static final String ADMIN_CLIENT_ORDER_URI = "/Admin/User/OrderDetail";
+
+    public static final String ADMIN_UPDATE_INFO_URI = "/Admin/Update/Info";
 
     public static final String IMGUR_API_ENDPOINT = "https://api.imgur.com/3/image";
     public static final String IMGUR_CLIENT_ID = "87da474f87f4754";
@@ -120,6 +136,17 @@ public class AdminController extends HttpServlet {
             return;
         }
 
+        if (path.startsWith(ADMIN_CLIENT_DETAIL_URI)) {
+            clientDetail(request, response);
+            request.getRequestDispatcher("/ADMIN_PAGE/User/detail.jsp").forward(request, response);
+            return;
+        }
+        if (path.startsWith(ADMIN_CLIENT_ORDER_URI)) {
+            OrderDetail(request, response);
+            request.getRequestDispatcher("/ADMIN_PAGE/User/orderDetail.jsp").forward(request, response);
+            return;
+        }
+
         // ---------------------------- DEFAULT SECTION ----------------------------
         if (path.startsWith(ADMIN_USER_URI)) { // Put this at the last
             request.getRequestDispatcher("/ADMIN_PAGE/admin.jsp").forward(request, response);
@@ -161,10 +188,29 @@ public class AdminController extends HttpServlet {
         if (path.startsWith(ADMIN_USER_UPDATE_URI)) {
             if (request.getParameter("btnUpdateUser") != null
                     && request.getParameter("btnUpdateUser").equals("Submit")) {
-                updateUser(request, response);
-                response.sendRedirect(ADMIN_USER_LIST_URI);
+                if (updateUser(request, response)) {
+                    response.sendRedirect(ADMIN_USER_LIST_URI);
+                } else {
+                    System.out.println(ADMIN_USER_UPDATE_URI + "/ID/" + request.getAttribute("errUserID")
+                            + checkException(request));
+                    response.sendRedirect(ADMIN_USER_UPDATE_URI + "/ID/" + request.getAttribute("errUserID")
+                            + checkException(request));
+                }
             }
             return;
+        }
+
+        if (path.startsWith(ADMIN_UPDATE_INFO_URI)) {
+            if (request.getParameter("btnUpdateInfo") != null
+                    && request.getParameter("btnUpdateInfo").equals("Submit")) {
+                System.out.println("Going update info");
+                if (updateAdminInfomation(request, response)) {
+                    response.sendRedirect(ADMIN_USER_URI);
+                } else {
+                    response.sendRedirect(ADMIN_USER_URI + checkException(request));
+                }
+                return;
+            }
         }
 
     }
@@ -202,7 +248,6 @@ public class AdminController extends HttpServlet {
     }
 
     // ---------------------------- READ SECTION ----------------------------
-
     private void searchProduct(HttpServletRequest request, HttpServletResponse response) {
         String URI = request.getRequestURI();
         String data[] = URI.split("/");
@@ -281,17 +326,17 @@ public class AdminController extends HttpServlet {
                 String userName = rs.getString("UserName");
                 String password = rs.getString("Password");
                 String phoneNumber = rs.getString("PhoneNumber");
+                // String phoneNumber = rs.getString("PhoneNumber") == null ? "" :
+                // rs.getString("PhoneNumber");
+                // String phoneNumber = null;
                 String email = rs.getString("Email");
                 String address = rs.getString("Address");
                 String role = rs.getString("Role");
                 boolean active = rs.getBoolean("Active");
 
                 // Create a new User object and add it to the list
-                User user = new User(id, name, userName, password, phoneNumber, email, address, role);
+                User user = new User(id, name, userName, password, phoneNumber, email, address, role,active);
 
-                if (!active) {
-                    user.setActive(false);
-                }
 
                 listUser.add(user);
             }
@@ -308,6 +353,42 @@ public class AdminController extends HttpServlet {
         request.setAttribute("numberOfPage", NumberOfPage);
         request.setAttribute("listUser", listUser);
         request.setAttribute("Search", Search);
+    }
+
+    private void clientDetail(HttpServletRequest request, HttpServletResponse response) {
+        OrderDAO oDAO = new OrderDAO();
+        UserDAO uDAO = new UserDAO();
+        String URI = request.getRequestURI();
+        String data[] = URI.split("/");
+        int ClientID = -1;
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("ID")) {
+                ClientID = Integer.parseInt(data[i + 1]);
+            }
+        }
+        List<Order> orderList = oDAO.getOrderByClientId(ClientID);
+        User client = uDAO.getUser(ClientID);
+        request.setAttribute("client", client);
+        request.setAttribute("orderList", orderList);
+    }
+
+    private void OrderDetail(HttpServletRequest request, HttpServletResponse response) {
+        UserDAO uDAO = new UserDAO();
+        OrderDAO oDAO = new OrderDAO();
+        String URI = request.getRequestURI();
+        String data[] = URI.split("/");
+        int OrderID = -1;
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("ID")) {
+                OrderID = Integer.parseInt(data[i + 1]);
+            }
+        }
+        List<String[]> orderDetail = oDAO.getOrderDetailByOrderID(OrderID);
+        Order OrderInfor = oDAO.getOrderByOrderId(OrderID);
+        User client = uDAO.getUser(OrderInfor.getClientID());
+        request.setAttribute("client", client);
+        request.setAttribute("OrderInfor", OrderInfor);
+        request.setAttribute("OrderDetail", orderDetail);
     }
 
     // ---------------------------- UPDATE SECTION ----------------------------
@@ -353,7 +434,7 @@ public class AdminController extends HttpServlet {
         System.out.println("Update Product with ID: " + pID + " successfully!");
     }
 
-    private void updateUser(HttpServletRequest request, HttpServletResponse response) {
+    private boolean updateUser(HttpServletRequest request, HttpServletResponse response) {
         UserDAO uDAO = new UserDAO();
 
         int uID = Integer.parseInt(request.getParameter("txtUserID"));
@@ -362,25 +443,127 @@ public class AdminController extends HttpServlet {
 
         String uPassword = request.getParameter("txtPassword");
 
-        // Only hash the new password if the password is different from the user's old md5 password.
-        if (uPassword != uDAO.getUser(uID).getPassword()) {
+        // For sending email
+        boolean isChangedEmail = false;
+        boolean isChangedPassword = false;
+        boolean isChangedUsername = false;
+        boolean isChangedRoleSelf = false;
+
+        // Only hash the new password if the password is different from the user's old
+        // md5 password.
+        System.out.println("Compare password: " + uPassword + " vs " + uDAO.getUser(uID).getPassword());
+        if (!uPassword.equals(uDAO.getUser(uID).getPassword())) {
+            isChangedPassword = true;
+            System.out.println("New password: " + uPassword);
             uPassword = uDAO.getMD5hash(uPassword);
+            System.out.println("New hashed password: " + uPassword);
         }
-        
+
         String uPhoneNumber = request.getParameter("txtPhoneNumber");
         String uEmail = request.getParameter("txtEmail");
+
+        if (!uEmail.equals(uDAO.getUser(uID).getEmail())) {
+            isChangedEmail = true;
+        }
+        if (!uUserName.equals(uDAO.getUser(uID).getUsername())) {
+            isChangedUsername = true;
+        }
+
         String uAddress = request.getParameter("txtAddress");
         String uRole = request.getParameter("txtRole");
 
         boolean isExistUsername = uDAO.isExistUsernameExceptItself(uUserName, uID);
         boolean isExistPhone = uDAO.isExistPhoneExceptItself(uPhoneNumber, uID);
         boolean isExistEmail = uDAO.isExistEmailExceptItself(uEmail, uID);
-        if (isExistUsername || isExistPhone || isExistEmail) {
-            System.out.println("Update fail because Username or Phone or Email exist");
-            return;
+
+        if (uID == (uDAO.getUser(((Cookie) request.getSession().getAttribute("userCookie")).getValue()).getID())) {
+            if (uRole.equals("Client")) {
+                isChangedRoleSelf = true;
+            }
         }
+
+        try {
+            if (isExistUsername || isExistPhone || isExistEmail) {
+                request.setAttribute("errUserID", uID);
+                if (isExistUsername) {
+                    throw new UsernameDuplicationException();
+                }
+                if (isExistPhone) {
+                    throw new PhoneNumberDuplicationException();
+                }
+                if (isExistEmail) {
+                    throw new EmailDuplicationException();
+                }
+            }
+        } catch (UsernameDuplicationException ex) {
+            System.out.println("user name dup");
+            request.setAttribute("exceptionType", "UsernameDuplicationException");
+            return false;
+        } catch (PhoneNumberDuplicationException ex) {
+            System.out.println("phone dup");
+            request.setAttribute("exceptionType", "PhoneNumberDuplicationException");
+            return false;
+        } catch (EmailDuplicationException ex) {
+            System.out.println("Email dup");
+            request.setAttribute("exceptionType", "EmailDuplicationException");
+            return false;
+        }
+
         User updateUser = new User(uID, uName, uUserName, uPassword, uEmail, uPhoneNumber, uAddress, uRole);
-        uDAO.updateUser(updateUser);
+        int kq = uDAO.updateUser(updateUser);
+
+        if (kq == 0) {
+            System.out.println("Failed to update the user with ID " + uID + " to database");
+            return false;
+        }
+        // Change cookie
+        if (isChangedRoleSelf) {
+            Cookie[] cookies = request.getCookies();
+
+            for (Cookie c : cookies) {
+                if (c.getName().equals("Admin")) {
+                    c.setMaxAge(0);
+                    c.setPath("/");
+                    response.addCookie(c);
+                }
+            }
+
+            Cookie newC = new Cookie("Client", uUserName);
+            newC.setMaxAge(3 * 24 * 60 * 60);
+            newC.setPath("/");
+            request.getSession().setAttribute("userCookie", newC);
+            response.addCookie(newC);
+        }
+
+        // Sending mail
+        try {
+            EmailSender es = new EmailSender();
+            if (isChangedPassword) {
+                System.out.println("Detect password change");
+                System.out.println("sending mail changing password");
+                es.setEmailTo(uEmail);
+                es.sendToEmail(es.CHANGE_PASSWORD_NOTFICATION,
+                        es.changePasswordNotifcation());
+            }
+            if (isChangedEmail) {
+                System.out.println("Detect email change");
+                System.out.println("sending mail changing email");
+                es.setEmailTo(uDAO.getUser(uID).getEmail());
+                es.sendToEmail(es.CHANGE_EMAIL_NOTFICATION,
+                        es.changeEmailNotification(uEmail));
+            }
+            if (isChangedUsername) {
+                System.out.println("Detect username change");
+                System.out.println("sending mail changing username");
+                es.setEmailTo(uEmail);
+                es.sendToEmail(es.CHANGE_USERNAME_NOTFICATION, es.changeUsernameNotification(uUserName));
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        System.out.println("update account with ID " + updateUser.getID() + " successfully");
+
+        return true;
     }
 
     private void restoreProduct(HttpServletRequest request, HttpServletResponse response) {
@@ -467,6 +650,133 @@ public class AdminController extends HttpServlet {
         return false;
     }
 
+    private boolean updateAdminInfomation(HttpServletRequest request, HttpServletResponse response) {
+        /*
+         * txtFullname
+         * txtUserName
+         * txtEmail
+         * pwdCurrent
+         * pwdNew
+         * pwdConfirmNew
+         * btnUpdateInfo (value = Submit)
+         */
+
+        String fullname = request.getParameter("txtFullname");
+
+        String username = request.getParameter("txtUserName");
+        String email = request.getParameter("txtEmail");
+        String currentPassword = request.getParameter("pwdCurrent");
+        String newPassword = "";
+        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+
+        UserDAO usDAO = new UserDAO();
+        User user = usDAO.getUser(currentUserCookie.getValue());
+
+        boolean isChangedEmail = true;
+        boolean isChangedPassword = true;
+        boolean isChangedUsername = true;
+        // Username, email, phone number is unique
+        try {
+            if (!email.equals(user.getEmail())) {
+                if (usDAO.isExistEmail(email)) {
+                    throw new EmailDuplicationException();
+                }
+            } else {
+                isChangedEmail = false;
+            }
+
+            if (!username.equals(user.getUsername())) {
+                if (usDAO.isExistUsername(username)) {
+                    throw new UsernameDuplicationException();
+                }
+            } else {
+                isChangedUsername = false;
+            }
+
+            if (currentPassword == null || currentPassword.equals("")) {
+                currentPassword = user.getPassword();
+                isChangedPassword = false;
+                // check if currentPassword is true
+            } else if (!usDAO.login(user.getUsername(), currentPassword)) {
+                throw new WrongPasswordException();
+            }
+
+            // Email and username duplication must come first
+        } catch (WrongPasswordException e) {
+            request.setAttribute("exceptionType", "WrongPasswordException");
+            return false;
+        } catch (AccountDeactivatedException e) {
+            request.setAttribute("exceptionType", "AccountDeactivatedException");
+            return false;
+        } catch (AccountNotFoundException e) {
+            request.setAttribute("exceptionType", "AccountNotFoundException");
+            return false;
+        } catch (EmailDuplicationException e) {
+            request.setAttribute("exceptionType", "EmailDuplicationException");
+            return false;
+        } catch (UsernameDuplicationException e) {
+            request.setAttribute("exceptionType", "UsernameDuplicationException");
+            return false;
+        }
+        System.out.println("change password is " + isChangedPassword);
+        System.out.println("New password is before if: " + request.getParameter("pwdNew"));
+        if (isChangedPassword && request.getParameter("pwdNew") != null && !request.getParameter("pwdNew").equals("")) {
+            newPassword = request.getParameter("pwdNew");
+            System.out.println("New password is before MD5: " + newPassword);
+            newPassword = usDAO.getMD5hash(newPassword);
+        } else {
+            newPassword = user.getPassword();
+        }
+
+        User updateUser = new User(
+                user.getID(),
+                fullname,
+                username,
+                newPassword,
+                email,
+                user.getPhoneNumber(),
+                user.getAddress(),
+                user.getRole());
+
+        usDAO.updateUser(updateUser);
+
+        // Update cookie
+        Cookie c = ((Cookie) request.getSession().getAttribute("userCookie"));
+        c.setValue(username);
+        c.setPath("/");
+        response.addCookie(c);
+
+        // Sending mail
+        try {
+            EmailSender es = new EmailSender();
+            if (isChangedPassword) {
+                System.out.println("Detect password change");
+                System.out.println("sending mail changing password");
+                es.setEmailTo(email);
+                es.sendToEmail(es.CHANGE_PASSWORD_NOTFICATION,
+                        es.changePasswordNotifcation());
+            }
+            if (isChangedEmail) {
+                System.out.println("Detect email change");
+                System.out.println("sending mail changing email");
+                es.setEmailTo(user.getEmail());
+                es.sendToEmail(es.CHANGE_EMAIL_NOTFICATION,
+                        es.changeEmailNotification(email));
+            }
+            if (isChangedUsername) {
+                System.out.println("Detect username change");
+                System.out.println("sending mail changing username");
+                es.setEmailTo(email);
+                es.sendToEmail(es.CHANGE_USERNAME_NOTFICATION, es.changeUsernameNotification(username));
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("update account with ID " + user.getID() + " successfully");
+        return true;
+    }
+
     // ---------------------------- DELETE SECTION ----------------------------
     private void deleteProduct(HttpServletRequest request, HttpServletResponse response) {
         // Admin/Delete/ID/1
@@ -520,9 +830,8 @@ public class AdminController extends HttpServlet {
     }
 
     // ---------------------------- CLOUD SECTION ----------------------------
-
     private String uploadImageToClound(Part imagePart) throws IOException {
-        String imgURL = "fail";
+        String imgURL = "/RESOURCES/images/icons/default-perfume.png";
         File imageFile = convertPartToFile(imagePart);
         // File imageFile = new File("D:\\Images\\Anime Image\\Untitled.png");
 
@@ -586,8 +895,10 @@ public class AdminController extends HttpServlet {
             System.out.println("Image uploaded successfully. Image URL: " + imageUrl);
 
         } else {
-            System.out.println("Error occurred while uploading the image. Response Code: " + responseCode);
+            System.out.println("Error occurred while uploading the image. Response Cod");
         }
+
+
         URLconn.disconnect();
         fileInputStream.close();
         return imgURL;
@@ -617,10 +928,42 @@ public class AdminController extends HttpServlet {
         return response.substring(startIndex, endIndex);
     }
 
+    // ------------------------- EXEPTION HANDLING SECTION -------------------------
+    private String checkException(HttpServletRequest request) {
+        if (request.getAttribute("exceptionType") == null) {
+            return "";
+        }
+        String exception = "?err";
+
+        switch ((String) request.getAttribute("exceptionType")) {
+            case "WrongPasswordException":
+            case "AccountNotFoundException":
+                exception += "AccNF";
+                break;
+            case "AccountDeactivatedException":
+                exception += "AccD";
+                break;
+            case "EmailDuplicationException":
+                exception += "Email";
+                break;
+            case "UsernameDuplicationException":
+                exception += "Username";
+                break;
+            case "PhoneNumberDuplicationException":
+                exception += "Phone";
+                break;
+            case "NotEnoughInformationException":
+                exception += "NEInfo";
+            default:
+                break;
+        }
+        exception += "=true";
+        return exception;
+    }
+
 }
 
 // ---------------------------- TRASH SECTION ----------------------------
-
 // private void ProductFilter(HttpServletRequest request, HttpServletResponse
 // response) {
 // String URI = request.getRequestURI();
@@ -634,16 +977,13 @@ public class AdminController extends HttpServlet {
 // }
 // }
 // rs = pDAO.getFilteredProductForAdmin(page);
-
 // int NumberOfProduct = pDAO.GetNumberOfProduct(null, null, null, page);
 // final int ROWS = 20;
 // int NumberOfPage = NumberOfProduct / ROWS;
 // NumberOfPage = (NumberOfProduct % ROWS == 0 ? NumberOfPage : NumberOfPage +
 // 1);
-
 // request.setAttribute("page", page);
 // request.setAttribute("numberOfPage", NumberOfPage);
-
 // List<Product> listProduct = new ArrayList<>();
 // try {
 // while (rs.next()) {
@@ -659,7 +999,6 @@ public class AdminController extends HttpServlet {
 // String imgURL = rs.getString("ImgURL");
 // String description = rs.getString("Description");
 // boolean active = rs.getBoolean("Active");
-
 // // Create a new Product object and add it to the list
 // Product product = new Product(id, name, brandID, price, gender, smell,
 // quantity, releaseYear, volume,

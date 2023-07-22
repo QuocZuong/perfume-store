@@ -121,7 +121,6 @@ h1 {
   height: 35px;
   border: 0.5px solid black;
   border-radius: 3px;
-  margin-bottom: 15px;
   padding-left: 10px;
 }
 
@@ -154,8 +153,20 @@ h1 {
   display: none;
 }
 
+.login-form .sign-in input{
+    margin: 0;
+}
+
+.login-form .sign-in label, .login-form .sign-up label{
+    margin-top: 10px;
+}
+
 .login-form .sign-up {
   display: none;
+}
+
+.login-form .sign-up p{
+    margin-top: 15px;
 }
 
 .register {

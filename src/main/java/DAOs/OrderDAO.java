@@ -19,6 +19,23 @@ public class OrderDAO {
         conn = DB.DataManager.getConnection();
     }
 
+    // CRUD
+    /* ------------------------- CREATE SECTION ---------------------------- */
+    public int addOrder(Order order) {
+        String sql = "INSERT INTO [Order] (ClientID, Date, Sum) VALUES (?, ?, ?)";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, order.getClientID());
+            ps.setDate(2, new java.sql.Date(order.getDate().getTime()));
+            ps.setInt(3, order.getSum());
+            return ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
+    /* --------------------------- READ SECTION --------------------------- */
     public List<Order> getAll() {
         List<Order> orders = new ArrayList<>();
         String sql = "SELECT * FROM [Order]";
@@ -58,32 +75,6 @@ public class OrderDAO {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return orders;
-    }
-
-    public int addOrder(Order order) {
-        String sql = "INSERT INTO [Order] (ClientID, Date, Sum) VALUES (?, ?, ?)";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, order.getClientID());
-            ps.setDate(2, new java.sql.Date(order.getDate().getTime()));
-            ps.setInt(3, order.getSum());
-            return ps.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return 0;
-    }
-
-    public int deleteOrder(int orderID) {
-        String sql = "DELETE FROM [Order] WHERE ID = ?";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, orderID);
-            return ps.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return 0;
     }
 
     public List<String[]> getOrderDetailByOrderID(int OrderID) {
@@ -155,6 +146,35 @@ public class OrderDAO {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return order;
+    }
+
+    public int getMaxOrderID() {
+        String sql = "Select MAX(ID) as maxOrderID from [Order]";
+        int maxOrderID = -1;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                maxOrderID = rs.getInt("maxOrderID");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return maxOrderID;
+    }
+    /* --------------------------- UPDATE SECTION --------------------------- */
+
+    /* --------------------------- DELETE SECTION --------------------------- */
+    public int deleteOrder(int orderID) {
+        String sql = "DELETE FROM [Order] WHERE ID = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, orderID);
+            return ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
     }
 
 }

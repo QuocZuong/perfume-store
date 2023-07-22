@@ -1,4 +1,16 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="jakarta.servlet.http.Cookie"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
+
+<%
+    Cookie currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
+    boolean isAdmin = false;
+
+    if (currentUserCookie != null) {
+        isAdmin = currentUserCookie.getName().equals("Admin");
+    }
+%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -18,32 +30,73 @@
         <link rel="stylesheet" href="/RESOURCES/introduction/public/style/style.css">
         <link rel="icon" href="/RESOURCES/images/icons/icon.webp">
         <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css" rel="stylesheet" type="text/css" />
+        <style>
+            .left-align {
+                text-align: left;
+                margin-left: 20px !important;
+            }
+        </style>
         <title>Giới thiệu</title>
     </head>
     <body>
         <div class="container-fluid">
 
+            <c:choose>
+                <c:when test='<%= isAdmin%>'>
 
+                    <div class="row">
+                        <div class="col-md-12 nav">
+                            <ul>
+                                <li><a href="/">trang chủ</a></li>
+                                <li> <a href="/home/introduction">giới thiệu</a></li>
+                                <li><a href="/home/brand">thương hiệu</a></li>
+                                <!-- This link to shop servlet file. DO NOT MODIFY the link -->
+                                <li><a href="/Product/List">sản phẩm</a></li>
+                            </ul>
+                            <a href="/" class="iconPage"><img src="/RESOURCES/images/icons/icon.webp" alt=""
+                                                              height="64"></a>
+                            
+                            <div class="account">
+                                <button class="droppown-btn bg-transparent border-0" id="product-dropdown-btn"><img src="/RESOURCES/images/icons/shopping-bag-alone.png" alt="">
+                                </button>
+                                <ul class="shadow position-absolute align-items-start ps-1 pt-2">
+                                    <li class="py-3 text-dark"><a href="/Admin/Product/Add">Thêm sản phẩm</a></li>
+                                    <li class="pb-3 text-dark"><a href="/Admin/Product/List">Danh sách sản phẩm</a></li>
+                                </ul>
 
-            <div class="row">
-                <div class="col-md-12 nav">
-                    <ul>
-                        <li><a href="/">trang chủ</a></li>
-                        <li> <a href="/home/introduction">giới thiệu</a></li>
-                        <li><a href="/home/brand">thương hiệu</a></li>
-                        <!-- This link to shop servlet file. DO NOT MODIFY the link -->
-                        <li><a href="/Product/List">sản phẩm</a></li>
-                        <li><a href="">blog</a></li>
-                    </ul>
-                    <a href="/"><img src="/RESOURCES/images/icons/icon.webp" alt=""
-                                     height="64"></a>
-                    <div class="account">
-                        <a><img src="/RESOURCES/images/icons/search.png" alt=""></a>
-                        <a href="<%= ((String)request.getAttribute("UserRole") == null ? "/Client" : (String)request.getAttribute("UserRole")) %>"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
-                        <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
+                                <button class="droppown-btn bg-transparent border-0" id="user-dropdown-btn"><img src="/RESOURCES/images/icons/group.png" alt="">
+                                </button>
+                                <ul class="shadow position-absolute align-items-start ps-1 pt-2">
+                                    <li class="py-3 text-dark"><a href="/Admin/User/List">Danh sách người dùng</a></li>
+                                </ul>
+
+                                <a href="/Client/User"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+                                <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
+
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </c:when>
+                <c:otherwise>
+                    <div class="row">
+                        <div class="col-md-12 nav">
+                            <ul>
+                                <li><a href="/">trang chủ</a></li>
+                                <li> <a href="/home/introduction">giới thiệu</a></li>
+                                <li><a href="/home/brand">thương hiệu</a></li>
+                                <!-- This link to shop servlet file. DO NOT MODIFY the link -->
+                                <li><a href="/Product/List">sản phẩm</a></li>
+                            </ul>
+                            <a href="/" class="iconPage"><img src="/RESOURCES/images/icons/icon.webp" alt=""
+                                                              height="64"></a>
+                            <div class="account">
+                                <a href="/Client/User"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+                                <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
+                            </div>
+                        </div>
+                    </div>
+                </c:otherwise>
+            </c:choose>
 
             <div class="row main">
 
@@ -82,16 +135,806 @@
                     </div>
                 </div>
             </div>
-        </div>
 
+
+            <div class="tableTeam">
+
+                <h1 class="mb-5">Bảng phân công công việc</h1>
+                <table class="table table-hover" style="font-size: 20px;">
+
+                    <thead class="thead-dark">
+                        <tr class="bg-primary">
+                            <th scope="col" class="table-dark">Họ Tên</th>
+                            <th scope="col" class="table-dark">Tag</th>
+                            <th scope="col" class="table-dark w-45 left-align ms-2">Công Việc</th>
+                            <th scope="col" class="table-dark">Mức độ hoàn thành công việc</th>
+                            <th scope="col" class="table-dark">Tỉ lệ đóng góp trên toàn bộ project</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr class="table-active">
+                            <td >Nguyễn Lê Tài Đức</td>
+                            <td></td>
+                            <td class="left-align"></td>
+                            <td></td>
+                            <td>25%</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Front End</td>
+                            <td class="left-align"></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia fix bug nhỏ (css, js, boostrap, ...)</td>
+                            <td>25%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia sử dụng Jquery để validation các form</td>
+                            <td>33.3%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Back End</td>
+                            <td class="left-align"></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia code login, register cho LogController</td>
+                            <td>10%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm HomeController</td>
+                            <td>40%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm ProductController</td>
+                            <td>25%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm ClientController</td>
+                            <td>25%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm AdminController</td>
+                            <td>25%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Làm một số function trong BrandDAO</td>
+                            <td>33.3%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Làm một số function trong CartDAO</td>
+                            <td>50%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Làm một số function trong OrderDAO</td>
+                            <td>25%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Làm một số function trong ProductDAO</td>
+                            <td>25%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Làm một số function trong UserDAO</td>
+                            <td>25%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Clean code để dễ quản lí function, class</td>
+                            <td>100%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Paging cho Product/List (Java)</td>
+                            <td>50%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Search cho Product (Java)</td>
+                            <td>50%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Database</td>
+                            <td class="left-align"></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Lấy dữ liệu database (web scrapping)</td>
+                            <td>20%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia thiết kế database</td>
+                            <td>50%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Khác</td>
+                            <td class="left-align"></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Sử dụng Vietnam Province API để chọn địa chỉ</td>
+                            <td>100%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Cấu trúc thành model MVC</td>
+                            <td>35%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Exception Handling</td>
+                            <td>90%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Gửi mail đến user</td>
+                            <td>33.3%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia code filter userValidation</td>
+                            <td>20%</td>
+                            <td></td>
+                        </tr>
+                        <tr class="table-active">
+                            <td>Lê Bá Thịnh</td>
+                            <td></td>
+                            <td class="left-align"></td>
+                            <td></td>
+                            <td>25%</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Front End</td>
+                            <td class="left-align"></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia sử dụng Jquery để validation các form</td>
+                            <td>33.3%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Back End</td>
+                            <td class="left-align"></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm HomeController</td>
+                            <td>40%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm ProductController</td>
+                            <td>25%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm ClientController</td>
+                            <td>25%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm AdminController</td>
+                            <td>25%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm LogController</td>
+                            <td>25%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Làm Subscription</td>
+                            <td>50%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm function trong OrderDAO</td>
+                            <td>25%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm function trong UserDAO</td>
+                            <td>25%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Database</td>
+                            <td class="left-align"></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Lấy dữ liệu database (web scrapping)</td>
+                            <td>40%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Khác</td>
+                            <td class="left-align"></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Cấu trúc thành model MVC</td>
+                            <td>35%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Sử dụng outh2 API để upload ảnh lên Imgur lên database</td>
+                            <td>100%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Gửi mail đến user</td>
+                            <td>33.3%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia fix bug</td>
+                            <td>25%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Exception Handling</td>
+                            <td>10%</td>
+                            <td></td>
+                        </tr>
+                        <tr class="table-active">
+                            <td>Lê Quốc Vương</td>
+                            <td></td>
+                            <td class="left-align"></td>
+                            <td></td>
+                            <td>25%</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Front End</td>
+                            <td class="left-align"></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Code plugin zoom ảnh cho trang sản phẩm</td>
+                            <td>100%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm animation cho web</td>
+                            <td>100%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm front end trang homePage</td>
+                            <td>92%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm front end trang introduction</td>
+                            <td>92%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm front end trang thương hiệu</td>
+                            <td>92%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm front end trang sản phẩm</td>
+                            <td>92%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm front end trang chi tiết sản phẩm</td>
+                            <td>92%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm front end trang giỏ hàng</td>
+                            <td>92%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm front end trang cho Client tương tác</td>
+                            <td>92%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Làm trang báo lỗi</td>
+                            <td>100%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia style toàn bộ trang jsp trong ADMIN_PAGE</td>
+                            <td>100%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Làm sản phẩm liên quan</td>
+                            <td>100%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia navbar cho admin</td>
+                            <td>20%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Paging cho Product list (css)</td>
+                            <td>50%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Back End</td>
+                            <td class="left-align"></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm HomeController</td>
+                            <td>20%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm ProductController</td>
+                            <td>25%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm ClientController</td>
+                            <td>25%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm AdminController</td>
+                            <td>25%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm LogController</td>
+                            <td>25%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Làm Subscription</td>
+                            <td>50%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm function trong OrderDAO</td>
+                            <td>25%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm function trong UserDAO</td>
+                            <td>25%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Database</td>
+                            <td class="left-align"></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Lấy dữ liệu database (web scrapping)</td>
+                            <td>20%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Khác</td>
+                            <td class="left-align"></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Cấu trúc thành model MVC</td>
+                            <td>10%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Sử dụng outh2 API để upload ảnh lên Imgur lên database</td>
+                            <td>100%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Gửi mail đến user</td>
+                            <td>33.3%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia fix bug</td>
+                            <td>25%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Exception Handling</td>
+                            <td>10%</td>
+                            <td></td>
+                        </tr>
+                        <tr class="table-active">
+                            <td>Nguyễn Phi Long</td>
+                            <td></td>
+                            <td class="left-align"></td>
+                            <td></td>
+                            <td>25%</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Front End</td>
+                            <td class="left-align"></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm front end trang homePage</td>
+                            <td>8%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm front end trang introduction</td>
+                            <td>8%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm front end trang thương hiệu</td>
+                            <td>8%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm front end trang sản phẩm</td>
+                            <td>8%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm front end trang chi tiết sản phẩm</td>
+                            <td>8%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm front end trang giỏ hàng</td>
+                            <td>8%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia làm front end trang cho Client tương tác</td>
+                            <td>8%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Code trang checkout</td>
+                            <td>100%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia navbar cho admin</td>
+                            <td>80%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia code jQuery validate cho các form</td>
+                            <td>33.3%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Back End</td>
+                            <td class="left-align"></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia code login, register cho LogController</td>
+                            <td>90%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia code AdminController</td>
+                            <td>25%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia code ClientController</td>
+                            <td>25%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia code ProductController</td>
+                            <td>25%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia code DAOs UserDao</td>
+                            <td>25%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia code DAOs ProductDao</td>
+                            <td>25%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia code DAOs BrandDao</td>
+                            <td>33.3%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia code Models User</td>
+                            <td>100%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia code Models Product</td>
+                            <td>100%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia code Models Order</td>
+                            <td>100%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Database</td>
+                            <td class="left-align"></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia thiết kế database</td>
+                            <td>50%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Lấy dữ liệu database (web scrapping)</td>
+                            <td>20%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Host database online cho project</td>
+                            <td>100%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                           <td class="left-align">Khác</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Cấu trúc thành model MVC</td>
+                            <td>20%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="left-align">Tham gia code filter userValidation</td>
+                            <td>80%</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
         <div class="row">
             <div class="col-md-12 register">
                 <h1>Đăng ký thành viên để nhận khuyến mại</h1>
                 <p>Theo dõi chúng tôi để nhận thêm nhiều ưu đãi</p>
-                <form action="">
-                    <input type="text" name="" id="" placeholder="nhập email">
-                    <button>ĐĂNG KÝ</button>
+                <form action="/home/subscribe" method="POST">
+                    <input type="text" name="txtEmailSubscribe" id="" placeholder="nhập email" required="true">
+                    <button type="submit" name="submitEmailBtn" value="Submit" class="enter">ĐĂNG KÝ</button>
                 </form>
             </div>
         </div>
@@ -149,5 +992,49 @@
             integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>
         <script src="/RESOURCES/introduction/public/js/main.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+
+        <script src="/RESOURCES/admin/product/public/js/main.js"></script>
+        <script src="/RESOURCES/introduction/public/js/main.js"></script>
+        <!--Jquery Validation-->
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+        <script>
+            $(document).ready(function () {
+                $.validator.addMethod("emailCustom", function (value, element, toggler) {
+                    if (toggler) {
+                        let regex = /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/;
+                        let result = regex.test(value);
+                        return result;
+                    }
+                    return true;
+                }, "Vui lòng nhập đúng định dạng email");
+
+                $("form[action='/home/subscribe']").validate({
+                    rules: {
+                        txtEmailSubscribe: {
+                            required: true,
+                            email: true
+                        }
+                    },
+                    messages: {
+                        txtEmailSubscribe: {
+                            required: "Vui lòng nhập email",
+                            email: "Vui lòng nhập đúng định dạng email"
+                        }
+                    },
+
+                    errorPlacement: function (error, element) {
+                        error.addClass("text-danger d-block mt-3");
+                        error.insertAfter(element.next());
+                    }
+
+                });
+            });
+        </script>
     </body>
 </html>

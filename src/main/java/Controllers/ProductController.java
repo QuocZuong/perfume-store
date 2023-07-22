@@ -2,6 +2,7 @@ package Controllers;
 
 import DAOs.BrandDAO;
 import DAOs.ProductDAO;
+import Exceptions.ProductNotFoundException;
 import Models.Product;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -45,11 +46,22 @@ public class ProductController extends HttpServlet {
                         && (request.getQueryString() != null && !request.getQueryString().isEmpty()))
                 || path.startsWith(LIST_URI + "/BrandID")
                 || path.startsWith(LIST_URI + "/page")) {
-            ProductFilter(request, response);
-            // if ((int) request.getAttribute("page") > (int) request.getAttribute("numberOfPage")) {
-            //     response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            int kq = ProductFilter(request, response);
+            // if ((int) request.getAttribute("page") > (int)
+            // request.getAttribute("numberOfPage")) {
+            // response.sendError(HttpServletResponse.SC_NOT_FOUND);
             // } else {
             // }
+            if (kq == 0) {
+                if (request.getAttribute("redirectPath") != null) {
+                    response.sendRedirect((String) request.getAttribute("redirectPath"));
+                }
+                return;
+            }
+            if (kq == 2) {
+                response.sendRedirect(LIST_URI + checkException(request));
+                return;
+            }
             request.getRequestDispatcher("/PRODUCT_PAGE/list.jsp").forward(request, response);
             return;
         }
@@ -85,9 +97,8 @@ public class ProductController extends HttpServlet {
     /**
      * Get the attributes from the request URL then set it to the request.
      * Product/List/BrandID/2?Gender=Male&Price=low
-     *
      */
-    private void ProductFilter(HttpServletRequest request, HttpServletResponse response) {
+    private int ProductFilter(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ProductDAO pDAO = new ProductDAO();
         BrandDAO bDao = new BrandDAO();
         ResultSet bdRs = bDao.getAll();
@@ -99,24 +110,49 @@ public class ProductController extends HttpServlet {
         String path = request.getRequestURL().toString();
         String data[] = path.split("/");
         final int ROWS = 20;
-        System.out.println("Search la:"+ Search);
+        System.out.println("Search la:" + Search);
         String brandID = null;
         int page = 1;
-
+        int tempPage = 1;
         for (int i = 0; i < data.length; i++) {
             if (data[i].equals("BrandID")) {
-                brandID = data[i + 1];
+                try {
+                    brandID = data[i + 1];
+                    Integer.parseInt(brandID);
+                } catch (NumberFormatException e) {
+                    response.sendRedirect("/Product/List");
+                    return 0;
+                }
             } else if (data[i].equals("page")) {
                 page = Integer.parseInt(data[i + 1]);
+                tempPage = page;
             }
         }
         if (Search == null || Search.equals("")) {
             Search = "%";
         }
-        int NumberOfProduct = pDAO.GetNumberOfProduct(brandID, gender, price, Search);
+        int NumberOfProduct = -1;
+
+        // Handle
+        try {
+            NumberOfProduct = pDAO.GetNumberOfProduct(brandID, gender, price, Search);
+        } catch (ProductNotFoundException e) {
+            System.out.println("Khong co san pham nao ca");
+            request.setAttribute("exceptionType", "ProductNotFoundException");
+            return 2;
+        }
+
         int NumberOfPage = NumberOfProduct / ROWS;
         NumberOfPage = (NumberOfProduct % ROWS == 0 ? NumberOfPage : NumberOfPage + 1);
-        
+
+        if (NumberOfPage < page && NumberOfProduct != 0) {
+            String redirectPath = path;
+            redirectPath = redirectPath.replace("/page/" + tempPage, "/page/1")
+                    + (request.getQueryString() == null ? "" : "?" + request.getQueryString());
+            request.setAttribute("redirectPath", redirectPath);
+            return 0;
+        }
+
         String root = path.replace(request.getRequestURI(), "");
         String currentURL = root + LIST_URI;
         currentURL += (brandID == null ? "" : "/BrandID/" + brandID);
@@ -126,7 +162,6 @@ public class ProductController extends HttpServlet {
 
         // System.out.println(String.format("BrandID: %s, gender: %s, price: %s",
         // brandID, gender, price));
-
         request.setAttribute("BrandID", brandID);
         request.setAttribute("gender", gender);
         request.setAttribute("price", price);
@@ -140,6 +175,7 @@ public class ProductController extends HttpServlet {
         request.setAttribute("PDResultSet", pDAO.getFilteredProduct(brandID, gender, price, page, Search));
         request.setAttribute("shopName", shop);
         request.setAttribute("BDResultSet", bdRs);
+        return 1;
     }
 
     /**
@@ -148,7 +184,6 @@ public class ProductController extends HttpServlet {
      */
     private boolean handleProductDetail(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ProductDAO pDAO = new ProductDAO();
-        BrandDAO bDao = new BrandDAO();
 
         String data[] = request.getRequestURI().split("/");
 
@@ -179,4 +214,41 @@ public class ProductController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
     }
+
+    // ------------------------- EXEPTION HANDLING SECTION -------------------------
+    private String checkException(HttpServletRequest request) {
+        if (request.getAttribute("exceptionType") == null) {
+            return "";
+        }
+        String exception = "?err";
+
+        switch ((String) request.getAttribute("exceptionType")) {
+            case "WrongPasswordException":
+            case "AccountNotFoundException":
+                exception += "AccNF";
+                break;
+            case "ProductNotFoundException":
+                exception += "PNF";
+                break;
+            case "AccountDeactivatedException":
+                exception += "AccD";
+                break;
+            case "EmailDuplicationException":
+                exception += "Email";
+                break;
+            case "UsernameDuplicationException":
+                exception += "Username";
+                break;
+            case "PhoneNumberDuplicationException":
+                exception += "Phone";
+            case "NotEnoughInformationException":
+                exception += "NEInfo";
+
+            default:
+                break;
+        }
+        exception += "=true";
+        return exception;
+    }
+
 }
