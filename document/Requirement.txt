@@ -1,0 +1,41 @@
+https://docs.google.com/document/d/1nxdOZT3nQzrl1AAabK7Hjuc46I3ZI8zUnFbgZTwFhmM/edit
+
+
+Tính năng mới:
+Thêm chức năng thống kê doanh số cho admin (ngày, tháng, năm).
+Thêm trạng thái cho đơn hàng khi được ship, trạng thái sẽ ảnh hưởng đến số lượng đơn hàng trong kho. 
+Tất cả đoạn văn bản trong trang web đều phải edit được.
+Có thể thay đổi được nội dung trong trang home (tên trang web, các sản phẩm).
+Quên mật khẩu -> gửi tin nhắn SMS/email.
+Thêm discount (voucher hoặc event):  
+=> Thêm cột discount Product:
+=> Real Price = Price - discount%*Price.
+Đề xuất product theo brand và gender dựa theo lịch sử mua hàng (có thể thêm tone hương).
+
+
+Tính năng cần sửa đổi:
+Giỏ hàng sau khi được khách hàng checkout phải vào trạng thái chờ được xác nhận bởi admin thì mới được checkout
+Ở “đơn hàng” của user phải có cột nút :
+“Trạng thái đơn hàng”
+“Huỷ đơn”
+Ở “quản lý đơn hàng” của admin phải có:
++ “Trạng thái đơn hàng” để có thể xác nhận đơn hàng”
++ “Đơn đã giao”
++ “Đơn đã huỷ”
+Khi thêm sản phẩm mới thì thay đổi brand từ text sang select các brand có sẵn nếu muốn thêm một brand chưa tồn tại thì sẽ select vào “khác” trong thanh select. Lúc này một bảng gồm input là Brand name.
+Giá tiền âm cần phải validate lại (trang add và update sản phẩm).
+Sort 
++ sort theo giá làm Product không truy cập được
++ sort trên toàn bộ database     
+
+Tính năng cần xóa:
+Xóa tính năng admin có thể sửa đổi thông tin của người dùng khác (password, email, username).
+
+
+Hỏi đáp:
+Bussiness logic:
+Trạng thái đơn hàng gồm 3 trạng thái : Chờ xác nhận, đã giao, đã bị hủy. Ngoài ra có cần phải bổ sung thêm chờ lấy hàng và đang giao không.
+Chức năng quên username nhập đúng số điện thoại sẽ được nhận username
+Other:
+Trong chức năng đề xuất, thì product được đề xuất theo gender, tone hương, brand thì làm cách nào là hợp lý?
+	

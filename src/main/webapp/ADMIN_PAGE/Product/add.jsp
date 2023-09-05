@@ -29,37 +29,14 @@
     </head>
     <body>
         <div class="container-fluid">
+
+            <!--Navbar section-->
             <div class="row">
                 <div class="col-md-12 nav">
-                    <ul>
-                        <li><a href="/">trang chủ</a></li>
-                        <li> <a href="/home/introduction">giới thiệu</a></li>
-                        <li><a href="/home/brand">thương hiệu</a></li>
-                        <!-- This link to shop servlet file. DO NOT MODIFY the link -->
-                        <li><a href="/Product/List">sản phẩm</a></li>
-                    </ul>
-                    <a href="/" class="iconPage"><img src="/RESOURCES/images/icons/icon.webp" alt=""
-                                                      height="64"></a>
-                    <div class="account">
-                        <button class="droppown-btn bg-transparent border-0" id="product-dropdown-btn"><img src="/RESOURCES/images/icons/shopping-bag-alone.png" alt="">
-                        </button>
-                        <ul class="shadow position-absolute align-items-start ps-1 pt-2">
-                            <li class="py-3 text-dark"><a href="/Admin/Product/Add">Thêm sản phẩm</a></li>
-                            <li class="pb-3 text-dark"><a href="/Admin/Product/List">Danh sách sản phẩm</a></li>
-                        </ul>
-
-                        <button class="droppown-btn bg-transparent border-0" id="user-dropdown-btn"><img src="/RESOURCES/images/icons/group.png" alt="">
-                        </button>
-                        <ul class="shadow position-absolute align-items-start ps-1 pt-2">
-                            <li class="py-3 text-dark"><a href="/Admin/User/List">Danh sách người dùng</a></li>
-                        </ul>
-
-                        <a href="/Client/User"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
-                        <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
-
-                    </div>
+                    <jsp:include page="/NAVBAR/AdminNavbar.jsp"></jsp:include>
                 </div>
             </div>
+
             <div class="container">
 
                 <div class="row">
@@ -122,140 +99,140 @@
                     </form>
                 </div>
             </div>
+        </div>
 
 
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
 
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
-                    integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
-            crossorigin="anonymous"></script>
-
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
-            <!-- Custom Script -->
-            <script src="/RESOURCES/admin/product/public/js/add.js"></script>
-            <!--Jquery Validation-->
-            <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+        <!-- Custom Script -->
+        <script src="/RESOURCES/admin/product/public/js/add.js"></script>
+        <!--Jquery Validation-->
+        <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
 
 
-            <!-- <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script> -->
-            <script>
-                $(document).ready(function () {
-                    $.validator.addMethod("requiredFile", function (value, element) {
-                        return element.files.length !== 0;
-                    }, "Vui lòng chọn ảnh sản phẩm");
+        <!-- <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script> -->
+        <script>
+            $(document).ready(function () {
+                $.validator.addMethod("requiredFile", function (value, element) {
+                    return element.files.length !== 0;
+                }, "Vui lòng chọn ảnh sản phẩm");
 
-                    $("#Add-form").validate({
-                        rules: {
-                            txtProductName: {
-                                required: true,
-                                maxlength: 300
-                            },
-                            txtBrandName: {
-                                required: true,
-                                maxlength: 50
-                            },
-                            txtProductPrice: {
-                                required: true,
-                                number: true
-                            },
-                            rdoGender: {
-                                required: true
-                            },
-                            txtProductSmell: {
-                                required: true,
-                                maxlength: 200
-                            },
-                            txtProductQuantity: {
-                                required: true,
-                                digits: true
-                            },
-                            txtProductReleaseYear: {
-                                required: true,
-                                range: [1900, (new Date().getFullYear())]
-                            },
-                            txtProductVolume: {
-                                required: true,
-                                digits: true
-                            },
-                            fileProductImg: {
-                                requiredFile: true,
-                                accept: "image/*"
-                            },
-                            txtProductDescription: {
-                                required: true
-                            }
+                $("#Add-form").validate({
+                    rules: {
+                        txtProductName: {
+                            required: true,
+                            maxlength: 300
                         },
-                        messages: {
-                            txtProductName: {
-                                required: "Vui lòng nhập tên sản phẩm",
-                                maxlength: "Tên sản phẩm không được vượt quá 300 ký tự"
-                            },
-                            txtBrandName: {
-                                required: "Vui lòng nhập tên thương hiệu",
-                                maxlength: "Tên thương hiệu không được vượt quá 50 ký tự"
-                            },
-                            txtProductPrice: {
-                                required: "Vui lòng nhập giá sản phẩm",
-                                number: "Giá sản phẩm phải là số"
-                            },
-                            rdoGender: {
-                                required: "Vui lòng chọn giới tính"
-                            },
-                            txtProductSmell: {
-                                required: "Vui lòng nhập hương thơm",
-                                maxlength: "Hương thơm không được vượt quá 200 ký tự"
-                            },
-                            txtProductQuantity: {
-                                required: "Vui lòng nhập số lượng",
-                                digits: "Số lượng phải là số nguyên"
-                            },
-                            txtProductReleaseYear: {
-                                required: "Vui lòng nhập năm phát hành",
-                                range: "Năm phát hành phải nằm trong khoảng 1900 đến năm hiện tại"
-                            },
-                            txtProductVolume: {
-                                required: "Vui lòng nhập dung tích",
-                                digits: "Dung tích phải là số nguyên"
-                            },
-                            fileProductImg: {
-                                required: "Vui lòng chọn ảnh sản phẩm",
-                                accept: "Vui lòng chọn file hình ảnh"
-                            },
-                            txtProductDescription: {
-                                required: "Vui lòng nhập thông tin mùi hương"
-                            }
+                        txtBrandName: {
+                            required: true,
+                            maxlength: 50
                         },
-
-                        errorPlacement: function (error, element) {
-                            error.addClass("text-danger d-block mt-2");
-
-                            if (element.attr('name') === 'rdoGender') {
-                                // error.insertAfter($("#gender-input"));
-                                error.insertAfter(element.parent());
-                                return;
-                            }
-                            if (element.attr('name') === 'fileProductImg') {
-                                // error.insertAfter($("#gender-input"));
-                                error.insertAfter(element.parent());
-                                return;
-                            }
-
-                            error.insertAfter(element);
+                        txtProductPrice: {
+                            required: true,
+                            number: true
+                        },
+                        rdoGender: {
+                            required: true
+                        },
+                        txtProductSmell: {
+                            required: true,
+                            maxlength: 200
+                        },
+                        txtProductQuantity: {
+                            required: true,
+                            digits: true
+                        },
+                        txtProductReleaseYear: {
+                            required: true,
+                            range: [1900, (new Date().getFullYear())]
+                        },
+                        txtProductVolume: {
+                            required: true,
+                            digits: true
+                        },
+                        fileProductImg: {
+                            requiredFile: true,
+                            accept: "image/*"
+                        },
+                        txtProductDescription: {
+                            required: true
                         }
-                    });
-                });
+                    },
+                    messages: {
+                        txtProductName: {
+                            required: "Vui lòng nhập tên sản phẩm",
+                            maxlength: "Tên sản phẩm không được vượt quá 300 ký tự"
+                        },
+                        txtBrandName: {
+                            required: "Vui lòng nhập tên thương hiệu",
+                            maxlength: "Tên thương hiệu không được vượt quá 50 ký tự"
+                        },
+                        txtProductPrice: {
+                            required: "Vui lòng nhập giá sản phẩm",
+                            number: "Giá sản phẩm phải là số"
+                        },
+                        rdoGender: {
+                            required: "Vui lòng chọn giới tính"
+                        },
+                        txtProductSmell: {
+                            required: "Vui lòng nhập hương thơm",
+                            maxlength: "Hương thơm không được vượt quá 200 ký tự"
+                        },
+                        txtProductQuantity: {
+                            required: "Vui lòng nhập số lượng",
+                            digits: "Số lượng phải là số nguyên"
+                        },
+                        txtProductReleaseYear: {
+                            required: "Vui lòng nhập năm phát hành",
+                            range: "Năm phát hành phải nằm trong khoảng 1900 đến năm hiện tại"
+                        },
+                        txtProductVolume: {
+                            required: "Vui lòng nhập dung tích",
+                            digits: "Dung tích phải là số nguyên"
+                        },
+                        fileProductImg: {
+                            required: "Vui lòng chọn ảnh sản phẩm",
+                            accept: "Vui lòng chọn file hình ảnh"
+                        },
+                        txtProductDescription: {
+                            required: "Vui lòng nhập thông tin mùi hương"
+                        }
+                    },
 
-                $("input[type=file][name=fileProductImg]").on("change", function () {
-                    let fname = $('input[type=file][name=fileProductImg]').val().replace(/C:\\fakepath\\/i, '')
-                    if(fname !== ""){
-                        $("#filename").text(fname);
-                        return;
+                    errorPlacement: function (error, element) {
+                        error.addClass("text-danger d-block mt-2");
+
+                        if (element.attr('name') === 'rdoGender') {
+                            // error.insertAfter($("#gender-input"));
+                            error.insertAfter(element.parent());
+                            return;
+                        }
+                        if (element.attr('name') === 'fileProductImg') {
+                            // error.insertAfter($("#gender-input"));
+                            error.insertAfter(element.parent());
+                            return;
+                        }
+
+                        error.insertAfter(element);
                     }
-                    $("#filename").text("Upload Image");
                 });
-            </script>
+            });
+
+            $("input[type=file][name=fileProductImg]").on("change", function () {
+                let fname = $('input[type=file][name=fileProductImg]').val().replace(/C:\\fakepath\\/i, '')
+                if (fname !== "") {
+                    $("#filename").text(fname);
+                    return;
+                }
+                $("#filename").text("Upload Image");
+            });
+        </script>
     </body>
 
 </html>
