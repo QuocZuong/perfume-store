@@ -8,21 +8,23 @@ public class Test {
     // DataManager.displayColumns();
     // DataManager.insert("User", "", "Hi", args);
     try {
-      // ProductDAO pr = new ProductDAO();
+      ProductDAO pr = new ProductDAO();
 
       // for (int i = 0; i < BrandData.length; i++) {
       // System.out.println(DataManager.insert("Brand", BrandData[i]));
       // }
-      // for (int i = 0; i < data.length; i++) {
-      // System.out.println(pr.addProduct(data[i]));
-      // }
+
+      for (int i = 0; i < data.length; i++) {
+        System.out.println(pr.addProduct(data[i]));
+      }
+      
       // System.out.println(DataManager.select("Product",
       // ""));
       // System.out.println(DataManager.delete("Brand", ""));
       // System.out.println(DataManager.delete("Product", ""));
 
-      ProductDAO pd = new ProductDAO();
-      pd.save_Backup_Data();
+      // ProductDAO pd = new ProductDAO();
+      // pd.save_Backup_Data();
       // BrandDAO bd = new BrandDAO();
       // bd.save_Backup_Data();
 
