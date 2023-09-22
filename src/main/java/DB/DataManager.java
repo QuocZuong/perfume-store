@@ -5,12 +5,12 @@ import java.util.HashMap;
 
 public class DataManager {
 
-  public static final String DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+  public static final String DRIVER = "localhost:1433";
   // public static final String URL =
   // PODO:1433;databaseName=projectPRJ;user=sa;password=sa;
   // 35.240.240.157:1433;databaseName=projectPRJ;user=chuongHeo;password=heoQuipdeq;
   // 35.240.240.157:1433;databaseName=projectPRJ;user=chuongHeo;password=heoQuipdeq;
-  public static final String SERVER_NAME = "localhost";
+  public static final String SERVER_NAME = "serverforgroup2.database.windows.net";
   public static final String USER = "sa";
   public static final String PASSWORD = "Admin2003";
 
