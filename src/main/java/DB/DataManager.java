@@ -10,9 +10,9 @@ public class DataManager {
   // PODO:1433;databaseName=projectPRJ;user=sa;password=sa;
   // 35.240.240.157:1433;databaseName=projectPRJ;user=chuongHeo;password=heoQuipdeq;
   // 35.240.240.157:1433;databaseName=projectPRJ;user=chuongHeo;password=heoQuipdeq;
-  public static final String SERVER_NAME = "LAPTOP-CSJAMOBT";
+  public static final String SERVER_NAME = "localhost";
   public static final String USER = "sa";
-  public static final String PASSWORD = "sa";
+  public static final String PASSWORD = "Admin2003";
 
   public static final String DB_CONFIG = SERVER_NAME
       + ":1433;databaseName=projectPRJ;user=" + USER + ";password=" + PASSWORD + ";";
