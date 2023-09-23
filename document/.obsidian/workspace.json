@@ -85,7 +85,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Project bán nước hoa (PRJ301).md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +101,6 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Project bán nước hoa (PRJ301).md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +123,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Project bán nước hoa (PRJ301).md"
+                "file": "Untitled.md"
               }
             }
           },
@@ -166,10 +164,15 @@
       "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "6a7ba4bf81245e23",
+  "active": "10e3aec9a4263c25",
   "lastOpenFiles": [
+<<<<<<< HEAD
     "SDS/CodePackages.drawio.png",
     "Project bán nước hoa (PRJ301).md",
+=======
+    "Project bán nước hoa (PRJ301).md",
+    "Untitled.md",
+>>>>>>> 2cefc64ef082adefafcdfd6551a07e58523b3b54
     "Files/Pasted image 20230923175833.png",
     "SRS/Admin_ScreenFlow_V4.drawio.png",
     "SRS/Context_Diagram_V3.drawio.png",

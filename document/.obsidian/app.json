@@ -5,7 +5,7 @@
   "attachmentFolderPath": "Files",
   "newFileLocation": "folder",
   "newFileFolderPath": "Inbox",
-  "trashOption": "local",
-  "readableLineLength": false,
+  "trashOption": "system",
+  "readableLineLength": true,
   "showInlineTitle": false
 }
