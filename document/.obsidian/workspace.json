@@ -69,8 +69,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200,
-    "collapsed": true
+    "width": 200
   },
   "right": {
     "id": "b9d60f1d88a7f52e",
@@ -159,5 +158,8 @@
     }
   },
   "active": "fa75f15d861f367c",
-  "lastOpenFiles": []
+  "lastOpenFiles": [
+    "s1hsz2t5.z5m~",
+    "newDatabase.sql"
+  ]
 }
