@@ -126,20 +126,28 @@
 	+ *product_ID( int not null ) (duplicate)*
 	+ Quantity (int default 0)
 	+ Price (Int default 0)
-	+ Sum (Int default 0)
 
 ## Table Voucher:
 + *Attribute*:
 	+ Voucher_ID (int not null Indetity(1,1)) (primary key)
 	+ Voucher_Code (nvarchar(20))
-	+ *Product_ID (int not null) (duplicate)*
+	+ Voucher_Quantity (int not null)
 	+ Voucher_Discount_Percent (int not null)
+	+ Voucher_Disount_Max (int not null)
 	+ Voucher_Created_At (Datetime not null)
 	+ Voucher_Expired_At (Datetime)
-	+ Voucher_Modified_At (Datetime)
-	+ Voucher_Created_By (int not null)
-	+ Voucher_Modified_By (int)
+	+ *Voucher_Created_By_Employee (int not null)*
 
+## Table Voucher_Product
++ *Attribute*:
+	+ *Voucher_ID (int not null) (duplicate)*
+	+ *Product_ID (int not null) (duplicate)*
+
+## Table Voucher_Customer
++ *Attribute*:
+	+ *Voucher_ID (int not null) (duplicate)*
+	+ *Customer_ID (int not null) (duplicate)*
+	+ Deducted_Price (int not null)
 
 ## Table OrderDetail
 ####  Weak Entity
@@ -154,24 +162,33 @@
 ## Table Order
 + *Attribute*:
 	+ *Order_ID (int) (primary key Indentity (1,1))*
-	+ *ClientID (ID (int) (duplicate) )*
-	+ Order_Date (Date) not null
+	+ *Customer_ID ( int not null (duplicate) )*
 	+ Order_Address (nvarchar(500))
 	+ Order_Phone_Number (varchar(10))
 	+ Order_Note (nvarchar(500))
 	+ Order_Total (int default 0)
-	+ Order_Update_At (DateTime)
+	+ Order_Created_At (Date) not null
+	+ Order_Checkout_At (Datetime) not null
+	+ Order_Update_At (Datetime)
 	+ Order_Update_By (int)
 
 
 ## Table Customer
 #### Inherited table User
 + *Attribute*:
-
+	+ Customer_ID (int not null Indentity(1,1)) (primary key)
+	+ *User_ID (int not null)*
+	+ Customer_Credit_Point (int not null) 
 
 ## Table Delivery Address
 #### Weak Entity
 + *Attribute*:
+	+ *Customer_ID (int not null) (duplicate)*
+	+ Phone_Number (varchar(10) not null)
+	+ Address (nvarchar(max) not null)
+	+ Status (nvarchar(200) not null)
+	+ Create_At (Datetime not null)
+	+ Modified_At (Datetime)
 
 
 
@@ -181,7 +198,6 @@
 	+ User_Name (nvarchar(50))
 	+ User_Username (varchar(50))
 	+ User_Password (varchar(32))  %%After **MD5** digestion%%
-	+ User_Phone_Number (varchar(10))
 	+ User_Email (varchar(100))
 	+ User_Active (BIT) DEFAULT 1
 	+ User_Type (nvarchar(20) not null)
@@ -190,45 +206,70 @@
 ## Table Order_Manager
 #### Inherited table Employee
 + *Attribute*:
-
+	+ Order_Manager_ID (int not null Indentity(1,1)) (primary key)
+	+ *Employee_ID (int not null)*
 
 ## Table Employee
 #### Inherited table User
 + *Attribute*:
 	+ Employee_ID (int not null Indentity(1,1)) (primary key)
 	+ *User_ID (int not null)*
+	+ Employee_Citizen_ID (nvarchar(20) not null)
+	+ Employee_DoB (Datetime not null)
+	+ Employee_Phone_Number (varchar(10) not null)
+	+ Employee_Address (nvarchar(max))
+	+ Employee_Role (int not null)
+	+ Employee_Join_Date (Datetime not null)
+	+ Employee_Retire_Date (Datetime)
 
 ## Table Inventory_Manager
-#### Inherited table User
+#### Inherited table Employee
 + *Attribute*:
+	+ Inventory_Manager_ID (int not null Indentity(1,1)) (primary key)
+	+ *Employee_ID (int not null)*
 
 ## Table Import
 #### Managed by Inventory_Manager
 + *Attribute*:
+	+ Import_ID (int not null Indentity(1,1)) (primary key)
+	+ Import_Total_Quantity (int not null)
+	+ Import_Total_Cost (int not null)
+	+ Supplier_Name (nvarchar(max))
+	+ Import_At (Datetime not null)
+	+ Delivered_At (Datetime)
+	+ *Import_By_Employee (int not null)*
 
 
 ## Table Import_Detail
 ####  Weak Entity
 + *Attribute*:
+	+ *Import_ID (int not nulll) (duplicate)*
+	+ *Product_ID (int not null) (duplicate)*
+	+ Quantity (int not null)
+	+ Cost (int not null)
+	+ Modified_At (Datetime)
+	+ *Modified_By_Employee (int)*
 
 
 ## Table Admin
 #### Inherited table Employee
 + *Attribute*:
-
+	+ Admin_ID (int not null Indentity(1,1)) (primary key)
+	+ *Employee_ID (int not null)*
 
 ## Table Product_Activity_Log
 #### Weak Entity
 + *Attribute*:
+	+ *Product_ID (int not null) (duplicate)*
+	+ Action (nvarchar(10) not null)
+	+ Description (nvarchar(max) default null)
+	+ Updated_By_Admin (int not null)
+	+ Updated_At (Datetime)
 
 ## Table Employee_Role
 + *Attribute*:
-
-
-####  Weak Entity
-## Table Web_Content
-+ *Attribute*:
-
+	+ Role_ID (int not null Indetity(1,1)) (primary key)
+	+ Role_Name (nvarchar(100) not null)
 
 
 ## 
