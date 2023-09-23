@@ -1,187 +1,278 @@
-<sup>Created: **19-06-2023** _22:55:09_</sup>
+<sup>Created: **19-06-2023** *22:55:09*</sup>
+
 
 # Java Models
-
 ## class Product
-
--   _Variable_:
-    -   id (int)
-    -   tên (string)
-    -   hãng (string)
-    -   giá (double, float)
-    -   gender (string)
-    -   năm sx (string) 2003
-    -   nhóm hương (string\[ ])
-    -   mô tả (string)
-    -   hình (string)
-    -   dung tích (int) (ml)
--   _Function_:
++ *Variable*:
+	+ id  (int)
+	+ tên (string)
+	+ hãng (string)
+	+ giá (double, float)
+	+ gender (string)
+	+ năm sx (string) 2003
+	+ nhóm hương (string\[ ])
+	+ mô tả (string)
+	+ hình (string)
+	+ dung tích (int) (ml)
++ *Function*:
 
 ## class Customer
-
--   _Variable_:
-    -   sdt (string)
-    -   username (string)
-    -   password (string)
-    -   họ và tên (string)
-    -   email (string)
-    -   address (string)
-    -   cart (Cart)
--   _Function_:
++ *Variable*:
+	+ sdt (string)
+	+ username (string)
+	+ password (string)
+	+ họ và tên (string)
+	+ email (string)
+	+ address (string)
+	+ cart (Cart)
++ *Function*:
 
 ## class Cart
++ *Variable*:
+	+ Products (arrayList\<product>)
+	+ Total (int)
++  *Function*:
+	+ addProduct
+	+ removeProduct
 
--   _Variable_:
-    -   Products (arrayList\<product>)
-    -   Total (int)
--   _Function_:
-    -   addProduct
-    -   removeProduct
 
 # Controllers
-
 ## Class HomeController
-
--   _Function_:
-    -   Access to homepage ✅
-    -   Access to introduction ✅
-    -   Acesss to login/register
-    -   Access to brand ✅
-
++ *Function*:
+	+ Access to homepage ✅
+	+ Access to introduction ✅
+	+ Acesss to login/register
+	+ Access to brand ✅
 ## Class ProductController
-
--   _Function_:
-    -   List ✅
-        -   Brand ✅
-        -   Gender ✅
-        -   Price ✅
-        -   Paging ✅
-    -   Detail ✅
++ *Function*:
+	+ List ✅
+		+ Brand ✅
+		+ Gender ✅
+		+ Price ✅
+		+ Paging ✅
+	+ Detail ✅
 
 ## Class ClientController
-
--   Filter required ✅
--   _Function_:
-    -   Able to Update Infomation ✅
-        -   Update email, username, password and fullname ✅ chua validate
-        -   Update PhoneNumber, Address ✅ chua validate
-    -   Access to the cart ✅
-        -   Add ✅
-        -   Update ✅
-        -   Delete ✅
-    -   Able to watch order history ✅
-    -   Able to Signout ✅
-    -   Block unwanted URL with prefix "/Client"
-    -   Pay ✅
-
++ Filter required ✅
++ *Function*:
+	+ Able to Update Infomation ✅
+		+ Update email, username, password and fullname ✅ chua validate
+		+ Update PhoneNumber, Address ✅ chua validate
+	+ Access to the cart ✅
+		+ Add ✅
+		+ Update ✅
+		+ Delete ✅
+	+ Able to watch order history ✅
+	+ Able to Signout ✅
+	+ Block unwanted URL with prefix "/Client"
+	+ Pay ✅
 ## Class AdminController
-
--   Filter required
--   _Function_:
-    -   Update Product:
-        -   List ✅
-        -   Add ✅
-        -   Update ✅
-        -   Delete ✅
-        -   Search With Paging
-        -   Use Imgur API to update API ✅
-    -   Update Information:
-        -   User's Info ✅
-        -   User's Order
-    -   Able to send mail to user
-
++ Filter required
++ *Function*:
+	+ Update Product:
+		+ List ✅
+		+ Add ✅
+		+ Update ✅
+		+ Delete ✅
+		+ Search With Paging
+		+ Use Imgur API to update API ✅
+	+ Update Information:
+		+ User's Info ✅
+		+ User's Order
+	 + Able to send mail to user
 #
-
 ---
 
 # DB Diagram
 
-![[Pasted image 20230801141543.png]]
-
 #
 
-# SQL object
-
-## Table Product
-
-#### Show all product (useful while searching)
-
--   _Attribute_:
-    -   ID (int (primary key) Indentity (1,1))
-    -   Name (nvarchar(300))
-    -   _BrandID (ID not null)_
-    -   Price (Int default 0)
-    -   Gender (nvarchar(50))
-    -   Smell (nvarchar(200))
-    -   Quantity (int default 0)
-    -   ReleaseYear (SMALLINT default 2003)
-    -   Volume (int default 100) (ml)
-    -   ImgURL (nvarchar(max))
-    -   Description (nvarchar(max))
-    -   Active BIT DEFAULT 1
+# SQL Entity
 
 ## Table Brand
-
 #### Show all brand (useful while searching)
++ *Attribute*:
+	+ Brand_ID (int not null Indentity(1,1)) (primary key)
+	+ Brand_Name (nvarchar(50))
+	+ Brand_Logo (nvarchar(max))
+	+ Brand_Img (nvarchar(max))
+	+ Brand_Total_Product (int default 0)
 
--   _Attribute_:
-    -   ID (int primary key Indentity(1,1))
-    -   Name (nvarchar(50))
-    -   BrandLogo (nvarchar(max))
-    -   BrandImg (nvarchar(max))
-    -   TotalProduct (int default 0)
+## Table Stock
+#### Weak entity
++ *Attribute*:
+	+ *Product_ID (int not null)*
+	+ Price (Int default 0)
+	+ Quantity (int default 0)
 
-## Table User
-
--   _Attribute_:
-    -   ID (int) (primary key) Indentity(1,1)
-    -   Name (nvarchar(50))
-    -   UserName (varchar(50))
-    -   Password (varchar(32)) %%After **MD5** digestion%%
-    -   PhoneNumber (varchar(10))
-    -   Email (varchar(100))
-    -   Address (nvarchar(500))
-    -   Role (nvarchar(50))
-    -   Active (BIT) DEFAULT 1
-
-## Table Order
-
--   _Attribute_:
-    -   _ID (int) (primary key Indentity (1,1))_
-    -   _ClientID (ID (int) (duplicate) )_
-    -   Date (Date) not null
-    -   Address (nvarchar(500))
-    -   PhoneNumber (varchar(10))
-    -   Note (nvarchar(500))
-    -   Sum (int default 0)
-
-#### Weak Entity
-
-## Table OrderDetail
-
--   _Attribute_:
-    -   _orderID (int not null) (duplicate)_
-    -   _productID( int not null ) (duplicate)_
-    -   quantity (int default 0)
-    -   Price (Int default 0)
-    -   Sum (Int default 0)
+## Table Product
+#### Show all product (useful while searching)
++ *Attribute*:
+	+ Product_ID (int not null Indentity (1,1)) (primary key) 
+	+ Product_Name (nvarchar(300))
+	+ *Brand_ID (ID not null)*
+	+ Product_Gender (nvarchar(50))
+	+ Product_Smell (nvarchar(200))
+	+ Product_Release_Year (SMALLINT default 2003) 
+	+ Product_Volume (int default 100) (ml)
+	+ Product_Img_URL (nvarchar(max))
+	+ Product_Description (nvarchar(max))
+	+ Product_Active BIT DEFAULT 1
 
 ## Table Cart
+#### Weak Entity
++ *Attribute*:
+	+ *Client_ID (int not null) (duplicate)*
+	+ *product_ID( int not null ) (duplicate)*
+	+ Quantity (int default 0)
+	+ Price (Int default 0)
 
--   _Attribute_:
-    -   _ClientID (int not null) (duplicate)_
-    -   _productID( int not null ) (duplicate)_
-    -   quantity (int default 0)
-    -   Price (Int default 0)
-    -   Sum (Int default 0)
+## Table Voucher:
++ *Attribute*:
+	+ Voucher_ID (int not null Indetity(1,1)) (primary key)
+	+ Voucher_Code (nvarchar(20))
+	+ Voucher_Quantity (int not null)
+	+ Voucher_Discount_Percent (int not null)
+	+ Voucher_Disount_Max (int not null)
+	+ Voucher_Created_At (Datetime not null)
+	+ Voucher_Expired_At (Datetime)
+	+ *Voucher_Created_By_Employee (int not null)*
 
-%%## Table Role
+## Table Voucher_Product
++ *Attribute*:
+	+ *Voucher_ID (int not null) (duplicate)*
+	+ *Product_ID (int not null) (duplicate)*
 
--   _Attribute_:
-    -   Role Name (varchar(50))
-    -   Co the lam gi do (varchar(50)) (duplicate)%%
+## Table Voucher_Customer
++ *Attribute*:
+	+ *Voucher_ID (int not null) (duplicate)*
+	+ *Customer_ID (int not null) (duplicate)*
+	+ Deducted_Price (int not null)
 
-##
+## Table OrderDetail
+####  Weak Entity
++ *Attribute*:
+	+ *Order_ID (int not null) (duplicate)*
+	+ *Product_ID (int not null) (duplicate)*
+	+ *Voucher_ID (int) (duplicate)*
+	+ Quantity (int default 0)
+	+ Price (Int default 0)
+	+ Total (Int default 0)
+
+## Table Order
++ *Attribute*:
+	+ *Order_ID (int) (primary key Indentity (1,1))*
+	+ *Customer_ID ( int not null (duplicate) )*
+	+ Order_Address (nvarchar(500))
+	+ Order_Phone_Number (varchar(10))
+	+ Order_Note (nvarchar(500))
+	+ Order_Total (int default 0)
+	+ Order_Created_At (Date) not null
+	+ Order_Checkout_At (Datetime) not null
+	+ Order_Update_At (Datetime)
+	+ Order_Update_By (int)
+
+
+## Table Customer
+#### Inherited table User
++ *Attribute*:
+	+ Customer_ID (int not null Indentity(1,1)) (primary key)
+	+ *User_ID (int not null)*
+	+ Customer_Credit_Point (int not null) 
+
+## Table Delivery Address
+#### Weak Entity
++ *Attribute*:
+	+ *Customer_ID (int not null) (duplicate)*
+	+ Phone_Number (varchar(10) not null)
+	+ Address (nvarchar(max) not null)
+	+ Status (nvarchar(200) not null)
+	+ Create_At (Datetime not null)
+	+ Modified_At (Datetime)
+
+
+
+## Table User
++ *Attribute*:
+	+ User_ID (int not null Indentity(1,1)) (primary key) 
+	+ User_Name (nvarchar(50))
+	+ User_Username (varchar(50))
+	+ User_Password (varchar(32))  %%After **MD5** digestion%%
+	+ User_Email (varchar(100))
+	+ User_Active (BIT) DEFAULT 1
+	+ User_Type (nvarchar(20) not null)
+
+
+## Table Order_Manager
+#### Inherited table Employee
++ *Attribute*:
+	+ Order_Manager_ID (int not null Indentity(1,1)) (primary key)
+	+ *Employee_ID (int not null)*
+
+## Table Employee
+#### Inherited table User
++ *Attribute*:
+	+ Employee_ID (int not null Indentity(1,1)) (primary key)
+	+ *User_ID (int not null)*
+	+ Employee_Citizen_ID (nvarchar(20) not null)
+	+ Employee_DoB (Datetime not null)
+	+ Employee_Phone_Number (varchar(10) not null)
+	+ Employee_Address (nvarchar(max))
+	+ Employee_Role (int not null)
+	+ Employee_Join_Date (Datetime not null)
+	+ Employee_Retire_Date (Datetime)
+
+## Table Inventory_Manager
+#### Inherited table Employee
++ *Attribute*:
+	+ Inventory_Manager_ID (int not null Indentity(1,1)) (primary key)
+	+ *Employee_ID (int not null)*
+
+## Table Import
+#### Managed by Inventory_Manager
++ *Attribute*:
+	+ Import_ID (int not null Indentity(1,1)) (primary key)
+	+ Import_Total_Quantity (int not null)
+	+ Import_Total_Cost (int not null)
+	+ Supplier_Name (nvarchar(max))
+	+ Import_At (Datetime not null)
+	+ Delivered_At (Datetime)
+	+ *Import_By_Employee (int not null)*
+
+
+## Table Import_Detail
+####  Weak Entity
++ *Attribute*:
+	+ *Import_ID (int not nulll) (duplicate)*
+	+ *Product_ID (int not null) (duplicate)*
+	+ Quantity (int not null)
+	+ Cost (int not null)
+	+ Modified_At (Datetime)
+	+ *Modified_By_Employee (int)*
+
+
+## Table Admin
+#### Inherited table Employee
++ *Attribute*:
+	+ Admin_ID (int not null Indentity(1,1)) (primary key)
+	+ *Employee_ID (int not null)*
+
+## Table Product_Activity_Log
+#### Weak Entity
++ *Attribute*:
+	+ *Product_ID (int not null) (duplicate)*
+	+ Action (nvarchar(10) not null)
+	+ Description (nvarchar(max) default null)
+	+ Updated_By_Admin (int not null)
+	+ Updated_At (Datetime)
+
+## Table Employee_Role
++ *Attribute*:
+	+ Role_ID (int not null Indetity(1,1)) (primary key)
+	+ Role_Name (nvarchar(100) not null)
+
+
+## 
 
 ```sql
 
@@ -284,14 +375,13 @@ ADD FOREIGN KEY (ProductID) REFERENCES Product(ID);
 ```
 
 #### Trigger, stored Procedure
-
 ```sql
 --RETURN PRODUCT PRICE
 GO
 CREATE OR ALTER FUNCTION GetProductPrice(@ProductID INT)
 RETURNS INT
-AS
-BEGIN
+AS   
+BEGIN  
     DECLARE @OUT INT;
 	SET @OUT = (SELECT Product.Price FROM Product WHERE Product.ID = @ProductID)
 	RETURN @OUT
@@ -308,13 +398,13 @@ BEGIN
 			@PriceProduct INT;
 	SET @count = (SELECT COUNT(*) FROM Cart WHERE Cart.ClientID = @ClientID AND Cart.ProductID = @ProductID);
 	SET	@PriceProduct = dbo.GetProductPrice(@ProductID);
-	IF @count = 0
+	IF @count = 0 
 	BEGIN
 		INSERT INTO Cart (ClientID, ProductID, Quantity) VALUES(@ClientID, @ProductID, @BuyQuantity);
 	END
 	IF @count != 0
 	BEGIN
-		UPDATE Cart
+		UPDATE Cart 
 		SET Quantity = @BuyQuantity
 		WHERE Cart.ClientID = @ClientID AND Cart.ProductID = @ProductID
 	END
@@ -327,8 +417,8 @@ END
 GO
 CREATE or alter TRIGGER AddOrderDetailTrigger ON [Order]
 AFTER INSERT
-AS
-BEGIN
+AS 
+BEGIN 
 	declare @OrderID int,
 			@ClientID int,
 			@Sum int,
@@ -340,106 +430,102 @@ BEGIN
 	from inserted
 	--INSERT TO OrderDetail
 	INSERT INTO OrderDetail(OrderID, ProductID, Quantity, Price, [Sum])
-		SELECT
-			[Order].ID as OrderID,
-			Cart.ProductID as ProductID,
-			Cart.Quantity as Quantity,
-			Cart.Price as Price,
-			Cart.[Sum] as [Sum]
-		FROM Cart, [Order]
+		SELECT 
+			[Order].ID as OrderID, 
+			Cart.ProductID as ProductID, 
+			Cart.Quantity as Quantity, 
+			Cart.Price as Price, 
+			Cart.[Sum] as [Sum] 
+		FROM Cart, [Order] 
 		WHERE Cart.ClientID = [Order].ClientID AND [Order].ID = @OrderID
 	--Update Product Quantity in Product
 	UPDATE Product SET Quantity = Product.Quantity - (SELECT Cart.Quantity FROM Cart WHERE Cart.ProductID = Product.ID AND Cart.ClientID = @ClientID)
 	WHERE Product.ID IN (SELECT Cart.ProductID FROM Cart WHERE Cart.ClientID = @ClientID)
-	--DELETE Cart
+	--DELETE Cart 
 	DELETE FROM Cart WHERE Cart.ClientID = @ClientID
 end
 ```
 
+
 # Bảng phân công công việc
-
 ## Nguyễn Lê Tài Đức
-
--   _FrontEnd_:
-    -   Paging cho Product/List và Lọc thuộc tính cho Product (search..)
--   _BackEnd_:
-    -   Làm HomeController
-    -   Làm ProductController
-    -   Làm ClientController
-    -   Làm AdminController
-    -   Paging cho Product/List và Lọc thuộc tính cho Product (search..)
-    -   Xử lý những ngoại lê cho trang web
--   _Database_:
-    -   Viết thư viện để query database (Models, DAO)
-    -   Lấy dữ liệu database ( web scrapping)
--   _Khác_:
-    -   Sử dụng Vietnam Province API
-    -   Cấu trúc thành model MVC
-    -   Sử dụng Jquery để validation
+- *FrontEnd*:
+	-  Paging cho Product/List và Lọc thuộc tính cho Product (search..)
+- *BackEnd*:
+	- Làm HomeController
+	- Làm ProductController
+	- Làm ClientController
+	- Làm AdminController
+	- Paging cho Product/List và Lọc thuộc tính cho Product (search..)
+	- Xử lý những ngoại lê cho trang web
+- *Database*:
+	- Viết thư viện để query database (Models, DAO)
+	- Lấy dữ liệu database ( web scrapping)
+- *Khác*:
+	- Sử dụng Vietnam Province API
+	- Cấu trúc thành model MVC
+	- Sử dụng Jquery để validation
 
 ## Lê Bá Thịnh
-
--   _FrontEnd_:
-    -   Paging cho Product/List và Lọc thuộc tính cho Product (search..)
--   _BackEnd_:
-    -   Làm HomeController
-    -   Làm ProductController
-    -   Làm ClientController
-    -   Làm AdminController
-    -   Paging cho Product/List và Lọc thuộc tính cho Product (search..)
--   _Database_:
-    -   Viết thư viện để query database (Models, DAO)
-    -   Lấy dữ liệu database ( web scrapping )
-    -   Sử dụng outh2 API để upload ảnh lên Imgur lên database
-    -   Gửi mail đến user
--   _Khác_:
-    -   Cấu trúc thành model MVC
+- *FrontEnd*:
+	-  Paging cho Product/List và Lọc thuộc tính cho Product (search..)
+- *BackEnd*:
+	- Làm HomeController
+	- Làm ProductController
+	- Làm ClientController
+	- Làm AdminController
+	- Paging cho Product/List và Lọc thuộc tính cho Product (search..)
+- *Database*:
+	- Viết thư viện để query database (Models, DAO)
+	- Lấy dữ liệu database ( web scrapping )
+	- Sử dụng outh2 API để upload ảnh lên Imgur lên database
+	- Gửi mail đến user
+- *Khác*:
+	- Cấu trúc thành model MVC
 
 ## Lê Quốc Vương
-
--   _FrontEnd_:
-    -   Làm animation cho web
-    -   Làm trang homePage
-    -   Làm trang introduction
-    -   Làm trang thương hiệu
-    -   Làm trang sản phẩm
-    -   Làm trang login
-    -   Làm trang chi tiết sản phẩm
-    -   Làm trang giỏ hàng
-    -   Làm trang cho Client tương tác
-    -   Style những trang jsp trong ADMIN_PAGE
--   _BackEnd_:
-    -   Làm ClientController
-    -   Làm AdminController
-    -   Làm OrderDAO, OrderDetail
--   _Database_:
-    -   Lấy dữ liệu database ( web scrapping)
+- *FrontEnd*:
+	- Làm animation cho web
+	- Làm trang homePage
+	- Làm trang introduction
+	- Làm trang thương hiệu
+	- Làm trang sản phẩm
+	- Làm trang login
+	- Làm trang chi tiết sản phẩm
+	- Làm trang giỏ hàng
+	- Làm trang cho Client tương tác
+	- Style những trang jsp trong ADMIN_PAGE
+- *BackEnd*:
+	- Làm ClientController
+	- Làm AdminController
+	- Làm OrderDAO, OrderDetail
+- *Database*:
+	- Lấy dữ liệu database ( web scrapping)
 
 ## Nguyễn Phi Long
-
--   _FrontEnd_:
-    -   Làm trang checkOut
--   _BackEnd_:
-    -   Làm HomeController
-    -   Làm ProductController
-    -   Làm ClientController
-    -   Làm AdminController
--   _Database_:
-    -   Viết sql để tạo database
-    -   Lấy dữ liệu database ( web scrapping)
--   _Khác_:
-    -   Viết thư viện để query database (Models, DAO)
-    -   Cấu trúc thành model MVC
-    -   Làm filter authentication, authorization
+- *FrontEnd*:
+	- Làm trang checkOut
+- *BackEnd*:
+	- Làm HomeController
+	- Làm ProductController
+	- Làm ClientController
+	- Làm AdminController
+- *Database*:
+	- Viết sql để tạo database
+	- Lấy dữ liệu database ( web scrapping)
+- *Khác*:
+	- Viết thư viện để query database (Models, DAO)
+	- Cấu trúc thành model MVC
+	- Làm filter authentication, authorization
 
 #
 
 | Họ Tên            | Tag            | Công Việc                                              | Mức độ hoàn thành công việc | Tỉ lệ đóng góp trên toàn bộ project |
-| ----------------- | -------------- | ------------------------------------------------------ | :-------------------------: | :---------------------------------: |
+| ----------------- | -------------- | ------------------------------------------------------ |:---------------------------:|:-----------------------------------:|
 | Nguyễn Lê Tài Đức | **FrontEnd**   |                                                        |                             |               **25%**               |
 |                   |                | Tham gia fix bug nhỏ (css, js, boostrap, ...)          |             25%             |                                     |
 |                   |                | Tham gia sử dụng Jquery để validation các form         |            33.3%            |                                     |
-|                   | _BackEnd_      |                                                        |                             |                                     |
+|                   | *BackEnd*      |                                                        |                             |                                     |
 |                   |                | Tham gia code login, register cho LogController        |             10%             |                                     |
 |                   |                | Tham gia làm HomeController                            |             40%             |                                     |
 |                   |                | Tham gia làm ProductController                         |                             |                                     |
@@ -453,7 +539,7 @@ end
 |                   |                | Clean code để dễ quản lí function, class               |            100%             |                                     |
 |                   |                | Paging cho Product/List (Java)                         |             50%             |                                     |
 |                   |                | Search cho Product (Java)                              |             50%             |                                     |
-|                   | **_Database_** |                                                        |                             |                                     |
+|                   | ***Database*** |                                                        |                             |                                     |
 |                   |                | Lấy dữ liệu database (web scrapping)                   |             20%             |                                     |
 |                   |                | Tham gia thiết kế database                             |             50%             |                                     |
 |                   | Khác           |                                                        |                             |                                     |
@@ -464,7 +550,7 @@ end
 |                   |                | Tham gia code filter userValidation                    |             20%             |                                     |
 | Lê Bá Thịnh       | **FrontEnd**   |                                                        |                             |               **25%**               |
 |                   |                | Tham gia sử dụng Jquery để validation các form         |            33.3%            |                                     |
-|                   | _BackEnd_      |                                                        |                             |                                     |
+|                   | *BackEnd*      |                                                        |                             |                                     |
 |                   |                | Tham gia làm HomeController                            |             40%             |                                     |
 |                   |                | Tham gia làm ProductController                         |                             |                                     |
 |                   |                | Tham gia làm ClientController                          |                             |                                     |
@@ -480,7 +566,7 @@ end
 |                   |                | Search cho Product/List (Java)                         |             50%             |                                     |
 |                   |                | Search cho Admin/Product/List (Java)                   |            100%             |                                     |
 |                   |                | Search cho User/Product/List (Java)                    |            100%             |                                     |
-|                   | **_Database_** |                                                        |                             |                                     |
+|                   | ***Database*** |                                                        |                             |                                     |
 |                   |                | Viết các trigger cho database                          |            100%             |                                     |
 |                   |                | Viết các procedure cho database                        |            100%             |                                     |
 |                   |                | Lấy dữ liệu database (web scrapping)                   |             40%             |                                     |
@@ -505,16 +591,16 @@ end
 |                   |                | Làm sản phẩm liên quan                                 |            100%             |                                     |
 |                   |                | Tham gia navbar cho admin                              |             20%             |                                     |
 |                   |                | Paging cho Product list (css)                          |             50%             |                                     |
-|                   | _BackEnd_      |                                                        |                             |                                     |
+|                   | *BackEnd*      |                                                        |                             |                                     |
 |                   |                | Tham gia làm HomeController                            |             20%             |                                     |
 |                   |                | Tham gia làm ProductController                         |                             |                                     |
 |                   |                | Tham gia làm ClientController                          |                             |                                     |
 |                   |                | Tham gia làm AdminController                           |                             |                                     |
 |                   |                | Tham gia làm LogController                             |                             |                                     |
 |                   |                | Làm Subscription                                       |            100%             |                                     |
-|                   |                | Tham gia làm function trong OrderDAO                   |                             |                                     |
-|                   |                | Tham gia làm function trong UserDAO                    |                             |                                     |
-|                   | **_Database_** |                                                        |                             |                                     |
+|                   |                | Tham gia làm function trong  OrderDAO                  |                             |                                     |
+|                   |                | Tham gia làm function trong  UserDAO                   |                             |                                     |
+|                   | ***Database*** |                                                        |                             |                                     |
 |                   |                | Lấy dữ liệu database (web scrapping)                   |             20%             |                                     |
 |                   | Khác           |                                                        |                             |                                     |
 |                   |                | Cấu trúc thành model MVC                               |             10%             |                                     |
@@ -532,7 +618,7 @@ end
 |                   |                | Paging cho Product list (css)                          |             50%             |                                     |
 |                   |                | Tham gia fix bug nhỏ (css, js, boostrap, ...)          |                             |                                     |
 |                   |                | Gửi mail đến user (Làm UI cho mail sender)             |            33.3%            |                                     |
-|                   | _BackEnd_      |                                                        |                             |                                     |
+|                   | *BackEnd*      |                                                        |                             |                                     |
 |                   |                | Tham gia code login, register cho LogController        |             90%             |                                     |
 |                   |                | Tham gia code AdminController                          |                             |                                     |
 |                   |                | Tham gia code ClientController                         |                             |                                     |
@@ -543,7 +629,7 @@ end
 |                   |                | Tham gia code Models User                              |            100%             |                                     |
 |                   |                | Tham gia code Models Product                           |            100%             |                                     |
 |                   |                | Tham gia code Models Order                             |            100%             |                                     |
-|                   | **_Database_** |                                                        |                             |                                     |
+|                   | ***Database*** |                                                        |                             |                                     |
 |                   |                | Tham gia thiết kế database                             |             50%             |                                     |
 |                   |                | Lấy dữ liệu database (web scrapping)                   |             20%             |                                     |
 |                   |                | Host database online cho project                       |            100%             |                                     |
@@ -551,7 +637,8 @@ end
 |                   |                | Cấu trúc thành model MVC                               |             20%             |                                     |
 |                   |                | Tham gia code filter userValidation                    |             80%             |                                     |
 
----
 
+
+---
 <sub>Author:</sub> #🐲 #🦆
-<sub>Tags:</sub> #Project #Java #JSP #SQL #Back-end #Front-end #Database
+<sub>Tags:</sub> #Project #Java  #JSP #SQL #Back-end #Front-end #Database
