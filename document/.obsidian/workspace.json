@@ -1,20 +1,20 @@
 {
   "main": {
-    "id": "2aafe806d6eeca1f",
+    "id": "1048d1a213c79990",
     "type": "split",
     "children": [
       {
-        "id": "0f0d9ec3a8f273e7",
+        "id": "70a297e306c03792",
         "type": "tabs",
         "children": [
           {
-            "id": "6a7ba4bf81245e23",
+            "id": "fa75f15d861f367c",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
                 "file": "Project bán nước hoa (PRJ301).md",
-                "mode": "source",
+                "mode": "preview",
                 "source": true
               }
             }
@@ -25,15 +25,15 @@
     "direction": "vertical"
   },
   "left": {
-    "id": "a46236a306a05ede",
+    "id": "b684432ef26c4cce",
     "type": "split",
     "children": [
       {
-        "id": "320eca0f831c57f6",
+        "id": "e1659e713ca4c479",
         "type": "tabs",
         "children": [
           {
-            "id": "10e3aec9a4263c25",
+            "id": "7194dcf068bae315",
             "type": "leaf",
             "state": {
               "type": "file-explorer",
@@ -43,13 +43,13 @@
             }
           },
           {
-            "id": "40b4f42140c77937",
+            "id": "c67924c5aac7cb24",
             "type": "leaf",
             "state": {
               "type": "search",
               "state": {
-                "query": "hoa",
-                "matchingCase": true,
+                "query": "",
+                "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
                 "extraContext": false,
@@ -58,7 +58,7 @@
             }
           },
           {
-            "id": "37dc5b44bab22628",
+            "id": "411c1df62e1227ca",
             "type": "leaf",
             "state": {
               "type": "bookmarks",
@@ -69,22 +69,24 @@
       }
     ],
     "direction": "horizontal",
-    "width": 237.5
+    "width": 200,
+    "collapsed": true
   },
   "right": {
-    "id": "98d444ee01578954",
+    "id": "b9d60f1d88a7f52e",
     "type": "split",
     "children": [
       {
-        "id": "25b8a37ef4a94f89",
+        "id": "4cf656a4d6f211c1",
         "type": "tabs",
         "children": [
           {
-            "id": "d56e2f4fd22c1717",
+            "id": "0005781138d5ab29",
             "type": "leaf",
             "state": {
               "type": "backlink",
               "state": {
+                "file": "Project bán nước hoa (PRJ301).md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -96,18 +98,19 @@
             }
           },
           {
-            "id": "2619c68e1e5bed8f",
+            "id": "3fe234bb2350635c",
             "type": "leaf",
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "Project bán nước hoa (PRJ301).md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
             }
           },
           {
-            "id": "c71eb0040b887865",
+            "id": "9cc273401202aab0",
             "type": "leaf",
             "state": {
               "type": "tag",
@@ -118,25 +121,7 @@
             }
           },
           {
-            "id": "7d44cbfb6589fc2c",
-            "type": "leaf",
-            "state": {
-              "type": "outline",
-              "state": {
-                "file": "Untitled.md"
-              }
-            }
-          },
-          {
-            "id": "d4d06ef20550683a",
-            "type": "leaf",
-            "state": {
-              "type": "advanced-tables-toolbar",
-              "state": {}
-            }
-          },
-          {
-            "id": "ae9f97bcc9ab895b",
+            "id": "bbf5692730197efe",
             "type": "leaf",
             "state": {
               "type": "all-properties",
@@ -144,74 +129,35 @@
                 "sortOrder": "frequency"
               }
             }
+          },
+          {
+            "id": "930c18bb823271fb",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Project bán nước hoa (PRJ301).md"
+              }
+            }
           }
-        ],
-        "currentTab": 4
+        ]
       }
     ],
     "direction": "horizontal",
-    "width": 200,
+    "width": 300,
     "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
+      "table-editor-obsidian:Advanced Tables Toolbar": false,
       "switcher:Open quick switcher": false,
       "graph:Open graph view": false,
       "canvas:Create new canvas": false,
       "daily-notes:Open today's daily note": false,
       "templates:Insert template": false,
-      "command-palette:Open command palette": false,
-      "table-editor-obsidian:Advanced Tables Toolbar": false
+      "command-palette:Open command palette": false
     }
   },
-  "active": "10e3aec9a4263c25",
-  "lastOpenFiles": [
-<<<<<<< HEAD
-    "SDS/CodePackages.drawio.png",
-    "Project bán nước hoa (PRJ301).md",
-=======
-    "Project bán nước hoa (PRJ301).md",
-    "Untitled.md",
->>>>>>> 2cefc64ef082adefafcdfd6551a07e58523b3b54
-    "Files/Pasted image 20230923175833.png",
-    "SRS/Admin_ScreenFlow_V4.drawio.png",
-    "SRS/Context_Diagram_V3.drawio.png",
-    "SRS/erd.drawio.png",
-    "SRS/InventoryManager_ScreenFlow_V2.drawio.png",
-    "SRS/OrderManagerScreenFlow.drawio.png",
-    "Files/Pasted image 20230801141543.png",
-    "Files/Pasted image 20230717104202.png",
-    "Files/Pasted image 20230717101437.png",
-    "Files",
-    "Project PRJ SU23/JSP SQL Setup.md",
-    "README.md",
-    "Project PRJ SU23/Project bán nước hoa (PRJ301).md",
-    "Kanji/Kanji.md",
-    "Notes/(Verb) Câu hỏi đi đâu.md",
-    "Templates/Normal.md",
-    "Templates/Kanji Template.md",
-    "Templates/Info.md",
-    "Templates/Author.md",
-    "Notes/Động từ.md",
-    "Notes/(Adj) Quá khứ đơn.md",
-    "Inbox/Bai 7.md",
-    "Kanji/日.md",
-    "Notes/Tính Từ.md",
-    "Notes/(Verb) Quá khứ đơn.md",
-    "Inbox/D_Bài 6.md",
-    "Inbox/書.md",
-    "Notes/Bài 5 JPD.md",
-    "Inbox/L_Bài 6.md",
-    "Inbox/小.md",
-    "Inbox/大.md",
-    "Inbox/半.md",
-    "Inbox/野.md",
-    "Inbox/料.md",
-    "Project PRJ SU23",
-    "Inbox",
-    "Notes",
-    "Kanji",
-    "Templates",
-    "Normal"
-  ]
+  "active": "fa75f15d861f367c",
+  "lastOpenFiles": []
 }
