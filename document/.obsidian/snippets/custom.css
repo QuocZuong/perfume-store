@@ -1,0 +1,9 @@
+img {
+  border-radius: 5px;
+}
+
+img[alt*="center"] {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
