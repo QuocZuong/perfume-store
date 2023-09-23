@@ -6,6 +6,6 @@
   "newFileLocation": "folder",
   "newFileFolderPath": "Inbox",
   "trashOption": "system",
-  "readableLineLength": true,
+  "readableLineLength": false,
   "showInlineTitle": false
 }

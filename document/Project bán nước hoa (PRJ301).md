@@ -1,6 +1,9 @@
 <sup>Created: **19-06-2023** *22:55:09*</sup>
 
 
+ERD
+![](https://lh3.googleusercontent.com/nW0ksWTJjKRoQdp-CXCN2FixbfuxYRwPEXctqXNRqJJ4024T4mnveSdbJvLCq52FitFTLkoFPCVk3GQj5toaz42CQ52gJjidcUznA2HGBbdMxaSPnRGnI25x5o82xYsWcklGi-NhStV3LaUYNcsAK9s)
+
 # Java Models
 ## class Product
 + *Variable*:
@@ -122,7 +125,7 @@
 ## Table Cart
 #### Weak Entity
 + *Attribute*:
-	+ *Client_ID (int not null) (duplicate)*
+	+ *Customer_ID (int not null) (duplicate)*
 	+ *product_ID( int not null ) (duplicate)*
 	+ Quantity (int default 0)
 	+ Price (Int default 0)
@@ -218,7 +221,7 @@
 	+ Employee_DoB (Datetime not null)
 	+ Employee_Phone_Number (varchar(10) not null)
 	+ Employee_Address (nvarchar(max))
-	+ Employee_Role (int not null)
+	+ *Employee_Role (int not null)*
 	+ Employee_Join_Date (Datetime not null)
 	+ Employee_Retire_Date (Datetime)
 
@@ -272,8 +275,284 @@
 	+ Role_Name (nvarchar(100) not null)
 
 
-## 
+## SQL Code
+### New sql script
+```sql
+USE master;
+GO
 
+GO
+ALTER DATABASE projectPRJ SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+GO
+
+DROP DATABASE projectPRJ;
+GO
+USE master;
+
+CREATE DATABASE projectPRJ;
+GO
+
+USE projectPRJ;
+GO
+
+-- Create the Brand table
+CREATE TABLE Brand (
+    Brand_ID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    Brand_Name NVARCHAR(50),
+    Brand_Logo NVARCHAR(MAX),
+    Brand_Img NVARCHAR(MAX),
+    Brand_Total_Product INT DEFAULT 0
+);
+
+-- Create the Stock table
+CREATE TABLE Stock (
+    Product_ID INT NOT NULL,
+    Price INT DEFAULT 0,
+    Quantity INT DEFAULT 0
+);
+
+-- Create the Product table
+CREATE TABLE Product (
+    Product_ID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    Product_Name NVARCHAR(300),
+    Brand_ID INT NOT NULL,
+    Product_Gender NVARCHAR(50),
+    Product_Smell NVARCHAR(200),
+    Product_Release_Year SMALLINT DEFAULT 2003,
+    Product_Volume INT DEFAULT 100,
+    Product_Img_URL NVARCHAR(MAX),
+    Product_Description NVARCHAR(MAX),
+    Product_Active BIT DEFAULT 1
+);
+
+-- Create the Cart table
+CREATE TABLE Cart (
+    Customer_ID INT NOT NULL,
+    Product_ID INT NOT NULL,
+    Quantity INT DEFAULT 0,
+    Price INT DEFAULT 0
+);
+
+-- Create the Voucher table
+CREATE TABLE Voucher (
+    Voucher_ID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    Voucher_Code NVARCHAR(20),
+    Voucher_Quantity INT NOT NULL,
+    Voucher_Discount_Percent INT NOT NULL,
+    Voucher_Disount_Max INT NOT NULL,
+    Voucher_Created_At DATETIME NOT NULL,
+    Voucher_Expired_At DATETIME,
+    Voucher_Created_By_Employee INT NOT NULL
+);
+
+-- Create the Voucher_Product table
+CREATE TABLE Voucher_Product (
+    Voucher_ID INT NOT NULL,
+    Product_ID INT NOT NULL
+);
+
+-- Create the Voucher_Customer table
+CREATE TABLE Voucher_Customer (
+    Voucher_ID INT NOT NULL,
+    Customer_ID INT NOT NULL,
+    Deducted_Price INT NOT NULL
+);
+
+-- Create the OrderDetail table
+CREATE TABLE OrderDetail (
+    Order_ID INT NOT NULL,
+    Product_ID INT NOT NULL,
+    Voucher_ID INT,
+    Quantity INT DEFAULT 0,
+    Price INT DEFAULT 0,
+    Total INT DEFAULT 0
+);
+
+-- Create the Order table
+CREATE TABLE [Order] (
+    Order_ID INT IDENTITY(1,1) PRIMARY KEY,
+    Customer_ID INT NOT NULL,
+    Order_Address NVARCHAR(500),
+    Order_Phone_Number VARCHAR(10),
+    Order_Note NVARCHAR(500),
+    Order_Total INT DEFAULT 0,
+    Order_Created_At DATE NOT NULL,
+    Order_Checkout_At DATETIME NOT NULL,
+    Order_Update_At DATETIME,
+    Order_Update_By INT
+);
+
+-- Create the Customer table (Inherited from User)
+CREATE TABLE Customer (
+    Customer_ID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    User_ID INT NOT NULL,
+    Customer_Credit_Point INT NOT NULL
+);
+
+-- Create the Delivery_Address table (Weak Entity)
+CREATE TABLE Delivery_Address (
+    Customer_ID INT NOT NULL,
+    Phone_Number VARCHAR(10) NOT NULL,
+    Address NVARCHAR(MAX) NOT NULL,
+    Status NVARCHAR(200) NOT NULL,
+    Create_At DATETIME NOT NULL,
+    Modified_At DATETIME
+);
+
+-- Create the User table
+CREATE TABLE [User] (
+    User_ID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    User_Name NVARCHAR(50),
+    User_Username VARCHAR(50),
+    User_Password VARCHAR(32),
+    User_Email VARCHAR(100),
+    User_Active BIT DEFAULT 1,
+    User_Type NVARCHAR(20) NOT NULL
+);
+
+-- Create the Order_Manager table (Inherited from Employee)
+CREATE TABLE Order_Manager (
+    Order_Manager_ID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    Employee_ID INT NOT NULL
+);
+
+-- Create the Employee table (Inherited from User)
+CREATE TABLE Employee (
+    Employee_ID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    User_ID INT NOT NULL,
+    Employee_Citizen_ID NVARCHAR(20) NOT NULL,
+    Employee_DoB DATETIME NOT NULL,
+    Employee_Phone_Number VARCHAR(10) NOT NULL,
+    Employee_Address NVARCHAR(MAX),
+    Employee_Role INT NOT NULL,
+    Employee_Join_Date DATETIME NOT NULL,
+    Employee_Retire_Date DATETIME
+);
+
+-- Create the Inventory_Manager table (Inherited from Employee)
+CREATE TABLE Inventory_Manager (
+    Inventory_Manager_ID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    Employee_ID INT NOT NULL
+);
+
+-- Create the Import table (Managed by Inventory_Manager)
+CREATE TABLE Import (
+    Import_ID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    Import_Total_Quantity INT NOT NULL,
+    Import_Total_Cost INT NOT NULL,
+    Supplier_Name NVARCHAR(MAX),
+    Import_At DATETIME NOT NULL,
+    Delivered_At DATETIME,
+    Import_By_Employee INT NOT NULL
+);
+
+-- Create the Import_Detail table (Weak Entity)
+CREATE TABLE Import_Detail (
+    Import_ID INT NOT NULL,
+    Product_ID INT NOT NULL,
+    Quantity INT NOT NULL,
+    Cost INT NOT NULL,
+    Modified_At DATETIME,
+    Modified_By_Employee INT
+);
+
+-- Create the Admin table (Inherited from Employee)
+CREATE TABLE Admin (
+    Admin_ID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    Employee_ID INT NOT NULL
+);
+
+-- Create the Product_Activity_Log table (Weak Entity)
+CREATE TABLE Product_Activity_Log (
+    Product_ID INT NOT NULL,
+    Action NVARCHAR(10) NOT NULL,
+    Description NVARCHAR(MAX) DEFAULT NULL,
+    Updated_By_Admin INT NOT NULL,
+    Updated_At DATETIME
+);
+
+-- Create the Employee_Role table
+CREATE TABLE Employee_Role (
+    Role_ID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    Role_Name NVARCHAR(100) NOT NULL
+);
+
+-- Add Foreign Keys
+ALTER TABLE Stock
+ADD FOREIGN KEY (Product_ID) REFERENCES Product(Product_ID);
+
+ALTER TABLE Product
+ADD FOREIGN KEY (Brand_ID) REFERENCES Brand(Brand_ID)
+
+ALTER TABLE Cart
+ADD FOREIGN KEY (Client_ID) REFERENCES [User](User_ID);
+
+ALTER TABLE Cart
+ADD FOREIGN KEY (Product_ID) REFERENCES Product(Product_ID);
+
+ALTER TABLE Voucher_Product
+ADD FOREIGN KEY (Voucher_ID) REFERENCES Voucher(Voucher_ID);
+
+ALTER TABLE Voucher_Product
+ADD FOREIGN KEY (Product_ID) REFERENCES Product(Product_ID);
+
+ALTER TABLE Voucher_Customer
+ADD FOREIGN KEY (Voucher_ID) REFERENCES Voucher(Voucher_ID);
+
+ALTER TABLE Voucher_Customer
+ADD FOREIGN KEY (Customer_ID) REFERENCES Customer(Customer_ID);
+
+ALTER TABLE OrderDetail
+ADD FOREIGN KEY (Order_ID) REFERENCES [Order](Order_ID);
+
+ALTER TABLE OrderDetail
+ADD FOREIGN KEY (Product_ID) REFERENCES Product(Product_ID);
+
+ALTER TABLE OrderDetail
+ADD FOREIGN KEY (Voucher_ID) REFERENCES Voucher(Voucher_ID);
+
+ALTER TABLE [Order]
+ADD FOREIGN KEY (Customer_ID) REFERENCES Customer(Customer_ID);
+
+ALTER TABLE Delivery_Address
+ADD FOREIGN KEY (Customer_ID) REFERENCES Customer(Customer_ID);
+
+ALTER TABLE Order_Manager
+ADD FOREIGN KEY (Employee_ID) REFERENCES Employee(Employee_ID);
+
+ALTER TABLE Employee
+ADD FOREIGN KEY (User_ID) REFERENCES [User](User_ID);
+
+ALTER TABLE Employee
+ADD FOREIGN KEY (Employee_Role) REFERENCES Employee_Role(Role_ID);
+
+ALTER TABLE Inventory_Manager
+ADD FOREIGN KEY (Employee_ID) REFERENCES Employee(Employee_ID);
+
+ALTER TABLE Import
+ADD FOREIGN KEY (Import_By_Employee) REFERENCES Employee(Employee_ID);
+
+ALTER TABLE Import_Detail
+ADD FOREIGN KEY (Import_ID) REFERENCES Import(Import_ID);
+
+ALTER TABLE Import_Detail
+ADD FOREIGN KEY (Product_ID) REFERENCES Product(Product_ID);
+
+ALTER TABLE Import_Detail
+ADD FOREIGN KEY (Modified_By_Employee) REFERENCES Employee(Employee_ID);
+
+ALTER TABLE Admin
+ADD FOREIGN KEY (Employee_ID) REFERENCES Employee(Employee_ID);
+
+ALTER TABLE Product_Activity_Log
+ADD FOREIGN KEY (Product_ID) REFERENCES Product(Product_ID);
+
+ALTER TABLE Product_Activity_Log
+ADD FOREIGN KEY (Updated_By_Admin) REFERENCES Admin(Admin_ID);
+```
+
+***
+### Old sql script
 ```sql
 
 USE master;
