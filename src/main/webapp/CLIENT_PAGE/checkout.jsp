@@ -47,7 +47,7 @@
                 cursor:not-allowed;
                 pointer-events: none ;
             }
-            
+
             label.error{
                 color: red;
                 margin-top: 10px;
@@ -58,56 +58,47 @@
 
     <body>
         <div class="container-fluid">
+            
+            <!--Navbar section-->
             <div class="row">
                 <div class="col-md-12 nav">
-                    <ul>
-                        <li><a href="/">trang chủ</a></li>
-                        <li> <a href="/home/introduction">giới thiệu</a></li>
-                        <li><a href="/home/brand">thương hiệu</a></li>
-                        <!-- This link to shop servlet file. DO NOT MODIFY the link -->
-                        <li><a href="/Product/List">sản phẩm</a></li>
-                    </ul>
-                    <a href="/"><img src="/RESOURCES/images/icons/icon.webp" alt="" height="64"></a>
-                    <div class="account">
-                        <a href="/Log/Login"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
-                        <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
+                    <jsp:include page="/NAVBAR/ClientNavbar.jsp"></jsp:include>
                     </div>
                 </div>
-            </div>
 
-            <div class="row">
-                <div class="main">
-                    <div class="box">
+                <div class="row">
+                    <div class="main">
+                        <div class="box">
 
-                        <form action="/Client/Checkout" method="POST">
+                            <form action="/Client/Checkout" method="POST">
 
-                            <div class="left">
-                                <h1 class="mb-4">Checkout</h1>
-                                <hr>
-                                <div class="d-flex flex-row">
-                                    <div class="d-flex flex-column col-4">
-                                        <label><input type="radio" name="rdoCustomAddress" id="rdoCustomAddress" value="no" class="form-check-input" checked=""> Sử
-                                            dụng địa chỉ mặc định</label>
-                                        <label><input type="radio" name="rdoCustomAddress" id="rdoCustomAddress" value="yes" class="form-check-input"> Địa chỉ giao
-                                            hàng khác</label>
+                                <div class="left">
+                                    <h1 class="mb-4">Checkout</h1>
+                                    <hr>
+                                    <div class="d-flex flex-row">
+                                        <div class="d-flex flex-column col-4">
+                                            <label><input type="radio" name="rdoCustomAddress" id="rdoCustomAddress" value="no" class="form-check-input" checked=""> Sử
+                                                dụng địa chỉ mặc định</label>
+                                            <label><input type="radio" name="rdoCustomAddress" id="rdoCustomAddress" value="yes" class="form-check-input"> Địa chỉ giao
+                                                hàng khác</label>
+                                        </div>
+
+                                        <div class="d-flex flex-column ms-5">
+                                            <label for="txtNote" class="d-block w-100">Ghi chú đơn hàng (tuỳ chọn)</label>
+                                            <textarea name="txtNote" cols="57" rows="2" class="border-1"
+                                                      placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn."></textarea>
+                                        </div>
                                     </div>
 
-                                    <div class="d-flex flex-column ms-5">
-                                        <label for="txtNote" class="d-block w-100">Ghi chú đơn hàng (tuỳ chọn)</label>
-                                        <textarea name="txtNote" cols="57" rows="2" class="border-1"
-                                                  placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn."></textarea>
-                                    </div>
                                 </div>
 
-                            </div>
+                                <div class="right">
+                                    <div class="checkout">
 
-                            <div class="right">
-                                <div class="checkout">
+                                        <h2 class="text-start">Thông tin thanh toán</h2>
 
-                                    <h2 class="text-start">Thông tin thanh toán</h2>
-
-                                    <div class="d-flex flex-column flex-wrap w-100">
-                                        <input type="text" name="txtUsername" value="<%= username%>" placeholder="Tên người dùng">
+                                        <div class="d-flex flex-column flex-wrap w-100">
+                                            <input type="text" name="txtUsername" value="<%= username%>" placeholder="Tên người dùng">
                                         <input type="text" name="txtEmail" value="<%= email%>" placeholder="Email">
                                         <input class="inputHide" type="text" name="txtPhone" id="txtPhone" class="" value="<%= (phone == null ? "" : phone)%>" placeholder="Số điện thoại"  readonly="true">
                                         <input class="inputHide" type="text" name="txtAddress" id="txtAddress" value="<%= (address == null ? "" : address)%>" placeholder="Địa chỉ" readonly="true">
@@ -281,17 +272,17 @@
                     let city = $("#city option:selected").text();
                     let district = $("#district option:selected").text();
                     let ward = $("#ward option:selected").text();
-                    
+
                     let sp = " - ";
                     let result = (city === DefaultCity ? "" : city);
                     result += (district === DefaultDistrict ? "" : sp + district);
                     result += (ward === DefaultWard ? "" : sp + ward);
 
-                    if(city !== DefaultCity && district !== DefaultDistrict && ward !== DefaultWard){
+                    if (city !== DefaultCity && district !== DefaultDistrict && ward !== DefaultWard) {
                         $("#result").text(result);
                         console.log("update value success");
                         $("input#txtNewAddress").val(result);
-                    }else{
+                    } else {
                         $("#result").text("");
                         console.log("update value null");
                         $("input#txtNewAddress").val("");
@@ -305,9 +296,9 @@
         <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
         <script>
             $(document).ready(function () {
-                 $.validator.addMethod("regex", function (value, element, regex) {
-          return regex.test(value);
-        }, "Wrong input.");
+                $.validator.addMethod("regex", function (value, element, regex) {
+                    return regex.test(value);
+                }, "Wrong input.");
 
                 $("form").validate({
                     rules: {
@@ -324,7 +315,7 @@
                             required: "Thiếu số điện thoại mặc định. Vui lòng cập nhật hoặc chọn giao bằng số điện thoại khác",
                             regex: "Số điện thoại không hợp lệ"
                         },
-                         txtAddress: {
+                        txtAddress: {
                             required: "Thiếu địa chỉ mặc định vui lòng cập nhật hoặc chọn giao bằng địa chỉ khác"
                         }
                     },
@@ -376,7 +367,7 @@
 
                     $("input#txtNewPhone").val(tempNewAddress);
                     $("input#txtNewAddress").val(tempNewPhone);
-                    
+
 
                     //Remove all rules
                     $("input#txtPhone").rules("remove");

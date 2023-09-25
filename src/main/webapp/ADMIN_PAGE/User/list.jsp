@@ -56,46 +56,22 @@
         </style>
     </head>
     <body>
-    
+
         <div class="container-fluid">
-        <div class="row">
-        <div class="col-md-12 nav">
-          <ul>
-            <li><a href="/">trang chủ</a></li>
-            <li> <a href="/home/introduction">giới thiệu</a></li>
-            <li><a href="/home/brand">thương hiệu</a></li>
-            <!-- This link to shop servlet file. DO NOT MODIFY the link -->
-            <li><a href="/Product/List">sản phẩm</a></li>
-          </ul>
-          <a href="/" class="iconPage"><img src="/RESOURCES/images/icons/icon.webp" alt=""
-                                            height="64"></a>
-          <div class="account">
-            <button class="droppown-btn bg-transparent border-0" id="product-dropdown-btn"><img src="/RESOURCES/images/icons/shopping-bag-alone.png" alt="">
-            </button>
-            <ul class="shadow position-absolute align-items-start ps-1 pt-2">
-              <li class="py-3 text-dark"><a href="/Admin/Product/Add">Thêm sản phẩm</a></li>
-              <li class="pb-3 text-dark"><a href="/Admin/Product/List">Danh sách sản phẩm</a></li>
-            </ul>
-            
-            <button class="droppown-btn bg-transparent border-0" id="user-dropdown-btn"><img src="/RESOURCES/images/icons/group.png" alt="">
-            </button>
-            <ul class="shadow position-absolute align-items-start ps-1 pt-2">
-              <li class="py-3 text-dark"><a href="/Admin/User/List">Danh sách người dùng</a></li>
-            </ul>
-            
-            <a href="/Client/User"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
-            <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
-
-          </div>
-        </div>
-      </div>
-
+            <!--Navbar section-->
             <div class="row">
-                <div class="col-md-10 offset-1 d-flex justify-content-center align-items-center flex-column">
+                <div class="col-md-12 nav">
+                    <jsp:include page="/NAVBAR/AdminNavbar.jsp"></jsp:include>
+                    </div>
+                </div>
 
-                    <div class="search-box-first">
-                        <a class="page-link" href="" id="Search" onclick="changeLink();"><img src="/RESOURCES/images/icons/search.png" alt=""></a>
-                        <input id="inputSearch" type="text" name="txtSearch" placeholder="Tìm kiếm" value="<%= (request.getParameter("txtSearch") != null ? request.getParameter("txtSearch") : "")%>" autofocus onkeydown="handleKeyDown(event)">
+
+                <div class="row">
+                    <div class="col-md-10 offset-1 d-flex justify-content-center align-items-center flex-column">
+
+                        <div class="search-box-first">
+                            <a class="page-link" href="" id="Search" onclick="changeLink();"><img src="/RESOURCES/images/icons/search.png" alt=""></a>
+                            <input id="inputSearch" type="text" name="txtSearch" placeholder="Tìm kiếm" value="<%= (request.getParameter("txtSearch") != null ? request.getParameter("txtSearch") : "")%>" autofocus onkeydown="handleKeyDown(event)">
                     </div>
                     <table class="table" id="table">
                         <thead>
@@ -130,8 +106,8 @@
                                         <td class="<%= us.isActive() ? " " : "faded"%>">
                                             <a href="/Admin/User/Update/ID/<%= us.getID()%>" class="<%= us.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0">Update</a>
                                         </td>
-                                         <td class="<%= us.isActive() ? " " : "faded"%>">
-                                            <a href="/Admin/User/Detail/ID/<%= us.getID()%>" class="<%= us.isActive() && !us.getRole().equals("Admin")? "" : "disabled"%> btn btn-outline-info rounded-0">Order</a>
+                                        <td class="<%= us.isActive() ? " " : "faded"%>">
+                                            <a href="/Admin/User/Detail/ID/<%= us.getID()%>" class="<%= us.isActive() && !us.getRole().equals("Admin") ? "" : "disabled"%> btn btn-outline-info rounded-0">Order</a>
                                         </td>
                                         <td class="buttonStatus <%= us.isActive() ? "" : "unfaded"%>">
                                             <a href="/Admin/User/<%= us.isActive() ? "Delete" : "Restore"%>/ID/<%=  us.getID()%>" class="btn btn-outline-<%= us.isActive() ? "danger" : "success"%> rounded-0"> <%= us.isActive() ? "Delete" : "Restore"%></a>
@@ -152,9 +128,9 @@
             <ul class="pagination">
                 <li class="page-item"><a class="page-link" href="/Admin/User/List/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-left" style="color: #000000;"></i></a></li>
                 <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>"><a class="page-link" href="/Admin/User/List/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></a></li>
-                    <c:forEach var="i" begin="${page-2<0?0:page-2}" end="${page+2 +1}">
-                        <c:choose>
-                            <c:when test='${i==page}'>
+                        <c:forEach var="i" begin="${page-2<0?0:page-2}" end="${page+2 +1}">
+                            <c:choose>
+                                <c:when test='${i==page}'>
                             <li class="page-item active"><a href="/Admin/User/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
                             </c:when>
                             <c:when test='${i>0 && i<=numberOfPage}'> 

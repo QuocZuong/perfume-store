@@ -1,0 +1,11 @@
+{
+  "livePreview": false,
+  "alwaysUpdateLinks": true,
+  "spellcheck": false,
+  "attachmentFolderPath": "Files",
+  "newFileLocation": "folder",
+  "newFileFolderPath": "Inbox",
+  "trashOption": "system",
+  "readableLineLength": false,
+  "showInlineTitle": false
+}
