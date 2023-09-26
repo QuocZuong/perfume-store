@@ -95,7 +95,7 @@ ERD
 ## Table Brand
 #### Show all brand (useful while searching)
 + *Attribute*:
-	+ Brand_ID (int not null Indentity(1,1)) (primary key)
+	+ **Brand_ID (int not null Indentity(1,1))** 
 	+ Brand_Name (nvarchar(50))
 	+ Brand_Logo (nvarchar(max))
 	+ Brand_Img (nvarchar(max))
@@ -111,7 +111,7 @@ ERD
 ## Table Product
 #### Show all product (useful while searching)
 + *Attribute*:
-	+ Product_ID (int not null Indentity (1,1)) (primary key) 
+	+ **Product_ID (int not null Indentity (1,1))**
 	+ Product_Name (nvarchar(300))
 	+ *Brand_ID (ID not null)*
 	+ Product_Gender (nvarchar(50))
@@ -126,13 +126,13 @@ ERD
 #### Weak Entity
 + *Attribute*:
 	+ *Customer_ID (int not null) (duplicate)*
-	+ *product_ID( int not null ) (duplicate)*
+	+ *Product_ID( int not null ) (duplicate)*
 	+ Quantity (int default 0)
 	+ Price (Int default 0)
 
 ## Table Voucher:
 + *Attribute*:
-	+ Voucher_ID (int not null Indetity(1,1)) (primary key)
+	+ **Voucher_ID (int not null Indetity(1,1))** 
 	+ Voucher_Code (nvarchar(20))
 	+ Voucher_Quantity (int not null)
 	+ Voucher_Discount_Percent (int not null)
@@ -164,7 +164,7 @@ ERD
 
 ## Table Order
 + *Attribute*:
-	+ *Order_ID (int) (primary key Indentity (1,1))*
+	+ **Order_ID (int not null Indentity (1,1))**
 	+ *Customer_ID ( int not null (duplicate) )*
 	+ *Order_Delivery_Address_ID (int not null (duplicate))*
 	+ Order_Phone_Number (varchar(10))
@@ -179,13 +179,13 @@ ERD
 ## Table Customer
 #### Inherited table User
 + *Attribute*:
-	+ Customer_ID (int not null Indentity(1,1)) (primary key)
+	+ **Customer_ID (int not null Indentity(1,1))** 
 	+ *User_ID (int not null)*
 	+ Customer_Credit_Point (int not null) 
 
-## Table Delivery Address
+## Table DeliveryAddress
 + *Attribute*:
-	+ Delivery_Address_ID (int not null Indentity(1,1)) (primary key_
+	+ **Delivery_Address_ID (int not null Indentity(1,1))**
 	+ *Customer_ID (int not null) (duplicate)*
 	+ Phone_Number (varchar(10) not null)
 	+ Address (nvarchar(max) not null)
@@ -197,7 +197,7 @@ ERD
 
 ## Table User
 + *Attribute*:
-	+ User_ID (int not null Indentity(1,1)) (primary key) 
+	+ **User_ID (int not null Indentity(1,1))** 
 	+ User_Name (nvarchar(50))
 	+ User_Username (varchar(50))
 	+ User_Password (varchar(32))  %%After **MD5** digestion%%
@@ -209,13 +209,13 @@ ERD
 ## Table Order_Manager
 #### Inherited table Employee
 + *Attribute*:
-	+ Order_Manager_ID (int not null Indentity(1,1)) (primary key)
+	+ **Order_Manager_ID (int not null Indentity(1,1))**
 	+ *Employee_ID (int not null)*
 
 ## Table Employee
 #### Inherited table User
 + *Attribute*:
-	+ Employee_ID (int not null Indentity(1,1)) (primary key)
+	+ **Employee_ID (int not null Indentity(1,1))**
 	+ *User_ID (int not null)*
 	+ Employee_Citizen_ID (nvarchar(20) not null)
 	+ Employee_DoB (Datetime not null)
@@ -228,13 +228,13 @@ ERD
 ## Table Inventory_Manager
 #### Inherited table Employee
 + *Attribute*:
-	+ Inventory_Manager_ID (int not null Indentity(1,1)) (primary key)
+	+ **Inventory_Manager_ID (int not null Indentity(1,1))** 
 	+ *Employee_ID (int not null)*
 
 ## Table Import
 #### Managed by Inventory_Manager
 + *Attribute*:
-	+ Import_ID (int not null Indentity(1,1)) (primary key)
+	+ **Import_ID (int not null Indentity(1,1))**
 	+ Import_Total_Quantity (int not null)
 	+ Import_Total_Cost (int not null)
 	+ Supplier_Name (nvarchar(max))
@@ -257,7 +257,7 @@ ERD
 ## Table Admin
 #### Inherited table Employee
 + *Attribute*:
-	+ Admin_ID (int not null Indentity(1,1)) (primary key)
+	+ **Admin_ID (int not null Indentity(1,1))**
 	+ *Employee_ID (int not null)*
 
 ## Table Product_Activity_Log
@@ -271,19 +271,14 @@ ERD
 
 ## Table Employee_Role
 + *Attribute*:
-	+ Role_ID (int not null Indetity(1,1)) (primary key)
+	+ **Role_ID (int not null Indetity(1,1))**
 	+ Role_Name (nvarchar(100) not null)
 
 
-Change:
-Delivery Address thành thực thể mạnh để order sử dụng delivery_Address_Id
+**Change**:
+- Delivery Address thành thực thể mạnh để order sử dụng delivery_Address_Id
+- The voucher table is connect to table Admin => Fix erd
 
-
-
-Note: 
-Delivery address thiếu quan hệ với order
-Order manager chưa quan hệ với Order, xóa quan hệ emp => order
-Import chưa quan hệ với Inventory Manager, xóa quan hệ emp => Import
 
 
 ## SQL Code
