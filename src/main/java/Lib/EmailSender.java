@@ -50,7 +50,7 @@ public class EmailSender {
             System.out.println("sent email successfully!");
             return true;
         } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            return false;
         }
     }
 
