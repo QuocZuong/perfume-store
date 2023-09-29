@@ -18,6 +18,16 @@
                 "source": true
               }
             }
+          },
+          {
+            "id": "f3add32f738a89d9",
+            "type": "leaf",
+            "state": {
+              "type": "release-notes",
+              "state": {
+                "currentVersion": "1.4.14"
+              }
+            }
           }
         ]
       }
@@ -159,16 +169,18 @@
   },
   "active": "fa75f15d861f367c",
   "lastOpenFiles": [
-    "SDS/8.Function_Register/Database_Queries/gcwjc4r0.stq~",
-    "SDS/8.Function_Register/Database_Queries/wolgsfbo.dv1~",
-    "SDS/8.Function_Register/Database_Queries/mv1wu04h.mcn~",
-    "SDS/8.Function_Register/Database_Queries/j1p0tgsk.b40~",
-    "SDS/8.Function_Register/Database_Queries/ns5ivs0x.i0o~",
-    "SDS/8.Function_Register/Database_Queries/dp5zbvey.qes~",
-    "SDS/8.Function_Register/Database_Queries/aemgpcvg.kxo~",
-    "SDS/8.Function_Register/Database_Queries/uwoczanq.p4p~",
-    "SDS/8.Function_Register/Database_Queries/e54xuvfs.b0s~",
-    "SDS/8.Function_Register/Database_Queries/kjikxjr2.gv2~",
-    "SDS/8.Function_Register/Database_Queries/a4rxg1bz.0cm~"
+    "SDS/2.Function_View_Product_Detail/Database_Queries/udp5snse.tuz~",
+    "SDS/2.Function_View_Product_Detail/Database_Queries/View_Product_Detail_Database_Queries.sql",
+    "SDS/2.Function_View_Product_Detail/Sequence_Diagram/View_Product_Detail_Sequence_Diagram.drawio.png",
+    "SDS/2.Function_View_Product_Detail/Sequence_Diagram/View_Product_Detail_Sequence_Diagram.drawio",
+    "SDS/2.Function_View_Product_Detail/Class_Diagram/View_Product_Detail_Class_Diagram.drawio.png",
+    "SDS/2.Function_View_Product_Detail/Class_Diagram/View_Product_Detail_Class_Diagram.drawio",
+    "SDS/2.Function_View_Product_Detail/Database_Queries",
+    "SDS/2.Function_View_Product_Detail/New folder",
+    "SDS/2.Function_View_Product_Detail/Sequence_Diagram",
+    "SDS/2.Function_View_Product_Detail/Class_Diagram",
+    "SDS/2.Function_View_Product_Detail",
+    "SDS/2.Function_",
+    "SDS/New folder"
   ]
 }
