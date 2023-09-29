@@ -1,6 +1,6 @@
-<mxfile host="Electron" modified="2023-09-29T13:36:28.539Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.0.0 Chrome/114.0.5735.289 Electron/25.8.3 Safari/537.36" etag="bPr8K6aP2jahuEfKT-RR" version="22.0.0" type="device">
+<mxfile host="Electron" modified="2023-09-29T13:09:38.647Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.0.0 Chrome/114.0.5735.289 Electron/25.8.3 Safari/537.36" etag="Es3cUyadMPoPQQK3Y8ui" version="22.0.0" type="device">
   <diagram name="Page-1" id="_nZHI8NYuNMjpibNF_YI">
-    <mxGraphModel dx="1660" dy="511" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1837" dy="584" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -10,7 +10,7 @@
         <mxCell id="bgXQf1ykJbpGTAjlQ5FK-2" value="Order detail page" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="240" y="50" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="bgXQf1ykJbpGTAjlQ5FK-3" value="ClientController" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="bgXQf1ykJbpGTAjlQ5FK-3" value="ProductController" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="520" y="50" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="bgXQf1ykJbpGTAjlQ5FK-4" value="pDAO:ProductDAO" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
