@@ -512,7 +512,7 @@ public class ProductDAO {
     }
 
     ResultSet rs = null;
-
+ 
     String sql = "SELECT COUNT(*) AS CountRow FROM Product, Brand\n" +
         "WHERE BrandID LIKE ?\n" +
         "AND Gender LIKE ?\n" +
