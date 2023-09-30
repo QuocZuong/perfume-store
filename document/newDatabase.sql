@@ -48,7 +48,7 @@ CREATE TABLE Employee (
 );
 
 -- Create the Admin table (Inherited from Employee)
-CREATE TABLE Admin (
+CREATE TABLE [Admin] (
     Admin_ID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     Employee_ID INT NOT NULL
 );
@@ -106,6 +106,7 @@ CREATE TABLE Customer (
 CREATE TABLE Delivery_Address (
     Delivery_Address_ID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     Customer_ID INT NOT NULL,
+	Receiver_Name NVARCHAR(200) NOT NULL,
     Phone_Number VARCHAR(10) NOT NULL,
     Address NVARCHAR(max) NOT NULL,
     Status NVARCHAR(200) NOT NULL,
@@ -151,9 +152,11 @@ CREATE TABLE [Order] (
     Order_ID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     Customer_ID INT NOT NULL,
     Order_Delivery_Address_ID INT NOT NULL,
+	Order_Receiver_Name NVARCHAR(200) NOT NULL,
     Order_Phone_Number VARCHAR(10),
     Order_Note NVARCHAR(500),
     Order_Total INT DEFAULT 0,
+	Order_Status VARCHAR(20) NOT NULL,
     Order_Created_At DATE NOT NULL,
     Order_Checkout_At DATETIME NOT NULL,
     Order_Update_At DATETIME,

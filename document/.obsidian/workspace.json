@@ -14,7 +14,7 @@
               "type": "markdown",
               "state": {
                 "file": "Project bán nước hoa (PRJ301).md",
-                "mode": "preview",
+                "mode": "source",
                 "source": true
               }
             }
@@ -79,7 +79,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 200,
+    "collapsed": true
   },
   "right": {
     "id": "b9d60f1d88a7f52e",
@@ -169,17 +170,19 @@
   },
   "active": "fa75f15d861f367c",
   "lastOpenFiles": [
-    "SDS/14 Search_And_Filter_Employee/Database_Queries/ygip2p3p.sa3~",
-    "SDS/14 Search_And_Filter_Employee/Database_Queries/rvit4ht1.mpv~",
-    "SDS/14 Search_And_Filter_Employee/Database_Queries/jafsq45m.t40~",
-    "SDS/14 Search_And_Filter_Employee/Database_Queries/denj2sdu.b1s~",
-    "SDS/14 Search_And_Filter_Employee/Database_Queries/nu4chpyp.me4~",
-    "SDS/14 Search_And_Filter_Employee/Database_Queries/tr4l0xzt.w3u~",
-    "SDS/14 Search_And_Filter_Employee/Database_Queries/kxwsbnxf.rdt~",
-    "SDS/14 Search_And_Filter_Employee/Database_Queries/ubjyjfsk.umn~",
-    "SDS/14 Search_And_Filter_Employee/Database_Queries/vavqh5c0.tac~",
-    "SDS/14 Search_And_Filter_Employee/Database_Queries/0jf4r1kb.u4y~",
-    "SDS/14 Search_And_Filter_Employee/Database_Queries/adz44cak.sqb~",
+    "ojgnkdn4.gcj~",
+    "npocf33v.fwm~",
+    "xetsib5q.bki~",
+    "bop020e5.acx~",
+    "hpfnkxiw.pfx~",
+    "lyfzx1jg.fho~",
+    "jmmrpizg.jzd~",
+    "SDS/15. Add Employee/Database_Queries/hawwwnsc.nzz~",
+    "SDS/15. Add Employee/Database_Queries/n31guykb.ll5~",
+    "SDS/15. Add Employee/Database_Queries/4dir35ul.n1g~",
+    "SDS/15. Add Employee/Database_Queries/qzqals1x.htk~",
+    "SDS/15. Add Employee/Sequence_Diagram/Add_Employee_Sequence_Diagram.png",
+    "SDS/15. Add Employee/Class_Diagram/Add_Employee_Class_Diagram.png",
     "SDS/14 Search_And_Filter_Employee/Sequence_Diagram/Search_And_Filter_Employee_Sequence_Diagram.png",
     "SDS/10.Export_Request/Sequence_Diagram/Export_Receipt_Sequence_Diagram.png",
     "SDS/14 Employee_List/Class_Diagram/Employee_List_Class_Diagram.png",
@@ -187,8 +190,6 @@
     "SDS/25. Restore product/Class_Diagram/RestoreProductClassDiagram.drawio.png",
     "SDS/9. Forgot password/Class_Diagram/ForgotPasswordClassDiagram.drawio.png",
     "SDS/24. Delete product/Sequence_Diagram/DeleteProductSequenceDiagram.drawio.png",
-    "SDS/24. Delete product/Class_Diagram/DeleteProductClassDiagram.drawio.png",
-    "SDS/3.Function_Add_To_Cart/Sequence_Diagram/Add_To_Cart_Sequence_Diagram.png",
-    "SDS/3.Function_Add_To_Cart/Class_Diagram/Add_To_Cart_Class_Diagram.drawio.png"
+    "SDS/24. Delete product/Class_Diagram/DeleteProductClassDiagram.drawio.png"
   ]
 }

@@ -167,11 +167,13 @@ ERD
 	+ **Order_ID (int not null Indentity (1,1))**
 	+ *Customer_ID ( int not null (duplicate) )*
 	+ *Order_Delivery_Address_ID (int not null (duplicate))*
+	+ Order_Receiver_Name (nvarchar(200) not null)
 	+ Order_Phone_Number (varchar(10))
 	+ Order_Note (nvarchar(500))
 	+ Order_Total (int default 0)
+	+ Order_Status (varchar(20) not null)
 	+ Order_Created_At (Date) not null
-	+ Order_Checkout_At (Datetime) not null
+	+ Order_Checkout_At (Datetime)
 	+ Order_Update_At (Datetime)
 	+ *Order_Update_By_Order_Manager (int not null)*
 
@@ -187,6 +189,7 @@ ERD
 + *Attribute*:
 	+ **Delivery_Address_ID (int not null Indentity(1,1))**
 	+ *Customer_ID (int not null) (duplicate)*
+	+ Receiver_Name (nvarchar(200) not null)
 	+ Phone_Number (varchar(10) not null)
 	+ Address (nvarchar(max) not null)
 	+ Status (nvarchar(200) not null)
