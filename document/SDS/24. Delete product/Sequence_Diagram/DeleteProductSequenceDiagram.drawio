@@ -1,6 +1,6 @@
-<mxfile host="Electron" modified="2023-09-29T17:03:30.101Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.7.5 Chrome/114.0.5735.289 Electron/25.8.1 Safari/537.36" etag="z3eZiGHKxnE43wXqJEWR" version="21.7.5" type="device">
+<mxfile host="Electron" modified="2023-09-29T18:13:31.129Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.7.5 Chrome/114.0.5735.289 Electron/25.8.1 Safari/537.36" etag="v4wJtH1TR-5UHr0vI7RL" version="21.7.5" type="device">
   <diagram name="Page-1" id="02Nq9jW7B3owufkaCvR9">
-    <mxGraphModel dx="862" dy="1012" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1477" dy="1734" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -37,7 +37,7 @@
             <mxPoint x="1019" y="600.0000000000001" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="pOCr6q6vtAm0lsox3jmK-11" value="doPost(request, response)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="pOCr6q6vtAm0lsox3jmK-10" vertex="1" connectable="0">
+        <mxCell id="pOCr6q6vtAm0lsox3jmK-11" value="doGet(request, response)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="pOCr6q6vtAm0lsox3jmK-10" vertex="1" connectable="0">
           <mxGeometry x="0.0868" relative="1" as="geometry">
             <mxPoint x="-7" as="offset" />
           </mxGeometry>
@@ -92,7 +92,7 @@
         <mxCell id="pOCr6q6vtAm0lsox3jmK-24" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="1260" y="1010" width="20" height="110" as="geometry" />
         </mxCell>
-        <mxCell id="pOCr6q6vtAm0lsox3jmK-27" value="deleteAllDeletedProduct()" style="endArrow=classic;html=1;rounded=0;exitX=1.05;exitY=0.353;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" edge="1" source="pOCr6q6vtAm0lsox3jmK-24">
+        <mxCell id="pOCr6q6vtAm0lsox3jmK-27" value="deleteAllDeletedProduct()" style="endArrow=classic;html=1;rounded=0;exitX=1.05;exitY=0.353;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="pOCr6q6vtAm0lsox3jmK-24" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="1280" y="1030" as="sourcePoint" />
             <mxPoint x="1490" y="1049" as="targetPoint" />
