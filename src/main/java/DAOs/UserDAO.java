@@ -36,7 +36,7 @@ public class UserDAO {
      * Gets all the users in the database.
      *
      * @return A {@code ResultSet} containing all the users in the database.
-     * {@code null} if an error occurs.
+     *         {@code null} if an error occurs.
      */
     public ResultSet getAll() {
         ResultSet rs = null;
@@ -58,7 +58,7 @@ public class UserDAO {
      *
      * @param str The string to be hashed.
      * @return The MD5 hash of the string. {@code null} if an error occurs while
-     * hashing.
+     *         hashing.
      */
     public String getMD5hash(String str) {
 
@@ -89,7 +89,7 @@ public class UserDAO {
      *
      * @param username The username of the user to be retrieved.
      * @return A {@code User} object containing the user's information.
-     * {@code null} if an error occurs.
+     *         {@code null} if an error occurs.
      */
     public User getUser(String username) {
         if (username == null) {
@@ -126,7 +126,7 @@ public class UserDAO {
      *
      * @param ID The ID of the user to be retrieved.
      * @return A {@code User} object containing the user's information.
-     * {@code null} if an error occurs or the user is not found.
+     *         {@code null} if an error occurs or the user is not found.
      */
     public User getUser(int ID) {
         ResultSet rs = null;
@@ -159,7 +159,7 @@ public class UserDAO {
      *
      * @param email The email of the user to be retrieved.
      * @return A {@code User} object containing the user's information.
-     * {@code null} if an error occurs or the user is not found.
+     *         {@code null} if an error occurs or the user is not found.
      */
     public User getUserByEmail(String email) {
         if (email == null) {
@@ -309,14 +309,14 @@ public class UserDAO {
             return 0;
         }
         /*
-     * Attribute:
-     * ID (int) (primary key Indentity (1,1))
-     * ClientID (ID (int) (duplicate) )
-     * Date (Date) not null
-     * Address (nvarchar(500))
-     * PhoneNumber (varchar(10))
-     * Note (nvarchar(500))
-     * Sum (int default 0)
+         * Attribute:
+         * ID (int) (primary key Indentity (1,1))
+         * ClientID (ID (int) (duplicate) )
+         * Date (Date) not null
+         * Address (nvarchar(500))
+         * PhoneNumber (varchar(10))
+         * Note (nvarchar(500))
+         * Sum (int default 0)
          */
 
         String sql = "INSERT INTO [Order](ClientID, [Date], [Address], [PhoneNumber], [Note], [Sum]) VALUES (?, ?, ?, ?, ?, ?)";
@@ -363,7 +363,7 @@ public class UserDAO {
      *
      * @param us The user to be deleted.
      * @return The number of rows affected by the query. {@code 0} if user
-     * cannot be deleted, or {@code username} doesn't exist.
+     *         cannot be deleted, or {@code username} doesn't exist.
      */
     public int deleteUser(String username) {
         if (username == null) {
@@ -405,7 +405,7 @@ public class UserDAO {
 
     /*--------------------- VALIDATE SECTION ---------------------  */
 
- /*--------------------- AUTHORIZATION SECTION ---------------------  */
+    /*--------------------- AUTHORIZATION SECTION ---------------------  */
     /**
      * Checks if a given username is an admin.
      *

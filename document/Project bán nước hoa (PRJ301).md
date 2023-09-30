@@ -152,6 +152,11 @@ ERD
 	+ *Customer_ID (int not null) (duplicate)*
 	+ Deducted_Price (int not null)
 
+## Table Voucher_Order
++ *Attribute*:
+	+ *Voucher_ID (int not null) (duplicate)*
+	+ *Order_ID (int not null) (duplicate)*
+
 ## Table OrderDetail
 ####  Weak Entity
 + *Attribute*:
