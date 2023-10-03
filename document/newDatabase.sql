@@ -48,7 +48,7 @@ CREATE TABLE Employee (
 );
 
 -- Create the Admin table (Inherited from Employee)
-CREATE TABLE Admin (
+CREATE TABLE [Admin] (
     Admin_ID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     Employee_ID INT NOT NULL
 );
@@ -106,6 +106,7 @@ CREATE TABLE Customer (
 CREATE TABLE Delivery_Address (
     Delivery_Address_ID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     Customer_ID INT NOT NULL,
+	Receiver_Name NVARCHAR(200) NOT NULL,
     Phone_Number VARCHAR(10) NOT NULL,
     Address NVARCHAR(max) NOT NULL,
     Status NVARCHAR(200) NOT NULL,
@@ -146,14 +147,21 @@ CREATE TABLE Voucher_Customer (
     Deducted_Price INT NOT NULL
 );
 
+CREATE TABLE Voucher_Order(
+	Voucher_ID INT NOT NULL,
+	Order_ID INT NOT NULL
+)
+
 -- Create the Order table
 CREATE TABLE [Order] (
     Order_ID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     Customer_ID INT NOT NULL,
     Order_Delivery_Address_ID INT NOT NULL,
+	Order_Receiver_Name NVARCHAR(200) NOT NULL,
     Order_Phone_Number VARCHAR(10),
     Order_Note NVARCHAR(500),
     Order_Total INT DEFAULT 0,
+	Order_Status VARCHAR(20) NOT NULL,
     Order_Created_At DATE NOT NULL,
     Order_Checkout_At DATETIME NOT NULL,
     Order_Update_At DATETIME,
@@ -164,7 +172,6 @@ CREATE TABLE [Order] (
 CREATE TABLE OrderDetail (
     Order_ID INT NOT NULL,
     Product_ID INT NOT NULL,
-    Voucher_ID INT,
     Quantity INT DEFAULT 0,
     Price INT DEFAULT 0,
     Total INT DEFAULT 0
@@ -295,6 +302,17 @@ ADD CONSTRAINT FK_VoucherCustomer_Customer
 FOREIGN KEY (Customer_ID)
 REFERENCES Customer(Customer_ID);
 
+-- Voucher_Order to Order and Voucher
+ALTER TABLE Voucher_Order
+ADD CONSTRAINT FK_VoucherOrder_Voucher
+FOREIGN KEY (Voucher_ID)
+REFERENCES Voucher(Voucher_ID);
+
+ALTER TABLE Voucher_Order
+ADD CONSTRAINT FK_Voucher_Order_Order
+FOREIGN KEY (Order_ID)
+REFERENCES [Order](Order_ID);
+
 -- Order to Customer and Order_Manager and Delivery Address
 ALTER TABLE [Order]
 ADD CONSTRAINT FK_Order_Customer
@@ -323,10 +341,6 @@ ADD CONSTRAINT FK_OrderDetail_Product
 FOREIGN KEY (Product_ID)
 REFERENCES Product(Product_ID);
 
-ALTER TABLE OrderDetail
-ADD CONSTRAINT FK_OrderDetail_Voucher
-FOREIGN KEY (Voucher_ID)
-REFERENCES Voucher(Voucher_ID);
 
 -- Import to Inventory_Manager
 ALTER TABLE Import
