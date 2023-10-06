@@ -1,6 +1,6 @@
 package Models;
 
-public class Admin  extends Employee {
+public class Admin extends Employee {
 
     private int adminId;
     private int employeeId;
@@ -22,5 +22,4 @@ public class Admin  extends Employee {
     public void setEmployeeId(int employeeId) {
         this.employeeId = employeeId;
     }
-    
 }

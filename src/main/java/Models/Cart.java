@@ -1,37 +1,25 @@
 package Models;
 
 public class Cart {
-    private int clientID;
-    private int productID;
+    private int customerId;
+    private int productId;
     private int quantity;
     private int price;
-    private int sum;
 
-    public Cart() {
+    public int getCustomerId() {
+        return customerId;
     }
 
-    public Cart(int clientID, int productID, int quantity, int price, int sum) {
-        this.clientID = clientID;
-        this.productID = productID;
-        this.quantity = quantity;
-        this.price = price;
-        this.sum = sum;
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
     }
 
-    public int getClientID() {
-        return clientID;
+    public int getProduct() {
+        return productId;
     }
 
-    public void setClientID(int clientID) {
-        this.clientID = clientID;
-    }
-
-    public int getProductID() {
-        return productID;
-    }
-
-    public void setProductID(int productID) {
-        this.productID = productID;
+    public void setProduct(int productId) {
+        this.productId = productId;
     }
 
     public int getQuantity() {
@@ -48,13 +36,5 @@ public class Cart {
 
     public void setPrice(int price) {
         this.price = price;
-    }
-
-    public int getSum() {
-        return sum;
-    }
-
-    public void setSum(int sum) {
-        this.sum = sum;
     }
 }
