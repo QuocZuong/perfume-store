@@ -19,14 +19,14 @@ public class BrandDAO implements IBrandDAO {
 
     //Create
     @Override
-    public int addBrand(String brandName) {
+    public int addBrand(Brand brand){
         int result = 0;
 
         try {
-            String sql = "INSERT INTO Brand([Name]) VALUES(?)";
+            String sql = "INSERT INTO Brand([Brand_Name]) VALUES(?)";
             PreparedStatement ps = conn.prepareStatement(sql);
 
-            ps.setNString(1, brandName);
+            ps.setNString(1, brand.getName());
             result = ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -34,6 +34,7 @@ public class BrandDAO implements IBrandDAO {
 
         return result;
     }
+
     //Read
     @Override
     public ArrayList<Brand> getAll() {
@@ -69,7 +70,7 @@ public class BrandDAO implements IBrandDAO {
         ResultSet rs = null;
         ArrayList<Brand> brandList = new ArrayList<>();
         try {
-            String sql = "SELECT * FROM Brand WHERE [Name] LIKE ?";
+            String sql = "SELECT * FROM Brand WHERE [Brand_Name] LIKE ?";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setNString(1, a + "%");
             rs = ps.executeQuery();
@@ -96,7 +97,7 @@ public class BrandDAO implements IBrandDAO {
         ResultSet rs = null;
 
         try {
-            String sql = "Select * from Brand Where [id]=?";
+            String sql = "Select * from Brand Where [Brand_ID]=?";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, brandID);
             rs = ps.executeQuery();
@@ -117,11 +118,35 @@ public class BrandDAO implements IBrandDAO {
     }
 
     @Override
+    public Brand getBrand(String brandName) {
+        ResultSet rs = null;
+
+        try {
+            String sql = "Select * from Brand Where [Brand_Name]=?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setNString(1, brandName);
+            rs = ps.executeQuery();
+            Brand brand = new Brand();
+            if (rs.next()) {
+                brand.setId(rs.getInt("Brand_ID"));
+                brand.setName(rs.getNString("Brand_Name"));
+                brand.setLogo(rs.getNString("Brand_Logo"));
+                brand.setImgURL(rs.getNString("Brand_Img"));
+                brand.setTotalProduct(rs.getInt("Brand_Total_Product"));
+            }
+            return brand;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
     public boolean isExistedBrandName(Brand brand) {
 
         ResultSet rs = null;
         try {
-            String sql = "SELECT * FROM Brand WHERE [Name] = ?";
+            String sql = "SELECT * FROM Brand WHERE [Brand_Name] = ?";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setNString(1, brand.getName());
             rs = ps.executeQuery();

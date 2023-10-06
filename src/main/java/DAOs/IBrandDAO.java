@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public interface IBrandDAO {
 
-    public int addBrand(String brandName);
+    public int addBrand(Brand brand);
 
     public ArrayList<Brand> getAll();
 
@@ -21,5 +21,7 @@ public interface IBrandDAO {
 
     public Brand getBrand(int brandID);
 
+    public Brand getBrand(String BrandName);
+    
     public boolean isExistedBrandName(Brand brand);
 }

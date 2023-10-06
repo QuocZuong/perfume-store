@@ -1,11 +1,6 @@
 package DAOs;
 
 import Models.Product;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import Exceptions.ProductNotFoundException;
+import Models.Brand;
 
 public class ProductDAO {
 
@@ -38,16 +34,16 @@ public class ProductDAO {
             StringBuilder sql = new StringBuilder("INSERT INTO Product");
 
             sql.append("(");
-            sql.append("[Name]");
-            sql.append(",[BrandID]");
+            sql.append("[Product_Name]");
+            sql.append(",[Brand_ID]");
 //      sql.append(",[Price]");
-            sql.append(",[Gender]");
-            sql.append(",[Smell]");
+            sql.append(",[Product_Gender]");
+            sql.append(",[Product_Smell]");
 //      sql.append(",[Quantity]");
-            sql.append(",[ReleaseYear]");
-            sql.append(",[Volume]");
-            sql.append(",[ImgURL]");
-            sql.append(",[Description]");
+            sql.append(",[Product_Release_Year]");
+            sql.append(",[Product_Volume]");
+            sql.append(",[Product_Img_URL]");
+            sql.append(",[Product_Description]");
             sql.append(")");
 
             sql.append(" VALUES(?,?,?,?,?,?,?,?)");
@@ -73,13 +69,15 @@ public class ProductDAO {
         int result = 0;
         String datas[] = data.split("~");
         BrandDAO brDAO = new BrandDAO();
+        // "0         ~1                                  ~2                  ~3                       ~4                   ~5                  ~6                                   ~7                   ~8                   ~9"
         // "NAME~BRANDNAME(string)~PRICE(INT)~Gender(string)~Smell(String)~Quantity(int)~ReleaseYear(smallint)~Volume(INT)~URL(Srtring)~Description",
 
         // Check if exist brand name
-        if (!brDAO.isExistedBrandName(datas[1])) {
-            brDAO.addBrand(datas[1]);
+        Brand brand = brDAO.getBrand(datas[1]);
+        if (!brDAO.isExistedBrandName(brand)) {
+            brDAO.addBrand(brand);
         }
-        int brandID = brDAO.getBrandID(datas[1]);
+        int brandID = brDAO.getBrand(datas[1]).getId();
 
         String name = datas[0];
         String gender = datas[3];
@@ -102,8 +100,6 @@ public class ProductDAO {
         result = addProduct(pd);
         return result;
     }
-
-   
 
     /* --------------------------- READ SECTION --------------------------- */
     public List<Product> getProductByOrderID(int id) {
@@ -621,6 +617,5 @@ public class ProductDAO {
         }
         return 1;
     }
-
 
 }
