@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Models;
 
 /**
@@ -13,9 +9,6 @@ public class Stock {
     private int ProductID;
     private int Price;
     private int Quantity;
-
-    public Stock() {
-    }
 
     public int getProductID() {
         return ProductID;
@@ -40,5 +33,4 @@ public class Stock {
     public void setQuantity(int Quantity) {
         this.Quantity = Quantity;
     }
-
 }
