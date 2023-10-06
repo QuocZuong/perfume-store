@@ -12,10 +12,12 @@ public class InventoryManager extends Employee{
         this.inventoryManagerId = inventoryManagerId;
     }
 
+    @Override
     public int getEmployeeId() {
         return employeeId;
     }
 
+    @Override
     public void setEmployeeId(int employeeId) {
         this.employeeId = employeeId;
     }
