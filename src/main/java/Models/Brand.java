@@ -7,9 +7,6 @@ public class Brand {
     private String imgURL;
     private int totalProduct;
 
-    public Brand() {
-    }
-
     public int getId() {
         return Id;
     }

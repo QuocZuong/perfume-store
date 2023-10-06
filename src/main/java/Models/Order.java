@@ -1,82 +1,96 @@
 package Models;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class Order {
-  private int ID;
-  private int clientID;
-  private Date date;
-  private String Address;
-  private String PhoneNumber;
-  private String Note;
-  private int sum;
+  private int Id;
+  private int customerId;
+  private int orderDeliveryAddressId;
+  private int orderReceiverName;
+  private String orderPhoneNumber;
+  private int total;
+  private String orderStatus;
+  private Date createdAt;
+  private Date checkoutAt;
+  private Date updateAt;
 
-  public Order() {
+  public int getId() {
+    return Id;
   }
 
-  public Order(int iD, int clientID, Date date, String address, String phoneNumber, String note, int sum) {
-    ID = iD;
-    this.clientID = clientID;
-    this.date = date;
-    Address = address;
-    PhoneNumber = phoneNumber;
-    Note = note;
-    this.sum = sum;
+  public void setId(int Id) {
+    this.Id = Id;
   }
 
-  public void setPhoneNumber(String phoneNumber) {
-    PhoneNumber = phoneNumber;
+  public int getCustomerId() {
+    return customerId;
   }
 
-  public String getNote() {
-    return Note;
+  public void setCustomerId(int customerId) {
+    this.customerId = customerId;
   }
 
-  public void setNote(String note) {
-    Note = note;
+  public int getOrderDeliveryAddressId() {
+    return orderDeliveryAddressId;
   }
 
-  public int getID() {
-    return ID;
+  public void setOrderDeliveryAddressId(int orderDeliveryAddressId) {
+    this.orderDeliveryAddressId = orderDeliveryAddressId;
   }
 
-  public void setID(int ID) {
-    this.ID = ID;
+  public int getOrderReceiverName() {
+    return orderReceiverName;
   }
 
-  public int getClientID() {
-    return clientID;
+  public void setOrderReceiverName(int orderReceiverName) {
+    this.orderReceiverName = orderReceiverName;
   }
 
-  public void setClientID(int clientID) {
-    this.clientID = clientID;
+  public String getOrderPhoneNumber() {
+    return orderPhoneNumber;
   }
 
-  public Date getDate() {
-    return date;
+  public void setOrderPhoneNumber(String orderPhoneNumber) {
+    this.orderPhoneNumber = orderPhoneNumber;
   }
 
-  public void setDate(Date date) {
-    this.date = date;
+  public int getTotal() {
+    return total;
   }
 
-  public int getSum() {
-    return sum;
+  public void setTotal(int total) {
+    this.total = total;
   }
 
-  public void setSum(int sum) {
-    this.sum = sum;
+  public String getOrderStatus() {
+    return orderStatus;
   }
 
-  public String getAddress() {
-    return Address;
+  public void setOrderStatus(String orderStatus) {
+    this.orderStatus = orderStatus;
   }
 
-  public void setAddress(String address) {
-    Address = address;
+  public Date getCreatedAt() {
+    return createdAt;
   }
 
-  public String getPhoneNumber() {
-    return PhoneNumber;
+  public void setCreatedAt(Date createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public Date getCheckoutAt() {
+    return checkoutAt;
+  }
+
+  public void setCheckoutAt(Date checkoutAt) {
+    this.checkoutAt = checkoutAt;
+  }
+
+  public Date getUpdateAt() {
+    return updateAt;
+  }
+
+  public void setUpdateAt(Date updateAt) {
+    this.updateAt = updateAt;
   }
 }

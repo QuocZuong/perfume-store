@@ -20,7 +20,7 @@ import Exceptions.WrongPasswordException;
 import Lib.EmailSender;
 import java.io.UnsupportedEncodingException;
 
-public class UserDAO {
+public class UserDAO{
 
     private Connection conn;
 
@@ -36,7 +36,7 @@ public class UserDAO {
      * Gets all the users in the database.
      *
      * @return A {@code ResultSet} containing all the users in the database.
-     *         {@code null} if an error occurs.
+     * {@code null} if an error occurs.
      */
     public ResultSet getAll() {
         ResultSet rs = null;
@@ -58,7 +58,7 @@ public class UserDAO {
      *
      * @param str The string to be hashed.
      * @return The MD5 hash of the string. {@code null} if an error occurs while
-     *         hashing.
+     * hashing.
      */
     public String getMD5hash(String str) {
 
@@ -89,32 +89,31 @@ public class UserDAO {
      *
      * @param username The username of the user to be retrieved.
      * @return A {@code User} object containing the user's information.
-     *         {@code null} if an error occurs.
+     * {@code null} if an error occurs.
+     * @throws java.sql.SQLException
      */
-    public User getUser(String username) {
+    public User getUser(String username) throws SQLException {
         if (username == null) {
             return null;
         }
 
-        ResultSet rs = null;
-
-        String sql = "SELECT * FROM [User] WHERE UserName = ?";
+        ResultSet rs;
+        String sql = "SELECT * FROM [User] WHERE User_Name = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, username);
             rs = ps.executeQuery();
+            User us = new User();
             if (rs.next()) {
-                return new User(
-                        rs.getInt("ID"),
-                        rs.getNString("Name"),
-                        rs.getString("UserName"),
-                        rs.getString("Password"),
-                        rs.getString("Email"),
-                        rs.getString("PhoneNumber"),
-                        rs.getNString("Address"),
-                        rs.getString("Role"),
-                        rs.getBoolean("Active"));
+                us.setId(rs.getInt("User_ID"));
+                us.setName(rs.getString("User_Name"));
+                us.setUsername(rs.getString("User_Username"));
+                us.setPassword(rs.getString("User_Password"));
+                us.setEmail(rs.getString("User_Email"));
+                us.setActive(rs.getBoolean("User_Active"));
+                us.setType(rs.getString("User_Type"));
             }
+            return us;
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -126,28 +125,27 @@ public class UserDAO {
      *
      * @param ID The ID of the user to be retrieved.
      * @return A {@code User} object containing the user's information.
-     *         {@code null} if an error occurs or the user is not found.
+     * {@code null} if an error occurs or the user is not found.
      */
     public User getUser(int ID) {
-        ResultSet rs = null;
+        ResultSet rs;
 
-        String sql = "SELECT * FROM [User] WHERE ID = ?";
+        String sql = "SELECT * FROM [User] WHERE User_ID = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, ID);
             rs = ps.executeQuery();
+            User us = new User();
             if (rs.next()) {
-                return new User(
-                        rs.getInt("ID"),
-                        rs.getNString("Name"),
-                        rs.getString("UserName"),
-                        rs.getString("Password"),
-                        rs.getString("Email"),
-                        rs.getString("PhoneNumber"),
-                        rs.getNString("Address"),
-                        rs.getString("Role"),
-                        rs.getBoolean("Active"));
+                us.setId(rs.getInt("User_ID"));
+                us.setName(rs.getString("User_Name"));
+                us.setUsername(rs.getString("User_Username"));
+                us.setPassword(rs.getString("User_Password"));
+                us.setEmail(rs.getString("User_Email"));
+                us.setActive(rs.getBoolean("User_Active"));
+                us.setType(rs.getString("User_Type"));
             }
+            return us;
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -159,40 +157,43 @@ public class UserDAO {
      *
      * @param email The email of the user to be retrieved.
      * @return A {@code User} object containing the user's information.
-     *         {@code null} if an error occurs or the user is not found.
+     * {@code null} if an error occurs or the user is not found.
      */
     public User getUserByEmail(String email) {
         if (email == null) {
             return null;
         }
 
-        ResultSet rs = null;
+        ResultSet rs;
 
-        String sql = "SELECT * FROM [User] WHERE Email = ?";
+        String sql = "SELECT * FROM [User] WHERE User_Email = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
 
             ps.setString(1, email);
             rs = ps.executeQuery();
+            User us = new User();
             if (rs.next()) {
-                return new User(
-                        rs.getInt("ID"),
-                        rs.getNString("Name"),
-                        rs.getString("UserName"),
-                        rs.getString("Password"),
-                        rs.getString("Email"),
-                        rs.getString("PhoneNumber"),
-                        rs.getNString("Address"),
-                        rs.getString("Role"),
-                        rs.getBoolean("Active"));
+                us.setId(rs.getInt("User_ID"));
+                us.setName(rs.getString("User_Name"));
+                us.setUsername(rs.getString("User_Username"));
+                us.setPassword(rs.getString("User_Password"));
+                us.setEmail(rs.getString("User_Email"));
+                us.setActive(rs.getBoolean("User_Active"));
+                us.setType(rs.getString("User_Type"));
             }
+            return us;
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         return null;
     }
-
+    
+    /**
+     * Gets max id in database.
+     * @return A {@code id} which is the largest id.
+     * {@code 0} if an error occurs or there is no user in database.
+     */
     public int getMaxId() {
         ResultSet rs = null;
 
@@ -212,8 +213,8 @@ public class UserDAO {
 
     public ResultSet getFilteredUserForAdminSearch(int page, String Search) {
         String sql = "SELECT * FROM [User]\n"
-                + "WHERE ID LIKE ? OR UserName LIKE ? OR Name LIKE ?\n"
-                + "ORDER BY ID\n"
+                + "WHERE User_ID LIKE ? OR User_Username LIKE ? OR User_Name LIKE ?\n"
+                + "ORDER BY User_ID\n"
                 + "OFFSET ? ROWS\n"
                 + "FETCH NEXT ? ROWS ONLY";
 
@@ -279,8 +280,8 @@ public class UserDAO {
             return 0;
         }
 
-        String sql = "UPDATE [User] SET Name=?, Username=?, Password=?, Email=?, PhoneNumber=?, Address=?, Role=?\n"
-                + "WHERE ID = ?";
+        String sql = "UPDATE [User] SET User_Name=?, User_Username=?, User_Password=?, User_Email=?, User_Type=?";
+                
 
         int kq = 0;
 
@@ -290,10 +291,7 @@ public class UserDAO {
             ps.setNString(2, updateUser.getUsername());
             ps.setNString(3, updateUser.getPassword());
             ps.setNString(4, updateUser.getEmail());
-            ps.setNString(5, updateUser.getPhoneNumber());
-            ps.setNString(6, updateUser.getAddress());
-            ps.setNString(7, updateUser.getRole());
-            ps.setInt(8, updateUser.getID());
+            ps.setNString(5, updateUser.getType());
 
             kq = ps.executeUpdate();
 
@@ -363,7 +361,7 @@ public class UserDAO {
      *
      * @param us The user to be deleted.
      * @return The number of rows affected by the query. {@code 0} if user
-     *         cannot be deleted, or {@code username} doesn't exist.
+     * cannot be deleted, or {@code username} doesn't exist.
      */
     public int deleteUser(String username) {
         if (username == null) {
@@ -405,7 +403,7 @@ public class UserDAO {
 
     /*--------------------- VALIDATE SECTION ---------------------  */
 
-    /*--------------------- AUTHORIZATION SECTION ---------------------  */
+ /*--------------------- AUTHORIZATION SECTION ---------------------  */
     /**
      * Checks if a given username is an admin.
      *
@@ -460,7 +458,7 @@ public class UserDAO {
 
     /*--------------------- AUTHENTICATION SECTION ---------------------  */
     public boolean login(String username, String password)
-            throws AccountDeactivatedException, AccountNotFoundException, WrongPasswordException {
+            throws AccountDeactivatedException, AccountNotFoundException, WrongPasswordException, SQLException {
         if (username == null || password == null) {
             return false;
         }
