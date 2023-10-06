@@ -19,6 +19,7 @@ import Exceptions.EmailDuplicationException;
 import Exceptions.WrongPasswordException;
 import Lib.EmailSender;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 
 public class UserDAO{
 
@@ -38,7 +39,8 @@ public class UserDAO{
      * @return A {@code ResultSet} containing all the users in the database.
      * {@code null} if an error occurs.
      */
-    public ResultSet getAll() {
+    public ArrayList getAll() {
+        ArrayList<User> userList = new ArrayList<>();
         ResultSet rs = null;
 
         String sql = "SELECT * FROM [User]";
@@ -46,11 +48,24 @@ public class UserDAO{
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
+            
+            while(rs.next()){
+                User us = new User();
+                us.setId(rs.getInt("User_ID"));
+                us.setName(rs.getString("User_Name"));
+                us.setUsername(rs.getString("User_Username"));
+                us.setPassword(rs.getString("User_Password"));
+                us.setEmail(rs.getString("User_Email"));
+                us.setActive(rs.getBoolean("User_Active"));
+                us.setType(rs.getString("User_Type"));
+                userList.add(us);
+            }
+            return userList;
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return rs;
+        return null;
     }
 
     /**
