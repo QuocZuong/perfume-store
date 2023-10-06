@@ -45,7 +45,7 @@ public class EmployeeDAO extends UserDAO{
                 employee.setCitizenId(rs.getNString("Employee_Citizen_ID"));
                 employee.setDayOfBirth(rs.getDate("Employee_DoB"));
                 employee.setPhoneNumber(rs.getString("Employee_Phone_Number"));
-                employee.setAddress(rs.getNString("Employee_Address"));
+                employee.setAddress(rs.getNString("Employe e_Address"));
                 employee.setRole(rs.getInt("Employee_Role"));
                 employee.setJoinDate(rs.getDate("Employee_Join_Date"));
                 employee.setRetireDate(rs.getDate("Employee_Retire_Date"));
@@ -60,4 +60,5 @@ public class EmployeeDAO extends UserDAO{
 
         return null;
     }
+    
 }
