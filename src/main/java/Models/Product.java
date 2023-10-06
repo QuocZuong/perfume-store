@@ -1,7 +1,7 @@
 package Models;
 
-
 public class Product {
+
     private int Id;
     private String name;
     private int brandId;
@@ -12,33 +12,9 @@ public class Product {
     private String imgURL;
     private String description;
     private boolean active;
+    private Stock stock;
 
     public Product() {
-    }
-
-    public Product(int Id, String name, int brandId, String gender, String smell, int releaseYear, int volume, String imgURL, String description, boolean active) {
-        this.Id = Id;
-        this.name = name;
-        this.brandId = brandId;
-        this.gender = gender;
-        this.smell = smell;
-        this.releaseYear = releaseYear;
-        this.volume = volume;
-        this.imgURL = imgURL;
-        this.description = description;
-        this.active = active;
-    }
-
-    public Product(int Id, String name, int brandId, String gender, String smell, int volume, String imgURL, String description) {
-        this.Id = Id;
-        this.name = name;
-        this.brandId = brandId;
-        this.gender = gender;
-        this.smell = smell;
-        this.volume = volume;
-        this.imgURL = imgURL;
-        this.description = description;
-        this.active = true;
     }
 
     public int getId() {
@@ -121,7 +97,12 @@ public class Product {
         this.active = active;
     }
 
+    public Stock getStock() {
+        return stock;
+    }
 
-
+    public void setStock(Stock stock) {
+        this.stock = stock;
+    }
 
 }

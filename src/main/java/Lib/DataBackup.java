@@ -87,7 +87,7 @@ public class DataBackup {
 
                 strOUT.append(pd.getName());
                 strOUT.append(sp);
-                strOUT.append(bDAO.getBrandName(pd.getBrandId()));
+                strOUT.append(bDAO.getBrand(pd.getBrandId()).getName());
                 strOUT.append(sp);
                 strOUT.append(sp);
                 strOUT.append(pd.getGender());
