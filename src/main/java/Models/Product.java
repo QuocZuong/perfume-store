@@ -1,75 +1,52 @@
 package Models;
 
+
 public class Product {
-    private int ID;
+    private int Id;
     private String name;
-    private int BrandID;
-    private int price;
+    private int brandId;
     private String gender;
     private String smell;
-    private int quantity;
     private int releaseYear;
     private int volume;
-    private String ImgURL;
+    private String imgURL;
     private String description;
-    private boolean Active;
+    private boolean active;
 
     public Product() {
     }
 
-    public Product(String name, int brandID, int price, String gender, String smell, int quantity,
-            int releaseYear, int volume, String imgURL, String description) {
+    public Product(int Id, String name, int brandId, String gender, String smell, int releaseYear, int volume, String imgURL, String description, boolean active) {
+        this.Id = Id;
         this.name = name;
-        BrandID = brandID;
-        this.price = price;
+        this.brandId = brandId;
         this.gender = gender;
         this.smell = smell;
-        this.quantity = quantity;
         this.releaseYear = releaseYear;
         this.volume = volume;
-        ImgURL = imgURL;
+        this.imgURL = imgURL;
         this.description = description;
-        Active = true;
+        this.active = active;
     }
 
-    public Product(int iD, String name, int brandID, int price, String gender, String smell, int quantity,
-            int releaseYear, int volume, String imgURL, String description) {
-        ID = iD;
+    public Product(int Id, String name, int brandId, String gender, String smell, int volume, String imgURL, String description) {
+        this.Id = Id;
         this.name = name;
-        BrandID = brandID;
-        this.price = price;
+        this.brandId = brandId;
         this.gender = gender;
         this.smell = smell;
-        this.quantity = quantity;
-        this.releaseYear = releaseYear;
         this.volume = volume;
-        ImgURL = imgURL;
+        this.imgURL = imgURL;
         this.description = description;
-        Active = true;
+        this.active = true;
     }
 
-    public Product(int iD, String name, int brandID, int price, String gender, String smell, int quantity,
-            int releaseYear, int volume, String imgURL, String description, boolean active) {
-        ID = iD;
-        this.name = name;
-        BrandID = brandID;
-        this.price = price;
-        this.gender = gender;
-        this.smell = smell;
-        this.quantity = quantity;
-        this.releaseYear = releaseYear;
-        this.volume = volume;
-        ImgURL = imgURL;
-        this.description = description;
-        Active = active;
+    public int getId() {
+        return Id;
     }
 
-    public int getID() {
-        return ID;
-    }
-
-    public void setID(int iD) {
-        ID = iD;
+    public void setId(int Id) {
+        this.Id = Id;
     }
 
     public String getName() {
@@ -80,20 +57,12 @@ public class Product {
         this.name = name;
     }
 
-    public int getBrandID() {
-        return BrandID;
+    public int getBrandId() {
+        return brandId;
     }
 
-    public void setBrandID(int brandID) {
-        BrandID = brandID;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
+    public void setBrandId(int brandId) {
+        this.brandId = brandId;
     }
 
     public String getGender() {
@@ -110,14 +79,6 @@ public class Product {
 
     public void setSmell(String smell) {
         this.smell = smell;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
     }
 
     public int getReleaseYear() {
@@ -137,11 +98,11 @@ public class Product {
     }
 
     public String getImgURL() {
-        return ImgURL;
+        return imgURL;
     }
 
     public void setImgURL(String imgURL) {
-        ImgURL = imgURL;
+        this.imgURL = imgURL;
     }
 
     public String getDescription() {
@@ -153,11 +114,14 @@ public class Product {
     }
 
     public boolean isActive() {
-        return Active;
+        return active;
     }
 
     public void setActive(boolean active) {
-        Active = active;
+        this.active = active;
     }
+
+
+
 
 }
