@@ -205,7 +205,7 @@ public class ProductDAO implements IProductDAO {
         return product.isActive() ? product : null;
     }
 
-    //TODO: Refactor later because lack of model Order
+    // TODO: Refactor later because lack of model Order
     @Override
     public List<Product> getProductByOrderID(int id) {
         ResultSet rs = null;

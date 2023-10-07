@@ -19,6 +19,7 @@ import Exceptions.EmailDuplicationException;
 import Exceptions.WrongPasswordException;
 import Lib.EmailSender;
 import Lib.Converter;
+import Lib.DatabaseUtils;
 
 public class UserDAO {
 
@@ -91,13 +92,11 @@ public class UserDAO {
             ps.setNString(1, username);
 
             rs = ps.executeQuery();
-            User us = new User();
 
             if (rs.next()) {
-                us = userFactory(rs);
+                User us = userFactory(rs);
+                return us;
             }
-
-            return us;
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -119,24 +118,25 @@ public class UserDAO {
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, ID);
+
             rs = ps.executeQuery();
-            User us = new User();
 
             if (rs.next()) {
-                us = userFactory(rs);
+                User us = userFactory(rs);
+                return us;
             }
-
-            return us;
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         return null;
     }
 
     /**
-     * Gets a user from the database.
+     * Gets a {@link User} from the database.
      *
-     * @param email The email of the user to be retrieved.
+     * @param email A {@code String} that represents the email of the {@code User}
+     *              to be retrieved.
      * @return A {@code User} object containing the user's information.
      *         {@code null} if an error occurs or the user is not found.
      */
@@ -146,65 +146,50 @@ public class UserDAO {
         }
 
         ResultSet rs;
+        String sql = String.format("SELECT * FROM [%s] WHERE %s = ?", TABLE_NAME, USER_EMAIL);
 
-        String sql = "SELECT * FROM [User] WHERE User_Email = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
 
             ps.setString(1, email);
             rs = ps.executeQuery();
-            User us = new User();
+
             if (rs.next()) {
-                us.setId(rs.getInt("User_ID"));
-                us.setName(rs.getString("User_Name"));
-                us.setUsername(rs.getString("User_Username"));
-                us.setPassword(rs.getString("User_Password"));
-                us.setEmail(rs.getString("User_Email"));
-                us.setActive(rs.getBoolean("User_Active"));
-                us.setType(rs.getString("User_Type"));
+                User us = userFactory(rs);
+                return us;
             }
-            return us;
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         return null;
     }
 
     /**
-     * Gets max id in database.
+     * Gets the list of {@link User} that meet the searching category from the
+     * database.
      * 
-     * @return A {@code id} which is the largest id.
-     *         {@code 0} if an error occurs or there is no user in database.
+     * @param page   An {@code int} that represents the page number.
+     * @param Search A {@code String} that represents the searching category.
+     * @return An {@code ArrayList} containing the list of {@code User} that meet
+     *         the searching category.
      */
-    public int getMaxId() {
-        ResultSet rs = null;
-
-        String sql = "SELECT MAX(ID) AS MaxID FROM [User]";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("MaxID");
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return 0;
-    }
-
-    public ResultSet getFilteredUserForAdminSearch(int page, String Search) {
-        String sql = "SELECT * FROM [User]\n"
-                + "WHERE User_ID LIKE ? OR User_Username LIKE ? OR User_Name LIKE ?\n"
-                + "ORDER BY User_ID\n"
+    public ArrayList<User> getFilteredUserForAdminSearch(int page, String Search) {
+        String sql = String.format("SELECT * FROM [%s]\n"
+                + "WHERE %s LIKE ? OR %s LIKE ? OR %s LIKE ?\n"
+                + "ORDER BY %s\n"
                 + "OFFSET ? ROWS\n"
-                + "FETCH NEXT ? ROWS ONLY";
+                + "FETCH NEXT ? ROWS ONLY",
+                TABLE_NAME, USER_ID, USER_USERNAME, USER_NAME, USER_ID);
 
+        ResultSet rs;
         final int ROWS = 20;
         final int OFFSET = ROWS * (page - 1);
-        ResultSet rs = null;
+        ArrayList<User> result = new ArrayList<>();
+
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
+
             ps.setString(1, Search);
             ps.setNString(2, "%" + Search + "%");
             ps.setNString(3, "%" + Search + "%");
@@ -212,81 +197,61 @@ public class UserDAO {
             ps.setInt(5, ROWS);
 
             rs = ps.executeQuery();
+
+            while (rs.next()) {
+                User us = userFactory(rs);
+                result.add(us);
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return rs;
-    }
-
-    public int GetNumberOfUserForSearch(String Search) {
-
-        ResultSet rs = null;
-
-        String sql = "SELECT COUNT(*) AS CountRow FROM [User]\n"
-                + "WHERE ID LIKE ?\n"
-                + "OR UserName LIKE ?\n";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-
-            ps.setString(1, Search);
-            ps.setNString(2, "%" + Search + "%");
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("CountRow");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return -1;
-    }
-
-    public ResultSet getAllForAdmin() {
-        ResultSet rs = null;
-        String sql = "SELECT * FROM [User]";
-
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            rs = ps.executeQuery();
-        } catch (SQLException ex) {
-            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return rs;
+        return result;
     }
 
     /* --------------------- UPDATE SECTION --------------------- */
+
+    /**
+     * Updates a {@link User}'s information in the database.
+     *
+     * @param updateUser The {@code User}  to be updated.
+     * @return The number of rows affected by the query. {@code 0} if user
+     *         cannot be updated, or {@code -1} if the {@code User}  doesn't exist.
+     */
     public int updateUser(User updateUser) {
         if (updateUser == null) {
-            return 0;
+            return -1;
         }
 
-        String sql = "UPDATE [User] SET User_Name=?, User_Username=?, User_Password=?, User_Email=?, User_Type=?";
+        String sql = String.format("UPDATE [%s] SET %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ? WHERE %s = ?",
+                TABLE_NAME, USER_NAME, USER_USERNAME, USER_PASSWORD, USER_EMAIL, USER_ACTIVE, USER_TYPE, USER_ID);
 
         int kq = 0;
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
+
             ps.setNString(1, updateUser.getName());
-            ps.setNString(2, updateUser.getUsername());
-            ps.setNString(3, updateUser.getPassword());
-            ps.setNString(4, updateUser.getEmail());
-            ps.setNString(5, updateUser.getType());
+            ps.setString(2, updateUser.getUsername());
+            ps.setString(3, updateUser.getPassword());
+            ps.setString(4, updateUser.getEmail());
+            ps.setBoolean(5, updateUser.isActive());
+            ps.setNString(6, updateUser.getType());
 
             kq = ps.executeUpdate();
-
-            return kq;
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         return kq;
     }
 
-    public int checkout(Integer ClientID, Date Date, String Address, String PhoneNumber, String Note, Integer Sum) {
+    public int checkout(Integer customerId, Date Date, String address, String phoneNumber, String note, Integer total) {
         if (ClientID == null || Date == null || Sum == null) {
             return 0;
         }
+
         /*
          * Attribute:
          * ID (int) (primary key Indentity (1,1))
@@ -639,7 +604,7 @@ public class UserDAO {
         String username = email.substring(0, email.indexOf('@'));
 
         int tempId = 0;
-        int offset = getMaxId();
+        int offset = DatabaseUtils.getLastIndentityOf(TABLE_NAME);
 
         if (isExistUsername(username)) {
             String tempUsername = username + offset;
