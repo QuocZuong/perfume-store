@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import javax.security.auth.login.AccountNotFoundException;
 
+import DB.DataManager;
 import Exceptions.AccountDeactivatedException;
 import java.io.UnsupportedEncodingException;
 import Exceptions.EmailDuplicationException;
@@ -35,11 +36,7 @@ public class UserDAO implements IUserDAO {
     }
 
     /* --------------------- CREATE SECTION --------------------- */
-    /**
-     * Get all {@link User}s in database.
-     *
-     * @return An {@code ArrayList} containing all {@code User} in database.
-     */
+    
     public ArrayList<User> getAll() {
         ArrayList<User> result = new ArrayList<>();
         ResultSet rs;
@@ -62,14 +59,7 @@ public class UserDAO implements IUserDAO {
     }
 
     /* --------------------- READ SECTION --------------------- */
-    /**
-     * Gets an {@link User} from the database.
-     *
-     * @param username A {@code String} that represents the username of the
-     * {@code User} to be retrieved.
-     * @return A {@code User} object containing the user's information, or
-     * {@code null} if an error occurs.
-     */
+    
     @Override
     public User getUser(String username) {
         if (username == null) {
@@ -96,13 +86,6 @@ public class UserDAO implements IUserDAO {
         return null;
     }
 
-    /**
-     * Gets a {@link User} from the database.
-     *
-     * @param ID The ID of the user to be retrieved.
-     * @return A {@code User} object containing the user's information.
-     * {@code null} if an error occurs or the user is not found.
-     */
     public User getUser(int ID) {
         String sql = String.format("SELECT * FROM [%s] WHERE %s", TABLE_NAME, USER_ID);
         ResultSet rs;
@@ -124,14 +107,6 @@ public class UserDAO implements IUserDAO {
         return null;
     }
 
-    /**
-     * Gets a {@link User} from the database.
-     *
-     * @param email A {@code String} that represents the email of the
-     * {@code User} to be retrieved.
-     * @return A {@code User} object containing the user's information.
-     * {@code null} if an error occurs or the user is not found.
-     */
     public User getUserByEmail(String email) {
         if (email == null) {
             return null;
@@ -158,13 +133,7 @@ public class UserDAO implements IUserDAO {
     }
 
     /* --------------------- UPDATE SECTION --------------------- */
-    /**
-     * Updates a {@link User}'s information in the database.
-     *
-     * @param updateUser The {@code User} to be updated.
-     * @return The number of rows affected by the query. {@code 0} if user
-     * cannot be updated, or {@code -1} if the {@code User} doesn't exist.
-     */
+    
     public int updateUser(User updateUser) {
         if (updateUser == null) {
             return -1;
