@@ -2,6 +2,7 @@ package DAOs;
 
 import Models.Order;
 import Models.OrderDetail;
+
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -12,16 +13,43 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class OrderDAO {
+import Interfaces.DAOs.IOrderDAO;
+
+public class OrderDAO implements IOrderDAO {
     private Connection conn;
 
     public OrderDAO() {
         conn = DB.DataManager.getConnection();
     }
+ 
+    @Override
+    public Order orderFactory(ResultSet rs) {
+        Order order = new Order();
 
-    // CRUD
+        try {
+            order.setId(rs.getInt(ORDER_Id));
+            order.setCustomerId(rs.getInt(CUSTOMER_Id));
+            order.setVoucherId(rs.getInt(VOUCHER_Id));
+            order.setReceiverName(rs.getString(ORDER_RECEIVER_NAME));
+            order.setDeliveryAddress(rs.getString(ORDER_DELIVERY_ADDRESS));
+            order.setPhoneNumber(rs.getString(ORDER_PHONE_NUMBER));
+            order.setNote(rs.getString(ORDER_NOTE));
+            order.setTotal(rs.getInt(ORDER_TOTAL));
+            order.setDeductedPrice(rs.getInt(ORDER_DEDUCTED_PRICE));
+            order.setStatus(rs.getString(ORDER_STATUS));
+            order.setCreatedAt(rs.getDate(ORDER_CREATED_AT));
+            order.setCheckoutAt(rs.getDate(ORDER_CHECKOUT_AT));
+            order.setUpdateAt(rs.getDate(ORDER_UPDATE_AT));
+            order.setUpdateByOrderManager(rs.getInt(ORDER_UPDATE_BY_ORDER_MANAGER));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return order;
+    }
+
     /* ------------------------- CREATE SECTION ---------------------------- */
-    public int addOrder(Order order) {
+    public boolean addOrder(Order order) {
         String sql = "INSERT INTO [Order] (ClientID, Date, Sum) VALUES (?, ?, ?)";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -36,25 +64,6 @@ public class OrderDAO {
     }
 
     /* --------------------------- READ SECTION --------------------------- */
-    public List<Order> getAll() {
-        List<Order> orders = new ArrayList<>();
-        String sql = "SELECT * FROM [Order]";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Order order = new Order();
-                order.setID(rs.getInt("ID"));
-                order.setClientID(rs.getInt("ClientID"));
-                order.setDate(rs.getDate("Date"));
-                order.setSum(rs.getInt("Sum"));
-                orders.add(order);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return orders;
-    }
 
     public List<Order> getOrderByClientId(int id) {
         List<Order> orders = new ArrayList<>();
@@ -175,6 +184,36 @@ public class OrderDAO {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return 0;
+    }
+
+    @Override
+    public Order getOrder(int Id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getOrder'");
+    }
+
+    @Override
+    public List<Order> getOrderByCustomerId(int customerId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getOrderByCustomerId'");
+    }
+
+    @Override
+    public List<OrderDetail> getOrderDetail(int orderId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getOrderDetail'");
+    }
+
+    @Override
+    public boolean updateOrder(Order order) throws NullPointerException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'updateOrder'");
+    }
+
+    @Override
+    public List<Order> getAll() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAll'");
     }
 
 }
