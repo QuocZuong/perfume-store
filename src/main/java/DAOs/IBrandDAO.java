@@ -22,6 +22,7 @@ public interface IBrandDAO {
     public Brand getBrand(int brandID);
 
     public Brand getBrand(String BrandName);
-    
-    public boolean isExistedBrandName(Brand brand);
+
+    public int updateBrand(Brand brand);
+
 }

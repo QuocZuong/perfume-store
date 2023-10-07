@@ -22,6 +22,12 @@ public class StockDAO implements IStockDAO {
         conn = DB.DataManager.getConnection();
     }
 
+    public enum Table {
+        Product_ID,
+        Price,
+        Quantiy
+    }
+
     @Override
     public int addStock(Stock stock) {
         int result = 0;
@@ -50,9 +56,9 @@ public class StockDAO implements IStockDAO {
             rs = ps.executeQuery();
             Stock stock = new Stock();
             if (rs.next()) {
-                stock.setProductID(rs.getInt("Product_ID"));
-                stock.setPrice(rs.getInt("Price"));
-                stock.setQuantity(rs.getInt("Quantity"));
+                stock.setProductID(rs.getInt(Table.Product_ID.toString()));
+                stock.setPrice(rs.getInt(Table.Price.toString()));
+                stock.setQuantity(rs.getInt(Table.Quantiy.toString()));
             }
             return stock;
         } catch (SQLException e) {

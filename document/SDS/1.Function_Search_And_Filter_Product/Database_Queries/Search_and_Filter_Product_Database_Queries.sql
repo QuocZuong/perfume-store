@@ -19,7 +19,7 @@ WHERE Brand.Brand_ID = '<brandId>'
 SELECT 
 p.Product_ID,
 p.Product_Name,
-p.Brand_ID,
+p.Brand_ID as Product_Brand_ID,
 stk.Price,
 p.Product_Gender,
 stk.Quantity,
@@ -32,5 +32,12 @@ p.Product_Active
 FROM Product p, Brand b, Stock stk
 WHERE p.Brand_ID = b.Brand_ID
 AND stk.Product_ID = p.Product_ID
+AND p.Brand_ID Like '<Brand_ID>'
+AND p.Product_Gender LIKE '<Product_Gender>'
+AND stk.Price BETWEEN '<low>' AND '<high>'
+AND (p.[Product_Name] LIKE '<search>' OR b.Brand_Name LIKE '<search>')
+ORDER BY p.Product_ID
+OFFSET '<row>' ROWS
+FETCH NEXT '<row>' ROWS ONLY
 
 

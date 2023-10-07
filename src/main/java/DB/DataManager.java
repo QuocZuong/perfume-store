@@ -1,8 +1,8 @@
 package DB;
 
 import Lib.PropsLoader;
-import java.sql.*;
-import java.util.HashMap;
+import java.sql.Connection;
+import java.sql.DriverManager;
 
 public class DataManager {
 

@@ -19,14 +19,18 @@ public class BrandDAO implements IBrandDAO {
 
     //Create
     @Override
-    public int addBrand(Brand brand){
+    public int addBrand(Brand brand) {
         int result = 0;
-
         try {
-            String sql = "INSERT INTO Brand([Brand_Name]) VALUES(?)";
+            String sql = "INSERT INTO Brand("
+                    + "[Brand_Name], "
+                    + "[Brand_Logo], "
+                    + "[Brand_Img]) "
+                    + "VALUES(?,?,?)";
             PreparedStatement ps = conn.prepareStatement(sql);
-
             ps.setNString(1, brand.getName());
+            ps.setNString(2, brand.getLogo());
+            ps.setNString(3, brand.getImgURL());
             result = ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -142,20 +146,25 @@ public class BrandDAO implements IBrandDAO {
     }
 
     @Override
-    public boolean isExistedBrandName(Brand brand) {
-
-        ResultSet rs = null;
+    public int updateBrand(Brand brand) {
+        int result = 0;
         try {
-            String sql = "SELECT * FROM Brand WHERE [Brand_Name] = ?";
+            String sql = "UPDATE Brand\n"
+                    + "SET Brand_Name  = ?,\n"
+                    + "Brand_Logo = ?,\n"
+                    + "Brand_Img = ?\n"
+                    + "WHERE Brand_ID  = ?;";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setNString(1, brand.getName());
-            rs = ps.executeQuery();
-            return rs.next();
+            ps.setNString(2, brand.getLogo());
+            ps.setNString(3, brand.getImgURL());
+            ps.setInt(4, brand.getId());
+            result = ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return false;
+        return result;
     }
 
 }
