@@ -1,12 +1,13 @@
 package Controllers;
 
-import DAOs.UserDAO;
-
 // For Exception
 import Exceptions.AccountDeactivatedException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.WrongPasswordException;
 import javax.security.auth.login.AccountNotFoundException;
+
+import DAOs.UserDAO;
+
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 // For Exception
