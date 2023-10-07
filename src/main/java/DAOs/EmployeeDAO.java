@@ -31,7 +31,6 @@ public class EmployeeDAO extends UserDAO implements Interfaces.DAOs.IEmployeeDAO
     }
 
     /*--------------------- DUPLICATE CHECKING SECTION ---------------------  */
-
     public boolean isExistCitizen(String citizenID) {
         ResultSet rs;
         String sql = "SELECT * FROM [User] WHERE Employee_Citizen_ID = ?";
@@ -41,8 +40,9 @@ public class EmployeeDAO extends UserDAO implements Interfaces.DAOs.IEmployeeDAO
             ps.setString(1, citizenID);
             rs = ps.executeQuery();
 
-            if (rs.next())
+            if (rs.next()) {
                 return true;
+            }
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -58,8 +58,9 @@ public class EmployeeDAO extends UserDAO implements Interfaces.DAOs.IEmployeeDAO
             ps.setString(1, phoneNumber);
             rs = ps.executeQuery();
 
-            if (rs.next())
+            if (rs.next()) {
                 return true;
+            }
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -89,14 +90,13 @@ public class EmployeeDAO extends UserDAO implements Interfaces.DAOs.IEmployeeDAO
     }
 
     /*--------------------- UTILITY METHODS ---------------------  */
-
     /**
      * Use to generate an employee with employee information base on ResultSet
      * input.
      *
      * @param rs get a ResultSet.
      * @return return the employee that contain user information and employee
-     *         information.
+     * information.
      * @throws SQLException return error when execute SQL occur.
      */
     private Employee generateEmployeeByResultSet(ResultSet rs) throws SQLException {
@@ -116,13 +116,13 @@ public class EmployeeDAO extends UserDAO implements Interfaces.DAOs.IEmployeeDAO
     }
 
     /**
-     * Use to generate an employee with user, employee information base on
-     * ResultSet input.
+     * The function generates a fully populated Employee object by extracting
+     * data from a ResultSet.
      *
-     * @param rs get a ResultSet
-     * @return return an employee that contain user information and employee
-     *         information
-     * @throws SQLException return error when execute SQL occur
+     * @param rs The parameter "rs" is a ResultSet object, which is used to
+     * retrieve data from a database query result. In this case, it is used to
+     * retrieve data for an Employee object.
+     * @return The method is returning an instance of the Employee class.
      */
     private Employee generateFullyEmployeeByResultSet(ResultSet rs) throws SQLException {
 
@@ -148,6 +148,7 @@ public class EmployeeDAO extends UserDAO implements Interfaces.DAOs.IEmployeeDAO
         return employee;
     }
 
+    /*--------------------- READ SECTION ---------------------  */
     @Override
     public List<User> getAll() {
         ResultSet rs;
@@ -227,6 +228,7 @@ public class EmployeeDAO extends UserDAO implements Interfaces.DAOs.IEmployeeDAO
         return null;
     }
 
+    /*--------------------- ADD SECTION ---------------------  */
     public int addEmployee(Employee employee) throws UsernameDuplicationException, EmailDuplicationException,
             PhoneNumberDuplicationException, CitizenIDDuplicationException {
         int result = -1;
@@ -252,6 +254,7 @@ public class EmployeeDAO extends UserDAO implements Interfaces.DAOs.IEmployeeDAO
         return result;
     }
 
+    /*--------------------- UPDATE SECTION ---------------------  */
     public int updateEmployee(Employee employee) throws UsernameDuplicationException, EmailDuplicationException,
             PhoneNumberDuplicationException, CitizenIDDuplicationException {
         int result = -1;

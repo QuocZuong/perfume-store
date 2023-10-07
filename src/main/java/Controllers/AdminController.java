@@ -336,8 +336,7 @@ public class AdminController extends HttpServlet {
                 boolean active = rs.getBoolean("Active");
 
                 // Create a new User object and add it to the list
-                User user = new User(id, name, userName, password, phoneNumber, email, address, role,active);
-
+                User user = new User(id, name, userName, password, phoneNumber, email, address, role, active);
 
                 listUser.add(user);
             }
@@ -898,7 +897,6 @@ public class AdminController extends HttpServlet {
         } else {
             System.out.println("Error occurred while uploading the image. Response Cod");
         }
-
 
         URLconn.disconnect();
         fileInputStream.close();
