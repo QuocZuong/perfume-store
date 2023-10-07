@@ -2,28 +2,36 @@ package DAOs;
 
 import Models.User;
 import Lib.PasswordGenerator;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.security.auth.login.AccountNotFoundException;
 
 import Exceptions.AccountDeactivatedException;
+import java.io.UnsupportedEncodingException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.WrongPasswordException;
 import Lib.EmailSender;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
+import Lib.Converter;
 
-public class UserDAO{
+public class UserDAO {
 
     private Connection conn;
+
+    private final String TABLE_NAME = "User";
+    private final String USER_ID = "User_ID";
+    private final String USER_NAME = "User_Name";
+    private final String USER_USERNAME = "User_Username";
+    private final String USER_PASSWORD = "User_Password";
+    private final String USER_EMAIL = "User_Email";
+    private final String USER_ACTIVE = "User_Active";
+    private final String USER_TYPE = "User_Type";
 
     /**
      * Constructs a new {@code UserDAO} object.
@@ -33,133 +41,91 @@ public class UserDAO{
     }
 
     /* --------------------- CREATE SECTION --------------------- */
-    /**
-     * Gets all the users in the database.
-     *
-     * @return A {@code ResultSet} containing all the users in the database.
-     * {@code null} if an error occurs.
-     */
-    public ArrayList getAll() {
-        ArrayList<User> userList = new ArrayList<>();
-        ResultSet rs = null;
 
-        String sql = "SELECT * FROM [User]";
+    /**
+     * Get all {@link User}s in database.
+     * 
+     * @return An {@code ArrayList} containing all {@code User} in database.
+     */
+    public ArrayList<User> getAll() {
+        ArrayList<User> result = new ArrayList<>();
+        ResultSet rs;
+
+        String sql = String.format("SELECT * FROM [%s]", TABLE_NAME);
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
-            
-            while(rs.next()){
-                User us = new User();
-                us.setId(rs.getInt("User_ID"));
-                us.setName(rs.getString("User_Name"));
-                us.setUsername(rs.getString("User_Username"));
-                us.setPassword(rs.getString("User_Password"));
-                us.setEmail(rs.getString("User_Email"));
-                us.setActive(rs.getBoolean("User_Active"));
-                us.setType(rs.getString("User_Type"));
-                userList.add(us);
+
+            while (rs.next()) {
+                User us = userFactory(rs);
+                result.add(us);
             }
-            return userList;
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return null;
-    }
-
-    /**
-     * Gets the MD5 hash of a string.
-     *
-     * @param str The string to be hashed.
-     * @return The MD5 hash of the string. {@code null} if an error occurs while
-     * hashing.
-     */
-    public String getMD5hash(String str) {
-
-        MessageDigest md = null;
-        String pwdMD5 = null;
-
-        try {
-            md = MessageDigest.getInstance("MD5");
-
-        } catch (NoSuchAlgorithmException ex) {
-            ex.printStackTrace();
-        }
-
-        md.update(str.getBytes());
-        byte[] digest = md.digest();
-        StringBuilder sb = new StringBuilder();
-        for (byte b : digest) {
-            sb.append(String.format("%02x", b & 0xff));
-        }
-        pwdMD5 = sb.toString();
-
-        return pwdMD5;
+        return result;
     }
 
     /* --------------------- READ SECTION --------------------- */
+
     /**
-     * Gets a user from the database.
+     * Gets an {@link User} from the database.
      *
-     * @param username The username of the user to be retrieved.
-     * @return A {@code User} object containing the user's information.
-     * {@code null} if an error occurs.
-     * @throws java.sql.SQLException
+     * @param username A {@code String} that represents the username of the
+     *                 {@code User} to be retrieved.
+     * @return A {@code User} object containing the user's information, or
+     *         {@code null} if an error occurs.
      */
-    public User getUser(String username) throws SQLException {
+    public User getUser(String username) {
         if (username == null) {
             return null;
         }
 
         ResultSet rs;
-        String sql = "SELECT * FROM [User] WHERE User_Name = ?";
+        String sql = String.format("SELECT * FROM [%s] WHERE %s = ?", TABLE_NAME, USER_USERNAME);
+
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, username);
+            ps.setNString(1, username);
+
             rs = ps.executeQuery();
             User us = new User();
+
             if (rs.next()) {
-                us.setId(rs.getInt("User_ID"));
-                us.setName(rs.getString("User_Name"));
-                us.setUsername(rs.getString("User_Username"));
-                us.setPassword(rs.getString("User_Password"));
-                us.setEmail(rs.getString("User_Email"));
-                us.setActive(rs.getBoolean("User_Active"));
-                us.setType(rs.getString("User_Type"));
+                us = userFactory(rs);
             }
+
             return us;
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         return null;
     }
 
     /**
-     * Gets a user from the database.
+     * Gets a {@link User} from the database.
      *
      * @param ID The ID of the user to be retrieved.
      * @return A {@code User} object containing the user's information.
-     * {@code null} if an error occurs or the user is not found.
+     *         {@code null} if an error occurs or the user is not found.
      */
     public User getUser(int ID) {
+        String sql = String.format("SELECT * FROM [%s] WHERE %s", TABLE_NAME, USER_ID);
         ResultSet rs;
 
-        String sql = "SELECT * FROM [User] WHERE User_ID = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, ID);
             rs = ps.executeQuery();
             User us = new User();
+
             if (rs.next()) {
-                us.setId(rs.getInt("User_ID"));
-                us.setName(rs.getString("User_Name"));
-                us.setUsername(rs.getString("User_Username"));
-                us.setPassword(rs.getString("User_Password"));
-                us.setEmail(rs.getString("User_Email"));
-                us.setActive(rs.getBoolean("User_Active"));
-                us.setType(rs.getString("User_Type"));
+                us = userFactory(rs);
             }
+
             return us;
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -172,7 +138,7 @@ public class UserDAO{
      *
      * @param email The email of the user to be retrieved.
      * @return A {@code User} object containing the user's information.
-     * {@code null} if an error occurs or the user is not found.
+     *         {@code null} if an error occurs or the user is not found.
      */
     public User getUserByEmail(String email) {
         if (email == null) {
@@ -203,11 +169,12 @@ public class UserDAO{
         }
         return null;
     }
-    
+
     /**
      * Gets max id in database.
+     * 
      * @return A {@code id} which is the largest id.
-     * {@code 0} if an error occurs or there is no user in database.
+     *         {@code 0} if an error occurs or there is no user in database.
      */
     public int getMaxId() {
         ResultSet rs = null;
@@ -296,7 +263,6 @@ public class UserDAO{
         }
 
         String sql = "UPDATE [User] SET User_Name=?, User_Username=?, User_Password=?, User_Email=?, User_Type=?";
-                
 
         int kq = 0;
 
@@ -376,7 +342,7 @@ public class UserDAO{
      *
      * @param us The user to be deleted.
      * @return The number of rows affected by the query. {@code 0} if user
-     * cannot be deleted, or {@code username} doesn't exist.
+     *         cannot be deleted, or {@code username} doesn't exist.
      */
     public int deleteUser(String username) {
         if (username == null) {
@@ -418,7 +384,7 @@ public class UserDAO{
 
     /*--------------------- VALIDATE SECTION ---------------------  */
 
- /*--------------------- AUTHORIZATION SECTION ---------------------  */
+    /*--------------------- AUTHORIZATION SECTION ---------------------  */
     /**
      * Checks if a given username is an admin.
      *
@@ -495,7 +461,7 @@ public class UserDAO{
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, username);
-            ps.setString(2, getMD5hash(password));
+            ps.setString(2, Converter.convertToMD5Hash(password));
             rs = ps.executeQuery();
             if (rs.next()) {
                 return true;
@@ -651,7 +617,7 @@ public class UserDAO{
             PreparedStatement ps = conn.prepareStatement(sql);
 
             ps.setString(1, email);
-            ps.setString(2, getMD5hash(password));
+            ps.setString(2, Converter.convertToMD5Hash(password));
 
             rs = ps.executeQuery();
 
@@ -697,7 +663,7 @@ public class UserDAO{
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, "");
             ps.setString(2, username);
-            ps.setString(3, getMD5hash(generatedPassword));
+            ps.setString(3, Converter.convertToMD5Hash(generatedPassword));
             ps.setString(4, "");
             ps.setString(5, email);
             ps.setString(6, "");
@@ -722,4 +688,26 @@ public class UserDAO{
         return false;
     }
 
+    /*--------------------- UTILITY METHODS ---------------------  */
+
+    /**
+     * Create a new {@link User} object from a {@link ResultSet}.
+     * 
+     * @param queryResult The {@code ResultSet} containing the user's information.
+     * @return An {@code User} object containing the user's information.
+     * @throws SQLException If an error occurs while retrieving the data.
+     */
+    public User userFactory(ResultSet queryResult) throws SQLException {
+        User user = new User();
+
+        user.setId(queryResult.getInt(USER_ID));
+        user.setName(queryResult.getString(USER_NAME));
+        user.setUsername(queryResult.getString(USER_USERNAME));
+        user.setPassword(queryResult.getString(USER_PASSWORD));
+        user.setEmail(queryResult.getString(USER_EMAIL));
+        user.setActive(queryResult.getBoolean(USER_ACTIVE));
+        user.setType(queryResult.getString(USER_TYPE));
+
+        return user;
+    }
 }
