@@ -1,7 +1,7 @@
 package Controllers;
 
 import Models.User;
-import DAOs.UserDAO;
+
 import java.util.List;
 
 import javax.security.auth.login.AccountNotFoundException;
@@ -10,6 +10,7 @@ import Models.Order;
 import Models.Product;
 import DAOs.OrderDAO;
 import DAOs.ProductDAO;
+import DAOs.UserDAO;
 import Exceptions.AccountDeactivatedException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.PhoneNumberDuplicationException;
