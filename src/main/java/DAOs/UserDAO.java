@@ -36,8 +36,8 @@ public class UserDAO implements IUserDAO {
     }
 
     /* --------------------- CREATE SECTION --------------------- */
-    
-    public ArrayList<User> getAll() {
+
+    public List<User> getAll() {
         ArrayList<User> result = new ArrayList<>();
         ResultSet rs;
 
@@ -59,7 +59,7 @@ public class UserDAO implements IUserDAO {
     }
 
     /* --------------------- READ SECTION --------------------- */
-    
+
     @Override
     public User getUser(String username) {
         if (username == null) {
@@ -133,7 +133,7 @@ public class UserDAO implements IUserDAO {
     }
 
     /* --------------------- UPDATE SECTION --------------------- */
-    
+
     public int updateUser(User updateUser) {
         if (updateUser == null) {
             return -1;
@@ -198,44 +198,45 @@ public class UserDAO implements IUserDAO {
 
     /*--------------------- DELETE SECTION ---------------------  */
 
- /*--------------------- VALIDATE SECTION ---------------------  */
+    /*--------------------- VALIDATE SECTION ---------------------  */
 
- /*--------------------- AUTHENTICATION SECTION ---------------------  */
-//    public boolean login(String username, String password)
-//            throws AccountDeactivatedException, AccountNotFoundException, WrongPasswordException, SQLException {
-//        if (username == null || password == null) {
-//            return false;
-//        }
-//        if (username.length() > 50) {
-//            return false;
-//        }
-//        if (getUser(username) == null) {
-//            throw new AccountNotFoundException();
-//        }
-//
-//        if (getUser(username).isActive() == false) {
-//            System.out.println("account deactivated");
-//            throw new AccountDeactivatedException();
-//        }
-//
-//        ResultSet rs = null;
-//        String sql = "SELECT * FROM [User] WHERE UserName = ? AND [Password] = ?";
-//
-//        try {
-//            PreparedStatement ps = conn.prepareStatement(sql);
-//            ps.setString(1, username);
-//            ps.setString(2, Converter.convertToMD5Hash(password));
-//            rs = ps.executeQuery();
-//            if (rs.next()) {
-//                return true;
-//            } else {
-//                throw new WrongPasswordException();
-//            }
-//        } catch (SQLException ex) {
-//            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return false;
-//    }
+    /*--------------------- AUTHENTICATION SECTION ---------------------  */
+    // public boolean login(String username, String password)
+    // throws AccountDeactivatedException, AccountNotFoundException,
+    // WrongPasswordException, SQLException {
+    // if (username == null || password == null) {
+    // return false;
+    // }
+    // if (username.length() > 50) {
+    // return false;
+    // }
+    // if (getUser(username) == null) {
+    // throw new AccountNotFoundException();
+    // }
+    //
+    // if (getUser(username).isActive() == false) {
+    // System.out.println("account deactivated");
+    // throw new AccountDeactivatedException();
+    // }
+    //
+    // ResultSet rs = null;
+    // String sql = "SELECT * FROM [User] WHERE UserName = ? AND [Password] = ?";
+    //
+    // try {
+    // PreparedStatement ps = conn.prepareStatement(sql);
+    // ps.setString(1, username);
+    // ps.setString(2, Converter.convertToMD5Hash(password));
+    // rs = ps.executeQuery();
+    // if (rs.next()) {
+    // return true;
+    // } else {
+    // throw new WrongPasswordException();
+    // }
+    // } catch (SQLException ex) {
+    // Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+    // }
+    // return false;
+    // }
     public boolean isExistUsername(String username) {
 
         ResultSet rs = null;
@@ -367,71 +368,73 @@ public class UserDAO implements IUserDAO {
         return false;
     }
 
-//    public boolean register(String email) throws EmailDuplicationException {
-//        // Existed email is not allowed
-//        if (getUserByEmail(email) != null) {
-//            System.out.println("Throwing email exception");
-//            throw new EmailDuplicationException();
-//        }
-//
-//        String username = email.substring(0, email.indexOf('@'));
-//
-//        int tempId = 0;
-//        int offset = DatabaseUtils.getLastIndentityOf(TABLE_NAME);
-//
-//        if (isExistUsername(username)) {
-//            String tempUsername = username + offset;
-//
-//            while (isExistUsername(tempUsername)) {
-//                tempId += offset;
-//                tempUsername = username + tempId + "";
-//            }
-//
-//            username = tempUsername;
-//        }
-//
-//        int result = 0;
-//
-//        String generatedPassword = PasswordGenerator.generateStrongPassword(12);
-//        System.out.println("New password:" + generatedPassword);
-//
-//        String sql = "Insert into [User] (Name, UserName, Password, PhoneNumber, Email, Address, Role) values (?, ?, ?, ?, ?, ?, ?)";
-//
-//        try {
-//            PreparedStatement ps = conn.prepareStatement(sql);
-//            ps.setString(1, "");
-//            ps.setString(2, username);
-//            ps.setString(3, Converter.convertToMD5Hash(generatedPassword));
-//            ps.setString(4, "");
-//            ps.setString(5, email);
-//            ps.setString(6, "");
-//            ps.setString(7, "Client");
-//
-//            result = ps.executeUpdate();
-//
-//            if (result > 0) {
-//                System.out.println("Affect " + result + " row");
-//                System.out.println("Begin Sending mail");
-//                EmailSender es = new EmailSender();
-//                es.setEmailTo(email);
-//                es.sendToEmail(es.GENERATE_PASSWORD_SUBJECT, es.generatePasswordEmailHTML(generatedPassword));
-//                System.out.println("After Sending mail");
-//                return true;
-//            }
-//
-//        } catch (SQLException | UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return false;
-//    }
+    // public boolean register(String email) throws EmailDuplicationException {
+    // // Existed email is not allowed
+    // if (getUserByEmail(email) != null) {
+    // System.out.println("Throwing email exception");
+    // throw new EmailDuplicationException();
+    // }
+    //
+    // String username = email.substring(0, email.indexOf('@'));
+    //
+    // int tempId = 0;
+    // int offset = DatabaseUtils.getLastIndentityOf(TABLE_NAME);
+    //
+    // if (isExistUsername(username)) {
+    // String tempUsername = username + offset;
+    //
+    // while (isExistUsername(tempUsername)) {
+    // tempId += offset;
+    // tempUsername = username + tempId + "";
+    // }
+    //
+    // username = tempUsername;
+    // }
+    //
+    // int result = 0;
+    //
+    // String generatedPassword = PasswordGenerator.generateStrongPassword(12);
+    // System.out.println("New password:" + generatedPassword);
+    //
+    // String sql = "Insert into [User] (Name, UserName, Password, PhoneNumber,
+    // Email, Address, Role) values (?, ?, ?, ?, ?, ?, ?)";
+    //
+    // try {
+    // PreparedStatement ps = conn.prepareStatement(sql);
+    // ps.setString(1, "");
+    // ps.setString(2, username);
+    // ps.setString(3, Converter.convertToMD5Hash(generatedPassword));
+    // ps.setString(4, "");
+    // ps.setString(5, email);
+    // ps.setString(6, "");
+    // ps.setString(7, "Client");
+    //
+    // result = ps.executeUpdate();
+    //
+    // if (result > 0) {
+    // System.out.println("Affect " + result + " row");
+    // System.out.println("Begin Sending mail");
+    // EmailSender es = new EmailSender();
+    // es.setEmailTo(email);
+    // es.sendToEmail(es.GENERATE_PASSWORD_SUBJECT,
+    // es.generatePasswordEmailHTML(generatedPassword));
+    // System.out.println("After Sending mail");
+    // return true;
+    // }
+    //
+    // } catch (SQLException | UnsupportedEncodingException e) {
+    // e.printStackTrace();
+    // }
+    //
+    // return false;
+    // }
 
     /*--------------------- UTILITY METHODS ---------------------  */
     /**
      * Create a new {@link User} object from a {@link ResultSet}.
      *
      * @param queryResult The {@code ResultSet} containing the user's
-     * information.
+     *                    information.
      * @return An {@code User} object containing the user's information.
      * @throws SQLException If an error occurs while retrieving the data.
      */
@@ -451,31 +454,37 @@ public class UserDAO implements IUserDAO {
 
     @Override
     public User getUser(String loginString, String password, loginType Type) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
     public int restoreUser(User user) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
     public int disableUser(User user) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
     public boolean checkDuplication(User user) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
     public List<User> searchUser(String search) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
     public List<User> pagingUser(List<User> users, int page) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
