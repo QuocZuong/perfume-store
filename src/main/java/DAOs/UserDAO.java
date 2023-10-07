@@ -195,8 +195,9 @@ public class UserDAO implements IUserDAO {
 
     @Override
     public int checkout(Integer customerId, Date Date, String address, String phoneNumber, String note, Integer total) {
-        if (ClientID == null || Date == null || Sum == null) {
-            return 0;
+        if (customerId == null || Date == null || address == null || phoneNumber == null || note == null
+                || total == null) {
+            return -1;
         }
 
         /*
