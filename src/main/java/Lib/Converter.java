@@ -4,6 +4,9 @@
  */
 package Lib;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 /**
  *
  * @author Acer
@@ -74,4 +77,33 @@ public class Converter {
         return moneyInt.toString();
     }
 
+    /**
+     * Gets the MD5 hash of a string.
+     *
+     * @param str The string to be hashed.
+     * @return The MD5 hash of the string. {@code null} if an error occurs while
+     *         hashing.
+     */
+    public static String convertToMD5Hash(String str) {
+
+        MessageDigest md = null;
+        String pwdMD5 = null;
+
+        try {
+            md = MessageDigest.getInstance("MD5");
+
+        } catch (NoSuchAlgorithmException ex) {
+            ex.printStackTrace();
+        }
+
+        md.update(str.getBytes());
+        byte[] digest = md.digest();
+        StringBuilder sb = new StringBuilder();
+        for (byte b : digest) {
+            sb.append(String.format("%02x", b & 0xff));
+        }
+        pwdMD5 = sb.toString();
+
+        return pwdMD5;
+    }
 }
