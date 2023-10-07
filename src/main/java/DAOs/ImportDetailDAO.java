@@ -53,7 +53,6 @@ public class ImportDetailDAO implements IImportDetailDAO{
         String value = " (?, ?, ?, ?)";
         int result = 0;
         try {
-            PreparedStatement ps = conn.prepareStatement(sql);
             if (arrIpd != null && !arrIpd.isEmpty()) {
                 //append (?, ?, ?, ?) to sql
                 for (int i = 1; i <= arrIpd.size(); i++) {
@@ -63,6 +62,7 @@ public class ImportDetailDAO implements IImportDetailDAO{
                         sql = sql + value;
                     }
                 }
+                 PreparedStatement ps = conn.prepareStatement(sql);
                 // set value for any ? in value (?, ?, ?, ?)
                 for (int i = 0; i < arrIpd.size(); i++) {
                     ps.setInt(4 * i + 1, arrIpd.get(i).getImportId());

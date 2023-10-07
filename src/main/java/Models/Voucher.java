@@ -2,7 +2,6 @@ package Models;
 
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Voucher {
   private int Id;
@@ -12,7 +11,9 @@ public class Voucher {
   private int discountMax;
   private Date createdAt;
   private Date expiredAt;
-  private String createdByAdmin;
+  private int createdByAdmin;
+  private ArrayList<Integer> approvedProductId;
+  
 
   public int getId() {
     return Id;
@@ -70,11 +71,21 @@ public class Voucher {
     this.expiredAt = expiredAt;
   }
 
-  public String getCreatedByAdmin() {
+  public int getCreatedByAdmin() {
     return createdByAdmin;
   }
 
-  public void setCreatedByAdmin(String createdByAdmin) {
+  public void setCreatedByAdmin(int createdByAdmin) {
     this.createdByAdmin = createdByAdmin;
   }
+
+    public ArrayList<Integer> getApprovedProductId() {
+        return approvedProductId;
+    }
+
+    public void setApprovedProductId(ArrayList<Integer> approvedProductId) {
+        this.approvedProductId = approvedProductId;
+    }
+  
+  
 }
