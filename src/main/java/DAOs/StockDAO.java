@@ -4,6 +4,7 @@
  */
 package DAOs;
 
+import Interfaces.DAOs.IStockDAO;
 import Models.Stock;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

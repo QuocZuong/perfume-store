@@ -1,5 +1,6 @@
 package DAOs;
 
+import Interfaces.DAOs.IProductDAO;
 import Models.Product;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

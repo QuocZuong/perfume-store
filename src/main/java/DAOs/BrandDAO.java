@@ -1,5 +1,6 @@
 package DAOs;
 
+import Interfaces.DAOs.IBrandDAO;
 import Models.Brand;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

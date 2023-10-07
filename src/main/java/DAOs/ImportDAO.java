@@ -4,6 +4,7 @@
  */
 package DAOs;
 
+import Interfaces.DAOs.IImportDAO;
 import Models.Import;
 import Models.ImportDetail;
 import java.sql.Connection;

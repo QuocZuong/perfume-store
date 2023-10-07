@@ -2,20 +2,19 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package DAOs;
+package Interfaces.DAOs;
 
-import Models.Import;
-import java.util.ArrayList;
+import Models.Stock;
 
 /**
  *
- * @author Admin
+ * @author Acer
  */
-public interface IImportDAO {
+public interface IStockDAO {
 
-    int addImport(Import ip);
+    public int addStock(Stock stock);
 
-    ArrayList<Import> getAllImport();
+    public Stock getStock(int productID);
 
-    Import getImport(int importId);
+    public int updateStock(Stock stock);
 }
