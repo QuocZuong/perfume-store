@@ -129,6 +129,7 @@ ERD
 	+ *Product_ID( int not null ) (duplicate)*
 	+ Quantity (int default 0)
 	+ Price (Int default 0)
+	+ Sum (Int default 0)
 
 ## Table Voucher:
 + *Attribute*:
@@ -146,23 +147,12 @@ ERD
 	+ *Voucher_ID (int not null) (duplicate)*
 	+ *Product_ID (int not null) (duplicate)*
 
-## Table Voucher_Customer
-+ *Attribute*:
-	+ *Voucher_ID (int not null) (duplicate)*
-	+ *Customer_ID (int not null) (duplicate)*
-	+ Deducted_Price (int not null)
-
-## Table Voucher_Order
-+ *Attribute*:
-	+ *Voucher_ID (int not null) (duplicate)*
-	+ *Order_ID (int not null) (duplicate)*
 
 ## Table OrderDetail
 ####  Weak Entity
 + *Attribute*:
 	+ *Order_ID (int not null) (duplicate)*
 	+ *Product_ID (int not null) (duplicate)*
-	+ *Voucher_ID (int) (duplicate)*
 	+ Quantity (int default 0)
 	+ Price (Int default 0)
 	+ Total (Int default 0)
@@ -171,11 +161,13 @@ ERD
 + *Attribute*:
 	+ **Order_ID (int not null Indentity (1,1))**
 	+ *Customer_ID ( int not null (duplicate) )*
-	+ *Order_Delivery_Address_ID (int not null (duplicate))*
+	+ *Voucher_ID (int not null)*
 	+ Order_Receiver_Name (nvarchar(200) not null)
+	+ Order_Delivery_Address_ID (nvarchar(300))
 	+ Order_Phone_Number (varchar(10))
 	+ Order_Note (nvarchar(500))
 	+ Order_Total (int default 0)
+	+ Order_Deducted_Price (int default 0)
 	+ Order_Status (varchar(20) not null)
 	+ Order_Created_At (Date) not null
 	+ Order_Checkout_At (Datetime)
@@ -191,8 +183,8 @@ ERD
 	+ Customer_Credit_Point (int not null) 
 
 ## Table DeliveryAddress
+#### Weak Entity
 + *Attribute*:
-	+ **Delivery_Address_ID (int not null Indentity(1,1))**
 	+ *Customer_ID (int not null) (duplicate)*
 	+ Receiver_Name (nvarchar(200) not null)
 	+ Phone_Number (varchar(10) not null)
@@ -200,7 +192,6 @@ ERD
 	+ Status (nvarchar(200) not null)
 	+ Create_At (Datetime not null)
 	+ Modified_At (Datetime)
-
 
 
 ## Table User
@@ -249,6 +240,8 @@ ERD
 	+ Import_At (Datetime not null)
 	+ Delivered_At (Datetime)
 	+ *Import_By_Inventory_Manager (int not null)*
+	+ Modified_At (Datetime)
+	+ *Modified_By_Admin (int)*
 
 
 ## Table Import_Detail
@@ -258,8 +251,7 @@ ERD
 	+ *Product_ID (int not null) (duplicate)*
 	+ Quantity (int not null)
 	+ Cost (int not null)
-	+ Modified_At (Datetime)
-	+ *Modified_By_Inventory_Manager (int)*
+
 
 
 ## Table Admin
