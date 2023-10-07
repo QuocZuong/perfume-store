@@ -4,28 +4,24 @@ import Models.User;
 import java.sql.Date;
 import java.util.List;
 
-/**
- *
- * @author Acer
- */
 public interface IUserDAO {
 
     /** The name of the table in the database. */
-    public final String TABLE_NAME = "User";
+    String TABLE_NAME = "User";
     /** The user's Id column name. */
-    public final String USER_Id = "User_Id";
+    String USER_Id = "User_Id";
     /** The user's name column name. */
-    public final String USER_NAME = "User_Name";
+    String USER_NAME = "User_Name";
     /** The user's username column name. */
-    public final String USER_USERNAME = "User_Username";
+    String USER_USERNAME = "User_Username";
     /** The user's password column name. */
-    public final String USER_PASSWORD = "User_Password";
+    String USER_PASSWORD = "User_Password";
     /** The user's PhoneNumber number column name. */
-    public final String USER_EMAIL = "User_Email";
+    String USER_EMAIL = "User_Email";
     /** The user's PhoneNumber number column name. */
-    public final String USER_ACTIVE = "User_Active";
+    String USER_ACTIVE = "User_Active";
     /** The user's PhoneNumber number column name. */
-    public final String USER_TYPE = "User_Type";
+    String USER_TYPE = "User_Type";
 
     /**
      * The login type that used in
