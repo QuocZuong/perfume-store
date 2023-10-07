@@ -24,18 +24,21 @@ public interface IProductDAO {
 
     public List<Product> getProductByOrderID(int id);
 
+    public List<Product> searchProduct(String search);
+
+    public List<Product> pagingProduct(List<Product> productList, int page);
+
     public List<Product> filterProduct(
+            List<Product> productList,
             Integer brandId,
             String gender,
-            String price,
-            int page,
-            String search);
+            String price);
 
-    public List<Product> filterActiveProduct(Integer brandId,
+    public List<Product> filterActiveProduct(
+            List<Product> productList,
+            Integer brandId,
             String gender,
-            String price,
-            int page,
-            String search);
+            String price);
 
     public List<Product> filterProductByBrand(Brand brand);
 

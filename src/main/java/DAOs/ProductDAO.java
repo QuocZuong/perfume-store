@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 public class ProductDAO implements IProductDAO {
 
     private final Connection conn;
+    private final int ROWS = 20;
 
     public ProductDAO() {
         conn = DB.DataManager.getConnection();
@@ -171,7 +172,7 @@ public class ProductDAO implements IProductDAO {
         ResultSet rs;
         String sql = "SELECT * FROM Product WHERE Product_ID  = ?";
 
-        Product pd = null;
+        Product product = null;
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -179,23 +180,22 @@ public class ProductDAO implements IProductDAO {
             ps.setInt(1, productId);
             rs = ps.executeQuery();
             if (rs.next()) {
-                pd = new Product();
-                pd.setId(rs.getInt("ID"));
-                pd.setName(rs.getNString("Name"));
-                pd.setBrandId(rs.getInt("BrandID"));
-                pd.setGender(rs.getNString("Gender"));
-                pd.setSmell(rs.getNString("Smell"));
-                pd.setReleaseYear(rs.getInt("ReleaseYear"));
-                pd.setVolume(rs.getInt("Volume"));
-                pd.setImgURL(rs.getNString("ImgURL"));
-                pd.setDescription(rs.getNString("Description"));
-                pd.setActive(rs.getBoolean("Active"));
+                product = new Product();
+                product.setId(rs.getInt(Table.Product_ID.toString()));
+                product.setName(rs.getNString(Table.Product_Name.toString()));
+                product.setBrandId(rs.getInt(Table.Brand_ID.toString()));
+                product.setGender(rs.getNString(Table.Product_Smell.toString()));
+                product.setReleaseYear(rs.getInt(Table.Product_Release_Year.toString()));
+                product.setVolume(rs.getInt(Table.Product_Volume.toString()));
+                product.setImgURL(rs.getNString(Table.Product_Img_URL.toString()));
+                product.setDescription(rs.getNString(Table.Product_Description.toString()));
+                product.setActive(rs.getBoolean(Table.Product_Active.toString()));
             }
         } catch (SQLException ex) {
             Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return pd;
+        return product;
     }
 
     @Override
@@ -238,66 +238,34 @@ public class ProductDAO implements IProductDAO {
 
         return pdList;
     }
-
-    /* --------------------------- RESTORE SECTION --------------------------- */
+    /* --------------------------- FILTER SECTION --------------------------- */
     @Override
-    public List<Product> filterProduct(
-            Integer brandId,
-            String gender,
-            String price,
-            int page,
-            String search) {
-        String sql = "SELECT \n"
-                + "p.Product_ID,\n"
-                + "p.Product_Name,\n"
-                + "p.Brand_ID as Product_Brand_ID,\n"
-                + "stk.Price,\n"
-                + "p.Product_Gender,\n"
-                + "stk.Quantity,\n"
-                + "p.Product_Release_Year,\n"
-                + "p.Product_Volume,\n"
-                + "p.Product_Smell,\n"
-                + "p.Product_Img_URL,\n"
-                + "p.Product_Description,\n"
-                + "p.Product_Active\n"
-                + "FROM Product p, Brand b, Stock stk\n"
-                + "WHERE p.Brand_ID = b.Brand_ID\n"
-                + "AND stk.Product_ID = p.Product_ID\n"
-                + "AND p.Brand_ID Like ?'\n" // 1
-                + "AND p.Product_Gender LIKE ?\n" //2
-                + "AND stk.Price BETWEEN ? AND ?\n" //3,4
-                + "AND (p.[Product_Name] LIKE ? OR b.Brand_Name LIKE ?)\n" //5,6
-                + "ORDER BY p.Product_ID\n"
-                + "OFFSET ? ROWS\n" //7
-                + "FETCH NEXT ? ROWS ONLY"; //8
-
-        final int ROWS = 20;
-        final int OFFSET = ROWS * (page - 1);
-        ResultSet rs = null;
+    public List<Product> searchProduct(String search) {
+        ResultSet rs;
         List<Product> productList = new ArrayList<>();
         try {
+            String sql = "SELECT \n"
+                    + "p.Product_ID,\n"
+                    + "p.Product_Name,\n"
+                    + "p.Brand_ID as Product_Brand_ID,\n"
+                    + "stk.Price,\n"
+                    + "p.Product_Gender,\n"
+                    + "stk.Quantity,\n"
+                    + "p.Product_Release_Year,\n"
+                    + "p.Product_Volume,\n"
+                    + "p.Product_Smell,\n"
+                    + "p.Product_Img_URL,\n"
+                    + "p.Product_Description,\n"
+                    + "p.Product_Active\n"
+                    + "FROM Product p, Brand b, Stock stk\n"
+                    + "WHERE p.Brand_ID = b.Brand_ID\n"
+                    + "AND stk.Product_ID = p.Product_ID\n"
+                    + "AND (p.[Product_Name] LIKE ? OR b.Brand_Name LIKE ?)\n"
+                    + "ORDER BY p.Product_ID";
             PreparedStatement ps = conn.prepareStatement(sql);
-            String brandIdStr = brandId == null ? "%" : brandId.toString();
-            gender = gender == null ? "%" : gender;
+            ps.setNString(1, search);
+            ps.setNString(2, search);
 
-            ps.setString(1, brandIdStr);
-            ps.setNString(2, gender);
-
-            // Format price range
-            String low = "0";
-            String high = "100000000";
-            if (price != null) {
-                String priceRange[] = price.split("-");
-                low = priceRange[0];
-                high = priceRange[1];
-            }
-
-            ps.setNString(3, low);
-            ps.setNString(4, high);
-            ps.setNString(5, "%" + search + "%");
-            ps.setNString(6, "%" + search + "%");
-            ps.setInt(7, OFFSET);
-            ps.setInt(8, ROWS);
             rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -318,24 +286,49 @@ public class ProductDAO implements IProductDAO {
                 stock.setQuantity(rs.getInt("Quantity"));
 
                 product.setStock(stock);
-
                 productList.add(product);
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         return productList;
     }
 
     @Override
-    public List<Product> filterActiveProduct(Integer brandId,
+    public List<Product> pagingProduct(List<Product> productList, int page) {
+        final int OFFSET = ROWS * (page - 1);
+        List<Product> productSubList = productList.subList(OFFSET, ROWS);
+        return productSubList;
+    }
+
+    @Override
+    public List<Product> filterProduct(
+            List<Product> productList,
+            Integer brandId,
             String gender,
-            String price,
-            int page,
-            String search) {
-        List<Product> filteredProduct = filterProduct(brandId, gender, price, page, search).stream()
+            String price) {
+        final String GENDER = gender;
+        // Format price range
+        final int LOW = (price == null) ? 0 : Integer.parseInt(price.split("-")[0]);
+        final int HIGH = (price == null) ? 100000000 : Integer.parseInt(price.split("-")[1]);
+
+        productList.stream()
+                .filter(product
+                        -> (brandId == null || product.getBrandId() == brandId)
+                && (GENDER == null || product.getGender().equals(GENDER))
+                && product.getStock().getPrice() >= LOW && product.getStock().getPrice() <= HIGH)
+                .collect(Collectors.toList());
+        return productList;
+    }
+
+    @Override
+    public List<Product> filterActiveProduct(
+            List<Product> productList,
+            Integer brandId,
+            String gender,
+            String price) {
+        List<Product> filteredProduct = filterProduct(productList, brandId, gender, price).stream()
                 .filter(product -> product.isActive())
                 .collect(Collectors.toList());
         return filteredProduct;
