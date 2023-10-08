@@ -24,7 +24,7 @@ public class ImportDAO implements IImportDAO {
     private Connection conn;
 
     public ImportDAO() {
-        conn = DB.DataManager.getConnection();
+        conn = DB.DBContext.getConnection();
     }
 
     // CRUD

@@ -28,7 +28,7 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
      * Constructs a new {@code CartDAO} object.
      */
     public EmployeeDAO() {
-        conn = DB.DataManager.getConnection();
+        conn = DB.DBContext.getConnection();
     }
 
     /*--------------------- DUPLICATE CHECKING SECTION ---------------------  */
@@ -71,11 +71,11 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
     public boolean checkDuplicate(Employee employee) throws UsernameDuplicationException, EmailDuplicationException,
             PhoneNumberDuplicationException, CitizenIDDuplicationException {
 
-        if (isExistUsername(employee.getUsername())) {
+        if (super.getUser(employee.getUsername()) != null) {
             throw new UsernameDuplicationException();
         }
 
-        if (isExistEmail(employee.getEmail())) {
+        if (super.getUserByEmail(employee.getEmail()) != null) {
             throw new EmailDuplicationException();
         }
 

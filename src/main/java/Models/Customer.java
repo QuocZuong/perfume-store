@@ -1,8 +1,20 @@
 package Models;
 
 public class Customer extends User {
+
     private int customerId;
     private int customerCreditPoint;
+
+    public Customer() {
+    }
+
+    /**
+     * Passing value from superclass to subclass
+     * @param user
+     */
+    public Customer(User user) {
+        super(user);
+    }
 
     public int getCustomerId() {
         return customerId;

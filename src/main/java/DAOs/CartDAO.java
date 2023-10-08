@@ -20,7 +20,7 @@ public class CartDAO {
      * Constructs a new {@code CartDAO} object.
      */
     public CartDAO() {
-        conn = DB.DataManager.getConnection();
+        conn = DB.DBContext.getConnection();
     }
 
     /**

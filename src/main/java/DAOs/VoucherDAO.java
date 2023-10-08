@@ -15,7 +15,7 @@ public class VoucherDAO implements IVoucherDAO {
     private static Connection conn = null;
 
     public VoucherDAO() {
-        conn = DB.DataManager.getConnection();
+        conn = DB.DBContext.getConnection();
     }
 
     // CRUD

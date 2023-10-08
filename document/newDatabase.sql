@@ -105,6 +105,13 @@ CREATE TABLE [Product](
     PRIMARY KEY ([Product_ID]),
     FOREIGN KEY ([Brand_ID]) REFERENCES [Brand]([Brand_ID])
 );
+CREATE TABLE [Stock](
+	Product_ID INT NOT NULL,
+	Price INT DEFAULT 0,
+	Quantity INT DEFAULT 0,
+	FOREIGN KEY (Product_ID) REFERENCES Product([Product_ID])
+);
+
 
 -- Create Table Voucher
 CREATE TABLE [Voucher](

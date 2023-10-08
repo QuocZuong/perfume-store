@@ -6,7 +6,7 @@ package Lib;
 
 import DAOs.BrandDAO;
 import DAOs.ProductDAO;
-import DB.DataManager;
+import DB.DBContext;
 import Models.Product;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,7 +29,7 @@ public class DataBackup {
 
     public void backupBrandData() {
 
-        Connection conn = DataManager.getConnection();
+        Connection conn = DBContext.getConnection();
 
         ResultSet rs = null;
         String sql = "SELECT * FROM Brand";

@@ -15,7 +15,7 @@ public class BrandDAO implements IBrandDAO {
     private static Connection conn = null;
 
     public BrandDAO() {
-        conn = DB.DataManager.getConnection();
+        conn = DB.DBContext.getConnection();
     }
 
     //Create

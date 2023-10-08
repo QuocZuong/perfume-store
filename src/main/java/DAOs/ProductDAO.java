@@ -25,7 +25,7 @@ public class ProductDAO implements IProductDAO {
     private final int ROWS = 20;
 
     public ProductDAO() {
-        conn = DB.DataManager.getConnection();
+        conn = DB.DBContext.getConnection();
     }
 
     public enum Table {
