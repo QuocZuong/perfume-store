@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import Models.Order;
+import Models.OrderDetail;
 import Models.Voucher;
 import Models.Customer;
 
@@ -60,8 +61,8 @@ public interface IOrderDAO {
    * @throws NullPointerException if {@code ps} or {@code order} is {@code null}.
    * @throws SQLException         if a database access error occurs.
    */
-  public PreparedStatement fillPreparedStatement(PreparedStatement ps, Order order)
-      throws NullPointerException, SQLException;
+  public PreparedStatement fillPreparedStatement(PreparedStatement ps, Order order, operation op)
+            throws NullPointerException, SQLException;
 
   /**
    * Add a new {@link Order} to the database.
@@ -97,15 +98,7 @@ public interface IOrderDAO {
    */
   public List<Order> getOrderByCustomerId(int customerId);
 
-  /**
-   * Update an {@link Order} in the database.
-   * 
-   * @param order The {@code Order} to be updated.
-   * @return {@code true} if the {@code Order} is updated successfully,
-   *         {@code false} otherwise.
-   * @throws NullPointerException if {@code order} is {@code null}.
-   */
-  public boolean updateOrder(Order order) throws NullPointerException;
+  public boolean updateOrder(Order order, List<OrderDetail> odList) throws NullPointerException;
 
   /**
    * Delete an {@link Order} from the database.
