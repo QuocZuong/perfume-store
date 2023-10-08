@@ -99,15 +99,6 @@ public interface IOrderDAO {
   public List<Order> getOrderByCustomerId(int customerId);
 
   /**
-   * Get the {@link List} of {@link OrderDetail} of an {@link Order}.
-   * 
-   * @param orderId The Id of the {@code Order} to be retrieved.
-   * @return A {@code List} of {@code OrderDetail} objects that are belonged to
-   *         the {@code OrderId}.
-   */
-  public List<OrderDetail> getOrderDetail(int orderId);
-
-  /**
    * Update an {@link Order} in the database.
    * 
    * @param order The {@code Order} to be updated.
