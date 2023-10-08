@@ -49,7 +49,8 @@ public class OrderDAO implements IOrderDAO {
     }
 
     @Override
-    public PreparedStatement fillPreparedStatement(PreparedStatement ps, Order order) throws NullPointerException, SQLException {
+    public PreparedStatement fillPreparedStatement(PreparedStatement ps, Order order)
+            throws NullPointerException, SQLException {
         if (ps == null || order == null) {
             throw new NullPointerException("PreparedStatement or Order is null");
         }
@@ -73,9 +74,15 @@ public class OrderDAO implements IOrderDAO {
     }
 
     /* ------------------------- CREATE SECTION ---------------------------- */
-    public boolean addOrder(Order order) throws NullPointerException {
+    public boolean addOrder(Order order, List<OrderDetail> odList) throws NullPointerException {
         if (order == null) {
             throw new NullPointerException("Order is null");
+        }
+        if (odList == null) {
+            throw new NullPointerException("OrderDetail list is null");
+        }
+        if (odList.isEmpty()) {
+            throw new NullPointerException("OrderDetail list is empty");
         }
 
         boolean result = false;
@@ -86,6 +93,17 @@ public class OrderDAO implements IOrderDAO {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps = fillPreparedStatement(ps, order);
             result = ps.executeUpdate() > 0;
+
+            if (!result) {
+                return false;
+            }
+
+            OrderDetailDao odDAO = new OrderDetailDao();
+            result = odDAO.addOrderDetail(odList);
+
+            if (!result) {
+                // TODO: Delete order if add order detail failed.
+            }
         } catch (SQLException ex) {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -99,7 +117,7 @@ public class OrderDAO implements IOrderDAO {
 
         List<Order> orders = new ArrayList<>();
         String sql = "SELECT * FROM [Order] where ClientID = ?";
-        
+
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
@@ -115,7 +133,7 @@ public class OrderDAO implements IOrderDAO {
         } catch (SQLException ex) {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return orders;
     }
 
@@ -230,11 +248,6 @@ public class OrderDAO implements IOrderDAO {
     }
 
     @Override
-    public List<OrderDetail> getOrderDetail(int orderId) {
-        throw new UnsupportedOperationException("Unimplemented method 'getOrderDetail'");
-    }
-
-    @Override
     public boolean updateOrder(Order order) throws NullPointerException {
         throw new UnsupportedOperationException("Unimplemented method 'updateOrder'");
     }
@@ -243,5 +256,4 @@ public class OrderDAO implements IOrderDAO {
     public List<Order> getAll() {
         throw new UnsupportedOperationException("Unimplemented method 'getAll'");
     }
-
 }
