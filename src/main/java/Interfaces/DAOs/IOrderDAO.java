@@ -114,5 +114,5 @@ public interface IOrderDAO {
    * @return {@code true} if the {@code Order} is deleted
    *         successfully,{@code false} otherwise.
    */
-  public boolean deleteOrder(int Id);
+  public int deleteOrder(int Id);
 }

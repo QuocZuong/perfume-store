@@ -226,15 +226,16 @@ public class OrderDAO implements IOrderDAO {
 
     /* --------------------------- DELETE SECTION --------------------------- */
     public int deleteOrder(int orderID) {
-        String sql = "DELETE FROM [Order] WHERE ID = ?";
+        int result = -1;
+        String sql = "DELETE FROM [Order] WHERE Order_ID = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, orderID);
-            return ps.executeUpdate();
+            result = ps.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return 0;
+        return result;
     }
 
     @Override
