@@ -12,6 +12,8 @@ public interface IImportDetailDAO {
     int updateImportDetail(ImportDetail importDetail);
 
     int deleteImportDetail(ImportDetail importDetail);
+    
+    int deleteImportDetailOfImport(int importId);
 
     ImportDetail getImportDetail(int importId, int productId);
 

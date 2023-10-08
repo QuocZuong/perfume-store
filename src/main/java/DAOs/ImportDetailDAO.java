@@ -5,14 +5,12 @@
 package DAOs;
 
 import Interfaces.DAOs.IImportDetailDAO;
-import Models.Import;
 import Models.ImportDetail;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,7 +18,7 @@ import java.util.logging.Logger;
  *
  * @author Admin
  */
-public class ImportDetailDAO implements IImportDetailDAO{
+public class ImportDetailDAO implements IImportDetailDAO {
 
     private Connection conn;
 
@@ -32,16 +30,17 @@ public class ImportDetailDAO implements IImportDetailDAO{
     /* ------------------------- CREATE SECTION ---------------------------- */
     @Override
     public int addImportDetail(ImportDetail ipD) {
-        String sql = "INSERT INTO [Import_Detail] (Import_ID, Product_ID, Quantity, Cost) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO [Import_Detail] (Import_ID, Product_ID, Quantity, Cost, Status) VALUES (?, ?, ?, ?, ?)";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, ipD.getImportId());
             ps.setInt(2, ipD.getProductId());
             ps.setInt(3, ipD.getQuantity());
             ps.setInt(4, ipD.getCost());
+            ps.setNString(5, ipD.getStatus());
             return ps.executeUpdate();
         } catch (SQLException ex) {
-            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ImportDetailDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return 0;
     }
@@ -49,31 +48,33 @@ public class ImportDetailDAO implements IImportDetailDAO{
     //This function add all import detail of an inport
     @Override
     public int addAllImportDetailOfImport(ArrayList<ImportDetail> arrIpd) {
-        String sql = "INSERT INTO [Import_Detail] (Import_ID, Product_ID, Quantity, Cost) VALUES";
-        String value = " (?, ?, ?, ?)";
+        String sql = "INSERT INTO [Import_Detail] (Import_ID, Product_ID, Quantity, Cost, Status) VALUES (?, ?, ?, ?, ?)";
         int result = 0;
         try {
             if (arrIpd != null && !arrIpd.isEmpty()) {
-                //append (?, ?, ?, ?) to sql
-                for (int i = 1; i <= arrIpd.size(); i++) {
-                    if (i != arrIpd.size()) {
-                        sql = sql + value + ", ";
-                    } else {
-                        sql = sql + value;
-                    }
-                }
-                 PreparedStatement ps = conn.prepareStatement(sql);
+                PreparedStatement ps = conn.prepareStatement(sql);
                 // set value for any ? in value (?, ?, ?, ?)
                 for (int i = 0; i < arrIpd.size(); i++) {
-                    ps.setInt(4 * i + 1, arrIpd.get(i).getImportId());
-                    ps.setInt(4 * i + 2, arrIpd.get(i).getProductId());
-                    ps.setInt(4 * i + 3, arrIpd.get(i).getQuantity());
-                    ps.setInt(4 * i + 4, arrIpd.get(i).getCost());
+                    if (arrIpd.get(i) == null) {
+                        return 0;
+                    }
+                    ps.setInt(1, arrIpd.get(i).getImportId());
+                    ps.setInt(2, arrIpd.get(i).getProductId());
+                    ps.setInt(3, arrIpd.get(i).getQuantity());
+                    ps.setInt(4, arrIpd.get(i).getCost());
+                    ps.setNString(5, arrIpd.get(i).getStatus());
+                    ps.addBatch();
                 }
-                result = ps.executeUpdate();
+                int[] batchResult = ps.executeBatch();
+                for (int i = 0; i < batchResult.length; i++) {
+                    if (batchResult[i] == PreparedStatement.EXECUTE_FAILED) {
+                        return 0;
+                    }
+                    result += batchResult[i];
+                }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ImportDetailDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
     }
@@ -84,16 +85,18 @@ public class ImportDetailDAO implements IImportDetailDAO{
         String sql = "UPDATE Import_Detail SET\n"
                 + "Quantity = ?,\n"
                 + "Cost = ?\n"
+                + "Status = ?\n"
                 + "WHERE Import_ID = ? AND Product_ID = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(3, ipD.getImportId());
-            ps.setInt(4, ipD.getProductId());
+            ps.setInt(4, ipD.getImportId());
+            ps.setInt(5, ipD.getProductId());
             ps.setInt(1, ipD.getQuantity());
             ps.setInt(2, ipD.getCost());
+            ps.setNString(3, ipD.getStatus());
             return ps.executeUpdate();
         } catch (SQLException ex) {
-            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ImportDetailDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return 0;
     }
@@ -105,13 +108,25 @@ public class ImportDetailDAO implements IImportDetailDAO{
                 + "WHERE Import_ID = ? AND Product_ID = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(3, ipD.getImportId());
-            ps.setInt(4, ipD.getProductId());
-            ps.setInt(1, ipD.getQuantity());
-            ps.setInt(2, ipD.getCost());
+            ps.setInt(1, ipD.getImportId());
+            ps.setInt(2, ipD.getProductId());
             return ps.executeUpdate();
         } catch (SQLException ex) {
-            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ImportDetailDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
+    @Override
+    public int deleteImportDetailOfImport(int importId) {
+        String sql = "DELETE FROM Import_Detail\n"
+                + "WHERE Import_ID = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, importId);
+            return ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ImportDetailDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return 0;
     }
@@ -134,9 +149,10 @@ public class ImportDetailDAO implements IImportDetailDAO{
                 ipD.setProductId(pdId);
                 ipD.setQuantity(rs.getInt("Quantity"));
                 ipD.setCost(rs.getInt("Cost"));
+                ipD.setStatus(rs.getNString("Status"));
             }
         } catch (SQLException ex) {
-            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ImportDetailDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return ipD;
     }
@@ -158,10 +174,11 @@ public class ImportDetailDAO implements IImportDetailDAO{
                 ipD.setProductId(rs.getInt("Product_ID"));
                 ipD.setQuantity(rs.getInt("Quantity"));
                 ipD.setCost(rs.getInt("Cost"));
+                ipD.setStatus(rs.getNString("Status"));
                 arrImportDetail.add(ipD);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ImportDetailDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return arrImportDetail;
     }

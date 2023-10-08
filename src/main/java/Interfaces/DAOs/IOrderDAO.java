@@ -46,6 +46,7 @@ public interface IOrderDAO {
   String ORDER_UPDATE_AT = "Order_Update_At";
   /** The column name of the order's checkout by order manager. */
   String ORDER_UPDATE_BY_ORDER_MANAGER = "Order_Update_By_Order_Manager";
+  
 
   /**
    * Create an {@link Order} object from a {@link ResultSet}.

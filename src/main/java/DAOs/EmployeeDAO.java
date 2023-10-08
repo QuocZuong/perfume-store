@@ -18,8 +18,9 @@ import Exceptions.CitizenIDDuplicationException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.PhoneNumberDuplicationException;
 import Exceptions.UsernameDuplicationException;
+import Interfaces.DAOs.IEmployeeDAO;
 
-public class EmployeeDAO extends UserDAO implements Interfaces.DAOs.IEmployeeDAO {
+public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
 
     private Connection conn;
 

@@ -23,17 +23,6 @@ public class Import {
 
     private ArrayList<ImportDetail> importDetail;
 
-    public Import(int Id, int totalQuantity, int totalCost, String supplierName, Date importAt, Date deliveredAt, int importByInventoryManager, ArrayList<ImportDetail> importDetail) {
-        this.Id = Id;
-        this.totalQuantity = totalQuantity;
-        this.totalCost = totalCost;
-        this.supplierName = supplierName;
-        this.importAt = importAt;
-        this.deliveredAt = deliveredAt;
-        this.importByInventoryManager = importByInventoryManager;
-        this.importDetail = importDetail;
-    }
-
     public Import() {
     }
 

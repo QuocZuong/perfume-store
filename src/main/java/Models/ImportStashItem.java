@@ -4,30 +4,27 @@
  */
 package Models;
 
-import java.util.ArrayList;
-
 /**
  *
  * @author Admin
  */
-public class ImportDetail {
+public class ImportStashItem {
 
-    private int importId;
+    private int inventoryManagerId;
     private int productId;
     private int quantity;
     private int cost;
-    private String Status = "Wait";
+    private int sumCost;
 
-    public ImportDetail() {
-
+    public ImportStashItem() {
     }
 
-    public int getImportId() {
-        return importId;
+    public int getInventoryManagerId() {
+        return inventoryManagerId;
     }
 
-    public void setImportId(int importId) {
-        this.importId = importId;
+    public void setInventoryManagerId(int inventoryManagerId) {
+        this.inventoryManagerId = inventoryManagerId;
     }
 
     public int getProductId() {
@@ -54,12 +51,12 @@ public class ImportDetail {
         this.cost = cost;
     }
 
-    public String getStatus() {
-        return Status;
+    public int getSumCost() {
+        return sumCost;
     }
 
-    public void setStatus(String Status) {
-        this.Status = Status;
+    public void setSumCost(int sumCost) {
+        this.sumCost = sumCost;
     }
 
 }
