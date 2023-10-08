@@ -21,10 +21,6 @@ import Lib.DatabaseUtils;
 public class OrderDAO implements IOrderDAO {
     private Connection conn;
 
-    enum operation {
-        CREATE, READ, UPDATE, DELETE
-    }
-
     public OrderDAO() {
         conn = DB.DataManager.getConnection();
     }
@@ -115,7 +111,7 @@ public class OrderDAO implements IOrderDAO {
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps = fillPreparedStatement(ps, order);
+            ps = fillPreparedStatement(ps, order, operation.CREATE);
             result = ps.executeUpdate() > 0;
 
             if (!result) {
@@ -300,6 +296,12 @@ public class OrderDAO implements IOrderDAO {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
+    }
+
+    @Override
+    public boolean addOrder(Order order) throws NullPointerException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'addOrder'");
     }
 
 }
