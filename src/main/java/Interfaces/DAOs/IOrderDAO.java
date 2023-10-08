@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import Models.Order;
 import Models.Voucher;
 import Models.Customer;
-import Models.OrderDetail;
 
 public interface IOrderDAO {
 
