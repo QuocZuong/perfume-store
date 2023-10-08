@@ -20,7 +20,7 @@ public class StockDAO implements IStockDAO {
     private static Connection conn = null;
 
     public StockDAO() {
-        conn = DB.DataManager.getConnection();
+        conn = DB.DBContext.getConnection();
     }
 
     public enum Table {

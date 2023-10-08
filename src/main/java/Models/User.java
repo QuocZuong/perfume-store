@@ -1,8 +1,8 @@
 package Models;
 
-public class User {
+public class User implements Cloneable {
 
-    private int Id;
+    private int id;
     private String name;
     private String username;
     private String password;
@@ -10,12 +10,30 @@ public class User {
     private boolean active;
     private String type;
 
-    public int getId() {
-        return Id;
+    public User() {
     }
 
-    public void setId(int Id) {
-        this.Id = Id;
+    /**
+     * For passing value to other subclass
+     *
+     * @param user
+     */
+    public User(User user) {
+        id = user.getId();
+        name = user.getName();
+        username = user.getUsername();
+        password = user.getPassword();
+        email = user.getEmail();
+        active = user.isActive();
+        type = user.getType();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -65,4 +83,5 @@ public class User {
     public void setType(String type) {
         this.type = type;
     }
+
 }

@@ -4,12 +4,14 @@ import Models.Customer;
 
 public interface ICustomerDAO {
 
+    public final String CUSTOMER_CREDIT_POINT = "Customer_Credit_Point";
+
     public int addCustomer(Customer customer);
 
     public Customer getCustomer(int customerId);
 
-    public int restoreCustomer(Customer customer);
+    public boolean restoreCustomer(Customer customer);
 
-    public int disableCustomer(Customer customer);
+    public boolean disableCustomer(Customer customer);
 
 }

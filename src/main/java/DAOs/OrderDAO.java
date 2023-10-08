@@ -19,7 +19,7 @@ public class OrderDAO implements IOrderDAO {
     private Connection conn;
 
     public OrderDAO() {
-        conn = DB.DataManager.getConnection();
+        conn = DB.DBContext.getConnection();
     }
 
     @Override

@@ -25,7 +25,7 @@ public class ImportDetailDAO implements IImportDetailDAO{
     private Connection conn;
 
     public ImportDetailDAO() {
-        conn = DB.DataManager.getConnection();
+        conn = DB.DBContext.getConnection();
     }
 
     // CRUD

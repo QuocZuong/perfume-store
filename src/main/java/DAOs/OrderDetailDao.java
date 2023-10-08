@@ -17,7 +17,7 @@ public class OrderDetailDao implements IOrderDetailDAO {
   Connection conn;
 
   public OrderDetailDao() {
-    conn = DB.DataManager.getConnection();
+    conn = DB.DBContext.getConnection();
   }
 
   @Override

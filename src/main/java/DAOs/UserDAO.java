@@ -13,10 +13,11 @@ import java.util.logging.Logger;
 
 import javax.security.auth.login.AccountNotFoundException;
 
-import DB.DataManager;
+import DB.DBContext;
 import Exceptions.AccountDeactivatedException;
 import java.io.UnsupportedEncodingException;
 import Exceptions.EmailDuplicationException;
+import Exceptions.UsernameDuplicationException;
 import Exceptions.WrongPasswordException;
 import Interfaces.DAOs.IUserDAO;
 import Lib.EmailSender;
@@ -32,11 +33,11 @@ public class UserDAO implements IUserDAO {
      * Constructs a new {@code UserDAO} object.
      */
     public UserDAO() {
-        conn = DB.DataManager.getConnection();
+        conn = DB.DBContext.getConnection();
     }
 
     /* --------------------- CREATE SECTION --------------------- */
-
+    @Override
     public List<User> getAll() {
         ArrayList<User> result = new ArrayList<>();
         ResultSet rs;
@@ -59,7 +60,6 @@ public class UserDAO implements IUserDAO {
     }
 
     /* --------------------- READ SECTION --------------------- */
-
     @Override
     public User getUser(String username) {
         if (username == null) {
@@ -86,6 +86,7 @@ public class UserDAO implements IUserDAO {
         return null;
     }
 
+    @Override
     public User getUser(int ID) {
         String sql = String.format("SELECT * FROM [%s] WHERE %s", TABLE_NAME, USER_ID);
         ResultSet rs;
@@ -107,6 +108,7 @@ public class UserDAO implements IUserDAO {
         return null;
     }
 
+    @Override
     public User getUserByEmail(String email) {
         if (email == null) {
             return null;
@@ -132,11 +134,69 @@ public class UserDAO implements IUserDAO {
         return null;
     }
 
-    /* --------------------- UPDATE SECTION --------------------- */
+    @Override
+    public User getUser(String loginString, String password, loginType Type) {
+        User user = null;
+        ResultSet rs;
+        String sql = "";
+        if (Type == loginType.Email) {
+            sql = "SELECT * FROM [User]\n"
+                    + "WHERE User_Email = '<email>'\n"
+                    + "AND User_Password = '<password>'";
+        } else if (Type == loginType.Username) {
+            sql = "SELECT * FROM [User]\n"
+                    + "WHERE User_Username = '<username>'\n"
+                    + "AND User_Password = '<password>'";
+        }
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            user = userFactory(rs);
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-    public int updateUser(User updateUser) {
+        return user;
+    }
+
+    @Override
+    public List<User> searchUser(String search) {
+        ResultSet rs = null;
+        List<User> userList = new ArrayList<>();
+        String sql = "SELECT * FROM [User]\n"
+                + "WHERE [User_Name] LIKE ?\n"
+                + "OR User_Username LIKE ?\n"
+                + "OR [User_Email] LIKE ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            search = "%" + search + "%";
+            ps.setNString(1, search);
+            ps.setNString(2, search);
+            ps.setNString(3, search);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                User user = userFactory(rs);
+                userList.add(user);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return userList;
+    }
+
+    @Override
+    public List<User> pagingUser(List<User> users, int page) {
+        final int OFFSET = ROWS * (page - 1);
+        List<User> subUserList = users.subList(OFFSET, ROWS);
+        return subUserList;
+    }
+
+    /* --------------------- UPDATE SECTION --------------------- */
+    @Override
+    public boolean updateUser(User updateUser) {
         if (updateUser == null) {
-            return -1;
+            return false;
         }
 
         String sql = String.format("UPDATE [%s] SET %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ? WHERE %s = ?",
@@ -159,14 +219,14 @@ public class UserDAO implements IUserDAO {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return kq;
+        return kq > 0;
     }
 
     @Override
-    public int checkout(Integer customerId, Date Date, String address, String phoneNumber, String note, Integer total) {
+    public boolean checkout(Integer customerId, Date Date, String address, String phoneNumber, String note, Integer total) {
         if (customerId == null || Date == null || address == null || phoneNumber == null || note == null
                 || total == null) {
-            return -1;
+            return false;
         }
 
         /*
@@ -179,28 +239,40 @@ public class UserDAO implements IUserDAO {
          * Note (nvarchar(500))
          * Sum (int default 0)
          */
-        String sql = "INSERT INTO [Order](ClientID, [Date], [Address], [PhoneNumber], [Note], [Sum]) VALUES (?, ?, ?, ?, ?, ?)";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, ClientID);
-            ps.setDate(2, Date);
-            ps.setNString(3, Address);
-            ps.setNString(4, PhoneNumber);
-            ps.setNString(5, Note);
-            ps.setInt(6, Sum);
-
-            return ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
+//        String sql = "INSERT INTO [Order](ClientID, [Date], [Address], [PhoneNumber], [Note], [Sum]) VALUES (?, ?, ?, ?, ?, ?)";
+//        try {
+//            PreparedStatement ps = conn.prepareStatement(sql);
+//            ps.setInt(1, ClientID);
+//            ps.setDate(2, Date);
+//            ps.setNString(3, Address);
+//            ps.setNString(4, PhoneNumber);
+//            ps.setNString(5, Note);
+//            ps.setInt(6, Sum);
+//
+//            return ps.executeUpdate();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return 0;
+        return true;
     }
 
     /*--------------------- DELETE SECTION ---------------------  */
+    @Override
+    public boolean restoreUser(User user) {
+        user.setActive(true);
+        return updateUser(user);
+    }
+
+    @Override
+    public boolean disableUser(User user) {
+        user.setActive(false);
+        return updateUser(user);
+    }
 
     /*--------------------- VALIDATE SECTION ---------------------  */
 
-    /*--------------------- AUTHENTICATION SECTION ---------------------  */
+ /*--------------------- AUTHENTICATION SECTION ---------------------  */
     // public boolean login(String username, String password)
     // throws AccountDeactivatedException, AccountNotFoundException,
     // WrongPasswordException, SQLException {
@@ -237,137 +309,7 @@ public class UserDAO implements IUserDAO {
     // }
     // return false;
     // }
-    public boolean isExistUsername(String username) {
-
-        ResultSet rs = null;
-        String sql = "SELECT * FROM [User] WHERE UserName = ?";
-
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-
-            ps.setString(1, username);
-
-            rs = ps.executeQuery();
-
-            return rs.next();
-        } catch (SQLException ex) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return false;
-    }
-
-    public boolean isExistUsernameExceptItself(String username, int ID) {
-        ResultSet rs = null;
-        String sql = "SELECT * FROM [User] WHERE UserName = ? AND ID != ?";
-
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-
-            ps.setString(1, username);
-            ps.setInt(2, ID);
-            rs = ps.executeQuery();
-
-            return rs.next();
-        } catch (SQLException ex) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return false;
-    }
-
-    public boolean isExistId(int ID) {
-        ResultSet rs = null;
-        String sql = "SELECT * FROM [User] WHERE ID = ?";
-
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-
-            ps.setInt(1, ID);
-
-            rs = ps.executeQuery();
-
-            return rs.next();
-        } catch (SQLException ex) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return false;
-    }
-
-    public boolean isExistPhoneExceptItself(String phone, int ID) {
-        ResultSet rs = null;
-        if (phone == null || phone.equals("")) {
-            return false;
-        }
-        String sql = "SELECT * FROM [User] WHERE PhoneNumber = ? AND ID != ?";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setNString(1, phone);
-            ps.setInt(2, ID);
-            rs = ps.executeQuery();
-            return rs.next();
-        } catch (SQLException ex) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return false;
-    }
-
-    public boolean isExistPhone(String phone) {
-        ResultSet rs = null;
-        if (phone == null || phone.equals("")) {
-            return false;
-        }
-        String sql = "SELECT * FROM [User] WHERE PhoneNumber = ?";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setNString(1, phone);
-            rs = ps.executeQuery();
-            return rs.next();
-        } catch (SQLException ex) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return false;
-    }
-
-    public boolean isExistEmail(String email) {
-
-        ResultSet rs = null;
-        String sql = "SELECT * FROM [User] WHERE Email = ?";
-
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-
-            ps.setString(1, email);
-
-            rs = ps.executeQuery();
-
-            return rs.next();
-        } catch (SQLException ex) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return false;
-    }
-
-    public boolean isExistEmailExceptItself(String email, int ID) {
-
-        ResultSet rs = null;
-        String sql = "SELECT * FROM [User] WHERE Email = ? AND ID != ?";
-
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, email);
-            ps.setInt(2, ID);
-            rs = ps.executeQuery();
-            return rs.next();
-        } catch (SQLException ex) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return false;
-    }
-
+ 
     // public boolean register(String email) throws EmailDuplicationException {
     // // Existed email is not allowed
     // if (getUserByEmail(email) != null) {
@@ -434,7 +376,7 @@ public class UserDAO implements IUserDAO {
      * Create a new {@link User} object from a {@link ResultSet}.
      *
      * @param queryResult The {@code ResultSet} containing the user's
-     *                    information.
+     * information.
      * @return An {@code User} object containing the user's information.
      * @throws SQLException If an error occurs while retrieving the data.
      */
@@ -453,38 +395,20 @@ public class UserDAO implements IUserDAO {
     }
 
     @Override
-    public User getUser(String loginString, String password, loginType Type) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public boolean checkDuplication(User user) throws  UsernameDuplicationException,EmailDuplicationException{
+        if (getUser(user.getUsername()) != null) {
+            throw new UsernameDuplicationException();
+        }
+
+        if (getUserByEmail(user.getEmail()) != null) {
+            throw new EmailDuplicationException();
+        }
+        return  true;
     }
 
     @Override
-    public int restoreUser(User user) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public int addUser(User user) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    @Override
-    public int disableUser(User user) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public boolean checkDuplication(User user) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public List<User> searchUser(String search) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public List<User> pagingUser(List<User> users, int page) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 }

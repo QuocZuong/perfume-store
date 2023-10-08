@@ -14,7 +14,7 @@ public class DatabaseUtils {
         ResultSet rs;
         String sql = "SELECT IDENT_CURRENT(?) as LastID";
         try {
-            PreparedStatement ps = DB.DataManager.getConnection().prepareStatement(sql);
+            PreparedStatement ps = DB.DBContext.getConnection().prepareStatement(sql);
             ps.setNString(1, tableName);
             rs = ps.executeQuery();
 

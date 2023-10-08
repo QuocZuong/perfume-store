@@ -4,7 +4,7 @@ import Lib.PropsLoader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-public class DataManager {
+public class DBContext {
 
     private static final PropsLoader propsLoader;
 
