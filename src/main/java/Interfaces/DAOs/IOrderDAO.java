@@ -55,18 +55,29 @@ public interface IOrderDAO {
    */
   public Order orderFactory(ResultSet rs);
 
+  /**
+   * Fill a {@link PreparedStatement} with an {@link Order} object.
+   * 
+   * @param ps    The {@code PreparedStatement} to be filled.
+   * @param order The {@code Order} object to fill the {@code PreparedStatement}
+   *              with.
+   * @param op    The {@code operation} to be performed, as defined in
+   *              {@link IOrderDAO.operation}.
+   * @return A {@code PreparedStatement} object.
+   * @throws NullPointerException If {@code ps} or {@code order} is null.
+   * @throws SQLException         If a database access error occurs.
+   */
   public PreparedStatement fillPreparedStatement(PreparedStatement ps, Order order, operation op)
       throws NullPointerException, SQLException;
 
   /**
-   * Add a new {@link Order} to the database.
-   * 
+   * Add an {@link Order} to the database.
    * @param order The {@code Order} to be added.
-   * @return {@code true} if the {@code Order} is added successfully,
-   *         {@code false} otherwise.
-   * @throws NullPointerException if {@code order} is {@code null}.
+   * @param odList The {@code List} of {@code OrderDetail} to be added.
+   * @return {@code true} if the {@code Order} is added successfully, {@code false} otherwise.
+   * @throws NullPointerException If {@code order} or {@code odList} is null.
    */
-  public boolean addOrder(Order order) throws NullPointerException;
+  public boolean addOrder(Order order, List<OrderDetail> odList) throws NullPointerException;
 
   /**
    * Get all {@link Order}s in database.
@@ -92,14 +103,19 @@ public interface IOrderDAO {
    */
   public List<Order> getOrderByCustomerId(int customerId);
 
+  /**
+   * Update an {@link Order} in the database.
+   * @param order The {@code Order} to be updated.
+   * @param odList The {@code List} of {@code OrderDetail} to be updated.
+   * @return {@code true} if the {@code Order} is updated successfully, {@code false} otherwise.
+   * @throws NullPointerException If {@code order} or {@code odList} is null.
+   */
   public boolean updateOrder(Order order, List<OrderDetail> odList) throws NullPointerException;
 
   /**
    * Delete an {@link Order} from the database.
-   * 
    * @param Id The Id of the {@code Order} to be deleted.
-   * @return {@code true} if the {@code Order} is deleted
-   *         successfully,{@code false} otherwise.
+   * @return {@code true} if the {@code Order} is deleted successfully, {@code false} otherwise.
    */
-  public int deleteOrder(int Id);
+  public boolean deleteOrder(int Id);
 }
