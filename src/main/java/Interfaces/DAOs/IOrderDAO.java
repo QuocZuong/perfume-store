@@ -12,6 +12,10 @@ import Models.Customer;
 
 public interface IOrderDAO {
 
+  enum operation {
+    CREATE, READ, UPDATE, DELETE
+  }
+
   /** The name of the table in the database. */
   String TABLE_NAME = "Order";
   /** The column name of the order's Id. */
@@ -51,18 +55,8 @@ public interface IOrderDAO {
    */
   public Order orderFactory(ResultSet rs);
 
-  /**
-   * Fill a {@link PreparedStatement} with an {@link Order}'s information.
-   * 
-   * @param ps    The {@code PreparedStatement} to be filled.
-   * @param order The {@code Order} to get information from.
-   * @return The {@code PreparedStatement} object that has all the {@code Order}'s
-   *         information.
-   * @throws NullPointerException if {@code ps} or {@code order} is {@code null}.
-   * @throws SQLException         if a database access error occurs.
-   */
   public PreparedStatement fillPreparedStatement(PreparedStatement ps, Order order, operation op)
-            throws NullPointerException, SQLException;
+      throws NullPointerException, SQLException;
 
   /**
    * Add a new {@link Order} to the database.
