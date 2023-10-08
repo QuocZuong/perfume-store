@@ -103,8 +103,24 @@ public class OrderDetailDao implements IOrderDetailDAO {
       ps = conn.prepareStatement(sql);
       ps.setInt(1, orderId);
 
+      ResultSet rs = ps.executeQuery();
+
+      while (rs.next()) {
+        OrderDetail orderDetail = new OrderDetail();
+
+        orderDetail.setOrderId(rs.getInt(ORDER_ID));
+        orderDetail.setProductId(rs.getInt(PRODUCT_ID));
+        orderDetail.setQuantity(rs.getInt(QUANTITY));
+        orderDetail.setPrice(rs.getInt(PRICE));
+        orderDetail.setTotal(rs.getInt(TOTAL));
+
+        list.add(orderDetail);
+      }
     } catch (Exception e) {
+      e.printStackTrace();
     }
+
+    return list;
   }
 
   /* --------------------------- UPDATE SECTION --------------------------- */
