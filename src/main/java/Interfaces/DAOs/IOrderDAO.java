@@ -86,7 +86,7 @@ public interface IOrderDAO {
    * @param Id The Id of the {@code Order} to be retrieved.
    * @return A {@code Order} object containing the order's information.
    */
-  public Order getOrder(int Id);
+  public Order getOrderByOrderId(int orderId);
 
   /**
    * Get an {@link Order} from the database.

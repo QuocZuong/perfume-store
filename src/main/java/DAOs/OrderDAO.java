@@ -113,21 +113,23 @@ public class OrderDAO implements IOrderDAO {
 
     /* --------------------------- READ SECTION --------------------------- */
 
-    public List<Order> getOrderByClientId(int id) {
+    @Override
+    public List<Order> getOrderByCustomerId(int customerId) {
+
+        if (customerId <= 0) {
+            throw new IllegalArgumentException("Customer ID must be greater than 0");
+        }
 
         List<Order> orders = new ArrayList<>();
-        String sql = "SELECT * FROM [Order] where ClientID = ?";
+        String sql = "SELECT * FROM [Order] where Customer_ID = ?";
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, id);
+            ps.setInt(1, customerId);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Order order = new Order();
-                order.setID(rs.getInt("ID"));
-                order.setClientID(rs.getInt("ClientID"));
-                order.setDate(rs.getDate("Date"));
-                order.setSum(rs.getInt("Sum"));
+                orderFactory(rs);
+                Order order = orderFactory(rs);
                 orders.add(order);
             }
         } catch (SQLException ex) {
@@ -135,6 +137,26 @@ public class OrderDAO implements IOrderDAO {
         }
 
         return orders;
+    }
+
+    public Order getOrderByOrderId(int orderId) {
+        if (orderId <= 0) {
+            throw new IllegalArgumentException("Order ID must be greater than 0");
+        }
+        String sql = "SELECT * FROM [Order] where Order_ID = ?";
+        Order order = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, orderId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                order = orderFactory(rs);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return order;
     }
 
     public List<String[]> getOrderDetailByOrderID(int OrderID) {
@@ -164,28 +186,6 @@ public class OrderDAO implements IOrderDAO {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return orders;
-    }
-
-    public Order getOrderByOrderId(int id) {
-        String sql = "SELECT * FROM [Order] where ID = ?";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                int OrderID = rs.getInt("ID");
-                int ClientID = rs.getInt("ClientID");
-                Date Date = rs.getDate("Date");
-                String Address = rs.getNString("Address");
-                String PhoneNumber = rs.getString("PhoneNumber");
-                String Note = rs.getNString("Note");
-                int Sum = rs.getInt("Sum");
-                return new Order(OrderID, ClientID, Date, Address, PhoneNumber, Note, Sum);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
     }
 
     public OrderDetail getOrderByOrderDetailId(int id) {
@@ -236,16 +236,6 @@ public class OrderDAO implements IOrderDAO {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
-    }
-
-    @Override
-    public Order getOrder(int Id) {
-        throw new UnsupportedOperationException("Unimplemented method 'getOrder'");
-    }
-
-    @Override
-    public List<Order> getOrderByCustomerId(int customerId) {
-        throw new UnsupportedOperationException("Unimplemented method 'getOrderByCustomerId'");
     }
 
     @Override
