@@ -13,10 +13,17 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.naming.spi.DirStateFactory.Result;
+
 import Interfaces.DAOs.IOrderDAO;
+import Lib.DatabaseUtils;
 
 public class OrderDAO implements IOrderDAO {
     private Connection conn;
+
+    enum operation {
+        CREATE, READ, UPDATE, DELETE
+    }
 
     public OrderDAO() {
         conn = DB.DataManager.getConnection();
@@ -49,26 +56,43 @@ public class OrderDAO implements IOrderDAO {
     }
 
     @Override
-    public PreparedStatement fillPreparedStatement(PreparedStatement ps, Order order)
+    public PreparedStatement fillPreparedStatement(PreparedStatement ps, Order order, operation op)
             throws NullPointerException, SQLException {
         if (ps == null || order == null) {
             throw new NullPointerException("PreparedStatement or Order is null");
         }
 
-        ps.setInt(1, order.getId());
-        ps.setInt(2, order.getCustomerId());
-        ps.setInt(3, order.getVoucherId());
-        ps.setString(4, order.getReceiverName());
-        ps.setString(5, order.getDeliveryAddress());
-        ps.setString(6, order.getPhoneNumber());
-        ps.setString(7, order.getNote());
-        ps.setInt(8, order.getTotal());
-        ps.setInt(9, order.getDeductedPrice());
-        ps.setString(10, order.getStatus());
-        ps.setDate(11, order.getCreatedAt());
-        ps.setDate(12, order.getCheckoutAt());
-        ps.setDate(13, order.getUpdateAt());
-        ps.setInt(14, order.getUpdateByOrderManager());
+        if (op == operation.READ) {
+            ps.setInt(1, order.getId());
+            ps.setInt(2, order.getCustomerId());
+            ps.setInt(3, order.getVoucherId());
+            ps.setNString(4, order.getReceiverName());
+            ps.setNString(5, order.getDeliveryAddress());
+            ps.setString(6, order.getPhoneNumber());
+            ps.setNString(7, order.getNote());
+            ps.setInt(8, order.getTotal());
+            ps.setInt(9, order.getDeductedPrice());
+            ps.setString(10, order.getStatus());
+            ps.setDate(11, order.getCreatedAt());
+            ps.setDate(12, order.getCheckoutAt());
+            ps.setDate(13, order.getUpdateAt());
+            ps.setInt(14, order.getUpdateByOrderManager());
+        } else if (op == operation.UPDATE) {
+            ps.setInt(1, order.getCustomerId());
+            ps.setInt(2, order.getVoucherId());
+            ps.setNString(3, order.getReceiverName());
+            ps.setNString(4, order.getDeliveryAddress());
+            ps.setString(5, order.getPhoneNumber());
+            ps.setNString(6, order.getNote());
+            ps.setInt(7, order.getTotal());
+            ps.setInt(8, order.getDeductedPrice());
+            ps.setString(9, order.getStatus());
+            ps.setDate(10, order.getCreatedAt());
+            ps.setDate(11, order.getCheckoutAt());
+            ps.setDate(12, order.getUpdateAt());
+            ps.setInt(13, order.getUpdateByOrderManager());
+            ps.setInt(14, order.getId());
+        }
 
         return ps;
     }
@@ -87,7 +111,7 @@ public class OrderDAO implements IOrderDAO {
 
         boolean result = false;
         String sql = "INSERT INTO [Order] [(Order_ID), (Customer_ID), (Voucher_ID), (Order_Receiver_Name), (Order_Delivery_Address), (Order_Phone_Number), (Order_Note), (Order_Total), (Order_Deducted_Price), (Order_Status), (Order_Created_At), (Order_Checkout_At), (Order_Update_At), (Order_Update_By_Order_Manager)]"
-                + "VALUES (? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,?)";
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -102,7 +126,7 @@ public class OrderDAO implements IOrderDAO {
             result = odDAO.addOrderDetail(odList);
 
             if (!result) {
-                // TODO: Delete order if add order detail failed
+                deleteOrder(DatabaseUtils.getLastIndentityOf("Order"));
             }
         } catch (SQLException ex) {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -110,8 +134,69 @@ public class OrderDAO implements IOrderDAO {
 
         return result;
     }
-
     /* --------------------------- READ SECTION --------------------------- */
+
+    @Override
+    public List<Order> getAll() {
+        String sql = "SELECT * FROM [Order]";
+
+        ResultSet rs;
+        List<Order> result = new ArrayList<>();
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                result.add(orderFactory(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    @Override
+    public Order getOrder(int Id) {
+        throw new UnsupportedOperationException("Unimplemented method 'getOrder'");
+    }
+
+    @Override
+    public List<Order> getOrderByCustomerId(int customerId) {
+        throw new UnsupportedOperationException("Unimplemented method 'getOrderByCustomerId'");
+    }
+
+    @Override
+    public List<Order> getAll() {
+        String sql = "SELECT * FROM [Order]";
+
+        ResultSet rs;
+        List<Order> result = new ArrayList<>();
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                result.add(orderFactory(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    @Override
+    public Order getOrder(int Id) {
+        throw new UnsupportedOperationException("Unimplemented method 'getOrder'");
+    }
+
+    @Override
+    public List<Order> getOrderByCustomerId(int customerId) {
+        throw new UnsupportedOperationException("Unimplemented method 'getOrderByCustomerId'");
+    }
 
     @Override
     public List<Order> getOrderByCustomerId(int customerId) {
@@ -239,12 +324,54 @@ public class OrderDAO implements IOrderDAO {
     }
 
     @Override
-    public boolean updateOrder(Order order) throws NullPointerException {
-        throw new UnsupportedOperationException("Unimplemented method 'updateOrder'");
+    public boolean updateOrder(Order order, List<OrderDetail> odList) throws NullPointerException {
+        if (order == null) {
+            throw new NullPointerException("Order is null");
+        }
+        if (odList == null) {
+            throw new NullPointerException("OrderDetail list is null");
+        }
+        if (odList.isEmpty()) {
+            throw new NullPointerException("OrderDetail list is empty");
+        }
+
+        boolean result = false;
+        String sql = "UPDATE [Order]\n" +
+                "SET [Customer_ID] = ?,\n" +
+                "[Voucher_ID] = ?,\n" +
+                "[Order_Receiver_Name] = ?,\n" +
+                "[Order_Delivery_Address] = ?,\n" +
+                "[Order_Phone_Number] = ?,\n" +
+                "[Order_Note] = ?,\n" +
+                "[Order_Total] = ?,\n" +
+                "[Order_Deducted_Price] = ?,\n" +
+                "[Order_Status] = ?,\n" +
+                "[Order_Created_At] = ?,\n" +
+                "[Order_Checkout_At] = ?,\n" +
+                "[Order_Update_At] = ?,\n" +
+                "[Order_Update_By_Order_Manager] = ?\n" +
+                "WHERE [Order_ID] = ?";
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps = fillPreparedStatement(ps, order, operation.UPDATE);
+            result = ps.executeUpdate() > 0;
+
+            if (!result) {
+                return false;
+            }
+
+            OrderDetailDao odDAO = new OrderDetailDao();
+            result = odDAO.addOrderDetail(odList);
+
+            if (!result) {
+                deleteOrder(DatabaseUtils.getLastIndentityOf("Order"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return result;
     }
 
-    @Override
-    public List<Order> getAll() {
-        throw new UnsupportedOperationException("Unimplemented method 'getAll'");
-    }
 }
