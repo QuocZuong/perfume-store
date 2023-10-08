@@ -70,13 +70,7 @@ public class EmployeeDAO extends UserDAO implements Interfaces.DAOs.IEmployeeDAO
     public boolean checkDuplicate(Employee employee) throws UsernameDuplicationException, EmailDuplicationException,
             PhoneNumberDuplicationException, CitizenIDDuplicationException {
 
-        if (super.getUser(employee.getUsername()) != null) {
-            throw new UsernameDuplicationException();
-        }
-
-        if (super.getUserByEmail(employee.getEmail()) != null) {
-            throw new EmailDuplicationException();
-        }
+        super.checkDuplication(employee);
 
         if (isExistPhoneNumber(employee.getPhoneNumber())) {
             throw new PhoneNumberDuplicationException();

@@ -27,7 +27,7 @@ import java.util.List;
 
 public class UserDAO implements IUserDAO {
 
-    private Connection conn;
+    private final Connection conn;
 
     /**
      * Constructs a new {@code UserDAO} object.
@@ -271,105 +271,17 @@ public class UserDAO implements IUserDAO {
     }
 
     /*--------------------- VALIDATE SECTION ---------------------  */
+    @Override
+    public boolean checkDuplication(User user) throws UsernameDuplicationException, EmailDuplicationException {
+        if (getUser(user.getUsername()) != null) {
+            throw new UsernameDuplicationException();
+        }
 
- /*--------------------- AUTHENTICATION SECTION ---------------------  */
-    // public boolean login(String username, String password)
-    // throws AccountDeactivatedException, AccountNotFoundException,
-    // WrongPasswordException, SQLException {
-    // if (username == null || password == null) {
-    // return false;
-    // }
-    // if (username.length() > 50) {
-    // return false;
-    // }
-    // if (getUser(username) == null) {
-    // throw new AccountNotFoundException();
-    // }
-    //
-    // if (getUser(username).isActive() == false) {
-    // System.out.println("account deactivated");
-    // throw new AccountDeactivatedException();
-    // }
-    //
-    // ResultSet rs = null;
-    // String sql = "SELECT * FROM [User] WHERE UserName = ? AND [Password] = ?";
-    //
-    // try {
-    // PreparedStatement ps = conn.prepareStatement(sql);
-    // ps.setString(1, username);
-    // ps.setString(2, Converter.convertToMD5Hash(password));
-    // rs = ps.executeQuery();
-    // if (rs.next()) {
-    // return true;
-    // } else {
-    // throw new WrongPasswordException();
-    // }
-    // } catch (SQLException ex) {
-    // Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
-    // }
-    // return false;
-    // }
- 
-    // public boolean register(String email) throws EmailDuplicationException {
-    // // Existed email is not allowed
-    // if (getUserByEmail(email) != null) {
-    // System.out.println("Throwing email exception");
-    // throw new EmailDuplicationException();
-    // }
-    //
-    // String username = email.substring(0, email.indexOf('@'));
-    //
-    // int tempId = 0;
-    // int offset = DatabaseUtils.getLastIndentityOf(TABLE_NAME);
-    //
-    // if (isExistUsername(username)) {
-    // String tempUsername = username + offset;
-    //
-    // while (isExistUsername(tempUsername)) {
-    // tempId += offset;
-    // tempUsername = username + tempId + "";
-    // }
-    //
-    // username = tempUsername;
-    // }
-    //
-    // int result = 0;
-    //
-    // String generatedPassword = PasswordGenerator.generateStrongPassword(12);
-    // System.out.println("New password:" + generatedPassword);
-    //
-    // String sql = "Insert into [User] (Name, UserName, Password, PhoneNumber,
-    // Email, Address, Role) values (?, ?, ?, ?, ?, ?, ?)";
-    //
-    // try {
-    // PreparedStatement ps = conn.prepareStatement(sql);
-    // ps.setString(1, "");
-    // ps.setString(2, username);
-    // ps.setString(3, Converter.convertToMD5Hash(generatedPassword));
-    // ps.setString(4, "");
-    // ps.setString(5, email);
-    // ps.setString(6, "");
-    // ps.setString(7, "Client");
-    //
-    // result = ps.executeUpdate();
-    //
-    // if (result > 0) {
-    // System.out.println("Affect " + result + " row");
-    // System.out.println("Begin Sending mail");
-    // EmailSender es = new EmailSender();
-    // es.setEmailTo(email);
-    // es.sendToEmail(es.GENERATE_PASSWORD_SUBJECT,
-    // es.generatePasswordEmailHTML(generatedPassword));
-    // System.out.println("After Sending mail");
-    // return true;
-    // }
-    //
-    // } catch (SQLException | UnsupportedEncodingException e) {
-    // e.printStackTrace();
-    // }
-    //
-    // return false;
-    // }
+        if (getUserByEmail(user.getEmail()) != null) {
+            throw new EmailDuplicationException();
+        }
+        return true;
+    }
 
     /*--------------------- UTILITY METHODS ---------------------  */
     /**
@@ -392,23 +304,6 @@ public class UserDAO implements IUserDAO {
         user.setType(queryResult.getString(USER_TYPE));
 
         return user;
-    }
-
-    @Override
-    public boolean checkDuplication(User user) throws  UsernameDuplicationException,EmailDuplicationException{
-        if (getUser(user.getUsername()) != null) {
-            throw new UsernameDuplicationException();
-        }
-
-        if (getUserByEmail(user.getEmail()) != null) {
-            throw new EmailDuplicationException();
-        }
-        return  true;
-    }
-
-    @Override
-    public int addUser(User user) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }

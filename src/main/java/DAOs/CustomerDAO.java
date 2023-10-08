@@ -47,7 +47,6 @@ public class CustomerDAO extends UserDAO implements ICustomerDAO {
         return null;
     }
 
-    @Override
     public boolean restoreCustomer(Customer customer) {
         return super.restoreUser(customer);
     }

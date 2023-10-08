@@ -51,8 +51,6 @@ public interface IUserDAO {
     }
     public final int ROWS = 20;
 
-    public int addUser(User user);
-
     /**
      * Get all {@link User}s in database.
      *
