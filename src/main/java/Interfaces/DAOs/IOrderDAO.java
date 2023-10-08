@@ -1,7 +1,9 @@
 package Interfaces.DAOs;
 
 import java.util.List;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import Models.Order;
 import Models.Voucher;
@@ -11,7 +13,7 @@ import Models.OrderDetail;
 public interface IOrderDAO {
 
   /** The name of the table in the database. */
-  String ORDER_TABLE = "Order";
+  String TABLE_NAME = "Order";
   /** The column name of the order's Id. */
   String ORDER_Id = "Order_Id";
   /** The column name of the order's {@link Customer} Id. */
@@ -50,6 +52,19 @@ public interface IOrderDAO {
   public Order orderFactory(ResultSet rs);
 
   /**
+   * Fill a {@link PreparedStatement} with an {@link Order}'s information.
+   * 
+   * @param ps    The {@code PreparedStatement} to be filled.
+   * @param order The {@code Order} to get information from.
+   * @return The {@code PreparedStatement} object that has all the {@code Order}'s
+   *         information.
+   * @throws NullPointerException if {@code ps} or {@code order} is {@code null}.
+   * @throws SQLException         if a database access error occurs.
+   */
+  public PreparedStatement fillPreparedStatement(PreparedStatement ps, Order order)
+      throws NullPointerException, SQLException;
+
+  /**
    * Add a new {@link Order} to the database.
    * 
    * @param order The {@code Order} to be added.
@@ -77,7 +92,7 @@ public interface IOrderDAO {
   /**
    * Get an {@link Order} from the database.
    * 
-   * @param customerId The Id of the {@code Customer} that owns the {@code Order}. 
+   * @param customerId The Id of the {@code Customer} that owns the {@code Order}.
    * @return A {@code List} of {@code Order} objects that are belonged to the
    *         {@code CustomerId}.
    */
@@ -96,9 +111,10 @@ public interface IOrderDAO {
    * Update an {@link Order} in the database.
    * 
    * @param order The {@code Order} to be updated.
-   * @return {@code true} if the {@code Order} is updated successfully, {@code false} otherwise.
+   * @return {@code true} if the {@code Order} is updated successfully,
+   *         {@code false} otherwise.
    * @throws NullPointerException if {@code order} is {@code null}.
-   */  
+   */
   public boolean updateOrder(Order order) throws NullPointerException;
 
   /**
