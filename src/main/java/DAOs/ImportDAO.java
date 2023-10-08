@@ -32,7 +32,8 @@ public class ImportDAO implements IImportDAO {
     @Override
     public int addImport(Import ip) {
         ImportDetailDAO ipdDAO = new ImportDetailDAO();
-        String sql = "INSERT INTO [Import] (Import_ID, Import_Total_Quantity, Import_Total_Cost, Supplier_Name, Import_At, Delivered_At, Import_By_Inventory_Manager) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        int result = 0;
+        String sql = "INSERT INTO [Import] (Import_ID, Import_Total_Quantity, Import_Total_Cost, Supplier_Name, Import_At, Delivered_At) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, ip.getId());
@@ -44,12 +45,13 @@ public class ImportDAO implements IImportDAO {
             ps.setInt(7, ip.getImportByInventoryManager());
             int addImportDetailResult = ipdDAO.addAllImportDetailOfImport(ip.getImportDetail());
             if (addImportDetailResult != 0) {
-                return ps.executeUpdate();
+                result = ps.executeUpdate();
             }
         } catch (SQLException ex) {
-            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ImportDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return 0;
+        System.out.println("add import result :" + result);
+        return result;
     }
 
     /* ------------------------- READ SECTION ---------------------------- */
@@ -81,7 +83,7 @@ public class ImportDAO implements IImportDAO {
                 arrImport.add(ip);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ImportDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return arrImport;
     }
@@ -109,7 +111,7 @@ public class ImportDAO implements IImportDAO {
                 ip.setImportDetail(ipD);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ImportDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return ip;
     }

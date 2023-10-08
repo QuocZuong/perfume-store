@@ -16,6 +16,7 @@ import Interfaces.DAOs.IOrderDAO;
 import Lib.DatabaseUtils;
 
 public class OrderDAO implements IOrderDAO {
+
     private Connection conn;
 
     public OrderDAO() {
@@ -127,6 +128,7 @@ public class OrderDAO implements IOrderDAO {
 
         return result;
     }
+
     /* --------------------------- READ SECTION --------------------------- */
 
     @Override
@@ -241,21 +243,21 @@ public class OrderDAO implements IOrderDAO {
         }
 
         boolean result = false;
-        String sql = "UPDATE [Order]\n" +
-                "SET [Customer_ID] = ?,\n" +
-                "[Voucher_ID] = ?,\n" +
-                "[Order_Receiver_Name] = ?,\n" +
-                "[Order_Delivery_Address] = ?,\n" +
-                "[Order_Phone_Number] = ?,\n" +
-                "[Order_Note] = ?,\n" +
-                "[Order_Total] = ?,\n" +
-                "[Order_Deducted_Price] = ?,\n" +
-                "[Order_Status] = ?,\n" +
-                "[Order_Created_At] = ?,\n" +
-                "[Order_Checkout_At] = ?,\n" +
-                "[Order_Update_At] = ?,\n" +
-                "[Order_Update_By_Order_Manager] = ?\n" +
-                "WHERE [Order_ID] = ?";
+        String sql = "UPDATE [Order]\n"
+                + "SET [Customer_ID] = ?,\n"
+                + "[Voucher_ID] = ?,\n"
+                + "[Order_Receiver_Name] = ?,\n"
+                + "[Order_Delivery_Address] = ?,\n"
+                + "[Order_Phone_Number] = ?,\n"
+                + "[Order_Note] = ?,\n"
+                + "[Order_Total] = ?,\n"
+                + "[Order_Deducted_Price] = ?,\n"
+                + "[Order_Status] = ?,\n"
+                + "[Order_Created_At] = ?,\n"
+                + "[Order_Checkout_At] = ?,\n"
+                + "[Order_Update_At] = ?,\n"
+                + "[Order_Update_By_Order_Manager] = ?\n"
+                + "WHERE [Order_ID] = ?";
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);

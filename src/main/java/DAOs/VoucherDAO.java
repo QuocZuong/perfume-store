@@ -44,44 +44,36 @@ public class VoucherDAO implements IVoucherDAO {
             ps.setDate(6, v.getCreatedAt());
             ps.setDate(7, v.getExpiredAt());
             ps.setInt(8, v.getCreatedByAdmin());
-            result = ps.executeUpdate();
-            if (result == 0) {
-                System.out.println("Loi add voucher khong thanh cong");
-                return 0;
-            } else {
-                result = addApprovedProduct(v);
+            if (addApprovedProduct(v) != 0) {
+                result = ps.executeUpdate();
             }
         } catch (SQLException ex) {
-            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(VoucherDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
     }
 
     @Override
     public int addApprovedProduct(Voucher v) {
-        String sql = "INSERT INTO [Voucher_Product] (Voucher_ID, Product_ID) VALUES ";
-        String value = " (?, ?)";
+        String sql = "INSERT INTO [Voucher_Product] (Voucher_ID, Product_ID) VALUES (?, ?)";
         int result = 0;
         if (v != null && v.getApprovedProductId() != null && !v.getApprovedProductId().isEmpty()) {
             try {
                 ArrayList<Integer> arrApprovedProductId = v.getApprovedProductId();
-
-                //Append values to sql string base on number of productid
-                for (int i = 1; i <= arrApprovedProductId.size(); i++) {
-                    if (i != arrApprovedProductId.size()) {
-                        sql = sql + value + ", ";
-                    } else {
-                        sql = sql + value;
-                    }
-                }
-
                 PreparedStatement ps = conn.prepareStatement(sql);
                 //set value for ?
                 for (int i = 0; i < arrApprovedProductId.size(); i++) {
-                    ps.setInt(2 * i + 1, arrApprovedProductId.get(i));
-                    ps.setInt(2 * i + 2, arrApprovedProductId.get(i));
+                    ps.setInt(1, v.getId());
+                    ps.setInt(2, arrApprovedProductId.get(i));
+                    ps.addBatch();
                 }
-                result = ps.executeUpdate();
+                int[] batchResult = ps.executeBatch();
+                for (int i = 0; i < batchResult.length; i++) {
+                    if (batchResult[i] == PreparedStatement.EXECUTE_FAILED) {
+                        return 0;
+                    }
+                    result += batchResult[i];
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(VoucherDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -140,7 +132,7 @@ public class VoucherDAO implements IVoucherDAO {
                 arrVoucher.add(v);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(VoucherDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return arrVoucher;
     }
