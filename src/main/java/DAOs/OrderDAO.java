@@ -158,47 +158,6 @@ public class OrderDAO implements IOrderDAO {
     }
 
     @Override
-    public Order getOrder(int Id) {
-        throw new UnsupportedOperationException("Unimplemented method 'getOrder'");
-    }
-
-    @Override
-    public List<Order> getOrderByCustomerId(int customerId) {
-        throw new UnsupportedOperationException("Unimplemented method 'getOrderByCustomerId'");
-    }
-
-    @Override
-    public List<Order> getAll() {
-        String sql = "SELECT * FROM [Order]";
-
-        ResultSet rs;
-        List<Order> result = new ArrayList<>();
-
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            rs = ps.executeQuery();
-
-            while (rs.next()) {
-                result.add(orderFactory(rs));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return result;
-    }
-
-    @Override
-    public Order getOrder(int Id) {
-        throw new UnsupportedOperationException("Unimplemented method 'getOrder'");
-    }
-
-    @Override
-    public List<Order> getOrderByCustomerId(int customerId) {
-        throw new UnsupportedOperationException("Unimplemented method 'getOrderByCustomerId'");
-    }
-
-    @Override
     public List<Order> getOrderByCustomerId(int customerId) {
 
         if (customerId <= 0) {
@@ -244,85 +203,38 @@ public class OrderDAO implements IOrderDAO {
         return order;
     }
 
-    public List<String[]> getOrderDetailByOrderID(int OrderID) {
-        List<String[]> orders = new ArrayList<>();
-        String sql = "SELECT Product.[Name] as ProductName, Product.ImgURL as ProductImgURL, OrderDetail.Quantity as Quantity, OrderDetail.Price as Price, [User].[Address] as ClientAddress, OrderDetail.[Sum] as Total \n"
-                + "FROM Product, [Order], OrderDetail, [User] \n" +
-                "WHERE \n" +
-                "\t[Order].ID = ? AND \r\n" +
-                "\t[Order].ClientID = [User].ID AND \n" +
-                "\tProduct.ID = OrderDetail.ProductID AND \n" +
-                "\t[Order].ID = OrderDetail.OrderID";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, OrderID);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String cell[] = new String[6];
-                cell[0] = rs.getNString("ProductName");
-                cell[1] = rs.getNString("ProductImgURL");
-                cell[2] = rs.getInt("Quantity") + ""; // Int
-                cell[3] = rs.getInt("Price") + ""; // Int
-                cell[4] = rs.getNString("ClientAddress");
-                cell[5] = rs.getInt("Total") + ""; // Int
-                orders.add(cell);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return orders;
-    }
+    // public List<String[]> getOrderDetailByOrderID(int OrderID) {
+    // List<String[]> orders = new ArrayList<>();
+    // String sql = "SELECT Product.[Name] as ProductName, Product.ImgURL as
+    // ProductImgURL, OrderDetail.Quantity as Quantity, OrderDetail.Price as Price,
+    // [User].[Address] as ClientAddress, OrderDetail.[Sum] as Total \n"
+    // + "FROM Product, [Order], OrderDetail, [User] \n" +
+    // "WHERE \n" +
+    // "\t[Order].ID = ? AND \r\n" +
+    // "\t[Order].ClientID = [User].ID AND \n" +
+    // "\tProduct.ID = OrderDetail.ProductID AND \n" +
+    // "\t[Order].ID = OrderDetail.OrderID";
+    // try {
+    // PreparedStatement ps = conn.prepareStatement(sql);
+    // ps.setInt(1, OrderID);
+    // ResultSet rs = ps.executeQuery();
+    // while (rs.next()) {
+    // String cell[] = new String[6];
+    // cell[0] = rs.getNString("ProductName");
+    // cell[1] = rs.getNString("ProductImgURL");
+    // cell[2] = rs.getInt("Quantity") + ""; // Int
+    // cell[3] = rs.getInt("Price") + ""; // Int
+    // cell[4] = rs.getNString("ClientAddress");
+    // cell[5] = rs.getInt("Total") + ""; // Int
+    // orders.add(cell);
+    // }
+    // } catch (SQLException ex) {
+    // Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+    // }
+    // return orders;
+    // }
 
-    public OrderDetail getOrderByOrderDetailId(int id) {
-        String sql = "SELECT * FROM [OrderDetail] where OrderID = ?";
-        OrderDetail order = new OrderDetail();
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                order.setOrderID(rs.getInt("OrderID"));
-                order.setOrderID(rs.getInt("ProductID"));
-                order.setOrderID(rs.getInt("Quantity"));
-                order.setOrderID(rs.getInt("Price"));
-                order.setOrderID(rs.getInt("DetailSum"));
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return order;
-    }
-
-    public int getMaxOrderID() {
-        String sql = "Select MAX(ID) as maxOrderID from [Order]";
-        int maxOrderID = -1;
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                maxOrderID = rs.getInt("maxOrderID");
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return maxOrderID;
-    }
     /* --------------------------- UPDATE SECTION --------------------------- */
-
-    /* --------------------------- DELETE SECTION --------------------------- */
-    public int deleteOrder(int orderID) {
-        int result = -1;
-        String sql = "DELETE FROM [Order] WHERE Order_ID = ?";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, orderID);
-            result = ps.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return result;
-    }
-
     @Override
     public boolean updateOrder(Order order, List<OrderDetail> odList) throws NullPointerException {
         if (order == null) {
@@ -362,7 +274,9 @@ public class OrderDAO implements IOrderDAO {
             }
 
             OrderDetailDao odDAO = new OrderDetailDao();
-            result = odDAO.addOrderDetail(odList);
+
+            // TODO add update order detail when the previous operation is successful
+            // result = odDAO.updateOrderDetail(odList);
 
             if (!result) {
                 deleteOrder(DatabaseUtils.getLastIndentityOf("Order"));
@@ -371,6 +285,20 @@ public class OrderDAO implements IOrderDAO {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        return result;
+    }
+
+    /* --------------------------- DELETE SECTION --------------------------- */
+    public int deleteOrder(int orderID) {
+        int result = -1;
+        String sql = "DELETE FROM [Order] WHERE Order_ID = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, orderID);
+            result = ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return result;
     }
 
