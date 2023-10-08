@@ -92,23 +92,17 @@ public class OrderDetailDao implements IOrderDetailDAO {
   }
 
   @Override
-  public List<OrderDetail> getOrderDetail(int Id, inputType type) {
+  public List<OrderDetail> getOrderDetail(int orderId) {
     
     List<OrderDetail> list = new ArrayList<>();
-    String sql = "SELECT * FROM [OrderDetail] WHERE ";
-
-    if (type == inputType.orderId) {
-      sql += "Order_ID = ?";
-    } else if (type == inputType.customerId) {
-      sql += "Customer_ID = ?";
-    }
+    String sql = "SELECT * FROM [OrderDetail] WHERE Order_ID = ?";
 
     PreparedStatement ps = null;
 
     try {
       ps = conn.prepareStatement(sql);
-      ps.setInt(1, Id);
-      
+      ps.setInt(1, orderId);
+
     } catch (Exception e) {
     }
   }
