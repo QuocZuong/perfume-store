@@ -93,7 +93,7 @@ public class OrderDetailDao implements IOrderDetailDAO {
 
   @Override
   public List<OrderDetail> getOrderDetail(int Id, inputType type) {
-    
+
     List<OrderDetail> list = new ArrayList<>();
     String sql = "SELECT * FROM [OrderDetail] WHERE ";
 
@@ -108,10 +108,12 @@ public class OrderDetailDao implements IOrderDetailDAO {
     try {
       ps = conn.prepareStatement(sql);
       ps.setInt(1, Id);
-      
+
     } catch (Exception e) {
     }
   }
+
+  /* --------------------------- UPDATE SECTION --------------------------- */
 
   @Override
   public boolean updateOrderDetail(OrderDetail orderDetail) throws NullPointerException {
@@ -119,10 +121,19 @@ public class OrderDetailDao implements IOrderDetailDAO {
     throw new UnsupportedOperationException("Unimplemented method 'updateOrderDetail'");
   }
 
-  @Override
-  public boolean deleteOrderDetail(int orderId) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'deleteOrderDetail'");
+  /* --------------------------- DELETE SECTION --------------------------- */
+
+  public int deleteOrderDetail(int orderID) {
+    int result = -1;
+    String sql = "DELETE FROM [OrderDetail] WHERE Order_ID = ?";
+    try {
+      PreparedStatement ps = conn.prepareStatement(sql);
+      ps.setInt(1, orderID);
+      result = ps.executeUpdate();
+    } catch (SQLException ex) {
+      Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return result;
   }
 
   @Override

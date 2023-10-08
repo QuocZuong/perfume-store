@@ -22,14 +22,16 @@ public interface IOrderDetailDAO {
   }
 
   public OrderDetail orderDetailFactory(ResultSet rs) throws NullPointerException;
+
   public PreparedStatement fillOrderDetail(PreparedStatement ps, OrderDetail orderDetail) throws NullPointerException;
 
   public boolean addOrderDetail(OrderDetail orderDetail) throws NullPointerException;
+
   public boolean addOrderDetail(List<OrderDetail> list) throws NullPointerException;
 
   public List<OrderDetail> getOrderDetail(int orderId, inputType type);
 
   public boolean updateOrderDetail(OrderDetail orderDetail) throws NullPointerException;
 
-  public boolean deleteOrderDetail(int orderId);
+  public int deleteOrderDetail(int orderId);
 }
