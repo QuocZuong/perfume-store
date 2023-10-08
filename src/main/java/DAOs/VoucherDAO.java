@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package DAOs;
 
 import Models.Voucher;
@@ -14,10 +10,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import Interfaces.DAOs.IVoucherDAO;
 
-/**
- *
- * @author Admin
- */
 public class VoucherDAO implements IVoucherDAO {
 
     private static Connection conn = null;
