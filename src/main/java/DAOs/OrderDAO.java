@@ -21,7 +21,7 @@ public class OrderDAO implements IOrderDAO {
     public OrderDAO() {
         conn = DB.DataManager.getConnection();
     }
- 
+
     @Override
     public Order orderFactory(ResultSet rs) {
         Order order = new Order();
@@ -48,26 +48,58 @@ public class OrderDAO implements IOrderDAO {
         return order;
     }
 
+    @Override
+    public PreparedStatement fillPreparedStatement(PreparedStatement ps, Order order) throws NullPointerException, SQLException {
+        if (ps == null || order == null) {
+            throw new NullPointerException("PreparedStatement or Order is null");
+        }
+
+        ps.setInt(1, order.getId());
+        ps.setInt(2, order.getCustomerId());
+        ps.setInt(3, order.getVoucherId());
+        ps.setString(4, order.getReceiverName());
+        ps.setString(5, order.getDeliveryAddress());
+        ps.setString(6, order.getPhoneNumber());
+        ps.setString(7, order.getNote());
+        ps.setInt(8, order.getTotal());
+        ps.setInt(9, order.getDeductedPrice());
+        ps.setString(10, order.getStatus());
+        ps.setDate(11, order.getCreatedAt());
+        ps.setDate(12, order.getCheckoutAt());
+        ps.setDate(13, order.getUpdateAt());
+        ps.setInt(14, order.getUpdateByOrderManager());
+
+        return ps;
+    }
+
     /* ------------------------- CREATE SECTION ---------------------------- */
-    public boolean addOrder(Order order) {
-        String sql = "INSERT INTO [Order] (ClientID, Date, Sum) VALUES (?, ?, ?)";
+    public boolean addOrder(Order order) throws NullPointerException {
+        if (order == null) {
+            throw new NullPointerException("Order is null");
+        }
+
+        boolean result = false;
+        String sql = "INSERT INTO [Order] [(Order_ID), (Customer_ID), (Voucher_ID), (Order_Receiver_Name), (Order_Delivery_Address), (Order_Phone_Number), (Order_Note), (Order_Total), (Order_Deducted_Price), (Order_Status), (Order_Created_At), (Order_Checkout_At), (Order_Update_At), (Order_Update_By_Order_Manager)]"
+                + "VALUES (? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,?)";
+
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, order.getClientID());
-            ps.setDate(2, new java.sql.Date(order.getDate().getTime()));
-            ps.setInt(3, order.getSum());
-            return ps.executeUpdate();
+            ps = fillPreparedStatement(ps, order);
+            result = ps.executeUpdate() > 0;
         } catch (SQLException ex) {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return 0;
+
+        return result;
     }
 
     /* --------------------------- READ SECTION --------------------------- */
 
     public List<Order> getOrderByClientId(int id) {
+
         List<Order> orders = new ArrayList<>();
         String sql = "SELECT * FROM [Order] where ClientID = ?";
+        
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
@@ -83,6 +115,7 @@ public class OrderDAO implements IOrderDAO {
         } catch (SQLException ex) {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
         return orders;
     }
 
@@ -188,31 +221,26 @@ public class OrderDAO implements IOrderDAO {
 
     @Override
     public Order getOrder(int Id) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getOrder'");
     }
 
     @Override
     public List<Order> getOrderByCustomerId(int customerId) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getOrderByCustomerId'");
     }
 
     @Override
     public List<OrderDetail> getOrderDetail(int orderId) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getOrderDetail'");
     }
 
     @Override
     public boolean updateOrder(Order order) throws NullPointerException {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'updateOrder'");
     }
 
     @Override
     public List<Order> getAll() {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getAll'");
     }
 
