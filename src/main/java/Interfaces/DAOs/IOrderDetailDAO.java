@@ -1,5 +1,7 @@
 package Interfaces.DAOs;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.List;
 
 import Models.Order;
@@ -18,6 +20,9 @@ public interface IOrderDetailDAO {
     orderId,
     customerId
   }
+
+  public OrderDetail orderDetailFactory(ResultSet rs) throws NullPointerException;
+  public PreparedStatement fillOrderDetail(PreparedStatement ps, OrderDetail orderDetail) throws NullPointerException;
 
   public boolean addOrderDetail(OrderDetail orderDetail) throws NullPointerException;
   public boolean addOrderDetail(List<OrderDetail> list) throws NullPointerException;
