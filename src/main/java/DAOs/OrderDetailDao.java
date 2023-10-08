@@ -106,14 +106,7 @@ public class OrderDetailDao implements IOrderDetailDAO {
       ResultSet rs = ps.executeQuery();
 
       while (rs.next()) {
-        OrderDetail orderDetail = new OrderDetail();
-
-        orderDetail.setOrderId(rs.getInt(ORDER_ID));
-        orderDetail.setProductId(rs.getInt(PRODUCT_ID));
-        orderDetail.setQuantity(rs.getInt(QUANTITY));
-        orderDetail.setPrice(rs.getInt(PRICE));
-        orderDetail.setTotal(rs.getInt(TOTAL));
-
+        OrderDetail orderDetail = orderDetailFactory(rs);
         list.add(orderDetail);
       }
     } catch (Exception e) {
@@ -133,13 +126,13 @@ public class OrderDetailDao implements IOrderDetailDAO {
 
   /* --------------------------- DELETE SECTION --------------------------- */
 
-  public int deleteOrderDetail(int orderID) {
-    int result = -1;
+  public boolean deleteOrderDetail(int orderID) {
+    boolean result = false;
     String sql = "DELETE FROM [OrderDetail] WHERE Order_ID = ?";
     try {
       PreparedStatement ps = conn.prepareStatement(sql);
       ps.setInt(1, orderID);
-      result = ps.executeUpdate();
+      result = ps.executeUpdate() > 0;
     } catch (SQLException ex) {
       Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
     }
@@ -154,14 +147,7 @@ public class OrderDetailDao implements IOrderDetailDAO {
 
     try {
       if (rs.next()) {
-        OrderDetail orderDetail = new OrderDetail();
-
-        orderDetail.setOrderId(rs.getInt(ORDER_ID));
-        orderDetail.setProductId(rs.getInt(PRODUCT_ID));
-        orderDetail.setQuantity(rs.getInt(QUANTITY));
-        orderDetail.setPrice(rs.getInt(PRICE));
-        orderDetail.setTotal(rs.getInt(TOTAL));
-
+        OrderDetail orderDetail = orderDetailFactory(rs);
         return orderDetail;
       }
     } catch (Exception ex) {
