@@ -267,9 +267,7 @@ public class OrderDAO implements IOrderDAO {
             }
 
             OrderDetailDao odDAO = new OrderDetailDao();
-
-            // TODO add update order detail when the previous operation is successful
-            // result = odDAO.updateOrderDetail(odList);
+            result = odDAO.updateOrderDetail(odList);
 
             if (!result) {
                 deleteOrder(DatabaseUtils.getLastIndentityOf("Order"));
@@ -300,6 +298,5 @@ public class OrderDAO implements IOrderDAO {
         }
         return result;
     }
-
 
 }
