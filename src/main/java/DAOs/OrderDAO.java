@@ -4,7 +4,6 @@ import Models.Order;
 import Models.OrderDetail;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.naming.spi.DirStateFactory.Result;
 
 import Interfaces.DAOs.IOrderDAO;
 import Lib.DatabaseUtils;
@@ -285,23 +282,24 @@ public class OrderDAO implements IOrderDAO {
     }
 
     /* --------------------------- DELETE SECTION --------------------------- */
-    public int deleteOrder(int orderID) {
-        int result = -1;
+    public boolean deleteOrder(int orderID) {
+        boolean result = false;
         String sql = "DELETE FROM [Order] WHERE Order_ID = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, orderID);
-            result = ps.executeUpdate();
+            result = ps.executeUpdate() > 0;
+
+            if (result) {
+                OrderDetailDao odDAO = new OrderDetailDao();
+                result = odDAO.deleteOrderDetail(orderID);
+            }
+
         } catch (SQLException ex) {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
     }
 
-    @Override
-    public boolean addOrder(Order order) throws NullPointerException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addOrder'");
-    }
 
 }
