@@ -10,10 +10,12 @@ public class Customer extends User {
 
     /**
      * Passing value from superclass to subclass
+     *
      * @param user
      */
     public Customer(User user) {
         super(user);
+        customerCreditPoint = 0;
     }
 
     public int getCustomerId() {

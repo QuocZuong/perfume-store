@@ -127,7 +127,7 @@ public interface IUserDAO {
      * sucessfully. {@code 1} if user cannot be updated, or {@code 2} if the
      * {@code User} doesn't exist.
      */
-    public boolean updateUser(User updateUser);
+    public int  updateUser(User updateUser);
 
     /**
      * This function hanlde the checkout process for a customer.
@@ -155,7 +155,7 @@ public interface IUserDAO {
      * @param user The {@code User} to be activated.
      * @return {@code true} if the user is activated, {@code false} otherwise.
      */
-    public boolean restoreUser(User user);
+    public int  restoreUser(User user);
 
     /**
      * Deactivate a {@link User} in the database.
@@ -163,7 +163,7 @@ public interface IUserDAO {
      * @param user The {@code User} to be deactivated.
      * @return {@code true} if the user is deactivated, {@code false} otherwise.
      */
-    public boolean disableUser(User user);
+    public int  disableUser(User user);
 
     /**
      * Check all duplication.If Email is duplication throw

@@ -19,6 +19,7 @@ import Exceptions.EmailDuplicationException;
 import Exceptions.PhoneNumberDuplicationException;
 import Exceptions.UsernameDuplicationException;
 import Interfaces.DAOs.IEmployeeDAO;
+import Lib.Converter;
 
 public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
 
@@ -164,6 +165,7 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
         return employeeList;
     }
 
+    @Override
     public List<Employee> getEmployee() {
         ResultSet rs;
         List<Employee> employeeList = new ArrayList<>();
@@ -185,6 +187,7 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
         return employeeList;
     }
 
+    @Override
     public Employee getEmployee(int EmployeeId) {
         ResultSet rs;
 
@@ -204,6 +207,7 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
         return null;
     }
 
+    @Override
     public Employee getEmployeeByUserId(int userId) {
         ResultSet rs;
 
@@ -224,23 +228,50 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
     }
 
     /*--------------------- ADD SECTION ---------------------  */
+    @Override
     public int addEmployee(Employee employee) throws UsernameDuplicationException, EmailDuplicationException,
             PhoneNumberDuplicationException, CitizenIDDuplicationException {
         int result = -1;
         if (checkDuplicate(employee)) {
-
-            String sql = "INSERT INTO Employee (User_ID, Employee_Citizen_ID, Employee_DoB, Employee_Phone_Number, Employee_Address, Employee_Role, Employee_Join_Date, Employee_Retire_Date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            /*
+            EXEC Insert_Employee 
+	'<name>', 
+	'<username>', 
+	'<password>', 
+	'<email>', 
+	'<empCitzenID>', 
+	'2003-9-23', -- DoB
+	'<phoneNumber>', 
+	'<address>', 
+	'2023-9-30', -- Joined Date
+	null, -- Retire Date
+	'Order Manager' -- Role name
+            
+             */
+            String sql = "EXEC Insert_Employee \n"
+                    + "	?, \n" //1. name
+                    + "	?, \n" //2. username
+                    + "	?, \n" //3. password
+                    + "	?, \n" //4. email
+                    + "	?, \n" //5. empCitzenID
+                    + "	?, \n" //6. DoB
+                    + "	?, \n" //7. phoneNumber
+                    + "	?, \n" //8. address
+                    + "	?, \n" //9. Joined Date
+                    + "	?, \n" //10. Retire Date
+                    + "	?"; // 11. Role name
             try {
                 PreparedStatement ps = conn.prepareStatement(sql);
-                ps.setInt(1, employee.getUserId());
-                ps.setString(2, employee.getCitizenId());
-                ps.setDate(3, employee.getDayOfBirth());
-                ps.setString(4, employee.getPhoneNumber());
-                ps.setString(5, employee.getAddress());
-                ps.setInt(6, employee.getRole());
-                ps.setDate(7, employee.getJoinDate());
-                ps.setDate(8, employee.getRetireDate());
-
+                ps.setNString(1, employee.getName());
+                ps.setString(2, employee.getUsername());
+                ps.setString(3, Converter.convertToMD5Hash(employee.getPassword()));
+                ps.setString(4, employee.getEmail());
+                ps.setString(5, employee.getCitizenId());
+                ps.setDate(6, employee.getDayOfBirth());
+                ps.setString(7, employee.getPhoneNumber());
+                ps.setNString(8, employee.getAddress());
+                ps.setDate(9, employee.getJoinDate());
+                ps.setDate(10, employee.getRetireDate());
                 result = ps.executeUpdate();
             } catch (SQLException ex) {
                 Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -250,6 +281,7 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
     }
 
     /*--------------------- UPDATE SECTION ---------------------  */
+    @Override
     public int updateEmployee(Employee employee) throws UsernameDuplicationException, EmailDuplicationException,
             PhoneNumberDuplicationException, CitizenIDDuplicationException {
         int result = -1;

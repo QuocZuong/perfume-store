@@ -194,9 +194,9 @@ public class UserDAO implements IUserDAO {
 
     /* --------------------- UPDATE SECTION --------------------- */
     @Override
-    public boolean updateUser(User updateUser) {
+    public int updateUser(User updateUser) {
         if (updateUser == null) {
-            return false;
+            return -1;
         }
 
         String sql = String.format("UPDATE [%s] SET %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ? WHERE %s = ?",
@@ -219,7 +219,7 @@ public class UserDAO implements IUserDAO {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return kq > 0;
+        return kq;
     }
 
     @Override
@@ -228,7 +228,7 @@ public class UserDAO implements IUserDAO {
                 || total == null) {
             return false;
         }
-
+        throw new UnsupportedOperationException();
         /*
          * Attribute:
          * ID (int) (primary key Indentity (1,1))
@@ -254,18 +254,17 @@ public class UserDAO implements IUserDAO {
 //            e.printStackTrace();
 //        }
 //        return 0;
-        return true;
     }
 
     /*--------------------- DELETE SECTION ---------------------  */
     @Override
-    public boolean restoreUser(User user) {
+    public int restoreUser(User user) {
         user.setActive(true);
         return updateUser(user);
     }
 
     @Override
-    public boolean disableUser(User user) {
+    public int disableUser(User user) {
         user.setActive(false);
         return updateUser(user);
     }

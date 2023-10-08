@@ -2,7 +2,6 @@ package DAOs;
 
 import Interfaces.DAOs.ICustomerDAO;
 import Models.Customer;
-import Models.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,8 +18,79 @@ public class CustomerDAO extends UserDAO implements ICustomerDAO {
     }
 
     @Override
-    public int addCustomer(Customer customer) {
-        return super.addUser(customer);
+    public boolean addCustomer(Customer customer) {
+        /*
+BEGIN TRANSACTION
+GO
+
+CREATE PROCEDURE Insert_Customer
+	@User_Name nvarchar(50),
+	@User_Username varchar(50),
+	@User_Password varchar(32),
+	@User_Email varchar(100),
+	@Customer_Credit_Point int
+AS
+BEGIN
+	-- Insert into table User first
+	INSERT INTO [User](
+		[User_Name], 
+		User_Username, 
+		User_Password, 
+		User_Email, 
+		User_Type
+	)
+	VALUES(
+		@User_Name, 
+		@User_Username, 
+		@User_Password, 
+		@User_Email, 
+		'Customer'
+	)
+
+	-- Get the userID which has just been generated
+	DECLARE @UserID int = (
+		 Select TOP 1 [User].[User_ID] from [User]
+		 ORDER BY [User].[User_ID] DESC
+	);
+
+
+
+	-- Insert into table Customer
+	INSERT INTO Customer([User_ID], Customer_Credit_Point)
+	VALUES(@UserID,@Customer_Credit_Point)
+
+END
+GO
+-- Example: insert role
+
+EXEC Insert_Customer 
+	'<name>', 
+	'<username>', 
+	'<password>', 
+	'<email>',
+	200
+GO
+SELECT * FROM [User]
+SELECT * FROM [Customer]
+GO
+ROLLBACK
+         */
+        String sql = "EXEC Insert_Customer ?, ?, ?, ?, ?";
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setNString(1, customer.getName());
+            ps.setNString(2, customer.getUsername());
+            ps.setString(3, customer.getPassword());
+            ps.setString(4, customer.getEmail());
+            ps.setInt(5, customer.getCustomerCreditPoint());
+
+            int result = ps.executeUpdate();
+            return result > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(CustomerDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
     @Override
@@ -47,13 +117,5 @@ public class CustomerDAO extends UserDAO implements ICustomerDAO {
         return null;
     }
 
-    public boolean restoreCustomer(Customer customer) {
-        return super.restoreUser(customer);
-    }
-
-    @Override
-    public boolean disableCustomer(Customer customer) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 
 }
