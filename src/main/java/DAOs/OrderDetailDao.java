@@ -93,7 +93,7 @@ public class OrderDetailDao implements IOrderDetailDAO {
 
   @Override
   public List<OrderDetail> getOrderDetail(int orderId) {
-    
+
     List<OrderDetail> list = new ArrayList<>();
     String sql = "SELECT * FROM [OrderDetail] WHERE Order_ID = ?";
 
@@ -120,8 +120,29 @@ public class OrderDetailDao implements IOrderDetailDAO {
 
   @Override
   public boolean updateOrderDetail(OrderDetail orderDetail) throws NullPointerException {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'updateOrderDetail'");
+    if (orderDetail == null) {
+      throw new NullPointerException("OrderDetail is null");
+    }
+
+    String sql = "UPDATE [OrderDetail] SET [Product_ID] = ?, [Quantity] = ?, [Price] = ?, [Total] = ? WHERE [Order_ID] = ?";
+
+    PreparedStatement ps = null;
+
+    try {
+      ps = conn.prepareStatement(sql);
+
+      ps.setInt(1, orderDetail.getProductId());
+      ps.setInt(2, orderDetail.getQuantity());
+      ps.setInt(3, orderDetail.getPrice());
+      ps.setInt(4, orderDetail.getTotal());
+      ps.setInt(5, orderDetail.getOrderId());
+
+      return ps.executeUpdate() > 0;
+    } catch (SQLException ex) {
+      Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+    }
+
+    return false;
   }
 
   /* --------------------------- DELETE SECTION --------------------------- */
