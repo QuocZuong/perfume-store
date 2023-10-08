@@ -1,16 +1,16 @@
 package DAOs;
 
+import java.util.List;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import Interfaces.DAOs.IOrderDetailDAO;
 import Models.OrderDetail;
+import Interfaces.DAOs.IOrderDetailDAO;
 
 public class OrderDetailDao implements IOrderDetailDAO {
 
@@ -136,6 +136,39 @@ public class OrderDetailDao implements IOrderDetailDAO {
       ps.setInt(3, orderDetail.getPrice());
       ps.setInt(4, orderDetail.getTotal());
       ps.setInt(5, orderDetail.getOrderId());
+
+      return ps.executeUpdate() > 0;
+    } catch (SQLException ex) {
+      Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+    }
+
+    return false;
+  }
+
+  public boolean updateOrderDetail(List<OrderDetail> odList) throws NullPointerException {
+    if (odList == null) {
+      throw new NullPointerException("OrderDetail is null");
+    }
+
+    String sql = "UPDATE [OrderDetail] SET [Product_ID] = ?, [Quantity] = ?, [Price] = ?, [Total] = ? WHERE [Order_ID] = ?";
+
+    PreparedStatement ps = null;
+
+    try {
+      ps = conn.prepareStatement(sql);
+
+      for (int i = 0; i < odList.size(); i++) {
+        OrderDetail orderDetail = odList.get(i);
+
+        ps.setInt(1, orderDetail.getProductId());
+        ps.setInt(2, orderDetail.getQuantity());
+        ps.setInt(3, orderDetail.getPrice());
+        ps.setInt(4, orderDetail.getTotal());
+        ps.setInt(5, orderDetail.getOrderId());
+
+        ps.addBatch();
+        ps.clearParameters();
+      }
 
       return ps.executeUpdate() > 0;
     } catch (SQLException ex) {
