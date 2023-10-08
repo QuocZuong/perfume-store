@@ -102,7 +102,7 @@ public class OrderDAO implements IOrderDAO {
             result = odDAO.addOrderDetail(odList);
 
             if (!result) {
-                // TODO: Delete order if add order detail failed.
+                // TODO: Delete order if add order detail failed
             }
         } catch (SQLException ex) {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
