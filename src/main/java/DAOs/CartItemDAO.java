@@ -25,7 +25,7 @@ public class CartItemDAO implements ICartItemDAO {
     private Connection conn;
 
     public CartItemDAO() {
-        conn = DB.DataManager.getConnection();
+        conn = DB.DBContext.getConnection();
     }
 
     // CRUD

@@ -23,7 +23,7 @@ public class ImportStashItemDAO implements IImportStashItemDAO {
     private Connection conn;
 
     public ImportStashItemDAO() {
-        conn = DB.DataManager.getConnection();
+        conn = DB.DBContext.getConnection();
     }
 
     // CRUD
