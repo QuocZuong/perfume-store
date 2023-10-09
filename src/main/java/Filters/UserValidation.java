@@ -1,11 +1,13 @@
 package Filters;
 
+import DAOs.EmployeeDAO;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import DAOs.UserDAO;
+import Models.Employee;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
@@ -24,6 +26,7 @@ public class UserValidation implements Filter {
     private FilterConfig filterConfig = null;
     private boolean debug = true;
     private final UserDAO userDAO = new UserDAO();
+    private final EmployeeDAO employeeDAO = new EmployeeDAO();
     private final String[] FOLDER_URL_LIST = {"/ADMIN_PAGE", "/CLIENT_PAGE", "/LOGIN_PAGE", "/PRODUCT_PAGE", "/USER_PAGE"};
 
     public UserValidation() {
@@ -145,24 +148,23 @@ public class UserValidation implements Filter {
     }
 
     public boolean isAdmin(HttpServletRequest request, HttpServletResponse response) {
-//        Cookie[] cookies = request.getCookies();
-//
-//        if (cookies != null) {
-//            for (int i = 0; i < cookies.length; i++) {
-//                if (cookies[i].getName().equals("Admin")) {
-//
-//                    if (!userDAO.isExistUsername(cookies[i].getValue()) && userDAO.isAdmin(cookies[i].getValue())) {
-//                        cookies[i].setMaxAge(0);
-//                        cookies[i].setPath("/");
-//                        response.addCookie(cookies[i]);
-//                        return false;
-//                    }
-//
-//                    request.getSession().setAttribute("userCookie", cookies[i]);
-//                    return true;
-//                }
-//            }
-//        }
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (int i = 0; i < cookies.length; i++) {
+                if (cookies[i].getName().equals("Admin")) {
+
+                    if (!userDAO.isExistUsername(cookies[i].getValue()) || !employeeDAO.isAdmin(cookies[i].getValue())) {
+                        cookies[i].setMaxAge(0);
+                        cookies[i].setPath("/");
+                        response.addCookie(cookies[i]);
+                        return false;
+                    }
+
+                    request.getSession().setAttribute("userCookie", cookies[i]);
+                    return true;
+                }
+            }
+        }
 
         return false;
     }
