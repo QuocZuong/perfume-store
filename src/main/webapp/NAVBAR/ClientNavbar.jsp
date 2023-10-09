@@ -23,8 +23,8 @@
         <a href="/" class="iconPage"><img src="/RESOURCES/images/icons/icon.webp" alt=""
                                           height="64"></a>
         <div class="account">
-            <a href="/Client/User"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
-            <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
+            <a href="/Customer/User"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+            <a href="/Customer/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
         </div>
         
     </body>

@@ -1,12 +1,14 @@
 package Filters;
 
 import DAOs.CustomerDAO;
+import DAOs.EmployeeDAO;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import DAOs.UserDAO;
+import Models.Employee;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
@@ -25,9 +27,10 @@ public class UserValidation implements Filter {
     private FilterConfig filterConfig = null;
     private boolean debug = true;
     private final UserDAO userDAO = new UserDAO();
+    private final EmployeeDAO employeeDAO = new EmployeeDAO();
     private final CustomerDAO customerDAO = new CustomerDAO();
-    private final String[] FOLDER_URL_LIST = { "/ADMIN_PAGE", "/CLIENT_PAGE", "/LOGIN_PAGE", "/PRODUCT_PAGE",
-            "/USER_PAGE" };
+    private final String[] FOLDER_URL_LIST = {"/ADMIN_PAGE", "/CLIENT_PAGE", "/LOGIN_PAGE", "/PRODUCT_PAGE",
+        "/USER_PAGE"};
 
     public UserValidation() {
     }
@@ -35,11 +38,11 @@ public class UserValidation implements Filter {
     /**
      * Validate cookies and redirect user to login page if not valid.
      *
-     * @param request  The servlet request we are processing
+     * @param request The servlet request we are processing
      * @param response The servlet response we are creating
-     * @param chain    The filter chain we are processing
+     * @param chain The filter chain we are processing
      *
-     * @exception IOException      if an input/output error occurs
+     * @exception IOException if an input/output error occurs
      * @exception ServletException if a servlet error occurs
      */
     public void doFilter(ServletRequest request, ServletResponse response,
@@ -101,7 +104,6 @@ public class UserValidation implements Filter {
                 return;
             }
         }
-
         // --------------------------PREVENT UNAUTHORISED ADMIN----------------------
         if (URI.startsWith("/Admin")) {
             if (!isAdmin) {
@@ -148,25 +150,22 @@ public class UserValidation implements Filter {
     }
 
     public boolean isAdmin(HttpServletRequest request, HttpServletResponse response) {
-        // Cookie[] cookies = request.getCookies();
-        //
-        // if (cookies != null) {
-        // for (int i = 0; i < cookies.length; i++) {
-        // if (cookies[i].getName().equals("Admin")) {
-        //
-        // if (!userDAO.isExistUsername(cookies[i].getValue()) &&
-        // userDAO.isAdmin(cookies[i].getValue())) {
-        // cookies[i].setMaxAge(0);
-        // cookies[i].setPath("/");
-        // response.addCookie(cookies[i]);
-        // return false;
-        // }
-        //
-        // request.getSession().setAttribute("userCookie", cookies[i]);
-        // return true;
-        // }
-        // }
-        // }
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("Admin")) {
+                    if (!userDAO.isExistUsername(cookie.getValue()) || !employeeDAO.isAdmin(cookie.getValue())) {
+                        System.out.println("thsi is admin delete cookie ");
+                        cookie.setMaxAge(0);
+                        cookie.setPath("/");
+                        response.addCookie(cookie);
+                        return false;
+                    }
+                    request.getSession().setAttribute("userCookie", cookie);
+                    return true;
+                }
+            }
+        }
 
         return false;
     }
