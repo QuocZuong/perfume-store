@@ -40,12 +40,56 @@ public class ProductDAO implements IProductDAO {
         Product_Active
     }
 
+    enum operation {
+        GET, SEARCH
+    }
+
+    public Product productFactory(ResultSet rs, operation o) throws SQLException, NullPointerException {
+        if (rs == null) {
+            throw new NullPointerException("ResultSet is null");
+        }
+
+        Product product = new Product();
+
+        switch (o) {
+            case GET:
+                product.setId(rs.getInt(Table.Product_ID.toString()));
+                product.setName(rs.getNString(Table.Product_Name.toString()));
+                product.setBrandId(rs.getInt(Table.Brand_ID.toString()));
+                product.setGender(rs.getNString(Table.Product_Gender.toString()));
+                product.setSmell(rs.getNString(Table.Product_Smell.toString()));
+                product.setReleaseYear(rs.getInt(Table.Product_Release_Year.toString()));
+                product.setVolume(rs.getInt(Table.Product_Volume.toString()));
+                product.setImgURL(rs.getNString(Table.Product_Img_URL.toString()));
+                product.setDescription(rs.getNString(Table.Product_Description.toString()));
+                product.setActive(rs.getBoolean(Table.Product_Active.toString()));
+
+                return product;
+
+            case SEARCH:
+                product.setId(rs.getInt(Table.Product_ID.toString()));
+                product.setName(rs.getNString(Table.Product_Name.toString()));
+                product.setBrandId(rs.getInt("Product_Brand_ID"));
+                product.setGender(rs.getNString(Table.Product_Gender.toString()));
+                product.setReleaseYear(rs.getInt(Table.Product_Release_Year.toString()));
+                product.setVolume(rs.getInt(Table.Product_Volume.toString()));
+                product.setSmell(rs.getNString(Table.Product_Smell.toString()));
+                product.setImgURL(rs.getNString(Table.Product_Img_URL.toString()));
+                product.setDescription(rs.getNString(Table.Product_Description.toString()));
+                product.setActive(rs.getBoolean(Table.Product_Active.toString()));
+
+                return product;
+        }
+
+        return null;
+    }
+
     // CRUD
     /*
-   * "ID,Name,BrandID,Price,Gender,Smell,Quantity,ReleaseYear,Volume,ImgURL,Description",
-   * // Product
+     * "ID,Name,BrandID,Price,Gender,Smell,Quantity,ReleaseYear,Volume,ImgURL,Description",
+     * // Product
      */
- /* ------------------------- CREATE SECTION ---------------------------- */
+    /* ------------------------- CREATE SECTION ---------------------------- */
     @Override
     public int addProduct(Product pd) {
         int result = 0;
@@ -79,7 +123,7 @@ public class ProductDAO implements IProductDAO {
 
             result = ps.executeUpdate();
 
-            //Only when backup data
+            // Only when backup data
             if (pd.getStock() != null) {
                 StockDAO stkDAO = new StockDAO();
                 int lastID = DatabaseUtils.getLastIndentityOf("Product");
@@ -96,7 +140,7 @@ public class ProductDAO implements IProductDAO {
         int result = 0;
         String datas[] = data.split("~");
         BrandDAO brDAO = new BrandDAO();
-        // "0         ~1                                  ~2                  ~3                       ~4                     ~5                  ~6                                   ~7                   ~8                   ~9
+        // "0 ~1 ~2 ~3 ~4 ~5 ~6 ~7 ~8 ~9
         // "NAME~BRANDNAME(string)~PRICE(INT)~Gender(string)~Smell(String)~Quantity(int)~ReleaseYear(smallint)~Volume(INT)~URL(Srtring)~Description",
 
         String name = datas[0];
@@ -148,16 +192,7 @@ public class ProductDAO implements IProductDAO {
             PreparedStatement ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
             while (rs.next()) {
-                Product product = new Product();
-                product.setId(rs.getInt(Table.Product_ID.toString()));
-                product.setName(rs.getNString(Table.Product_Name.toString()));
-                product.setBrandId(rs.getInt(Table.Brand_ID.toString()));
-                product.setGender(rs.getNString(Table.Product_Smell.toString()));
-                product.setReleaseYear(rs.getInt(Table.Product_Release_Year.toString()));
-                product.setVolume(rs.getInt(Table.Product_Volume.toString()));
-                product.setImgURL(rs.getNString(Table.Product_Img_URL.toString()));
-                product.setDescription(rs.getNString(Table.Product_Description.toString()));
-                product.setActive(rs.getBoolean(Table.Product_Active.toString()));
+                Product product = productFactory(rs, operation.GET);
 
                 Stock stock = new Stock();
                 stock.setProductID(rs.getInt(Table.Product_ID.toString()));
@@ -190,16 +225,7 @@ public class ProductDAO implements IProductDAO {
             ps.setInt(1, productId);
             rs = ps.executeQuery();
             if (rs.next()) {
-                product = new Product();
-                product.setId(rs.getInt(Table.Product_ID.toString()));
-                product.setName(rs.getNString(Table.Product_Name.toString()));
-                product.setBrandId(rs.getInt(Table.Brand_ID.toString()));
-                product.setGender(rs.getNString(Table.Product_Smell.toString()));
-                product.setReleaseYear(rs.getInt(Table.Product_Release_Year.toString()));
-                product.setVolume(rs.getInt(Table.Product_Volume.toString()));
-                product.setImgURL(rs.getNString(Table.Product_Img_URL.toString()));
-                product.setDescription(rs.getNString(Table.Product_Description.toString()));
-                product.setActive(rs.getBoolean(Table.Product_Active.toString()));
+                product = productFactory(rs, operation.GET);
 
                 Stock stock = new Stock();
                 stock.setProductID(rs.getInt(Table.Product_ID.toString()));
@@ -287,17 +313,7 @@ public class ProductDAO implements IProductDAO {
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                Product product = new Product();
-                product.setId(rs.getInt(Table.Product_ID.toString()));
-                product.setName(rs.getNString(Table.Product_Name.toString()));
-                product.setBrandId(rs.getInt("Product_Brand_ID"));
-                product.setGender(rs.getNString(Table.Product_Gender.toString()));
-                product.setReleaseYear(rs.getInt(Table.Product_Release_Year.toString()));
-                product.setVolume(rs.getInt(Table.Product_Volume.toString()));
-                product.setSmell(rs.getNString(Table.Product_Smell.toString()));
-                product.setImgURL(rs.getNString(Table.Product_Img_URL.toString()));
-                product.setDescription(rs.getNString(Table.Product_Description.toString()));
-                product.setActive(rs.getBoolean(Table.Product_Active.toString()));
+                Product product = productFactory(rs, operation.SEARCH);
 
                 Stock stock = new Stock();
                 stock.setProductID(rs.getInt(Table.Product_ID.toString()));
@@ -342,10 +358,9 @@ public class ProductDAO implements IProductDAO {
         System.out.println(("Unisex").equals(GENDER));
 
         List<Product> filteredProduct = productList.stream()
-                .filter(product
-                        -> (brandId == -1 || product.getBrandId() == brandId)
-                && (GENDER == null || product.getGender().equals(GENDER))
-                && product.getStock().getPrice() >= LOW && product.getStock().getPrice() <= HIGH)
+                .filter(product -> (brandId == -1 || product.getBrandId() == brandId)
+                        && (GENDER == null || product.getGender().equals(GENDER))
+                        && product.getStock().getPrice() >= LOW && product.getStock().getPrice() <= HIGH)
                 .collect(Collectors.toList());
         return filteredProduct;
     }
@@ -375,16 +390,16 @@ public class ProductDAO implements IProductDAO {
     @Override
     public int updateProduct(Product product) {
         String sql = "UPDATE Product\n"
-                + "SET Product_Name = ?,\n" //1
-                + "Brand_ID = ?,\n" //2
-                + "Product_Gender = ?,\n" //3
-                + "Product_Smell = ?,\n" //4
-                + "Product_Release_Year = ?,\n" //5
-                + "Product_Volume = ?,\n" //6
-                + "Product_Img_URL = ?,\n" //7
-                + "Product_Description = ?,\n" //8
-                + "Product_Active = ?\n" //9
-                + "WHERE Product_ID = ?"; //10
+                + "SET Product_Name = ?,\n" // 1
+                + "Brand_ID = ?,\n" // 2
+                + "Product_Gender = ?,\n" // 3
+                + "Product_Smell = ?,\n" // 4
+                + "Product_Release_Year = ?,\n" // 5
+                + "Product_Volume = ?,\n" // 6
+                + "Product_Img_URL = ?,\n" // 7
+                + "Product_Description = ?,\n" // 8
+                + "Product_Active = ?\n" // 9
+                + "WHERE Product_ID = ?"; // 10
         int result = 0;
 
         try {
