@@ -1,7 +1,6 @@
 package DAOs;
 
 import Models.User;
-import Lib.Generator;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -13,16 +12,12 @@ import java.util.logging.Logger;
 
 import javax.security.auth.login.AccountNotFoundException;
 
-import DB.DBContext;
 import Exceptions.AccountDeactivatedException;
-import java.io.UnsupportedEncodingException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.UsernameDuplicationException;
 import Exceptions.WrongPasswordException;
 import Interfaces.DAOs.IUserDAO;
-import Lib.EmailSender;
 import Lib.Converter;
-import Lib.DatabaseUtils;
 import java.util.List;
 
 public class UserDAO implements IUserDAO {
@@ -108,6 +103,24 @@ public class UserDAO implements IUserDAO {
         return null;
     }
 
+    public boolean isExistUsername(String username) {
+        String sql = "SELECT * FROM [User] WHERE User_Name = ?";
+
+        ResultSet rs;
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setNString(1, username);
+
+            rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return false;
+    }
+
     @Override
     public User getUserByEmail(String email) {
         if (email == null) {
@@ -134,9 +147,10 @@ public class UserDAO implements IUserDAO {
         return null;
     }
 
-    //loginString is username or email
+    // loginString is username or email
     @Override
-    public User getUser(String loginString, String password, loginType Type) throws WrongPasswordException, AccountDeactivatedException, AccountNotFoundException {
+    public User getUser(String loginString, String password, loginType Type)
+            throws WrongPasswordException, AccountDeactivatedException, AccountNotFoundException {
         User user = null;
         ResultSet rs;
         String sql = "";
@@ -164,7 +178,8 @@ public class UserDAO implements IUserDAO {
         return user;
     }
 
-    public boolean checkAccount(User user, loginType Type) throws WrongPasswordException, AccountDeactivatedException, AccountNotFoundException {
+    public boolean checkAccount(User user, loginType Type)
+            throws WrongPasswordException, AccountDeactivatedException, AccountNotFoundException {
         if (user == null) {
             throw new WrongPasswordException();
         }
@@ -242,7 +257,8 @@ public class UserDAO implements IUserDAO {
     }
 
     @Override
-    public boolean checkout(Integer customerId, Date Date, String address, String phoneNumber, String note, Integer total) {
+    public boolean checkout(Integer customerId, Date Date, String address, String phoneNumber, String note,
+            Integer total) {
         if (customerId == null || Date == null || address == null || phoneNumber == null || note == null
                 || total == null) {
             return false;
@@ -258,21 +274,22 @@ public class UserDAO implements IUserDAO {
          * Note (nvarchar(500))
          * Sum (int default 0)
          */
-//        String sql = "INSERT INTO [Order](ClientID, [Date], [Address], [PhoneNumber], [Note], [Sum]) VALUES (?, ?, ?, ?, ?, ?)";
-//        try {
-//            PreparedStatement ps = conn.prepareStatement(sql);
-//            ps.setInt(1, ClientID);
-//            ps.setDate(2, Date);
-//            ps.setNString(3, Address);
-//            ps.setNString(4, PhoneNumber);
-//            ps.setNString(5, Note);
-//            ps.setInt(6, Sum);
-//
-//            return ps.executeUpdate();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return 0;
+        // String sql = "INSERT INTO [Order](ClientID, [Date], [Address], [PhoneNumber],
+        // [Note], [Sum]) VALUES (?, ?, ?, ?, ?, ?)";
+        // try {
+        // PreparedStatement ps = conn.prepareStatement(sql);
+        // ps.setInt(1, ClientID);
+        // ps.setDate(2, Date);
+        // ps.setNString(3, Address);
+        // ps.setNString(4, PhoneNumber);
+        // ps.setNString(5, Note);
+        // ps.setInt(6, Sum);
+        //
+        // return ps.executeUpdate();
+        // } catch (SQLException e) {
+        // e.printStackTrace();
+        // }
+        // return 0;
     }
 
     /*--------------------- DELETE SECTION ---------------------  */
@@ -306,7 +323,7 @@ public class UserDAO implements IUserDAO {
      * Create a new {@link User} object from a {@link ResultSet}.
      *
      * @param queryResult The {@code ResultSet} containing the user's
-     * information.
+     *                    information.
      * @return An {@code User} object containing the user's information.
      * @throws SQLException If an error occurs while retrieving the data.
      */
