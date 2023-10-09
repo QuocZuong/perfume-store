@@ -26,7 +26,8 @@ public class UserValidation implements Filter {
     private boolean debug = true;
     private final UserDAO userDAO = new UserDAO();
     private final CustomerDAO customerDAO = new CustomerDAO();
-    private final String[] FOLDER_URL_LIST = {"/ADMIN_PAGE", "/CLIENT_PAGE", "/LOGIN_PAGE", "/PRODUCT_PAGE", "/USER_PAGE"};
+    private final String[] FOLDER_URL_LIST = { "/ADMIN_PAGE", "/CLIENT_PAGE", "/LOGIN_PAGE", "/PRODUCT_PAGE",
+            "/USER_PAGE" };
 
     public UserValidation() {
     }
@@ -34,11 +35,11 @@ public class UserValidation implements Filter {
     /**
      * Validate cookies and redirect user to login page if not valid.
      *
-     * @param request The servlet request we are processing
+     * @param request  The servlet request we are processing
      * @param response The servlet response we are creating
-     * @param chain The filter chain we are processing
+     * @param chain    The filter chain we are processing
      *
-     * @exception IOException if an input/output error occurs
+     * @exception IOException      if an input/output error occurs
      * @exception ServletException if a servlet error occurs
      */
     public void doFilter(ServletRequest request, ServletResponse response,
@@ -49,7 +50,7 @@ public class UserValidation implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
 
         boolean isAdmin = isAdmin(req, res);
-        boolean isClient = isClient(req, res);
+        boolean isCustomer = isCustomer(req, res);
 
         revalidateUserRoleSession(req, res);
 
@@ -61,8 +62,8 @@ public class UserValidation implements Filter {
         res.setDateHeader("Expires", 0); // Proxies.
 
         // --------------------------EXCLUDE URL PARTERN----------------------
-//        System.out.println("Current URL:" + URL);
-//        System.out.println("Vao do filter");
+        // System.out.println("Current URL:" + URL);
+        // System.out.println("Vao do filter");
         // --------------------------PREVENT FOLDER LINKS----------------------
         for (String folder : FOLDER_URL_LIST) {
             if (URI.startsWith(folder)) {
@@ -76,8 +77,8 @@ public class UserValidation implements Filter {
         // --------------------------SKIP LOGIN IF IS USER----------------------
         // If in Login page and is an admin or client, go to product list.
         if (URI.startsWith("/Log/Login")) {
-            if (isClient) {
-                res.sendRedirect("/Client/User");
+            if (isCustomer) {
+                res.sendRedirect("/Customer/User");
                 return;
             }
             if (isAdmin) {
@@ -87,15 +88,15 @@ public class UserValidation implements Filter {
         }
 
         // --------------------------PREVENT UNAUTHORISED USER----------------------
-        if (URI.startsWith("/Client")) {
+        if (URI.startsWith("/Customer")) {
             if (isAdmin) {
                 System.out.println("Going admin");
                 res.sendRedirect("/Admin");
                 return;
             }
 
-            if (!isClient) {
-                System.out.println("Not Client, so redirect to /Log/Login");
+            if (!isCustomer) {
+                System.out.println("Not Customer, so redirect to /Log/Login");
                 res.sendRedirect("/Log/Login");
                 return;
             }
@@ -135,7 +136,7 @@ public class UserValidation implements Filter {
     }
 
     public void revalidateUserRoleSession(HttpServletRequest request, HttpServletResponse response) {
-        boolean isAnonymous = !isAdmin(request, response) && !isClient(request, response);
+        boolean isAnonymous = !isAdmin(request, response) && !isCustomer(request, response);
 
         if (isAnonymous) {
             Cookie userCookie = (Cookie) request.getSession().getAttribute("userCookie");
@@ -147,24 +148,25 @@ public class UserValidation implements Filter {
     }
 
     public boolean isAdmin(HttpServletRequest request, HttpServletResponse response) {
-//        Cookie[] cookies = request.getCookies();
-//
-//        if (cookies != null) {
-//            for (int i = 0; i < cookies.length; i++) {
-//                if (cookies[i].getName().equals("Admin")) {
-//
-//                    if (!userDAO.isExistUsername(cookies[i].getValue()) && userDAO.isAdmin(cookies[i].getValue())) {
-//                        cookies[i].setMaxAge(0);
-//                        cookies[i].setPath("/");
-//                        response.addCookie(cookies[i]);
-//                        return false;
-//                    }
-//
-//                    request.getSession().setAttribute("userCookie", cookies[i]);
-//                    return true;
-//                }
-//            }
-//        }
+        // Cookie[] cookies = request.getCookies();
+        //
+        // if (cookies != null) {
+        // for (int i = 0; i < cookies.length; i++) {
+        // if (cookies[i].getName().equals("Admin")) {
+        //
+        // if (!userDAO.isExistUsername(cookies[i].getValue()) &&
+        // userDAO.isAdmin(cookies[i].getValue())) {
+        // cookies[i].setMaxAge(0);
+        // cookies[i].setPath("/");
+        // response.addCookie(cookies[i]);
+        // return false;
+        // }
+        //
+        // request.getSession().setAttribute("userCookie", cookies[i]);
+        // return true;
+        // }
+        // }
+        // }
 
         return false;
     }
@@ -174,7 +176,7 @@ public class UserValidation implements Filter {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("Customer")) {
-                    if (!userDAO.(cookie.getValue()) && userDAO.isClient(cookie.getValue())) {
+                    if (!userDAO.isExistUsername((cookie.getValue())) || !customerDAO.isCustomer(cookie.getValue())) {
                         cookie.setMaxAge(0);
                         cookie.setPath("/");
                         response.addCookie(cookie);
