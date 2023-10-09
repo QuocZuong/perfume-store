@@ -1,5 +1,6 @@
 package Filters;
 
+import DAOs.CustomerDAO;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -24,6 +25,7 @@ public class UserValidation implements Filter {
     private FilterConfig filterConfig = null;
     private boolean debug = true;
     private final UserDAO userDAO = new UserDAO();
+    private final CustomerDAO customerDAO = new CustomerDAO();
     private final String[] FOLDER_URL_LIST = {"/ADMIN_PAGE", "/CLIENT_PAGE", "/LOGIN_PAGE", "/PRODUCT_PAGE", "/USER_PAGE"};
 
     public UserValidation() {
@@ -167,26 +169,23 @@ public class UserValidation implements Filter {
         return false;
     }
 
-    public boolean isClient(HttpServletRequest request, HttpServletResponse response) {
-//        Cookie[] cookies = request.getCookies();
-//
-//        if (cookies != null) {
-//            for (int i = 0; i < cookies.length; i++) {
-//                if (cookies[i].getName().equals("Client")) {
-//
-//                    if (!userDAO.isExistUsername(cookies[i].getValue()) && userDAO.isClient(cookies[i].getValue())) {
-//                        cookies[i].setMaxAge(0);
-//                        cookies[i].setPath("/");
-//                        response.addCookie(cookies[i]);
-//                        return false;
-//                    }
-//
-//                    cookies[i].setPath("/");
-//                    request.getSession().setAttribute("userCookie", cookies[i]);
-//                    return true;
-//                }
-//            }
-//        }
+    public boolean isCustomer(HttpServletRequest request, HttpServletResponse response) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("Customer")) {
+                    if (!userDAO.(cookie.getValue()) && userDAO.isClient(cookie.getValue())) {
+                        cookie.setMaxAge(0);
+                        cookie.setPath("/");
+                        response.addCookie(cookie);
+                        return false;
+                    }
+                    cookie.setPath("/");
+                    request.getSession().setAttribute("userCookie", cookie);
+                    return true;
+                }
+            }
+        }
 
         return false;
     }
