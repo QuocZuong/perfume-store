@@ -104,7 +104,6 @@ public class UserValidation implements Filter {
                 return;
             }
         }
-
         // --------------------------PREVENT UNAUTHORISED ADMIN----------------------
         if (URI.startsWith("/Admin")) {
             if (!isAdmin) {
@@ -153,17 +152,16 @@ public class UserValidation implements Filter {
     public boolean isAdmin(HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
-            for (int i = 0; i < cookies.length; i++) {
-                if (cookies[i].getName().equals("Admin")) {
-
-                    if (!userDAO.isExistUsername(cookies[i].getValue()) || !employeeDAO.isAdmin(cookies[i].getValue())) {
-                        cookies[i].setMaxAge(0);
-                        cookies[i].setPath("/");
-                        response.addCookie(cookies[i]);
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("Admin")) {
+                    if (!userDAO.isExistUsername(cookie.getValue()) || !employeeDAO.isAdmin(cookie.getValue())) {
+                        System.out.println("thsi is admin delete cookie ");
+                        cookie.setMaxAge(0);
+                        cookie.setPath("/");
+                        response.addCookie(cookie);
                         return false;
                     }
-
-                    request.getSession().setAttribute("userCookie", cookies[i]);
+                    request.getSession().setAttribute("userCookie", cookie);
                     return true;
                 }
             }

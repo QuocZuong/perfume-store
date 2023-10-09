@@ -104,7 +104,7 @@ public class UserDAO implements IUserDAO {
     }
 
     public boolean isExistUsername(String username) {
-        String sql = "SELECT * FROM [User] WHERE User_Name = ?";
+        String sql = "SELECT * FROM [User] WHERE User_Username = ?";
 
         ResultSet rs;
 
@@ -117,7 +117,6 @@ public class UserDAO implements IUserDAO {
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         return false;
     }
 
@@ -323,7 +322,7 @@ public class UserDAO implements IUserDAO {
      * Create a new {@link User} object from a {@link ResultSet}.
      *
      * @param queryResult The {@code ResultSet} containing the user's
-     *                    information.
+     * information.
      * @return An {@code User} object containing the user's information.
      * @throws SQLException If an error occurs while retrieving the data.
      */

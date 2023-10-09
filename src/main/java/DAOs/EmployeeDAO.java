@@ -77,21 +77,8 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
     }
 
     public boolean isAdmin(String username) {
-        String sql = "SELECT * FROM [User] WHERE User_Name = ? AND User_Type = 'Admin'";
-
-        ResultSet rs;
-
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setNString(1, username);
-
-            rs = ps.executeQuery();
-            return rs.next();
-        } catch (SQLException ex) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return false;
+        Employee employee = getEmployee(username);
+        return employee != null && employee.getRole().getName().equals("Admin");
     }
 
     public boolean checkDuplicate(Employee employee) throws UsernameDuplicationException, EmailDuplicationException,
@@ -251,6 +238,32 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, userId);
+            rs = ps.executeQuery();
+            Employee employee = null;
+            if (rs.next()) {
+                employee = generateFullyEmployeeByResultSet(rs);
+            }
+            return employee;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public Employee getEmployee(String username) {
+        if (username == null || username.equals("")) {
+            throw new IllegalArgumentException("Username cannot be less than or equal to 0 or null");
+        }
+
+        ResultSet rs;
+
+        String sql = "SELECT * FROM Employee emp\n"
+                + "JOIN [User] ON emp.[User_ID] = [User].[User_ID] \n"
+                + "JOIN [Employee_Role] empR ON emp.Employee_Role = empR.Role_ID \n"
+                + "WHERE [User].[User_Username] = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, username);
             rs = ps.executeQuery();
             Employee employee = null;
             if (rs.next()) {
