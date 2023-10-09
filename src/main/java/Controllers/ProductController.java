@@ -189,7 +189,7 @@ public class ProductController extends HttpServlet {
         for (int i = 0; i < data.length; i++) {
             if (data[i].equals("ID")) {
                 int id = Integer.parseInt(data[i + 1]);
-                Product p = pDAO.getProduct(id);
+                Product p = pDAO.getActiveProduct(id);
 
                 if (p != null) {
                     request.setAttribute("product", p);

@@ -30,7 +30,7 @@ public class ProductDAO implements IProductDAO {
     public enum Table {
         Product_ID,
         Product_Name,
-        Product_Brand_ID,
+        Brand_ID,
         Product_Gender,
         Product_Smell,
         Product_Release_Year,
@@ -54,7 +54,7 @@ public class ProductDAO implements IProductDAO {
 
             sql.append("(");
             sql.append(Table.Product_Name.toString()).append(",");
-            sql.append(Table.Product_Brand_ID.toString()).append(",");
+            sql.append(Table.Brand_ID.toString()).append(",");
             sql.append(Table.Product_Gender.toString()).append(",");
             sql.append(Table.Product_Smell.toString()).append(",");
             sql.append(Table.Product_Release_Year.toString()).append(",");
@@ -141,7 +141,8 @@ public class ProductDAO implements IProductDAO {
     @Override
     public List<Product> getAll() {
         ResultSet rs;
-        String sql = "SELECT * FROM Product";
+        String sql = "SELECT * FROM Product p\n"
+                + "JOIN Stock stk ON stk.Product_ID = p.Product_ID";
         List<Product> productList = new ArrayList<>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -150,13 +151,20 @@ public class ProductDAO implements IProductDAO {
                 Product product = new Product();
                 product.setId(rs.getInt(Table.Product_ID.toString()));
                 product.setName(rs.getNString(Table.Product_Name.toString()));
-                product.setBrandId(rs.getInt(Table.Product_Brand_ID.toString()));
+                product.setBrandId(rs.getInt(Table.Brand_ID.toString()));
                 product.setGender(rs.getNString(Table.Product_Smell.toString()));
                 product.setReleaseYear(rs.getInt(Table.Product_Release_Year.toString()));
                 product.setVolume(rs.getInt(Table.Product_Volume.toString()));
                 product.setImgURL(rs.getNString(Table.Product_Img_URL.toString()));
                 product.setDescription(rs.getNString(Table.Product_Description.toString()));
                 product.setActive(rs.getBoolean(Table.Product_Active.toString()));
+
+                Stock stock = new Stock();
+                stock.setProductID(rs.getInt(Table.Product_ID.toString()));
+                stock.setPrice(rs.getInt("Price"));
+                stock.setQuantity(rs.getInt("Quantity"));
+
+                product.setStock(stock);
 
                 productList.add(product);
             }
@@ -170,7 +178,9 @@ public class ProductDAO implements IProductDAO {
     @Override
     public Product getProduct(int productId) {
         ResultSet rs;
-        String sql = "SELECT * FROM Product WHERE Product_ID  = ?";
+        String sql = "SELECT * FROM Product p\n"
+                + "JOIN Stock stk ON stk.Product_ID = p.Product_ID\n"
+                + "WHERE p.Product_ID  = ?";
 
         Product product = null;
 
@@ -183,13 +193,20 @@ public class ProductDAO implements IProductDAO {
                 product = new Product();
                 product.setId(rs.getInt(Table.Product_ID.toString()));
                 product.setName(rs.getNString(Table.Product_Name.toString()));
-                product.setBrandId(rs.getInt(Table.Product_Brand_ID.toString()));
+                product.setBrandId(rs.getInt(Table.Brand_ID.toString()));
                 product.setGender(rs.getNString(Table.Product_Smell.toString()));
                 product.setReleaseYear(rs.getInt(Table.Product_Release_Year.toString()));
                 product.setVolume(rs.getInt(Table.Product_Volume.toString()));
                 product.setImgURL(rs.getNString(Table.Product_Img_URL.toString()));
                 product.setDescription(rs.getNString(Table.Product_Description.toString()));
                 product.setActive(rs.getBoolean(Table.Product_Active.toString()));
+
+                Stock stock = new Stock();
+                stock.setProductID(rs.getInt(Table.Product_ID.toString()));
+                stock.setPrice(rs.getInt("Price"));
+                stock.setQuantity(rs.getInt("Quantity"));
+
+                product.setStock(stock);
             }
         } catch (SQLException ex) {
             Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -273,7 +290,7 @@ public class ProductDAO implements IProductDAO {
                 Product product = new Product();
                 product.setId(rs.getInt(Table.Product_ID.toString()));
                 product.setName(rs.getNString(Table.Product_Name.toString()));
-                product.setBrandId(rs.getInt(Table.Product_Brand_ID.toString()));
+                product.setBrandId(rs.getInt("Product_Brand_ID"));
                 product.setGender(rs.getNString(Table.Product_Gender.toString()));
                 product.setReleaseYear(rs.getInt(Table.Product_Release_Year.toString()));
                 product.setVolume(rs.getInt(Table.Product_Volume.toString()));
@@ -349,7 +366,7 @@ public class ProductDAO implements IProductDAO {
     @Override
     public List<Product> filterProductByBrand(Brand brand) {
         List<Product> productList = getAll().stream()
-                .filter(product -> ((Product) product).getBrandId() == brand.getId())
+                .filter(product -> product.getBrandId() == brand.getId())
                 .collect(Collectors.toList());
         return productList;
     }
