@@ -117,7 +117,7 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
      *
      * @param rs get a ResultSet.
      * @return return the employee that contain user information and employee
-     *         information.
+     * information.
      * @throws SQLException return error when execute SQL occur.
      */
     private Employee generateEmployeeByResultSet(ResultSet rs) throws SQLException {
@@ -147,16 +147,11 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
      * data from a ResultSet.
      *
      * @param rs The parameter "rs" is a ResultSet object, which is used to
-     *           retrieve data from a database query result. In this case, it is
-     *           used to
-     *           retrieve data for an Employee object.
+     * retrieve data from a database query result. In this case, it is used to
+     * retrieve data for an Employee object.
      * @return The method is returning an instance of the Employee class.
      */
     private Employee generateFullyEmployeeByResultSet(ResultSet rs) throws SQLException {
-        if (!rs.next()) {
-            throw new IllegalArgumentException("ResultSet cannot be false");
-        }
-
         Employee employee = new Employee();
 
         employee.setId(rs.getInt("User_ID"));
