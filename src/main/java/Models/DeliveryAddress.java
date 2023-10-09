@@ -9,63 +9,105 @@ public class DeliveryAddress {
     private String phoneNumber;
     private String address;
     private String status;
-    private Date Create_At;
-    private Date Modified_At;
+    private Date createAt;
+    private Date modifiedAt;
 
+    /**
+     * @return int return the customerId
+     */
     public int getCustomerId() {
         return customerId;
     }
 
+    /**
+     * @param customerId the customerId to set
+     */
     public void setCustomerId(int customerId) {
         this.customerId = customerId;
     }
 
+    /**
+     * @return String return the receiverName
+     */
     public String getReceiverName() {
         return receiverName;
     }
 
+    /**
+     * @param receiverName the receiverName to set
+     */
     public void setReceiverName(String receiverName) {
         this.receiverName = receiverName;
     }
 
+    /**
+     * @return String return the phoneNumber
+     */
     public String getPhoneNumber() {
         return phoneNumber;
     }
 
+    /**
+     * @param phoneNumber the phoneNumber to set
+     */
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
+    /**
+     * @return String return the address
+     */
     public String getAddress() {
         return address;
     }
 
+    /**
+     * @param address the address to set
+     */
     public void setAddress(String address) {
         this.address = address;
     }
 
+    /**
+     * @return String return the status
+     */
     public String getStatus() {
         return status;
     }
 
+    /**
+     * @param status the status to set
+     */
     public void setStatus(String status) {
         this.status = status;
     }
 
-    public Date getCreate_At() {
-        return Create_At;
+    /**
+     * @return Date return the createAt
+     */
+    public Date getCreateAt() {
+        return createAt;
     }
 
-    public void setCreate_At(Date Create_At) {
-        this.Create_At = Create_At;
+    /**
+     * @param createAt the createAt to set
+     */
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
     }
 
-    public Date getModified_At() {
-        return Modified_At;
+    /**
+     * @return Date return the modifiedAt
+     */
+    public Date getModifiedAt() {
+        return modifiedAt;
     }
 
-    public void setModified_At(Date Modified_At) {
-        this.Modified_At = Modified_At;
+    /**
+     * @param modifiedAt the modifiedAt to set
+     */
+    public void setModifiedAt(Date modifiedAt) {
+        this.modifiedAt = modifiedAt;
     }
 
 }
