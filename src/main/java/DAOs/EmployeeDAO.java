@@ -91,7 +91,7 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
      *
      * @param rs get a ResultSet.
      * @return return the employee that contain user information and employee
-     * information.
+     *         information.
      * @throws SQLException return error when execute SQL occur.
      */
     private Employee generateEmployeeByResultSet(ResultSet rs) throws SQLException {
@@ -118,8 +118,9 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
      * data from a ResultSet.
      *
      * @param rs The parameter "rs" is a ResultSet object, which is used to
-     * retrieve data from a database query result. In this case, it is used to
-     * retrieve data for an Employee object.
+     *           retrieve data from a database query result. In this case, it is
+     *           used to
+     *           retrieve data for an Employee object.
      * @return The method is returning an instance of the Employee class.
      */
     private Employee generateFullyEmployeeByResultSet(ResultSet rs) throws SQLException {
@@ -242,31 +243,31 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
         int result = -1;
         if (checkDuplicate(employee)) {
             /*
-            EXEC Insert_Employee 
-	'<name>', 
-	'<username>', 
-	'<password>', 
-	'<email>', 
-	'<empCitzenID>', 
-	'2003-9-23', -- DoB
-	'<phoneNumber>', 
-	'<address>', 
-	'2023-9-30', -- Joined Date
-	null, -- Retire Date
-	'Order Manager' -- Role name
-            
+             * EXEC Insert_Employee
+             * '<name>',
+             * '<username>',
+             * '<password>',
+             * '<email>',
+             * '<empCitzenID>',
+             * '2003-9-23', -- DoB
+             * '<phoneNumber>',
+             * '<address>',
+             * '2023-9-30', -- Joined Date
+             * null, -- Retire Date
+             * 'Order Manager' -- Role name
+             * 
              */
             String sql = "EXEC Insert_Employee \n"
-                    + "	?, \n" //1. name
-                    + "	?, \n" //2. username
-                    + "	?, \n" //3. password
-                    + "	?, \n" //4. email
-                    + "	?, \n" //5. empCitzenID
-                    + "	?, \n" //6. DoB
-                    + "	?, \n" //7. phoneNumber
-                    + "	?, \n" //8. address
-                    + "	?, \n" //9. Joined Date
-                    + "	?, \n" //10. Retire Date
+                    + "	?, \n" // 1. name
+                    + "	?, \n" // 2. username
+                    + "	?, \n" // 3. password
+                    + "	?, \n" // 4. email
+                    + "	?, \n" // 5. empCitzenID
+                    + "	?, \n" // 6. DoB
+                    + "	?, \n" // 7. phoneNumber
+                    + "	?, \n" // 8. address
+                    + "	?, \n" // 9. Joined Date
+                    + "	?, \n" // 10. Retire Date
                     + "	?"; // 11. Role name
             try {
                 PreparedStatement ps = conn.prepareStatement(sql);
