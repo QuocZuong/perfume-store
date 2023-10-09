@@ -176,7 +176,7 @@
                                     <c:if  test='<%= productList != null%>'>
                                         <% for (Product product : productList) {%>
 
-                                        <a href="/Product/Detail/ID/<%=  product.getId()%>">
+                                        <a href="/Product/Detail/ID/<%=  product.getId()%>" class="productA">
                                             <div class="product">
                                                 <img src="<%= product.getImgURL()%>" alt="" class="product-img">
                                                 <span class="product-brand">
