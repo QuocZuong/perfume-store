@@ -62,7 +62,6 @@ public class OrderDetailDao implements IOrderDetailDAO {
       }
     }
 
-    boolean result = false;
     PreparedStatement ps = null;
     String sql = "INSERT INTO [OrderDetail]\n"
         + " VALUES(?, ?, ?, ?, ?)";
@@ -83,12 +82,20 @@ public class OrderDetailDao implements IOrderDetailDAO {
         ps.clearParameters();
       }
 
-      result = ps.executeUpdate() > 0;
+      int status[] = ps.executeBatch();
+      
+      for (int s : status) {
+        if (s < 0) {
+          return false;
+        }
+      }
+
+      return true;
     } catch (SQLException ex) {
       Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
     }
 
-    return result;
+    return false;
   }
 
   @Override
@@ -170,7 +177,15 @@ public class OrderDetailDao implements IOrderDetailDAO {
         ps.clearParameters();
       }
 
-      return ps.executeUpdate() > 0;
+      int status[] = ps.executeBatch();
+      
+      for (int s : status) {
+        if (s < 0) {
+          return false;
+        }
+      }
+
+      return true;
     } catch (SQLException ex) {
       Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
     }
