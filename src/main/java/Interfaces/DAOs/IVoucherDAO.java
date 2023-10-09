@@ -22,4 +22,8 @@ public interface IVoucherDAO {
     ArrayList<Voucher> getAllVoucher();
 
     ArrayList<Integer> getAllApprovedProductIdByVoucherId(int vId);
+    
+    ArrayList<Voucher> getValidVoucherOfProduct(int productId);
+    
+    ArrayList<Integer>getUsedVoucherOfCustomer(int CustomerId);
 }

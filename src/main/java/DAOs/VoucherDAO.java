@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import Interfaces.DAOs.IVoucherDAO;
+import java.sql.Date;
+import java.time.LocalDate;
 
 public class VoucherDAO implements IVoucherDAO {
 
@@ -153,5 +155,71 @@ public class VoucherDAO implements IVoucherDAO {
             Logger.getLogger(VoucherDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return arrProductId;
+    }
+
+    @Override
+    public ArrayList<Voucher> getValidVoucherOfProduct(int productId) {
+        ResultSet rs;
+        Voucher v;
+        ArrayList<Voucher> arrVoucher = new ArrayList();
+        Date now = new Date(System.currentTimeMillis());
+
+        String sql
+                = "SELECT \n"
+                + "	Voucher.Voucher_ID, \n"
+                + "	Voucher.Voucher_Code,\n"
+                + "	Voucher.Voucher_Quantity, \n"
+                + "	Voucher.Voucher_Discount_Percent, \n"
+                + "	Voucher.Voucher_Discount_Max, \n"
+                + "	Voucher.Voucher_Created_At,\n"
+                + "	Voucher.Voucher_Expired_At,\n"
+                + "	Voucher.Voucher_Created_By_Admin\n"
+                + "FROM Voucher, Voucher_Product\n"
+                + "WHERE \n"
+                + "	Voucher.Voucher_ID = Voucher_Product.Voucher_ID AND\n"
+                + "	Voucher_Product.Product_ID = ? AND\n"
+                + "	? BETWEEN Voucher.Voucher_Created_At AND Voucher.Voucher_Expired_At AND\n"
+                + "	Voucher.Voucher_Quantity > 0";
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, productId);
+            ps.setDate(2, now);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                v = new Voucher();
+                v.setId(rs.getInt("Voucher_ID"));
+                v.setCode(rs.getNString("Voucher_Code"));
+                v.setQuantity(rs.getInt("Voucher_Quantity"));
+                v.setDiscountPercent(rs.getInt("Voucher_Discount_Percent"));
+                v.setDiscountMax(rs.getInt("Voucher_Discount_Max"));
+                v.setCreatedAt(rs.getDate("Voucher_Created_At"));
+                v.setExpiredAt(rs.getDate("Voucher_Expired_At"));
+                v.setCreatedByAdmin(rs.getInt("Voucher_Created_By_Admin"));
+                arrVoucher.add(v);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(VoucherDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return arrVoucher;
+    }
+
+    @Override
+    public ArrayList<Integer> getUsedVoucherOfCustomer(int CustomerId) {
+        ResultSet rs;
+        int vId;
+        ArrayList<Integer> arrVoucherId = new ArrayList();
+        String sql = "SELECT Voucher_ID FROM [Order] WHERE Customer_ID = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                vId = rs.getInt("Voucher_ID");
+                arrVoucherId.add(vId);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(VoucherDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return arrVoucherId;
     }
 }
