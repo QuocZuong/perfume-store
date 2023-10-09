@@ -22,13 +22,13 @@ public interface IProductDAO {
 
     public List<Product> filterProduct(
             List<Product> productList,
-            Integer brandId,
+            int brandId,
             String gender,
             String price);
 
     public List<Product> filterActiveProduct(
             List<Product> productList,
-            Integer brandId,
+            int brandId,
             String gender,
             String price);
 

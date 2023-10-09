@@ -1,6 +1,7 @@
 package DAOs;
 
 import Interfaces.DAOs.IProductDAO;
+import Lib.Converter;
 import Models.Product;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,7 +30,7 @@ public class ProductDAO implements IProductDAO {
     public enum Table {
         Product_ID,
         Product_Name,
-        Brand_ID,
+        Product_Brand_ID,
         Product_Gender,
         Product_Smell,
         Product_Release_Year,
@@ -52,15 +53,16 @@ public class ProductDAO implements IProductDAO {
             StringBuilder sql = new StringBuilder("INSERT INTO Product");
 
             sql.append("(");
-            sql.append(Table.Product_Name.toString());
-            sql.append(Table.Brand_ID.toString());
-            sql.append(Table.Product_Gender.toString());
-            sql.append(Table.Product_Smell.toString());
-            sql.append(Table.Product_Release_Year.toString());
-            sql.append(Table.Product_Volume.toString());
-            sql.append(Table.Product_Img_URL.toString());
+            sql.append(Table.Product_Name.toString()).append(",");
+            sql.append(Table.Product_Brand_ID.toString()).append(",");
+            sql.append(Table.Product_Gender.toString()).append(",");
+            sql.append(Table.Product_Smell.toString()).append(",");
+            sql.append(Table.Product_Release_Year.toString()).append(",");
+            sql.append(Table.Product_Volume.toString()).append(",");
+            sql.append(Table.Product_Img_URL.toString()).append(",");
             sql.append(Table.Product_Description.toString());
             sql.append(")");
+            System.out.println(sql);
 
             sql.append(" VALUES(?,?,?,?,?,?,?,?)");
 
@@ -100,15 +102,14 @@ public class ProductDAO implements IProductDAO {
         String name = datas[0];
 
         // Check if exist brand name
-        Brand brand = brDAO.getBrand(datas[1]);
-        if (brand == null) {
-            brand = new Brand();
+        if (brDAO.getBrand(datas[1]) == null) {
+            Brand brand = new Brand();
             brand.setName(datas[1]);
             brDAO.addBrand(brand);
         }
-        int brandId = DatabaseUtils.getLastIndentityOf("Brand");
+        int brandId = brDAO.getBrand(datas[1]).getId();
 
-        int price = Integer.parseInt(datas[2]);
+        int price = Integer.parseInt(Converter.convertMoneyToInteger(datas[2]));
         String gender = datas[3];
         String smell = datas[4];
         int quantity = Integer.parseInt(datas[5]);
@@ -149,7 +150,7 @@ public class ProductDAO implements IProductDAO {
                 Product product = new Product();
                 product.setId(rs.getInt(Table.Product_ID.toString()));
                 product.setName(rs.getNString(Table.Product_Name.toString()));
-                product.setBrandId(rs.getInt(Table.Brand_ID.toString()));
+                product.setBrandId(rs.getInt(Table.Product_Brand_ID.toString()));
                 product.setGender(rs.getNString(Table.Product_Smell.toString()));
                 product.setReleaseYear(rs.getInt(Table.Product_Release_Year.toString()));
                 product.setVolume(rs.getInt(Table.Product_Volume.toString()));
@@ -182,7 +183,7 @@ public class ProductDAO implements IProductDAO {
                 product = new Product();
                 product.setId(rs.getInt(Table.Product_ID.toString()));
                 product.setName(rs.getNString(Table.Product_Name.toString()));
-                product.setBrandId(rs.getInt(Table.Brand_ID.toString()));
+                product.setBrandId(rs.getInt(Table.Product_Brand_ID.toString()));
                 product.setGender(rs.getNString(Table.Product_Smell.toString()));
                 product.setReleaseYear(rs.getInt(Table.Product_Release_Year.toString()));
                 product.setVolume(rs.getInt(Table.Product_Volume.toString()));
@@ -237,6 +238,7 @@ public class ProductDAO implements IProductDAO {
 
         return pdList;
     }
+
     /* --------------------------- FILTER SECTION --------------------------- */
     @Override
     public List<Product> searchProduct(String search) {
@@ -271,10 +273,11 @@ public class ProductDAO implements IProductDAO {
                 Product product = new Product();
                 product.setId(rs.getInt(Table.Product_ID.toString()));
                 product.setName(rs.getNString(Table.Product_Name.toString()));
-                product.setBrandId(rs.getInt(Table.Brand_ID.toString()));
-                product.setGender(rs.getNString(Table.Product_Smell.toString()));
+                product.setBrandId(rs.getInt(Table.Product_Brand_ID.toString()));
+                product.setGender(rs.getNString(Table.Product_Gender.toString()));
                 product.setReleaseYear(rs.getInt(Table.Product_Release_Year.toString()));
                 product.setVolume(rs.getInt(Table.Product_Volume.toString()));
+                product.setSmell(rs.getNString(Table.Product_Smell.toString()));
                 product.setImgURL(rs.getNString(Table.Product_Img_URL.toString()));
                 product.setDescription(rs.getNString(Table.Product_Description.toString()));
                 product.setActive(rs.getBoolean(Table.Product_Active.toString()));
@@ -297,40 +300,50 @@ public class ProductDAO implements IProductDAO {
     @Override
     public List<Product> pagingProduct(List<Product> productList, int page) {
         final int OFFSET = ROWS * (page - 1);
-        List<Product> productSubList = productList.subList(OFFSET, ROWS);
+        int toIndex = OFFSET + ROWS;
+        if (toIndex >= productList.size()) {
+            toIndex = productList.size();
+        }
+        List<Product> productSubList = productList.subList(OFFSET, toIndex);
         return productSubList;
     }
 
     @Override
     public List<Product> filterProduct(
             List<Product> productList,
-            Integer brandId,
+            int brandId,
             String gender,
             String price) {
         final String GENDER = gender;
         // Format price range
         final int LOW = (price == null) ? 0 : Integer.parseInt(price.split("-")[0]);
         final int HIGH = (price == null) ? 100000000 : Integer.parseInt(price.split("-")[1]);
+        System.out.println("In filter product");
+        System.out.println(brandId);
+        System.out.println(("Nam").equals(GENDER));
+        System.out.println(("Nữ").equals(GENDER));
+        System.out.println(("Unisex").equals(GENDER));
 
-        productList.stream()
+        List<Product> filteredProduct = productList.stream()
                 .filter(product
-                        -> (brandId == null || product.getBrandId() == brandId)
+                        -> (brandId == -1 || product.getBrandId() == brandId)
                 && (GENDER == null || product.getGender().equals(GENDER))
                 && product.getStock().getPrice() >= LOW && product.getStock().getPrice() <= HIGH)
                 .collect(Collectors.toList());
-        return productList;
+        return filteredProduct;
     }
 
     @Override
     public List<Product> filterActiveProduct(
             List<Product> productList,
-            Integer brandId,
+            int brandId,
             String gender,
             String price) {
-        List<Product> filteredProduct = filterProduct(productList, brandId, gender, price).stream()
+        List<Product> filteredProductList = filterProduct(productList, brandId, gender, price);
+        List<Product> filteredActiveProductList = filteredProductList.stream()
                 .filter(product -> product.isActive())
                 .collect(Collectors.toList());
-        return filteredProduct;
+        return filteredActiveProductList;
     }
 
     @Override

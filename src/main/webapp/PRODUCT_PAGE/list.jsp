@@ -24,6 +24,7 @@
     // Handling exception
     String err = "err";
     isProductNotFound = (request.getParameter(err + "PNF") == null ? false : Boolean.parseBoolean(request.getParameter(err + "PNF")));
+    String shopName = (request.getAttribute("shopName") == null ? "" : (String) request.getAttribute("shopName"));
 %>
 
 <!DOCTYPE html>
@@ -49,7 +50,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
         <script src="https://kit.fontawesome.com/49a22e2b99.js" crossorigin="anonymous"></script>
         <title>
-            <%= request.getAttribute("shopName")%>
+            <%= shopName%>
         </title>
 
 
@@ -96,7 +97,7 @@
             <div class="row no-gutters center">
                 <div class="content">
                     <h1 class="header-for-shop">
-                        <%= request.getAttribute("shopName")%>
+                        <%= shopName %>
                     </h1>
                     <div class="col-md-12 main">
                         <div class="search-bar">
@@ -218,12 +219,12 @@
                                     </a>
                                 </li>
 
-                                <c:forEach var="i" begin="${page-2<0?0:page-2}" end="${page+2 +1}">
+                                <c:forEach var="i" begin='<%=currentPage - 2 < 0 ? 0 : currentPage - 2%>' end="<%=currentPage + 2 + 1%>">
                                     <c:choose>
-                                        <c:when test='${i==page}'>
+                                        <c:when test='${i==currentPage}'>
                                             <li class="page-item active"><a href="${currentURL}/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
                                             </c:when>
-                                            <c:when test='${i>0 && i<=numberOfPage}'> 
+                                            <c:when test='${i>0 && i<=numberOfPages}'> 
                                             <li class="page-item"><a href="${currentURL}/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
                                             </c:when>
                                             <c:otherwise>
