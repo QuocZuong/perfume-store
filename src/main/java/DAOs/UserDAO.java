@@ -134,6 +134,7 @@ public class UserDAO implements IUserDAO {
         return null;
     }
 
+    //loginString is username or email
     @Override
     public User getUser(String loginString, String password, loginType Type) throws WrongPasswordException, AccountDeactivatedException, AccountNotFoundException {
         User user = null;
@@ -152,27 +153,27 @@ public class UserDAO implements IUserDAO {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, loginString);
             ps.setString(2, Converter.convertToMD5Hash(password));
-
             rs = ps.executeQuery();
-            user = userFactory(rs);
+            if (rs.next()) {
+                user = userFactory(rs);
+            }
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         checkAccount(user, Type);
         return user;
     }
 
     public boolean checkAccount(User user, loginType Type) throws WrongPasswordException, AccountDeactivatedException, AccountNotFoundException {
-        if ((Type == loginType.Email && getUserByEmail(user.getEmail()) == null)
-                || Type == loginType.Username && getUser(user.getUsername()) == null) {
-            throw new AccountNotFoundException();
-        }
         if (user == null) {
             throw new WrongPasswordException();
         }
         if (!user.isActive()) {
             throw new AccountDeactivatedException();
+        }
+        if ((Type == loginType.Email && getUserByEmail(user.getEmail()) == null)
+                || Type == loginType.Username && getUser(user.getUsername()) == null) {
+            throw new AccountNotFoundException();
         }
         return true;
     }
@@ -311,7 +312,6 @@ public class UserDAO implements IUserDAO {
      */
     public User userFactory(ResultSet queryResult) throws SQLException {
         User user = new User();
-
         user.setId(queryResult.getInt(USER_ID));
         user.setName(queryResult.getString(USER_NAME));
         user.setUsername(queryResult.getString(USER_USERNAME));
@@ -319,6 +319,7 @@ public class UserDAO implements IUserDAO {
         user.setEmail(queryResult.getString(USER_EMAIL));
         user.setActive(queryResult.getBoolean(USER_ACTIVE));
         user.setType(queryResult.getString(USER_TYPE));
+        System.out.println("create user sussess");
 
         return user;
     }

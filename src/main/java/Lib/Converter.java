@@ -103,6 +103,7 @@ public class Converter {
             sb.append(String.format("%02x", b & 0xff));
         }
         pwdMD5 = sb.toString();
+        System.out.println(pwdMD5);
 
         return pwdMD5;
     }
