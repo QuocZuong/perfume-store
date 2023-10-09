@@ -12,14 +12,13 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.DuplicateKeyException;
-
 import Exceptions.CitizenIDDuplicationException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.PhoneNumberDuplicationException;
 import Exceptions.UsernameDuplicationException;
 import Interfaces.DAOs.IEmployeeDAO;
 import Lib.Converter;
+import Models.Role;
 
 public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
 
@@ -104,7 +103,10 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
         employee.setDayOfBirth(rs.getDate("Employee_DoB"));
         employee.setPhoneNumber(rs.getString("Employee_Phone_Number"));
         employee.setAddress(rs.getNString("Employee_Address"));
-        employee.setRole(rs.getInt("Employee_Role"));
+        Role role = new Role();
+        role.setId(rs.getInt("Role_ID"));
+        role.setName(rs.getString("Role_Name"));
+        employee.setRole(role);
         employee.setJoinDate(rs.getDate("Employee_Join_Date"));
         employee.setRetireDate(rs.getDate("Employee_Retire_Date"));
 
@@ -137,7 +139,10 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
         employee.setDayOfBirth(rs.getDate("Employee_DoB"));
         employee.setPhoneNumber(rs.getString("Employee_Phone_Number"));
         employee.setAddress(rs.getNString("Employee_Address"));
-        employee.setRole(rs.getInt("Employee_Role"));
+        Role role = new Role();
+        role.setId(rs.getInt("Role_ID"));
+        role.setName(rs.getString("Role_Name"));
+        employee.setRole(role);
         employee.setJoinDate(rs.getDate("Employee_Join_Date"));
         employee.setRetireDate(rs.getDate("Employee_Retire_Date"));
 
@@ -211,7 +216,10 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
     public Employee getEmployeeByUserId(int userId) {
         ResultSet rs;
 
-        String sql = "SELECT * FROM Employee JOIN [User] ON Employee.User_ID = [User].[User_ID] WHERE [User].User_ID = ?";
+        String sql = "SELECT * FROM Employee emp\n"
+                + "JOIN [User] ON emp.[User_ID] = [User].[User_ID] \n"
+                + "JOIN [Employee_Role] empR ON emp.Employee_Role = empR.Role_ID \n"
+                + "WHERE [User].[User_ID] = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, userId);
@@ -272,6 +280,7 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
                 ps.setNString(8, employee.getAddress());
                 ps.setDate(9, employee.getJoinDate());
                 ps.setDate(10, employee.getRetireDate());
+                ps.setInt(11, employee.getRole().getId());
                 result = ps.executeUpdate();
             } catch (SQLException ex) {
                 Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -294,7 +303,7 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
                 ps.setDate(2, employee.getDayOfBirth());
                 ps.setString(3, employee.getPhoneNumber());
                 ps.setString(4, employee.getAddress());
-                ps.setInt(5, employee.getRole());
+                ps.setInt(5, employee.getRole().getId());
                 ps.setDate(6, employee.getJoinDate());
                 ps.setDate(7, employee.getRetireDate());
                 ps.setInt(8, employee.getEmployeeId());

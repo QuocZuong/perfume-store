@@ -1,7 +1,7 @@
 package DAOs;
 
 import Models.User;
-import Lib.PasswordGenerator;
+import Lib.Generator;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -135,28 +135,46 @@ public class UserDAO implements IUserDAO {
     }
 
     @Override
-    public User getUser(String loginString, String password, loginType Type) {
+    public User getUser(String loginString, String password, loginType Type) throws WrongPasswordException, AccountDeactivatedException, AccountNotFoundException {
         User user = null;
         ResultSet rs;
         String sql = "";
         if (Type == loginType.Email) {
             sql = "SELECT * FROM [User]\n"
-                    + "WHERE User_Email = '<email>'\n"
-                    + "AND User_Password = '<password>'";
+                    + "WHERE User_Email = ?\n"
+                    + "AND User_Password = ?";
         } else if (Type == loginType.Username) {
             sql = "SELECT * FROM [User]\n"
-                    + "WHERE User_Username = '<username>'\n"
-                    + "AND User_Password = '<password>'";
+                    + "WHERE User_Username = ?\n"
+                    + "AND User_Password = ?";
         }
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, loginString);
+            ps.setString(2, Converter.convertToMD5Hash(password));
+
             rs = ps.executeQuery();
             user = userFactory(rs);
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        checkAccount(user, Type);
         return user;
+    }
+
+    public boolean checkAccount(User user, loginType Type) throws WrongPasswordException, AccountDeactivatedException, AccountNotFoundException {
+        if ((Type == loginType.Email && getUserByEmail(user.getEmail()) == null)
+                || Type == loginType.Username && getUser(user.getUsername()) == null) {
+            throw new AccountNotFoundException();
+        }
+        if (user == null) {
+            throw new WrongPasswordException();
+        }
+        if (!user.isActive()) {
+            throw new AccountDeactivatedException();
+        }
+        return true;
     }
 
     @Override

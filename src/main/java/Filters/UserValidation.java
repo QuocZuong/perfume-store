@@ -145,50 +145,50 @@ public class UserValidation implements Filter {
     }
 
     public boolean isAdmin(HttpServletRequest request, HttpServletResponse response) {
-        Cookie[] cookies = request.getCookies();
-
-        if (cookies != null) {
-            for (int i = 0; i < cookies.length; i++) {
-                if (cookies[i].getName().equals("Admin")) {
-
-                    if (!userDAO.isExistUsername(cookies[i].getValue()) && userDAO.isAdmin(cookies[i].getValue())) {
-                        cookies[i].setMaxAge(0);
-                        cookies[i].setPath("/");
-                        response.addCookie(cookies[i]);
-                        return false;
-                    }
-
-                    request.getSession().setAttribute("userCookie", cookies[i]);
-                    return true;
-                }
-            }
-        }
+//        Cookie[] cookies = request.getCookies();
+//
+//        if (cookies != null) {
+//            for (int i = 0; i < cookies.length; i++) {
+//                if (cookies[i].getName().equals("Admin")) {
+//
+//                    if (!userDAO.isExistUsername(cookies[i].getValue()) && userDAO.isAdmin(cookies[i].getValue())) {
+//                        cookies[i].setMaxAge(0);
+//                        cookies[i].setPath("/");
+//                        response.addCookie(cookies[i]);
+//                        return false;
+//                    }
+//
+//                    request.getSession().setAttribute("userCookie", cookies[i]);
+//                    return true;
+//                }
+//            }
+//        }
 
         return false;
     }
 
     public boolean isClient(HttpServletRequest request, HttpServletResponse response) {
-        Cookie[] cookies = request.getCookies();
+//        Cookie[] cookies = request.getCookies();
+//
+//        if (cookies != null) {
+//            for (int i = 0; i < cookies.length; i++) {
+//                if (cookies[i].getName().equals("Client")) {
+//
+//                    if (!userDAO.isExistUsername(cookies[i].getValue()) && userDAO.isClient(cookies[i].getValue())) {
+//                        cookies[i].setMaxAge(0);
+//                        cookies[i].setPath("/");
+//                        response.addCookie(cookies[i]);
+//                        return false;
+//                    }
+//
+//                    cookies[i].setPath("/");
+//                    request.getSession().setAttribute("userCookie", cookies[i]);
+//                    return true;
+//                }
+//            }
+//        }
 
-        if (cookies != null) {
-            for (int i = 0; i < cookies.length; i++) {
-                if (cookies[i].getName().equals("Client")) {
-
-                    if (!userDAO.isExistUsername(cookies[i].getValue()) && userDAO.isClient(cookies[i].getValue())) {
-                        cookies[i].setMaxAge(0);
-                        cookies[i].setPath("/");
-                        response.addCookie(cookies[i]);
-                        return false;
-                    }
-
-                    cookies[i].setPath("/");
-                    request.getSession().setAttribute("userCookie", cookies[i]);
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return true;
     }
 
     /**

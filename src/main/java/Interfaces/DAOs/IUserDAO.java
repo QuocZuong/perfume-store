@@ -1,10 +1,13 @@
 package Interfaces.DAOs;
 
+import Exceptions.AccountDeactivatedException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.UsernameDuplicationException;
+import Exceptions.WrongPasswordException;
 import Models.User;
 import java.sql.Date;
 import java.util.List;
+import javax.security.auth.login.AccountNotFoundException;
 
 public interface IUserDAO {
 
@@ -98,8 +101,11 @@ public interface IUserDAO {
      * defined in {@link loginType}.
      * @return A {@code User} object containing the user's information if the
      * login is successful, {@code null} otherwise.
+     * @throws Exceptions.WrongPasswordException
+     * @throws Exceptions.AccountDeactivatedException
+     * @throws javax.security.auth.login.AccountNotFoundException
      */
-    public User getUser(String loginString, String password, loginType Type);
+    public User getUser(String loginString, String password, loginType Type) throws WrongPasswordException, AccountDeactivatedException, AccountNotFoundException;
 
     /**
      * Search for a list of {@link User}s in the database that match the

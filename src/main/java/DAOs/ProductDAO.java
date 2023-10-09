@@ -12,17 +12,15 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import Exceptions.ProductNotFoundException;
 import Lib.DatabaseUtils;
 import Models.Brand;
 import Models.Stock;
-import java.util.Collection;
 import java.util.stream.Collectors;
 
 public class ProductDAO implements IProductDAO {
 
     private final Connection conn;
-    private final int ROWS = 20;
+    public final int ROWS = 20;
 
     public ProductDAO() {
         conn = DB.DBContext.getConnection();

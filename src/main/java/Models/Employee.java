@@ -3,14 +3,14 @@ package Models;
 import java.sql.Date;
 
 public class Employee extends User {
-    
+
     private int employeeId;
     private int UserId;
     private String citizenId;
     private Date dayOfBirth;
     private String phoneNumber;
     private String address;
-    private int role;
+    private Role role;
     private Date joinDate;
     private Date retireDate;
 
@@ -62,11 +62,11 @@ public class Employee extends User {
         this.address = address;
     }
 
-    public int getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(int role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
@@ -85,4 +85,5 @@ public class Employee extends User {
     public void setRetireDate(Date retireDate) {
         this.retireDate = retireDate;
     }
+
 }

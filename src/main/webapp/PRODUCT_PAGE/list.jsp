@@ -1,3 +1,6 @@
+<%@page import="Models.Brand"%>
+<%@page import="Models.Product"%>
+<%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@page import="DAOs.ProductDAO" %>
 <%@page import="DAOs.BrandDAO" %>
@@ -10,14 +13,14 @@
 
 <%! ProductDAO pdao = new ProductDAO();%>
 <%! BrandDAO bdao = new BrandDAO();%>
-<%! ResultSet rs = null;%>
 
 <%! boolean isProductNotFound;%>
 <%! int currentPage, numberOfPage;%>
 <%
-    currentPage = (int) request.getAttribute("page");
-    numberOfPage = (int) request.getAttribute("numberOfPage");
-
+    List<Product> productList = (List<Product>) request.getAttribute("productList");
+    List<Brand> brandList = (List<Brand>) request.getAttribute("brandList");
+    currentPage = (int) (request.getAttribute("currentPage") == null ? 0 : request.getAttribute("currentPage"));
+    numberOfPage = (int) (request.getAttribute("numberOfPages") == null ? 0 : request.getAttribute("numberOfPages"));
     // Handling exception
     String err = "err";
     isProductNotFound = (request.getParameter(err + "PNF") == null ? false : Boolean.parseBoolean(request.getParameter(err + "PNF")));
@@ -101,18 +104,19 @@
                                 <h4>THƯƠNG HIỆU</h4>
                                 <input placeholder="Tìm kiếm nhanh" type="text" name="" id="searchBox">
                                 <div class="list-brand">
+                                    <!-- Brand List -->
                                     <ul id="box-brand">
-                                        <% rs = (ResultSet) request.getAttribute("BDResultSet");
-                                            while (rs != null && rs.next()) {%>
-                                        <li>
-                                            <a  href="/Product/List/BrandID/<%=rs.getInt("ID")%>" class="brandNameForSearch">
-                                                <%=rs.getString(2)%>
-                                            </a>
-                                        </li>
-
-                                        <% }
-                                            rs = null;%>
+                                        <c:if test='<%= brandList != null%>'>
+                                            <%for (Brand brand : brandList) {%>
+                                            <li>
+                                                <a  href="/Product/List/BrandID/<%=brand.getId()%>" class="brandNameForSearch">
+                                                    <%= brand.getName()%>
+                                                </a>
+                                            </li>
+                                            <% }%>
+                                        </c:if>
                                     </ul>
+
                                 </div>
                             </div>
 
@@ -168,30 +172,26 @@
                                                 đến thấp</button></option>
                                         </select>
                                     </div>
+                                    <c:if  test='<%= productList != null%>'>
+                                        <% for (Product product : productList) {%>
 
-                                    <% rs = (ResultSet) request.getAttribute("PDResultSet");
-
-                                        while (rs != null
-                                                && rs.next()) {%>
-
-                                    <a href="/Product/Detail/ID/<%=  rs.getInt("ID")%>">
-                                        <div class="product">
-                                            <img src="<%= rs.getNString("ImgURL")%>" alt="" class="product-img">
-                                            <span class="product-brand">
-                                                <%= bdao.getBrandName(rs.getInt("BrandID"))%>
-                                            </span>
-                                            <span class="product-name">
-                                                <%= rs.getNString("Name")%> 
-                                            </span>
-                                            <span class="product-price">
-                                                <%= pdao.getPrice(rs.getInt("ID"))%> <span>đ</span>
-                                            </span>
-                                        </div>
-                                    </a>
-                                    <%
-                                        }
-                                    %>
-                                </div>
+                                        <a href="/Product/Detail/ID/<%=  product.getId()%>">
+                                            <div class="product">
+                                                <img src="<%= product.getImgURL()%>" alt="" class="product-img">
+                                                <span class="product-brand">
+                                                    <%= bdao.getBrand(product.getBrandId()).getName()%>
+                                                </span>
+                                                <span class="product-name">
+                                                    <%= product.getName()%> 
+                                                </span>
+                                                <span class="product-price">
+                                                    <%= product.getStock().getPrice()%> <span>đ</span>
+                                                </span>
+                                            </div>
+                                        </a>
+                                        <%}%>
+                                    </div>
+                                </c:if>
                             </c:otherwise>
                         </c:choose>       
 
@@ -315,7 +315,7 @@
         <script>
 
             let input = document.getElementById("inputSearch");
-            input.addEventListener("input",()=>{
+            input.addEventListener("input", () => {
                 console.log(input.value);
             })
 
@@ -323,7 +323,7 @@
                 let SearchURL = document.getElementById("inputSearch").value;
                 SearchURL = encodeURIComponent(SearchURL);
                 console.log(SearchURL);
-                <%
+            <%
                 String searchTxT = "";
                 if (request.getQueryString() != null) {
                     if (request.getQueryString().startsWith("txtSearch") || request.getQueryString().startsWith("errPNF")) {
@@ -332,27 +332,26 @@
                         searchTxT = "&txtSearch=";
                     }
                 }
-                %>
+            %>
                 let url = "${currentURL}/page/1";
-                
-                <%
-                    String urljava = "";
-                    if(request.getQueryString() == null){
-                        urljava = "?txtSearch=";
-                        System.out.println(urljava);
-                    }
-                    else{
-                        urljava = request.getQueryString();
-                        urljava = urljava.replace("&errPNF=true", "");
-                        urljava = urljava.replace("errPNF=true", "");
-                        urljava = urljava.replace("&txtSearch=" + request.getParameter("txtSearch"), "");
-                        urljava = urljava.replace("txtSearch=" + request.getParameter("txtSearch"), "");
-                        urljava += searchTxT;
-                        urljava = "?" + urljava;
-                        System.out.println(urljava);
-                    }
-                %>
-                url = url + "<%= urljava %>" + SearchURL;               
+
+            <%
+                String urljava = "";
+                if (request.getQueryString() == null) {
+                    urljava = "?txtSearch=";
+                    System.out.println(urljava);
+                } else {
+                    urljava = request.getQueryString();
+                    urljava = urljava.replace("&errPNF=true", "");
+                    urljava = urljava.replace("errPNF=true", "");
+                    urljava = urljava.replace("&txtSearch=" + request.getParameter("txtSearch"), "");
+                    urljava = urljava.replace("txtSearch=" + request.getParameter("txtSearch"), "");
+                    urljava += searchTxT;
+                    urljava = "?" + urljava;
+                    System.out.println(urljava);
+                }
+            %>
+                url = url + "<%= urljava%>" + SearchURL;
                 document.getElementById("SearchProduct").href = url;
             }
         </script>
@@ -363,48 +362,48 @@
         crossorigin="anonymous"></script>
         <script src="/RESOURCES/shop/public/js/main.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
-                    integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
-            crossorigin="anonymous"></script>
+                integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
 
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 
-            <script src="/RESOURCES/admin/product/public/js/main.js"></script>
-            <!--Jquery Validation-->
-            <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
-            <script>
-                $(document).ready(function () {
-                    $.validator.addMethod("emailCustom", function (value, element, toggler) {
-                        if (toggler) {
-                            let regex = /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/;
-                            let result = regex.test(value);
-                            return result;
+        <script src="/RESOURCES/admin/product/public/js/main.js"></script>
+        <!--Jquery Validation-->
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+        <script>
+            $(document).ready(function () {
+                $.validator.addMethod("emailCustom", function (value, element, toggler) {
+                    if (toggler) {
+                        let regex = /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/;
+                        let result = regex.test(value);
+                        return result;
+                    }
+                    return true;
+                }, "Vui lòng nhập đúng định dạng email");
+
+                $("form[action='/home/subscribe']").validate({
+                    rules: {
+                        txtEmailSubscribe: {
+                            required: true,
+                            email: true
                         }
-                        return true;
-                    }, "Vui lòng nhập đúng định dạng email");
-
-                    $("form[action='/home/subscribe']").validate({
-                        rules: {
-                            txtEmailSubscribe: {
-                                required: true,
-                                email:true
-                            }
-                        },
-                        messages: {
-                            txtEmailSubscribe: {
-                                required: "Vui lòng nhập email",
-                                email: "Vui lòng nhập đúng định dạng email"
-                            }
-                        },
-
-                        errorPlacement: function (error, element) {
-                            error.addClass("text-danger d-block mt-3");
-                            error.insertAfter(element.next());
+                    },
+                    messages: {
+                        txtEmailSubscribe: {
+                            required: "Vui lòng nhập email",
+                            email: "Vui lòng nhập đúng định dạng email"
                         }
+                    },
 
-                    });
+                    errorPlacement: function (error, element) {
+                        error.addClass("text-danger d-block mt-3");
+                        error.insertAfter(element.next());
+                    }
+
                 });
-            </script>
+            });
+        </script>
 
     </body>
 

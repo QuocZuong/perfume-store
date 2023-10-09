@@ -1,6 +1,10 @@
 package DAOs;
 
+import Exceptions.EmailDuplicationException;
+import Exceptions.UsernameDuplicationException;
 import Interfaces.DAOs.ICustomerDAO;
+import Lib.Converter;
+import Lib.Generator;
 import Models.Customer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,7 +22,7 @@ public class CustomerDAO extends UserDAO implements ICustomerDAO {
     }
 
     @Override
-    public boolean addCustomer(Customer customer) {
+    public int addCustomer(Customer customer) {
         /*
 BEGIN TRANSACTION
 GO
@@ -76,7 +80,7 @@ GO
 ROLLBACK
          */
         String sql = "EXEC Insert_Customer ?, ?, ?, ?, ?";
-
+        int result = 0;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setNString(1, customer.getName());
@@ -85,12 +89,11 @@ ROLLBACK
             ps.setString(4, customer.getEmail());
             ps.setInt(5, customer.getCustomerCreditPoint());
 
-            int result = ps.executeUpdate();
-            return result > 0;
+            result = ps.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(CustomerDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return false;
+        return result;
     }
 
     @Override
@@ -117,5 +120,20 @@ ROLLBACK
         return null;
     }
 
+    @Override
+    public boolean register(String email) throws EmailDuplicationException {
+        if (super.getUserByEmail(email) != null) {
+            throw new EmailDuplicationException();
+        }
+        String newUsername = Generator.generateUsername(email);
+        String newPassword = Generator.generatePassword(8);
+        Customer customer = new Customer();
+        customer.setUsername(newUsername);
+        customer.setPassword(newPassword);
+        customer.setEmail(email);
+        customer.setCustomerCreditPoint(0);
+
+        return addCustomer(customer) > 0;
+    }
 
 }
