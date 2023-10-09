@@ -120,6 +120,28 @@ ROLLBACK
         return null;
     }
 
+    public Customer getCustomerByUserId(int userId) {
+        ResultSet rs;
+
+        String sql = "SELECT * FROM Customer cus\n"
+                + "JOIN [User] ON cus.[User_ID] = [User].[User_ID] \n"
+                + "WHERE [User].[User_ID] = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, userId);
+            rs = ps.executeQuery();
+            UserDAO uDAO = new UserDAO();
+            if (rs.next()) {
+                Customer customer = new Customer(uDAO.userFactory(rs));
+                customer.setCustomerCreditPoint(rs.getInt(CUSTOMER_CREDIT_POINT));
+                return customer;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
     @Override
     public boolean register(String email) throws EmailDuplicationException {
         if (super.getUserByEmail(email) != null) {
