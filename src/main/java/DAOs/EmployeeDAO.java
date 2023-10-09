@@ -33,6 +33,10 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
 
     /*--------------------- DUPLICATE CHECKING SECTION ---------------------  */
     public boolean isExistCitizen(String citizenID) {
+        if (citizenID == null || citizenID.isEmpty()) {
+            throw new IllegalArgumentException("Citizen ID cannot be null or empty");
+        }
+
         ResultSet rs;
         String sql = "SELECT * FROM [User] WHERE Employee_Citizen_ID = ?";
 
@@ -51,6 +55,10 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
     }
 
     public boolean isExistPhoneNumber(String phoneNumber) {
+        if (phoneNumber == null || phoneNumber.isEmpty()) {
+            throw new IllegalArgumentException("Phone number cannot be null or empty");
+        }
+
         ResultSet rs;
         String sql = "SELECT * FROM [User] WHERE Employee_Phone_Number = ?";
 
@@ -95,6 +103,9 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
      * @throws SQLException return error when execute SQL occur.
      */
     private Employee generateEmployeeByResultSet(ResultSet rs) throws SQLException {
+        if (!rs.next()) {
+            throw new IllegalArgumentException("ResultSet cannot be false");
+        }
 
         Employee employee = new Employee();
 
@@ -124,6 +135,9 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
      * @return The method is returning an instance of the Employee class.
      */
     private Employee generateFullyEmployeeByResultSet(ResultSet rs) throws SQLException {
+        if (!rs.next()) {
+            throw new IllegalArgumentException("ResultSet cannot be false");
+        }
 
         Employee employee = new Employee();
 
@@ -215,6 +229,10 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
 
     @Override
     public Employee getEmployeeByUserId(int userId) {
+        if (userId <= 0) {
+            throw new IllegalArgumentException("User ID cannot be less than or equal to 0");
+        }
+
         ResultSet rs;
 
         String sql = "SELECT * FROM Employee emp\n"
