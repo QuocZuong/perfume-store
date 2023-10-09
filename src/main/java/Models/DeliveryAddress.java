@@ -9,8 +9,8 @@ public class DeliveryAddress {
     private String phoneNumber;
     private String address;
     private String status;
-    private Date Create_At;
-    private Date Modified_At;
+    private Date createAt;
+    private Date modifiedAt;
 
     public int getCustomerId() {
         return customerId;
@@ -52,20 +52,20 @@ public class DeliveryAddress {
         this.status = status;
     }
 
-    public Date getCreate_At() {
-        return Create_At;
+    public Date getCreateAt() {
+        return createAt;
     }
 
-    public void setCreate_At(Date Create_At) {
-        this.Create_At = Create_At;
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
     }
 
-    public Date getModified_At() {
-        return Modified_At;
+    public Date getModifiedAt() {
+        return modifiedAt;
     }
 
-    public void setModified_At(Date Modified_At) {
-        this.Modified_At = Modified_At;
+    public void setModifiedAt(Date modifiedAt) {
+        this.modifiedAt = modifiedAt;
     }
 
 }
