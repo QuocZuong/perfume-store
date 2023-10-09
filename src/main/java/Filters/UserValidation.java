@@ -1,5 +1,6 @@
 package Filters;
 
+import DAOs.CustomerDAO;
 import DAOs.EmployeeDAO;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -27,7 +28,9 @@ public class UserValidation implements Filter {
     private boolean debug = true;
     private final UserDAO userDAO = new UserDAO();
     private final EmployeeDAO employeeDAO = new EmployeeDAO();
-    private final String[] FOLDER_URL_LIST = {"/ADMIN_PAGE", "/CLIENT_PAGE", "/LOGIN_PAGE", "/PRODUCT_PAGE", "/USER_PAGE"};
+    private final CustomerDAO customerDAO = new CustomerDAO();
+    private final String[] FOLDER_URL_LIST = {"/ADMIN_PAGE", "/CLIENT_PAGE", "/LOGIN_PAGE", "/PRODUCT_PAGE",
+        "/USER_PAGE"};
 
     public UserValidation() {
     }
@@ -50,7 +53,7 @@ public class UserValidation implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
 
         boolean isAdmin = isAdmin(req, res);
-        boolean isClient = isClient(req, res);
+        boolean isCustomer = isCustomer(req, res);
 
         revalidateUserRoleSession(req, res);
 
@@ -62,8 +65,8 @@ public class UserValidation implements Filter {
         res.setDateHeader("Expires", 0); // Proxies.
 
         // --------------------------EXCLUDE URL PARTERN----------------------
-//        System.out.println("Current URL:" + URL);
-//        System.out.println("Vao do filter");
+        // System.out.println("Current URL:" + URL);
+        // System.out.println("Vao do filter");
         // --------------------------PREVENT FOLDER LINKS----------------------
         for (String folder : FOLDER_URL_LIST) {
             if (URI.startsWith(folder)) {
@@ -77,8 +80,8 @@ public class UserValidation implements Filter {
         // --------------------------SKIP LOGIN IF IS USER----------------------
         // If in Login page and is an admin or client, go to product list.
         if (URI.startsWith("/Log/Login")) {
-            if (isClient) {
-                res.sendRedirect("/Client/User");
+            if (isCustomer) {
+                res.sendRedirect("/Customer/User");
                 return;
             }
             if (isAdmin) {
@@ -88,15 +91,15 @@ public class UserValidation implements Filter {
         }
 
         // --------------------------PREVENT UNAUTHORISED USER----------------------
-        if (URI.startsWith("/Client")) {
+        if (URI.startsWith("/Customer")) {
             if (isAdmin) {
                 System.out.println("Going admin");
                 res.sendRedirect("/Admin");
                 return;
             }
 
-            if (!isClient) {
-                System.out.println("Not Client, so redirect to /Log/Login");
+            if (!isCustomer) {
+                System.out.println("Not Customer, so redirect to /Log/Login");
                 res.sendRedirect("/Log/Login");
                 return;
             }
@@ -136,7 +139,7 @@ public class UserValidation implements Filter {
     }
 
     public void revalidateUserRoleSession(HttpServletRequest request, HttpServletResponse response) {
-        boolean isAnonymous = !isAdmin(request, response) && !isClient(request, response);
+        boolean isAnonymous = !isAdmin(request, response) && !isCustomer(request, response);
 
         if (isAnonymous) {
             Cookie userCookie = (Cookie) request.getSession().getAttribute("userCookie");
@@ -169,26 +172,23 @@ public class UserValidation implements Filter {
         return false;
     }
 
-    public boolean isClient(HttpServletRequest request, HttpServletResponse response) {
-//        Cookie[] cookies = request.getCookies();
-//
-//        if (cookies != null) {
-//            for (int i = 0; i < cookies.length; i++) {
-//                if (cookies[i].getName().equals("Client")) {
-//
-//                    if (!userDAO.isExistUsername(cookies[i].getValue()) && userDAO.isClient(cookies[i].getValue())) {
-//                        cookies[i].setMaxAge(0);
-//                        cookies[i].setPath("/");
-//                        response.addCookie(cookies[i]);
-//                        return false;
-//                    }
-//
-//                    cookies[i].setPath("/");
-//                    request.getSession().setAttribute("userCookie", cookies[i]);
-//                    return true;
-//                }
-//            }
-//        }
+    public boolean isCustomer(HttpServletRequest request, HttpServletResponse response) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("Customer")) {
+                    if (!userDAO.isExistUsername((cookie.getValue())) || !customerDAO.isCustomer(cookie.getValue())) {
+                        cookie.setMaxAge(0);
+                        cookie.setPath("/");
+                        response.addCookie(cookie);
+                        return false;
+                    }
+                    cookie.setPath("/");
+                    request.getSession().setAttribute("userCookie", cookie);
+                    return true;
+                }
+            }
+        }
 
         return false;
     }
