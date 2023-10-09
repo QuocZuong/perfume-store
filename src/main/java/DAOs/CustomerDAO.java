@@ -1,9 +1,7 @@
 package DAOs;
 
 import Exceptions.EmailDuplicationException;
-import Exceptions.UsernameDuplicationException;
 import Interfaces.DAOs.ICustomerDAO;
-import Lib.Converter;
 import Lib.Generator;
 import Models.Customer;
 import java.sql.Connection;
