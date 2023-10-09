@@ -36,7 +36,6 @@ public class BrandDAO implements IBrandDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return result;
     }
 
@@ -106,15 +105,15 @@ public class BrandDAO implements IBrandDAO {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, brandID);
             rs = ps.executeQuery();
-            Brand brand = new Brand();
             if (rs.next()) {
+                Brand brand = new Brand();
                 brand.setId(rs.getInt("Brand_ID"));
                 brand.setName(rs.getNString("Brand_Name"));
                 brand.setLogo(rs.getNString("Brand_Logo"));
                 brand.setImgURL(rs.getNString("Brand_Img"));
                 brand.setTotalProduct(rs.getInt("Brand_Total_Product"));
+                return brand;
             }
-            return brand;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -127,19 +126,19 @@ public class BrandDAO implements IBrandDAO {
         ResultSet rs = null;
 
         try {
-            String sql = "Select * from Brand Where [Brand_Name]=?";
+            String sql = "SELECT * FROM Brand WHERE [Brand_Name] = ?";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setNString(1, brandName);
             rs = ps.executeQuery();
-            Brand brand = new Brand();
             if (rs.next()) {
+                Brand brand = new Brand();
                 brand.setId(rs.getInt("Brand_ID"));
                 brand.setName(rs.getNString("Brand_Name"));
                 brand.setLogo(rs.getNString("Brand_Logo"));
                 brand.setImgURL(rs.getNString("Brand_Img"));
                 brand.setTotalProduct(rs.getInt("Brand_Total_Product"));
+                return brand;
             }
-            return brand;
         } catch (SQLException e) {
             e.printStackTrace();
         }
