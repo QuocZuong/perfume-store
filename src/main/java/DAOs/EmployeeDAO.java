@@ -76,6 +76,24 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
         return false;
     }
 
+    public boolean isAdmin(String username) {
+        String sql = "SELECT * FROM [User] WHERE User_Name = ? AND User_Type = 'Admin'";
+
+        ResultSet rs;
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setNString(1, username);
+
+            rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return false;
+    }
+
     public boolean checkDuplicate(Employee employee) throws UsernameDuplicationException, EmailDuplicationException,
             PhoneNumberDuplicationException, CitizenIDDuplicationException {
 
