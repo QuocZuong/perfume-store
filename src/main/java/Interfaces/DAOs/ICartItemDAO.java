@@ -16,7 +16,7 @@ public interface ICartItemDAO {
 
     int addCartItem(CartItem cartItem);
 
-    int updateImportStashItem(CartItem cartItem);
+    int updateCartItem(CartItem cartItem);
 
     int deleteCartItem(CartItem cartItem);
 

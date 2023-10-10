@@ -92,6 +92,7 @@ public class UserValidation implements Filter {
 
         // --------------------------PREVENT UNAUTHORISED USER----------------------
         if (URI.startsWith("/Customer")) {
+            System.out.println("customer fillter");
             if (isAdmin) {
                 System.out.println("Going admin");
                 res.sendRedirect("/Admin");
@@ -115,6 +116,7 @@ public class UserValidation implements Filter {
         Throwable problem = null;
 
         try {
+            System.out.println("fillter call");
             chain.doFilter(request, response);
         } catch (Throwable t) {
             // If an exception is thrown somewhere down the filter chain,

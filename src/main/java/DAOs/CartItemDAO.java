@@ -65,11 +65,11 @@ public class CartItemDAO implements ICartItemDAO {
 
     /* ------------------------- UPDATE SECTION ---------------------------- */
     @Override
-    public int updateImportStashItem(CartItem ci) {
+    public int updateCartItem(CartItem ci) {
         String sql = "UPDATE CartItem SET\n"
                 + "Quantity = ?,\n"
-                + "Price = ?\n"
-                + "Sum = ?\n"
+                + "Price = ?,\n"
+                + "[Sum] = ?\n"
                 + "WHERE Customer_ID = ? AND Product_ID = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);

@@ -76,19 +76,19 @@ public class CustomerController extends HttpServlet {
         String path = request.getRequestURI();
         System.out.println("Request Path URI " + path);
 //
-//        if (path.startsWith(CLIENT_CART_DELETE_URI)) {
-//            System.out.println("Going delete");
-//            deleteCartProduct(request, response);
-//            response.sendRedirect(CLIENT_CART_URI);
-//            return;
-//        }
+        if (path.startsWith(CUSTOMER_CART_DELETE_URI)) {
+            System.out.println("Going delete");
+            deleteCartProduct(request, response);
+            response.sendRedirect(CUSTOMER_CART_URI);
+            return;
+        }
 //
-//        if (path.startsWith(CLIENT_CART_UPDATE_URI)) {
-//            System.out.println("Going update");
-//            updateCartProduct(request, response);
-//            response.sendRedirect(CLIENT_CART_URI);
-//            return;
-//        }
+        if (path.startsWith(CUSTOMER_CART_UPDATE_URI)) {
+            System.out.println("Going update");
+            updateCartProduct(request, response);
+            response.sendRedirect(CUSTOMER_CART_URI);
+            return;
+        }
 //
 //        if (path.startsWith(CLIENT_CART_CHECKOUT_URI)) {
 //            System.out.println("Going checkout");
@@ -292,7 +292,7 @@ public class CustomerController extends HttpServlet {
         Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
         String username = userCookie.getValue();
         int CustomerID = cusDAO.getCustomer(username).getCustomerId();
-        System.out.println("cus id:"+CustomerID);
+        System.out.println("cus id:" + CustomerID);
         List<CartItem> listCartItem = ciDAO.getAllCartItemOfCustomer(CustomerID);
         // Handling out of stock
         List<Product> listOutOfStock = ciDAO.getAllOutOfStockProductFromCart(CustomerID);
@@ -496,37 +496,50 @@ public class CustomerController extends HttpServlet {
 //        
 //    }
 //    
-//    private void updateCartProduct(HttpServletRequest request, HttpServletResponse response) {
-//        // /Client/Cart/Update?ClientID=1&ProductID0=80&ProductQuan0=5&ProductID1=34&ProductQuan1=9&ListSize=2
-//        CartDAO cDAO = new CartDAO();
-//        int listSize = Integer.parseInt(request.getParameter("ListSize"));
-//        for (int i = 0; i < listSize; i++) {
-//            int ClientID = Integer.parseInt(request.getParameter("ClientID"));
-//            int ProductID = Integer.parseInt(request.getParameter("ProductID" + i));
-//            int ProductQuan = Integer.parseInt(request.getParameter("ProductQuan" + i));
-//            cDAO.changeProductQuantity(ClientID, ProductID, ProductQuan);
-//        }
-//    }
-//
+
+    private int updateCartProduct(HttpServletRequest request, HttpServletResponse response) {
+        // /Client/Cart/Update?ClientID=1&ProductID0=80&ProductQuan0=5&ProductID1=34&ProductQuan1=9&ListSize=2
+        int result;
+        CartItemDAO ciDAO = new CartItemDAO();
+        int listSize = Integer.parseInt(request.getParameter("ListSize"));
+        for (int i = 0; i < listSize; i++) {
+            int CustomerID = Integer.parseInt(request.getParameter("CustomerID"));
+            int ProductID = Integer.parseInt(request.getParameter("ProductID" + i));
+            int ProductQuan = Integer.parseInt(request.getParameter("ProductQuan" + i));
+            int ProductPrice = Integer.parseInt(request.getParameter("ProductPrice" + i));
+            CartItem ci = new CartItem();
+            ci.setCustomerId(CustomerID);
+            ci.setProductId(ProductID);
+            ci.setQuantity(ProductQuan);
+            ci.setPrice(ProductPrice);
+            ci.setSum(ProductQuan * ProductPrice);
+            result = ciDAO.updateCartItem(ci);
+            if (result == 0) {
+                return State.Fail.value;
+            }
+        }
+        return State.Success.value;
+    }
+
 //    // ---------------------------- DELETE SECTION ----------------------------
-//    private void deleteCartProduct(HttpServletRequest request, HttpServletResponse response) {
-//        /// /Client/Cart/Delete/ProductID/<%= p.getID()%>/ClientID/<%= ClientID %>
-//        CartDAO cDAO = new CartDAO();
-//        
-//        int ClientID = -1;
-//        int ProductID = -1;
-//        String data[] = request.getRequestURI().split("/");
-//        
-//        for (int i = 0; i < data.length; i++) {
-//            if (data[i].equals("ClientID")) {
-//                ClientID = Integer.parseInt(data[i + 1]);
-//            } else if (data[i].equals("ProductID")) {
-//                ProductID = Integer.parseInt(data[i + 1]);
-//            }
-//        }
-//        cDAO.deleteCart(ClientID, ProductID);
-//    }
-//
+    private void deleteCartProduct(HttpServletRequest request, HttpServletResponse response) {
+        /// /Client/Cart/Delete/ProductID/<%= p.getID()%>/ClientID/<%= ClientID %>
+        CartItemDAO ciDAO = new CartItemDAO();
+
+        int CustomerID = -1;
+        int ProductID = -1;
+        String data[] = request.getRequestURI().split("/");
+
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("CustomerID")) {
+                CustomerID = Integer.parseInt(data[i + 1]);
+            } else if (data[i].equals("ProductID")) {
+                ProductID = Integer.parseInt(data[i + 1]);
+            }
+        }
+        ciDAO.deleteCartItem(CustomerID, ProductID);
+    }
+
 //        private boolean handleCheckout(HttpServletRequest request, HttpServletResponse response) {
 //        UserDAO usDAO = new UserDAO();
 //        CartDAO cDAO = new CartDAO();
@@ -553,7 +566,6 @@ public class CustomerController extends HttpServlet {
 //        return true;
 //    }
     // ------------------------- EXEPTION HANDLING SECTION -------------------------
-
     private String checkException(HttpServletRequest request) {
         if (request.getAttribute("exceptionType") == null) {
             return "";

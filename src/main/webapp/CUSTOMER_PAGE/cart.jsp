@@ -66,8 +66,8 @@
                         <div class="box">
 
                             <div class="left w-100">
-                                <form action="/Client/Cart/Update" method="GET">
-                                    <input type="hidden" name="ClientID" value="<%= CustomerID%>" />
+                                <form action="/Customer/Cart/Update" method="GET">
+                                    <input type="hidden" name="CustomerID" value="<%= CustomerID%>" />
 
                                 <!--  Handling Product out of stock still in Client Cart -->
                                 <c:if test='<%= listOutOfStock.size() != 0%>'>
@@ -106,6 +106,7 @@
                                                     Product p = pDAO.getProduct(listCartItem.get((int) pageContext.getAttribute("i")).getProductId());
                                                     int sum = listCartItem.get((int) pageContext.getAttribute("i")).getSum();
                                                     int CartQuan = listCartItem.get((int) pageContext.getAttribute("i")).getQuantity();
+                                                    int CartPrice = listCartItem.get((int) pageContext.getAttribute("i")).getPrice();
                                                 %>
                                                 <tr>
                                                     <td>
@@ -122,7 +123,9 @@
                                                     </td>
                                                     <td>
                                                         <input type="hidden" name="<%= "ProductID" + pageContext.getAttribute("i")%>" value="<%= p.getId()%>" />
-                                                        <span class="ProductMaxQuantity" > <%= p.getStock().getPrice()%> </span>     <input type="number" name="<%= "ProductQuan" + pageContext.getAttribute("i")%>" value="<%= CartQuan%>" /> 
+                                                        <span class="ProductMaxQuantity" > <%= p.getStock().getPrice()%> </span>  
+                                                        <input type="number" name="<%= "ProductQuan" + pageContext.getAttribute("i")%>" value="<%= CartQuan%>" /> 
+                                                        <input type="hidden" name="<%= "ProductPrice" + pageContext.getAttribute("i")%>" value="<%= CartPrice%>" /> 
                                                         <a href="/Customer/Cart/Delete/ProductID/<%= p.getId()%>/CustomerID/<%= CustomerID%>">
                                                             <img src="/RESOURCES/images/icons/close.png" alt="" />
                                                         </a>
