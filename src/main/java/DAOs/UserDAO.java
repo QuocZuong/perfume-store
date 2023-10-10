@@ -66,7 +66,7 @@ public class UserDAO implements IUserDAO {
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setNString(1, username);
+            ps.setString(1, username);
 
             rs = ps.executeQuery();
 

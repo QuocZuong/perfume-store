@@ -4,6 +4,7 @@ import Exceptions.EmailDuplicationException;
 import Interfaces.DAOs.ICustomerDAO;
 import Lib.Generator;
 import Models.Customer;
+import Models.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -141,21 +142,8 @@ ROLLBACK
     }
 
     public boolean isCustomer(String username) {
-        String sql = "SELECT * FROM [User] WHERE User_Name = ? AND User_Type = 'Customer'";
-
-        ResultSet rs;
-
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setNString(1, username);
-
-            rs = ps.executeQuery();
-            return rs.next();
-        } catch (SQLException ex) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return false;
+        User user = getUser(username);
+        return user!=null && user.getType().equals("Customer");
     }
 
     @Override

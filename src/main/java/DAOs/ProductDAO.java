@@ -351,11 +351,6 @@ public class ProductDAO implements IProductDAO {
         // Format price range
         final int LOW = (price == null) ? 0 : Integer.parseInt(price.split("-")[0]);
         final int HIGH = (price == null) ? 100000000 : Integer.parseInt(price.split("-")[1]);
-        System.out.println("In filter product");
-        System.out.println(brandId);
-        System.out.println(("Nam").equals(GENDER));
-        System.out.println(("Nữ").equals(GENDER));
-        System.out.println(("Unisex").equals(GENDER));
 
         List<Product> filteredProduct = productList.stream()
                 .filter(product -> (brandId == -1 || product.getBrandId() == brandId)

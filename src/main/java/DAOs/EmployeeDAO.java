@@ -81,6 +81,16 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
         return employee != null && employee.getRole().getName().equals("Admin");
     }
 
+    public boolean isOrderManager(String username) {
+        Employee employee = getEmployee(username);
+        return employee != null && employee.getRole().getName().equals("Order_Manager");
+    }
+
+    public boolean isInventoryManager(String username) {
+        Employee employee = getEmployee(username);
+        return employee != null && employee.getRole().getName().equals("Inventory_Manager");
+    }
+
     public boolean checkDuplicate(Employee employee) throws UsernameDuplicationException, EmailDuplicationException,
             PhoneNumberDuplicationException, CitizenIDDuplicationException {
 

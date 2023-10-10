@@ -1,5 +1,6 @@
 package Controllers;
 
+import DAOs.BrandDAO;
 import Models.User;
 
 import java.util.List;
@@ -16,7 +17,9 @@ import Exceptions.EmailDuplicationException;
 import Exceptions.PhoneNumberDuplicationException;
 import Exceptions.UsernameDuplicationException;
 import Exceptions.WrongPasswordException;
+import Lib.Converter;
 import Lib.EmailSender;
+import Models.Stock;
 import java.sql.ResultSet;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -53,7 +56,7 @@ public class AdminController extends HttpServlet {
     public static final String ADMIN_PRODUCT_UPDATE_URI = "/Admin/Product/Update";
     public static final String ADMIN_PRODUCT_DELETE_URI = "/Admin/Product/Delete";
     public static final String ADMIN_PRODUCT_RESTORE_URI = "/Admin/Product/Restore";
-
+    
     public static final String ADMIN_USER_LIST_URI = "/Admin/User/List";
     public static final String ADMIN_USER_ADD_URI = "/Admin/User/Add";
     public static final String ADMIN_USER_UPDATE_URI = "/Admin/User/Update";
@@ -61,26 +64,36 @@ public class AdminController extends HttpServlet {
     public static final String ADMIN_USER_RESTORE_URI = "/Admin/User/Restore";
     public static final String ADMIN_CLIENT_DETAIL_URI = "/Admin/User/Detail";
     public static final String ADMIN_CLIENT_ORDER_URI = "/Admin/User/OrderDetail";
-
+    
     public static final String ADMIN_UPDATE_INFO_URI = "/Admin/Update/Info";
-
+    
     public static final String IMGUR_API_ENDPOINT = "https://api.imgur.com/3/image";
     public static final String IMGUR_CLIENT_ID = "87da474f87f4754";
+    
+    public enum State {
+        Success(1),
+        Fail(0);
+        private int value;
+        
+        State(int value) {
+            this.value = value;
+        }
+    }
 
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        String path = request.getRequestURI();
-//
-//        // ---------------------------- PRODUCT SECTION ----------------------------
+        String path = request.getRequestURI();
+
+        // ---------------------------- PRODUCT SECTION ----------------------------
 //        if (path.startsWith(ADMIN_PRODUCT_LIST_URI) || path.startsWith(ADMIN_PRODUCT_LIST_URI + "/page")) {
 //            searchProduct(request, response);
 //            request.getRequestDispatcher("/ADMIN_PAGE/Product/list.jsp").forward(request, response);
@@ -91,10 +104,10 @@ public class AdminController extends HttpServlet {
 //            response.sendRedirect(ADMIN_PRODUCT_LIST_URI);
 //            return;
 //        }
-//        if (path.startsWith(ADMIN_PRODUCT_ADD_URI)) {
-//            request.getRequestDispatcher("/ADMIN_PAGE/Product/add.jsp").forward(request, response);
-//            return;
-//        }
+        if (path.startsWith(ADMIN_PRODUCT_ADD_URI)) {
+            request.getRequestDispatcher("/ADMIN_PAGE/Product/add.jsp").forward(request, response);
+            return;
+        }
 //        if (path.startsWith(ADMIN_PRODUCT_UPDATE_URI)) {
 //            if (handleUpdateProduct(request, response)) {
 //                request.getRequestDispatcher("/ADMIN_PAGE/Product/update.jsp").forward(request, response);
@@ -108,8 +121,8 @@ public class AdminController extends HttpServlet {
 //            response.sendRedirect(ADMIN_PRODUCT_LIST_URI);
 //            return;
 //        }
-//
-//        // ---------------------------- USER SECTION ----------------------------
+
+        // ---------------------------- USER SECTION ----------------------------
 //        if (path.startsWith(ADMIN_USER_LIST_URI) || path.startsWith(ADMIN_USER_LIST_URI + "/page")) {
 //            searchUser(request, response);
 //            request.getRequestDispatcher("/ADMIN_PAGE/User/list.jsp").forward(request, response);
@@ -147,36 +160,41 @@ public class AdminController extends HttpServlet {
 //            request.getRequestDispatcher("/ADMIN_PAGE/User/orderDetail.jsp").forward(request, response);
 //            return;
 //        }
-//
-//        // ---------------------------- DEFAULT SECTION ----------------------------
-//        if (path.startsWith(ADMIN_USER_URI)) { // Put this at the last
-//            request.getRequestDispatcher("/ADMIN_PAGE/admin.jsp").forward(request, response);
-//            return;
-//        }
+        // ---------------------------- DEFAULT SECTION ----------------------------
+        if (path.startsWith(ADMIN_USER_URI)) { // Put this at the last
+            request.getRequestDispatcher("/ADMIN_PAGE/admin.jsp").forward(request, response);
+            return;
+        }
     }
 
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-//        String path = request.getRequestURI();
-//
-//        if (path.startsWith(ADMIN_PRODUCT_ADD_URI)) {
-//            if (request.getParameter("btnAddProduct") != null
-//                    && request.getParameter("btnAddProduct").equals("Submit")) {
-//                addProduct(request, response);
-//                response.sendRedirect(ADMIN_PRODUCT_LIST_URI);
-//            }
-//            return;
-//        }
+        
+        String path = request.getRequestURI();
+        
+        if (path.startsWith(ADMIN_PRODUCT_ADD_URI)) {
+            if (request.getParameter("btnAddProduct") != null
+                    && request.getParameter("btnAddProduct").equals("Submit")) {
+                int result = addProduct(request, response);
+                
+                if (result == State.Success.value) {
+                    response.sendRedirect(ADMIN_PRODUCT_LIST_URI);
+                } else if (result == State.Fail.value) {
+                    response.sendRedirect(ADMIN_PRODUCT_LIST_URI + checkException(request));
+                }
+                
+            }
+            return;
+        }
 //        if (path.startsWith(ADMIN_PRODUCT_UPDATE_URI)) {
 //            if (request.getParameter("btnUpdateProduct") != null
 //                    && request.getParameter("btnUpdateProduct").equals("Submit")) {
@@ -213,40 +231,55 @@ public class AdminController extends HttpServlet {
 //                return;
 //            }
 //        }
-
     }
 
     /* CRUD */
     // ---------------------------- CREATE SECTION ----------------------------
-//    private void addProduct(HttpServletRequest request, HttpServletResponse response)
-//            throws IOException, ServletException {
-//        ProductDAO pDAO = new ProductDAO();
-//        String pName = request.getParameter("txtProductName");
-//        String bName = request.getParameter("txtBrandName");
-//        String pPrice = ProductDAO
-//                .IntegerToMoney(Integer.parseInt(request.getParameter("txtProductPrice").replace(",", "")));
-//        String Gender = request.getParameter("rdoGender");
-//        String Smell = request.getParameter("txtProductSmell");
-//        int Quantity = Integer.parseInt(request.getParameter("txtProductQuantity").replace(",", ""));
-//        int ReleaseYear = Integer.parseInt(request.getParameter("txtProductReleaseYear"));
-//        int Volume = Integer.parseInt(request.getParameter("txtProductVolume").replace(",", ""));
-//        String Description = request.getParameter("txtProductDescription");
-//        Part imgPart = request.getPart("fileProductImg");
-//
-//        // Upload to Imgur database
-//        String ImgURL = uploadImageToClound(imgPart);
-//
-//        String addData = pDAO.convertToStringData(pName, bName, pPrice, Gender, Smell, Quantity + "", ReleaseYear + "",
-//                Volume + "", ImgURL, Description);
-//        // Upload data to db
-//        int kq = pDAO.addProduct(addData);
-//        if (kq == 0) {
-//            System.out.println("Add failed, Some attribute may be duplicate");
-//            return;
-//        }
-//        System.out.println("Add successfully");
-//
-//    }
+    private int addProduct(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        ProductDAO pDAO = new ProductDAO();
+        BrandDAO bDAO = new BrandDAO();
+        String pName = request.getParameter("txtProductName");
+        String bName = request.getParameter("txtBrandName");
+        int pPrice = Integer.parseInt(
+                Converter.covertIntergerToMoney(
+                        Integer.parseInt(request.getParameter("txtProductPrice").replace(",", ""))));
+        String gender = request.getParameter("rdoGender");
+        String smell = request.getParameter("txtProductSmell");
+        int quantity = Integer.parseInt(request.getParameter("txtProductQuantity").replace(",", ""));
+        int releaseYear = Integer.parseInt(request.getParameter("txtProductReleaseYear"));
+        int volume = Integer.parseInt(request.getParameter("txtProductVolume").replace(",", ""));
+        String description = request.getParameter("txtProductDescription");
+        Part imgPart = request.getPart("fileProductImg");
+
+        // Upload to Imgur database
+        String imgURL = uploadImageToClound(imgPart);
+        
+        Product product = new Product();
+        product.setName(pName);
+        product.setBrandId(bDAO.getBrand(bName).getId());
+        product.setGender(gender);
+        product.setSmell(smell);
+        product.setReleaseYear(releaseYear);
+        product.setVolume(volume);
+        product.setImgURL(imgURL);
+        product.setDescription(description);
+        
+        Stock stock = new Stock();
+        stock.setPrice(pPrice);
+        stock.setQuantity(quantity);
+
+        // Upload data to db
+        int kq = pDAO.addProduct(product);
+        if (kq == 0) {
+            System.out.println("Add failed, Some attribute may be duplicate");
+            request.setAttribute("exceptionType", "OperationAddFailedException");
+            return State.Fail.value;
+        }
+        System.out.println("Add successfully");
+        return State.Success.value;
+        
+    }
 
     // ---------------------------- READ SECTION ----------------------------
 //    private void searchProduct(HttpServletRequest request, HttpServletResponse response) {
@@ -828,7 +861,6 @@ public class AdminController extends HttpServlet {
 //        }
 //        System.out.println("Deactivated User with ID: " + userId + " successfully!");
 //    }
-
     // ---------------------------- CLOUD SECTION ----------------------------
     private String uploadImageToClound(Part imagePart) throws IOException {
         String imgURL = "/RESOURCES/images/icons/default-perfume.png";
@@ -893,33 +925,32 @@ public class AdminController extends HttpServlet {
 
             // Display the image URL
             System.out.println("Image uploaded successfully. Image URL: " + imageUrl);
-
+            
         } else {
             System.out.println("Error occurred while uploading the image. Response Cod");
         }
-
+        
         URLconn.disconnect();
         fileInputStream.close();
         return imgURL;
     }
-
+    
     public static File convertPartToFile(Part part) throws IOException {
         // String fileName = part.getSubmittedFileName();
         File tempFile = File.createTempFile("temp", null);
         tempFile.deleteOnExit();
-
-        try (InputStream inputStream = part.getInputStream();
-                OutputStream outputStream = new FileOutputStream(tempFile)) {
+        
+        try ( InputStream inputStream = part.getInputStream();  OutputStream outputStream = new FileOutputStream(tempFile)) {
             byte[] buffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
             }
         }
-
+        
         return tempFile;
     }
-
+    
     private String extractImageUrl(String response) {
         // Parse the JSON response to extract the image URL
         int startIndex = response.indexOf("\"link\":\"") + 8;
@@ -933,7 +964,7 @@ public class AdminController extends HttpServlet {
             return "";
         }
         String exception = "?err";
-
+        
         switch ((String) request.getAttribute("exceptionType")) {
             case "WrongPasswordException":
             case "AccountNotFoundException":
@@ -953,13 +984,17 @@ public class AdminController extends HttpServlet {
                 break;
             case "NotEnoughInformationException":
                 exception += "NEInfo";
+                break;
+            case "OperationAddFailedException":
+                exception += "ODFE";
+                break;
             default:
                 break;
         }
         exception += "=true";
         return exception;
     }
-
+    
 }
 
 // ---------------------------- TRASH SECTION ----------------------------
