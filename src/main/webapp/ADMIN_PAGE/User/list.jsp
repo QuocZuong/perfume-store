@@ -1,3 +1,4 @@
+<%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="Models.Product"%>
 <%@page import="DAOs.BrandDAO"%>
@@ -11,14 +12,12 @@
 
 <%! UserDAO uDAO = new UserDAO();%>
 <%! BrandDAO bDAO = new BrandDAO(); %>
-<%! ResultSet rs = null;%>
-<%! ArrayList<User> listUser = null; %>
+<%! List<User> listUser = null; %>
 <%! int currentPage, numberOfPage;%>
 <%! boolean isAdmin;%>
 
 <%
-    rs = uDAO.getAllForAdmin();
-    listUser = (ArrayList<User>) request.getAttribute("listUser");
+    listUser = (List<User>) request.getAttribute("listUser");
     currentPage = (int) request.getAttribute("page");
     numberOfPage = (int) request.getAttribute("numberOfPage");
 %>
@@ -80,8 +79,6 @@
                                 <td>Name</td>
                                 <td>Username</td>
                                 <td>Email</td>
-                                <td style="width: 10%;">Phone Number</td>
-                                <td>Address</td>
                                 <td>Role</td>
                                 <td></td>
                                 <td></td>
@@ -96,21 +93,20 @@
                                         User us = listUser.get((int) pageContext.getAttribute("i"));
                                     %>
                                     <tr class="rowTable  ">
-                                        <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getID()%></td>
+                                        <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getId()%></td>
                                         <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getName() == null ? "" : us.getName()%></td>
                                         <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getUsername() == null ? "" : us.getUsername()%></td>
-                                        <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getPhoneNumber() == null ? "" : us.getPhoneNumber()%></td>
                                         <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getEmail()%></td>
-                                        <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getAddress()%></td>
-                                        <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getRole()%></td>
+                                        <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getType()%></td>
                                         <td class="<%= us.isActive() ? " " : "faded"%>">
-                                            <a href="/Admin/User/Update/ID/<%= us.getID()%>" class="<%= us.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0">Update</a>
+
+                                            <a href="/Admin/User/Update/ID/<%= us.getId()%>" class="<%= us.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0">Update</a>
                                         </td>
                                         <td class="<%= us.isActive() ? " " : "faded"%>">
-                                            <a href="/Admin/User/Detail/ID/<%= us.getID()%>" class="<%= us.isActive() && !us.getRole().equals("Admin") ? "" : "disabled"%> btn btn-outline-info rounded-0">Order</a>
+                                            <a href="/Admin/User/Detail/ID/<%= us.getId()%>" class="<%= us.isActive() && !us.getType().equals("Admin") ? "" : "disabled"%> btn btn-outline-info rounded-0">Order</a>
                                         </td>
                                         <td class="buttonStatus <%= us.isActive() ? "" : "unfaded"%>">
-                                            <a href="/Admin/User/<%= us.isActive() ? "Delete" : "Restore"%>/ID/<%=  us.getID()%>" class="btn btn-outline-<%= us.isActive() ? "danger" : "success"%> rounded-0"> <%= us.isActive() ? "Delete" : "Restore"%></a>
+                                            <a href="/Admin/User/<%= us.isActive() ? "Delete" : "Restore"%>/ID/<%=  us.getId()%>" class="btn btn-outline-<%= us.isActive() ? "danger" : "success"%> rounded-0"> <%= us.isActive() ? "Delete" : "Restore"%></a>
                                         </td>
                                     </tr>
 

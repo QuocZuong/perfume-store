@@ -89,7 +89,7 @@ public class ProductDAO implements IProductDAO {
      * "ID,Name,BrandID,Price,Gender,Smell,Quantity,ReleaseYear,Volume,ImgURL,Description",
      * // Product
      */
-    /* ------------------------- CREATE SECTION ---------------------------- */
+ /* ------------------------- CREATE SECTION ---------------------------- */
     @Override
     public int addProduct(Product pd) {
         int result = 0;
@@ -332,13 +332,20 @@ public class ProductDAO implements IProductDAO {
 
     @Override
     public List<Product> pagingProduct(List<Product> productList, int page) {
-        final int OFFSET = ROWS * (page - 1);
-        int toIndex = OFFSET + ROWS;
+        if (productList == null || productList.isEmpty() || page <= 0) {
+            return new ArrayList<>();
+        }
+
+        int offset = ROWS * (page - 1);
+        int toIndex = offset + ROWS;
         if (toIndex >= productList.size()) {
             toIndex = productList.size();
         }
-        List<Product> productSubList = productList.subList(OFFSET, toIndex);
-        return productSubList;
+        if (offset >= productList.size()) {
+            offset = productList.size();
+        }
+        List<Product> subProductList = productList.subList(offset, toIndex);
+        return subProductList;
     }
 
     @Override
@@ -351,16 +358,11 @@ public class ProductDAO implements IProductDAO {
         // Format price range
         final int LOW = (price == null) ? 0 : Integer.parseInt(price.split("-")[0]);
         final int HIGH = (price == null) ? 100000000 : Integer.parseInt(price.split("-")[1]);
-        System.out.println("In filter product");
-        System.out.println(brandId);
-        System.out.println(("Nam").equals(GENDER));
-        System.out.println(("Nữ").equals(GENDER));
-        System.out.println(("Unisex").equals(GENDER));
 
         List<Product> filteredProduct = productList.stream()
                 .filter(product -> (brandId == -1 || product.getBrandId() == brandId)
-                        && (GENDER == null || product.getGender().equals(GENDER))
-                        && product.getStock().getPrice() >= LOW && product.getStock().getPrice() <= HIGH)
+                && (GENDER == null || product.getGender().equals(GENDER))
+                && product.getStock().getPrice() >= LOW && product.getStock().getPrice() <= HIGH)
                 .collect(Collectors.toList());
         return filteredProduct;
     }

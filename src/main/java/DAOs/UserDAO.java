@@ -66,7 +66,7 @@ public class UserDAO implements IUserDAO {
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setNString(1, username);
+            ps.setString(1, username);
 
             rs = ps.executeQuery();
 
@@ -220,8 +220,19 @@ public class UserDAO implements IUserDAO {
 
     @Override
     public List<User> pagingUser(List<User> users, int page) {
-        final int OFFSET = ROWS * (page - 1);
-        List<User> subUserList = users.subList(OFFSET, ROWS);
+        if (users == null || users.isEmpty() || page <= 0) {
+            return new ArrayList<>();
+        }
+
+        int offset = ROWS * (page - 1);
+        int toIndex = offset + ROWS;
+        if (toIndex >= users.size()) {
+            toIndex = users.size();
+        }
+        if (offset >= users.size()) {
+            offset = users.size();
+        }
+        List<User> subUserList = users.subList(offset, toIndex);
         return subUserList;
     }
 
@@ -322,7 +333,7 @@ public class UserDAO implements IUserDAO {
      * Create a new {@link User} object from a {@link ResultSet}.
      *
      * @param queryResult The {@code ResultSet} containing the user's
-     *                    information.
+     * information.
      * @return An {@code User} object containing the user's information.
      * @throws SQLException If an error occurs while retrieving the data.
      */

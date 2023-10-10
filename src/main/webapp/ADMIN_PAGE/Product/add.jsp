@@ -1,3 +1,11 @@
+<%!  boolean isAddFailed;%>
+
+<%
+    isAddFailed = request.getParameter("ODFE") == null ? false : Boolean.parseBoolean(request.getParameter("ODFE"));
+%>
+
+
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
