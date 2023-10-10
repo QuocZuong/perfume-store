@@ -1,5 +1,7 @@
 package Controllers;
 
+import DAOs.CustomerDAO;
+import DAOs.EmployeeDAO;
 import Models.User;
 
 import java.util.List;
@@ -17,6 +19,8 @@ import Exceptions.PhoneNumberDuplicationException;
 import Exceptions.UsernameDuplicationException;
 import Exceptions.WrongPasswordException;
 import Lib.EmailSender;
+import Models.Customer;
+import Models.Employee;
 import java.sql.ResultSet;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -70,15 +74,15 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        String path = request.getRequestURI();
+        String path = request.getRequestURI();
 //
 //        // ---------------------------- PRODUCT SECTION ----------------------------
 //        if (path.startsWith(ADMIN_PRODUCT_LIST_URI) || path.startsWith(ADMIN_PRODUCT_LIST_URI + "/page")) {
@@ -109,21 +113,21 @@ public class AdminController extends HttpServlet {
 //            return;
 //        }
 //
-//        // ---------------------------- USER SECTION ----------------------------
-//        if (path.startsWith(ADMIN_USER_LIST_URI) || path.startsWith(ADMIN_USER_LIST_URI + "/page")) {
-//            searchUser(request, response);
-//            request.getRequestDispatcher("/ADMIN_PAGE/User/list.jsp").forward(request, response);
-//            return;
-//        }
+        // ---------------------------- USER SECTION ----------------------------
+        if (path.startsWith(ADMIN_USER_LIST_URI) || path.startsWith(ADMIN_USER_LIST_URI + "/page")) {
+            searchUser(request, response);
+            request.getRequestDispatcher("/ADMIN_PAGE/User/list.jsp").forward(request, response);
+            return;
+        }
 //
-//        if (path.startsWith(ADMIN_USER_UPDATE_URI)) {
-//            if (handleUpdateUser(request, response)) {
-//                request.getRequestDispatcher("/ADMIN_PAGE/User/update.jsp").forward(request, response);
-//            } else {
-//                response.sendRedirect(ADMIN_USER_LIST_URI);
-//            }
-//            return;
-//        }
+        if (path.startsWith(ADMIN_USER_UPDATE_URI)) {
+            if (handleUpdateUser(request, response)) {
+                request.getRequestDispatcher("/ADMIN_PAGE/User/update.jsp").forward(request, response);
+            } else {
+                response.sendRedirect(ADMIN_USER_LIST_URI);
+            }
+            return;
+        }
 //
 //        if (path.startsWith(ADMIN_USER_DELETE_URI)) {
 //            deleteUser(request, response);
@@ -158,10 +162,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -213,7 +217,6 @@ public class AdminController extends HttpServlet {
 //                return;
 //            }
 //        }
-
     }
 
     /* CRUD */
@@ -247,7 +250,6 @@ public class AdminController extends HttpServlet {
 //        System.out.println("Add successfully");
 //
 //    }
-
     // ---------------------------- READ SECTION ----------------------------
 //    private void searchProduct(HttpServletRequest request, HttpServletResponse response) {
 //        String URI = request.getRequestURI();
@@ -299,61 +301,36 @@ public class AdminController extends HttpServlet {
 //        request.setAttribute("Search", Search);
 //    }
 //
-//    private void searchUser(HttpServletRequest request, HttpServletResponse response) {
-//        String URI = request.getRequestURI();
-//        String data[] = URI.split("/");
-//        int page = 1;
-//        String Search = request.getParameter("txtSearch");
-//        UserDAO uDAO = new UserDAO();
-//        ResultSet rs = null;
-//
-//        for (int i = 0; i < data.length; i++) {
-//            if (data[i].equals("page")) {
-//                page = Integer.parseInt(data[i + 1]);
-//            }
-//        }
-//
-//        if (Search == null || Search.equals("")) {
-//            Search = "%";
-//        }
-//
-//        rs = uDAO.getFilteredUserForAdminSearch(page, Search);
-//        List<User> listUser = new ArrayList<>();
-//
-//        try {
-//            while (rs.next()) {
-//                int id = rs.getInt("ID");
-//                String name = rs.getString("Name");
-//                String userName = rs.getString("UserName");
-//                String password = rs.getString("Password");
-//                String phoneNumber = rs.getString("PhoneNumber");
-//                // String phoneNumber = rs.getString("PhoneNumber") == null ? "" :
-//                // rs.getString("PhoneNumber");
-//                // String phoneNumber = null;
-//                String email = rs.getString("Email");
-//                String address = rs.getString("Address");
-//                String role = rs.getString("Role");
-//                boolean active = rs.getBoolean("Active");
-//
-//                // Create a new User object and add it to the list
-//                User user = new User(id, name, userName, password, phoneNumber, email, address, role, active);
-//
-//                listUser.add(user);
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        int NumberOfUser = uDAO.GetNumberOfUserForSearch(Search);
-//        final int ROWS = 20;
-//        int NumberOfPage = NumberOfUser / ROWS;
-//        NumberOfPage = (NumberOfUser % ROWS == 0 ? NumberOfPage : NumberOfPage + 1);
-//
-//        request.setAttribute("page", page);
-//        request.setAttribute("numberOfPage", NumberOfPage);
-//        request.setAttribute("listUser", listUser);
-//        request.setAttribute("Search", Search);
-//    }
+    private void searchUser(HttpServletRequest request, HttpServletResponse response) {
+        String URI = request.getRequestURI();
+        String data[] = URI.split("/");
+        int page = 1;
+        String Search = request.getParameter("txtSearch");
+        UserDAO uDAO = new UserDAO();
+
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("page")) {
+                page = Integer.parseInt(data[i + 1]);
+            }
+        }
+
+        if (Search == null || Search.equals("")) {
+            Search = "%";
+        }
+
+        List<User> usersFromSearch = uDAO.searchUser(Search);
+
+        List<User> listUser = uDAO.pagingUser(usersFromSearch, page);
+
+        final int ROWS = 20;
+        int NumberOfPage = usersFromSearch.size() / ROWS;
+        NumberOfPage = (usersFromSearch.size() % ROWS == 0 ? NumberOfPage : NumberOfPage + 1);
+
+        request.setAttribute("page", page);
+        request.setAttribute("numberOfPage", NumberOfPage);
+        request.setAttribute("listUser", listUser);
+        request.setAttribute("Search", Search);
+    }
 //
 //    private void clientDetail(HttpServletRequest request, HttpServletResponse response) {
 //        OrderDAO oDAO = new OrderDAO();
@@ -633,22 +610,37 @@ public class AdminController extends HttpServlet {
 //        return false;
 //    }
 //
-//    private boolean handleUpdateUser(HttpServletRequest request, HttpServletResponse response) {
-//        UserDAO uDAO = new UserDAO();
-//        String data[] = request.getRequestURI().split("/");
-//        for (int i = 0; i < data.length; i++) {
-//            if (data[i].equals("ID")) {
-//                int UserID = Integer.parseInt(data[i + 1]);
-//                User us = uDAO.getUser(UserID);
-//                if (us != null) {
-//                    request.setAttribute("UserUpdate", us);
-//                    return true;
-//                }
-//            }
-//        }
-//
-//        return false;
-//    }
+
+    private boolean handleUpdateUser(HttpServletRequest request, HttpServletResponse response) {
+        UserDAO uDAO = new UserDAO();
+        String data[] = request.getRequestURI().split("/");
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("ID")) {
+                int UserID = Integer.parseInt(data[i + 1]);
+                User us = uDAO.getUser(UserID);
+                if (us.getType().equals("Employee")) {
+                    EmployeeDAO employeeDAO = new EmployeeDAO();
+                    Employee employee = employeeDAO.getEmployeeByUserId(us.getId());
+
+                    if (employee != null) {
+                        request.setAttribute("UserUpdate", employee);
+                        return true;
+                    }
+                }
+
+                if (us.getType().equals("Customer")) {
+                    CustomerDAO customerDAO = new CustomerDAO();
+                    Customer customer = customerDAO.getCustomerByUserId(UserID);
+                    if (customer != null) {
+                        request.setAttribute("UserUpdate", customer);
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
 //
 //    private boolean updateAdminInfomation(HttpServletRequest request, HttpServletResponse response) {
 //        /*
@@ -828,8 +820,8 @@ public class AdminController extends HttpServlet {
 //        }
 //        System.out.println("Deactivated User with ID: " + userId + " successfully!");
 //    }
-
     // ---------------------------- CLOUD SECTION ----------------------------
+
     private String uploadImageToClound(Part imagePart) throws IOException {
         String imgURL = "/RESOURCES/images/icons/default-perfume.png";
         File imageFile = convertPartToFile(imagePart);
@@ -908,8 +900,7 @@ public class AdminController extends HttpServlet {
         File tempFile = File.createTempFile("temp", null);
         tempFile.deleteOnExit();
 
-        try (InputStream inputStream = part.getInputStream();
-                OutputStream outputStream = new FileOutputStream(tempFile)) {
+        try (InputStream inputStream = part.getInputStream(); OutputStream outputStream = new FileOutputStream(tempFile)) {
             byte[] buffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = inputStream.read(buffer)) != -1) {
