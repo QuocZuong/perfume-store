@@ -1,5 +1,7 @@
 package Controllers;
 
+import DAOs.CartItemDAO;
+import DAOs.CustomerDAO;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.Date;
@@ -19,6 +21,8 @@ import Exceptions.PhoneNumberDuplicationException;
 import Exceptions.UsernameDuplicationException;
 import Exceptions.WrongPasswordException;
 import Lib.EmailSender;
+import Models.CartItem;
+import Models.Customer;
 import Models.Order;
 import Models.Product;
 import Models.User;
@@ -30,23 +34,33 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ClientController extends HttpServlet {
+public class CustomerController extends HttpServlet {
 
     // ---------------------------- URI DECLARATION SECTION
     // ----------------------------
-    public static final String CLIENT_CART_URI = "/Client/Cart";
-    public static final String CLIENT_CART_CHECKOUT_URI = "/Client/Cart/Checkout";
-    public static final String CLIENT_CART_DELETE_URI = "/Client/Cart/Delete";
-    public static final String CLIENT_CART_UPDATE_URI = "/Client/Cart/Update";
-    public static final String CLIENT_ADD_TO_CART_URI = "/Client/addToCart";
-    public static final String CLIENT_USER_URI = "/Client/User";
-    public static final String CLIENT_UPDATE_INFO_URI = "/Client/Update/Info";
-    public static final String CLIENT_UPDATE_ADDRESS_URI = "/Client/Update/Address";
-    public static final String CLIENT_CHECKOUT_URI = "/Client/Checkout";
-    public static final String CLIENT_ORDER_DETAIL_URI = "/Client/Order/Detail/ID";
+    public static final String CUSTOMER_CART_URI = "/Customer/Cart";
+    public static final String CUSTOMER_CART_CHECKOUT_URI = "/Customer/Cart/Checkout";
+    public static final String CUSTOMER_CART_DELETE_URI = "/Customer/Cart/Delete";
+    public static final String CUSTOMER_CART_UPDATE_URI = "/Customer/Cart/Update";
+    public static final String CUSTOMER_ADD_TO_CART_URI = "/Customer/addToCart";
+    public static final String CUSTOMER_USER_URI = "/Customer/User";
+    public static final String CUSTOMER_UPDATE_INFO_URI = "/Customer/Update/Info";
+    public static final String CUSTOMER_UPDATE_ADDRESS_URI = "/Customer/Update/Address";
+    public static final String CUSTOMER_CHECKOUT_URI = "/Customer/Checkout";
+    public static final String CUSTOMER_ORDER_DETAIL_URI = "/Customer/Order/Detail/ID";
 
     public static final String BTN_ADD_TO_CART = "btnAddToCart";
     public static final String SUBMIT_VALUE = "Submit";
+
+    public enum State {
+        Success(1),
+        Fail(0);
+        private int value;
+
+        State(int value) {
+            this.value = value;
+        }
+    }
 
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -59,8 +73,8 @@ public class ClientController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        String path = request.getRequestURI();
-//        System.out.println("Request Path URI " + path);
+        String path = request.getRequestURI();
+        System.out.println("Request Path URI " + path);
 //
 //        if (path.startsWith(CLIENT_CART_DELETE_URI)) {
 //            System.out.println("Going delete");
@@ -87,12 +101,12 @@ public class ClientController extends HttpServlet {
 //            return;
 //        }
 //
-//        if (path.startsWith(CLIENT_CART_URI)) {
-//            System.out.println("Going cart");
-//            GetCartProduct(request, response);
-//            request.getRequestDispatcher("/CLIENT_PAGE/cart.jsp").forward(request, response);
-//            return;
-//        }
+        if (path.startsWith(CUSTOMER_CART_URI)) {
+            System.out.println("Going cart");
+            getCartProduct(request);
+            request.getRequestDispatcher("/CUSTOMER_PAGE/cart.jsp").forward(request, response);
+            return;
+        }
 //
 //        if (path.startsWith(CLIENT_USER_URI)) {
 //            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -125,17 +139,21 @@ public class ClientController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        String path = request.getRequestURI();
-//        if (path.startsWith(CLIENT_ADD_TO_CART_URI)) {
-//            if (request.getParameter(BTN_ADD_TO_CART) != null
-//                    && request.getParameter(BTN_ADD_TO_CART).equals(SUBMIT_VALUE)) {
-//
-//                PostAddToCart(request, response);
-//                int pID = Integer.parseInt(request.getParameter("ProductID"));
-//                response.sendRedirect("/Product/Detail/ID/" + pID);
-//                return;
-//            }
-//        }
+        String path = request.getRequestURI();
+        if (path.startsWith(CUSTOMER_ADD_TO_CART_URI)) {
+            if (request.getParameter(BTN_ADD_TO_CART) != null
+                    && request.getParameter(BTN_ADD_TO_CART).equals(SUBMIT_VALUE)) {
+                int result = addToCart(request, response);
+                if (result == State.Success.value) {
+
+                } else if (result == State.Fail.value) {
+
+                }
+                int pID = Integer.parseInt(request.getParameter("ProductID"));
+                response.sendRedirect("/Product/Detail/ID/" + pID);
+                return;
+            }
+        }
 //        if (path.startsWith(CLIENT_UPDATE_INFO_URI)) {
 //            if (request.getParameter("btnUpdateInfo") != null
 //                    && request.getParameter("btnUpdateInfo").equals("Submit")) {
@@ -179,21 +197,40 @@ public class ClientController extends HttpServlet {
 
     /* CRUD */
     // ---------------------------- CREATE SECTION ----------------------------
-//    private void PostAddToCart(HttpServletRequest request, HttpServletResponse response) {
-//        UserDAO uDao = new UserDAO();
-//
-//        Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
-//        String username = userCookie.getValue();
-//
-//        int pID = Integer.parseInt(request.getParameter("ProductID"));
-//        int pQuan = Integer.parseInt(request.getParameter("ProductQuantity"));
-//
-//        // Assume having client Username and get Client ID from username
-//        int ClientID = uDao.getUser(username).getID();
-//
-//        CartDAO cDAO = new CartDAO();
-//        cDAO.addToCart(ClientID, pID, pQuan);
-//    }
+    private int addToCart(HttpServletRequest request, HttpServletResponse response) {
+        int result;
+        CustomerDAO cusDAO = new CustomerDAO();
+
+        Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
+        String username = userCookie.getValue();
+
+        int pID = Integer.parseInt(request.getParameter("ProductID"));
+        int pQuan = Integer.parseInt(request.getParameter("ProductQuantity"));
+        int pPrice = Integer.parseInt(request.getParameter("ProductPrice"));
+        int pSum = pQuan * pPrice;
+
+        // Assume having client Username and get Client ID from username
+        Customer cus = cusDAO.getCustomer(username);
+        if (cus == null) {
+            return 0;
+        }
+
+        int CustomerID = cus.getCustomerId();
+        System.out.println("CustomerID" + CustomerID);
+
+        CartItemDAO ciDAO = new CartItemDAO();
+        CartItem ci = new CartItem();
+        ci.setCustomerId(CustomerID);
+        ci.setProductId(pID);
+        ci.setQuantity(pQuan);
+        ci.setPrice(pPrice);
+        ci.setSum(pSum);
+        result = ciDAO.addToCart(ci);
+        if (result == 0) {
+            return 0;
+        }
+        return 1;
+    }
 //
 //    private boolean ClientCheckout(HttpServletRequest request, HttpServletResponse response) {
 //        UserDAO usDAO = new UserDAO();
@@ -247,34 +284,37 @@ public class ClientController extends HttpServlet {
 //        }
 //
 //    }
-    // ---------------------------- READ SECTION ----------------------------
-//    private void GetCartProduct(HttpServletRequest request, HttpServletResponse response) {
-//        UserDAO uDao = new UserDAO();
-//        CartDAO cDAO = new CartDAO();
-//        Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
-//        String username = userCookie.getValue();
-//        int ClientID = uDao.getUser(username).getID();
-//        List<Cart> listCart = cDAO.getAllClientProduct(ClientID);
-//        request.setAttribute("listCart", listCart);
-//        // Handling out of stock
-//        List<Product> listOutOfStock = cDAO.getAllOutOfStockProductIDFromCart(ClientID);
-//        request.setAttribute("listOutOfStock", listOutOfStock);
-//        if (listOutOfStock.size() != 0) {
-//            for (int i = 0; i < listOutOfStock.size(); i++) {
-//                cDAO.deleteCart(ClientID, listOutOfStock.get(i).getID());
-//                System.out.println(
-//                        "delete product " + listOutOfStock.get(i).getName() + " from cart user ID:" + ClientID);
-//                if (listCart.size() != 0) {
-//                    for (int j = 0; j < listCart.size(); j++) {
-//                        if (listCart.get(j).getProductID() == listOutOfStock.get(i).getID()) {
-//                            listCart.remove(j);
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        
-//    }
+// ---------------------------- READ SECTION ----------------------------
+
+    private void getCartProduct(HttpServletRequest request) {
+        CustomerDAO cusDAO = new CustomerDAO();
+        CartItemDAO ciDAO = new CartItemDAO();
+        Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
+        String username = userCookie.getValue();
+        int CustomerID = cusDAO.getCustomer(username).getCustomerId();
+        System.out.println("cus id:"+CustomerID);
+        List<CartItem> listCartItem = ciDAO.getAllCartItemOfCustomer(CustomerID);
+        // Handling out of stock
+        List<Product> listOutOfStock = ciDAO.getAllOutOfStockProductFromCart(CustomerID);
+        request.setAttribute("listOutOfStock", listOutOfStock);
+        if (!listOutOfStock.isEmpty()) {
+            for (int i = 0; i < listOutOfStock.size(); i++) {
+                ciDAO.deleteCartItem(CustomerID, listOutOfStock.get(i).getId());
+                System.out.println(
+                        "delete product " + listOutOfStock.get(i).getName() + " from cart user ID:" + CustomerID);
+                if (!listCartItem.isEmpty()) {
+                    for (int j = 0; j < listCartItem.size(); j++) {
+                        if (listCartItem.get(j).getProductId() == listOutOfStock.get(i).getId()) {
+                            listCartItem.remove(j);
+                        }
+                    }
+                }
+            }
+        }
+        request.setAttribute("listCartItem", listCartItem);
+        request.setAttribute("customerID", CustomerID);
+
+    }
 //    
 //    private void ClientOrderDetail(HttpServletRequest request, HttpServletResponse response) {
 //        String path = request.getRequestURI();
@@ -513,6 +553,7 @@ public class ClientController extends HttpServlet {
 //        return true;
 //    }
     // ------------------------- EXEPTION HANDLING SECTION -------------------------
+
     private String checkException(HttpServletRequest request) {
         if (request.getAttribute("exceptionType") == null) {
             return "";

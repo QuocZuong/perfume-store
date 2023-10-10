@@ -140,6 +140,29 @@ ROLLBACK
         return null;
     }
 
+    public Customer getCustomer(String username) {
+        ResultSet rs;
+
+        String sql = "SELECT * FROM Customer cus\n"
+                + "JOIN [User] ON cus.[User_ID] = [User].[User_ID] \n"
+                + "WHERE [User].[User_Username] = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setNString(1, username);
+            rs = ps.executeQuery();
+            UserDAO uDAO = new UserDAO();
+            if (rs.next()) {
+                Customer customer = new Customer(uDAO.userFactory(rs));
+                customer.setCustomerCreditPoint(rs.getInt(CUSTOMER_CREDIT_POINT));
+                customer.setCustomerId(rs.getInt(CUSTOMER_ID));
+                return customer;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
     public boolean isCustomer(String username) {
         String sql = "SELECT * FROM [User] WHERE User_Name = ? AND User_Type = 'Customer'";
 

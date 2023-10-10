@@ -91,9 +91,10 @@
                                 <p id="volume">Dung tích</p>
                                 <span><%= volume%>ml</span>
                             </div>
-                            <form action="/Client/addToCart" method="POST">
+                            <form action="/Customer/addToCart" method="POST">
                                 <input type="number" name="ProductQuantity" id="" value="1" >
                                 <input type="hidden" name="ProductID" value="<%= id%>">
+                                <input type="hidden" name="ProductPrice" value = <%= price%>>
                                 <button name="btnAddToCart" class="btnAddToCart" value="Submit" type="submit" <%= (quantity == 0 ? "disabled" : "")%>><%= (quantity == 0 ? "HẾT HÀNG" : "THÊM VÀO GIỎ HÀNG")%></button>
                             </form>
                         </div>

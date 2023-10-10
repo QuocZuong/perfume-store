@@ -15,6 +15,7 @@ public class Customer extends User {
      */
     public Customer(User user) {
         super(user);
+        customerId = 0;
         customerCreditPoint = 0;
     }
 

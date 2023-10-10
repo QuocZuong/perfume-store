@@ -47,6 +47,22 @@ public class CartItemDAO implements ICartItemDAO {
         return 0;
     }
 
+    public int addToCart(CartItem ci) {
+        String sql = "EXEC INSERT_CART_ITEM ?, ?, ?, ?, ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, ci.getCustomerId());
+            ps.setInt(2, ci.getProductId());
+            ps.setInt(3, ci.getQuantity());
+            ps.setInt(4, ci.getPrice());
+            ps.setInt(5, ci.getSum());
+            return ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(CartItemDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
     /* ------------------------- UPDATE SECTION ---------------------------- */
     @Override
     public int updateImportStashItem(CartItem ci) {
@@ -78,6 +94,20 @@ public class CartItemDAO implements ICartItemDAO {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, ci.getCustomerId());
             ps.setInt(2, ci.getProductId());
+            return ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(CartItemDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
+    public int deleteCartItem(int cId, int pId) {
+        String sql = "DELETE FROM CartItem\n"
+                + "WHERE Customer_ID = ? AND Product_ID = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, cId);
+            ps.setInt(2, pId);
             return ps.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(CartItemDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -173,25 +203,25 @@ public class CartItemDAO implements ICartItemDAO {
         try {
             // String sql = "SELECT Cart.ProductID, Cart.Quantity as CartQuantity FROM Cart WHERE ClientID = ?";
             String sql = "SELECT \n"
-                    + "		Product.Product_ID,\n"
-                    + "		Product.Product_Name,\n"
-                    + "		Product.Brand_ID,\n"
-                    + "		Product.Product_Gender,\n"
-                    + "		Product.Product_Smell,\n"
-                    + "		Product.Product_Release_Year,\n"
-                    + "		Product.Product_Volume,\n"
-                    + "		Product.Product_Img_URL,\n"
-                    + "		Product.Product_Description,\n"
-                    + "		Product.Product_Active\n"
-                    + "		Stock.Price\n"
-                    + "		Stock.Quantity\n"
-                    + "	FROM CartItem, Product, Stock\n"
-                    + "	WHERE \n"
-                    + "		CartItem.Customer_ID = 1 AND\n"
-                    + "		CartItem.Product_ID = Product.Product_ID AND\n"
-                    + "		Product.Product_ID = Stock.Product_ID AND\n"
-                    + "		(Stock.Quantity = 0 OR CartItem.Quantity > Stock.Quantity)\n"
-                    + "		ORDER BY Product.Brand_ID";
+                    + "	Product.Product_ID,\n"
+                    + "	Product.Product_Name, \n"
+                    + "	Product.Brand_ID, \n"
+                    + "	Product.Product_Gender,\n"
+                    + "	Product.Product_Smell,\n"
+                    + "	Product.Product_Release_Year,\n"
+                    + "	Product.Product_Volume,\n"
+                    + "	Product.Product_Img_URL,\n"
+                    + "	Product.Product_Description,\n"
+                    + "	Product.Product_Active,\n"
+                    + "	Stock.Price AS SP, \n"
+                    + "	Stock.Quantity AS SQ\n"
+                    + "FROM CartItem, Product, Stock\n"
+                    + "WHERE\n"
+                    + "	CartItem.Customer_ID = ? AND\n"
+                    + "           CartItem.Product_ID = Product.Product_ID AND\n"
+                    + "           Product.Product_ID = Stock.Product_ID AND\n"
+                    + "           (Stock.Quantity = 0 OR CartItem.Quantity > Stock.Quantity)\n"
+                    + "           ORDER BY Product.Brand_ID";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, customerId);
             rs = ps.executeQuery();
@@ -218,6 +248,16 @@ public class CartItemDAO implements ICartItemDAO {
             e.printStackTrace();
         }
         return arrProduct;
+    }
+
+    public int getCartTotal(ArrayList<CartItem> arrCi) {
+        int total = 0;
+        if (arrCi != null && !arrCi.isEmpty()) {
+            for (int i = 0; i < arrCi.size(); i++) {
+                total += arrCi.get(i).getSum();
+            }
+        }
+        return total;
     }
 
 }

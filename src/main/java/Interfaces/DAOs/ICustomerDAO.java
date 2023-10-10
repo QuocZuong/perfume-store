@@ -7,6 +7,7 @@ import Models.Customer;
 public interface ICustomerDAO {
 
     public final String CUSTOMER_CREDIT_POINT = "Customer_Credit_Point";
+    public final String CUSTOMER_ID = "Customer_ID";
 
     public int addCustomer(Customer customer);
 
