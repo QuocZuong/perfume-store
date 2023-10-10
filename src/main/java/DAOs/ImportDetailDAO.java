@@ -68,6 +68,7 @@ public class ImportDetailDAO implements IImportDetailDAO {
                 int[] batchResult = ps.executeBatch();
                 for (int i = 0; i < batchResult.length; i++) {
                     if (batchResult[i] == PreparedStatement.EXECUTE_FAILED) {
+                        System.out.println("add import detail element fail");
                         return 0;
                     }
                     result += batchResult[i];
@@ -205,4 +206,17 @@ public class ImportDetailDAO implements IImportDetailDAO {
         return total_cost;
     }
 
+    /* ------------------------- DELETE SECTION ---------------------------- */
+    public int removeAllImportDetailOfImport(int ipId) {
+        String sql = "DELETE FROM [Import_Detail] WHERE Import_ID = ?";
+        int result = 0;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, ipId);
+            result = ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ImportDetailDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
 }

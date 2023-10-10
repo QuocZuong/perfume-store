@@ -5,6 +5,7 @@
 package DAOs;
 
 import Interfaces.DAOs.IImportDAO;
+import Lib.DatabaseUtils;
 import Models.Import;
 import Models.ImportDetail;
 import java.sql.Connection;
@@ -33,19 +34,22 @@ public class ImportDAO implements IImportDAO {
     public int addImport(Import ip) {
         ImportDetailDAO ipdDAO = new ImportDetailDAO();
         int result = 0;
-        String sql = "INSERT INTO [Import] (Import_ID, Import_Total_Quantity, Import_Total_Cost, Supplier_Name, Import_At, Delivered_At) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO [Import] (Import_Total_Quantity, Import_Total_Cost, Supplier_Name, Import_At, Delivered_At) VALUES (?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, ip.getId());
-            ps.setInt(2, ip.getTotalQuantity());
-            ps.setInt(3, ip.getTotalCost());
-            ps.setString(4, ip.getSupplierName());
-            ps.setDate(5, ip.getImportAt());
-            ps.setDate(6, ip.getDeliveredAt());
-            ps.setInt(7, ip.getImportByInventoryManager());
+            ps.setInt(1, ip.getTotalQuantity());
+            ps.setInt(2, ip.getTotalCost());
+            ps.setString(3, ip.getSupplierName());
+            ps.setDate(4, ip.getImportAt());
+            ps.setDate(5, ip.getDeliveredAt());
+            ps.setInt(6, ip.getImportByInventoryManager());
+            result = ps.executeUpdate();
             int addImportDetailResult = ipdDAO.addAllImportDetailOfImport(ip.getImportDetail());
-            if (addImportDetailResult != 0) {
-                result = ps.executeUpdate();
+            if (addImportDetailResult == 0) {
+                ipdDAO.removeAllImportDetailOfImport(ip.getId());
+                System.out.println("remove all remain import detail of import id:" + ip.getId());
+                removeImportOnly(ip.getId());
+                System.out.println("add import detail fail so delte import id:" + ip.getId());
             }
         } catch (SQLException ex) {
             Logger.getLogger(ImportDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -114,6 +118,19 @@ public class ImportDAO implements IImportDAO {
             Logger.getLogger(ImportDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return ip;
+    }
+
+    /* ------------------------- DELETE SECTION ---------------------------- */
+    public int removeImportOnly(int ipId) {
+        String sql = "DELETE FROM Import WHERE Import_ID = ?";
+        int result = 0;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            result = ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(VoucherDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
     }
 
 }

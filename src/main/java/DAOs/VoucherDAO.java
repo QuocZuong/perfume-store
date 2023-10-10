@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import Interfaces.DAOs.IVoucherDAO;
+import Lib.DatabaseUtils;
 import java.sql.Date;
-import java.time.LocalDate;
 
 public class VoucherDAO implements IVoucherDAO {
 
@@ -26,7 +26,6 @@ public class VoucherDAO implements IVoucherDAO {
     public int addVoucher(Voucher v) {
         int result = 0;
         String sql = "IINSERT INTO [Voucher] (\n"
-                + "	Voucher_ID, \n"
                 + "	Voucher_Code, \n"
                 + "	Voucher_Quantity, \n"
                 + "	Voucher_Discount_Percent, \n"
@@ -35,19 +34,24 @@ public class VoucherDAO implements IVoucherDAO {
                 + "	Voucher_Expired_At, \n"
                 + "	Voucher_Created_By_Admin\n"
                 + "	) \n"
-                + "	VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                + "	VALUES (?, ?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, v.getId());
-            ps.setNString(2, v.getCode());
-            ps.setInt(3, v.getQuantity());
-            ps.setInt(4, v.getDiscountPercent());
-            ps.setInt(5, v.getDiscountMax());
-            ps.setDate(6, v.getCreatedAt());
-            ps.setDate(7, v.getExpiredAt());
-            ps.setInt(8, v.getCreatedByAdmin());
-            if (addApprovedProduct(v) != 0) {
-                result = ps.executeUpdate();
+            ps.setNString(1, v.getCode());
+            ps.setInt(2, v.getQuantity());
+            ps.setInt(3, v.getDiscountPercent());
+            ps.setInt(4, v.getDiscountMax());
+            ps.setDate(5, v.getCreatedAt());
+            ps.setDate(6, v.getExpiredAt());
+            ps.setInt(7, v.getCreatedByAdmin());
+            result = ps.executeUpdate();
+            if (result != 0) {
+                if (addApprovedProduct(v) == 0) {
+                    removeAllVoucherOfVoucherId(v.getId());
+                    System.out.println("remove all remain voucher product of voucher id" + v.getId());
+                    removeVoucherOnly(v.getId());
+                    System.out.println("add voucher detail fail so delete voucher id:" + v.getId());
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(VoucherDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -72,6 +76,7 @@ public class VoucherDAO implements IVoucherDAO {
                 int[] batchResult = ps.executeBatch();
                 for (int i = 0; i < batchResult.length; i++) {
                     if (batchResult[i] == PreparedStatement.EXECUTE_FAILED) {
+                        System.out.println("add voucher detail fail");
                         return 0;
                     }
                     result += batchResult[i];
@@ -221,5 +226,32 @@ public class VoucherDAO implements IVoucherDAO {
             Logger.getLogger(VoucherDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return arrVoucherId;
+    }
+
+    /* ------------------------- DELETE SECTION ---------------------------- */
+    public int removeVoucherOnly(int vId) {
+        String sql = "DELETE FROM [Voucher] WHERE Voucher_ID = ?";
+        int result = 0;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            result = ps.executeUpdate();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(VoucherDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+
+    public int removeAllVoucherOfVoucherId(int vId) {
+        String sql = "DELETE FROM [Voucher_Product] WHERE Voucher_ID = ?";
+        int result = 0;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, vId);
+            result = ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(VoucherDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
     }
 }
