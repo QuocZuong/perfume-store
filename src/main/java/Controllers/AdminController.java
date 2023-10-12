@@ -64,6 +64,7 @@ public class AdminController extends HttpServlet {
     public static final String ADMIN_PRODUCT_DELETE_URI = "/Admin/Product/Delete";
     public static final String ADMIN_PRODUCT_RESTORE_URI = "/Admin/Product/Restore";
 
+    public static final String ADMIN_USER_INFO = "/Admin/User/Info";
     public static final String ADMIN_USER_LIST_URI = "/Admin/User/List";
     public static final String ADMIN_USER_ADD_URI = "/Admin/User/Add";
     public static final String ADMIN_USER_UPDATE_URI = "/Admin/User/Update";
@@ -131,6 +132,12 @@ public class AdminController extends HttpServlet {
 
 //
         // ---------------------------- USER SECTION ----------------------------
+        if (path.startsWith(ADMIN_USER_INFO)) {
+            userInfo(request, response);
+            request.getRequestDispatcher("/ADMIN_PAGE/User/info.jsp").forward(request, response);
+            return;
+        }
+
         if (path.startsWith(ADMIN_USER_LIST_URI) || path.startsWith(ADMIN_USER_LIST_URI + "/page")) {
             searchUser(request, response);
             request.getRequestDispatcher("/ADMIN_PAGE/User/list.jsp").forward(request, response);
@@ -370,6 +377,23 @@ public class AdminController extends HttpServlet {
         request.setAttribute("listUser", listUser);
         request.setAttribute("Search", Search);
     }
+
+    private void userInfo(HttpServletRequest request, HttpServletResponse response) {
+        String URI = request.getRequestURI();
+        String data[] = URI.split("/");
+        int userId = -1;
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("ID")) {
+                userId = Integer.parseInt(data[i + 1]);
+            }
+        }
+        UserDAO userDAO = new UserDAO();
+        User user = userDAO.getUser(userId);
+        System.out.println("userInfo " + user.getName());
+        request.setAttribute("UserInfo", user);
+
+    }
+
 //
 //    private void clientDetail(HttpServletRequest request, HttpServletResponse response) {
 //        OrderDAO oDAO = new OrderDAO();
@@ -649,7 +673,6 @@ public class AdminController extends HttpServlet {
 //        return false;
 //    }
 //
-
     private boolean handleUpdateUser(HttpServletRequest request, HttpServletResponse response) {
         UserDAO uDAO = new UserDAO();
         String data[] = request.getRequestURI().split("/");
@@ -939,7 +962,7 @@ public class AdminController extends HttpServlet {
         File tempFile = File.createTempFile("temp", null);
         tempFile.deleteOnExit();
 
-        try ( InputStream inputStream = part.getInputStream();  OutputStream outputStream = new FileOutputStream(tempFile)) {
+        try (InputStream inputStream = part.getInputStream(); OutputStream outputStream = new FileOutputStream(tempFile)) {
 
             byte[] buffer = new byte[1024];
             int bytesRead;
@@ -957,6 +980,44 @@ public class AdminController extends HttpServlet {
         int endIndex = response.indexOf("\"", startIndex);
         return response.substring(startIndex, endIndex);
     }
+
+    // ------------------------- EXEPTION HANDLING SECTION -------------------------
+    private String checkException(HttpServletRequest request) {
+        if (request.getAttribute("exceptionType") == null) {
+            return "";
+        }
+        String exception = "?err";
+
+        switch ((String) request.getAttribute("exceptionType")) {
+            case "WrongPasswordException":
+            case "AccountNotFoundException":
+                exception += "AccNF";
+                break;
+            case "AccountDeactivatedException":
+                exception += "AccD";
+                break;
+            case "EmailDuplicationException":
+                exception += "Email";
+                break;
+            case "UsernameDuplicationException":
+                exception += "Username";
+                break;
+            case "PhoneNumberDuplicationException":
+                exception += "Phone";
+                break;
+            case "NotEnoughInformationException":
+                exception += "NEInfo";
+                break;
+            case "OperationAddFailedException":
+                exception += "ODFE";
+                break;
+            default:
+                break;
+        }
+        exception += "=true";
+        return exception;
+    }
+
 }
 
 // ---------------------------- TRASH SECTION ----------------------------

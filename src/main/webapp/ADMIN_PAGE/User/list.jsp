@@ -38,7 +38,7 @@
               integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
               crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css"/>
-        <link rel="stylesheet" href="/RESOURCES/admin/user/public/style/list.css">
+        <link rel="stylesheet" href="/RESOURCES/admin/user/public/style/info.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
               rel="stylesheet"
               integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
@@ -83,6 +83,7 @@
                                 <td></td>
                                 <td></td>
                                 <td></td>
+                                <td></td>
                             </tr>
                         </thead>
 
@@ -99,7 +100,9 @@
                                         <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getEmail()%></td>
                                         <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getType()%></td>
                                         <td class="<%= us.isActive() ? " " : "faded"%>">
-
+                                            <a href="/Admin/User/Info/ID/<%= us.getId()%>" class="<%= us.isActive() ? "" : "disabled"%> btn btn-outline-success rounded-0">Detail</a>
+                                        </td>
+                                        <td class="<%= us.isActive() ? " " : "faded"%>">
                                             <a href="/Admin/User/Update/ID/<%= us.getId()%>" class="<%= us.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0">Update</a>
                                         </td>
                                         <td class="<%= us.isActive() ? " " : "faded"%>">
@@ -138,7 +141,7 @@
                     </c:forEach>
                 <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>"><a class="page-link" href="/Admin/User/List/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a></li>
                 <li class="page-item"><a class="page-link" href="/Admin/User/List/page/${numberOfPage}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-right" style="color: #000000;"></i></a></li>
-            </ul>
+            </ul>   
         </nav>
         <script>
             function changeLink() {

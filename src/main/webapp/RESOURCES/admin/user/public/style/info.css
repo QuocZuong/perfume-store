@@ -1,0 +1,281 @@
+body::-webkit-scrollbar {
+  width: 10px;
+}
+
+body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+td.description .content.hide {
+  position: relative;
+  width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+td.description .expand-btn {
+  bottom: 0;
+  right: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  font-weight: bold;
+}
+
+a {
+  /*    text-decoration: none !important;
+  color: black !important;
+  border: 1px solid black !important;
+  padding: 5px 10px !important;*/
+}
+
+
+.faded {
+  opacity: 0.4;
+}
+
+h1 {
+  text-align: center;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 70px;
+
+}
+
+.pagination li {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: transparent;
+  text-align: center;
+  border: 1px solid transparent;
+  margin: 5px;
+  outline: none;
+}
+
+.pagination li a:hover {
+  border: 1px solid black;
+  border-radius: 50% !important;
+}
+
+.pagination li a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background-color: transparent;
+  color: black;
+  text-align: center;
+}
+
+.pagination li .page-link:focus {
+  box-shadow: none;
+}
+
+.pagination li.active a {
+  border: 1px solid black;
+  outline: none;
+  background-color: transparent !important;
+  color: black;
+}
+
+
+/* .rowTable .fade{
+  background: rgba(255,255,255,0.4);
+} */
+
+.bottom-table td p {
+  text-align: left;
+  margin: 10px 0;
+  width: fit-content;
+}
+
+.bottom-table td p img {
+  width: 20px;
+  height: 20px;
+  margin-right: 15px;
+}
+
+.search-box-first {
+  font-size: 1.2rem;
+  margin: 17px 0 27px 0;
+  padding: 5px 20px;
+  width: 100%;
+  height: 50px;
+  background-color: #ececec;
+  border: none;
+  border-radius: 40px;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-box-first:hover {
+  background-color: #dfdfdf;
+}
+
+.search-box-first a img {
+  width: 25px;
+  height: 25px;
+}
+
+.search-box-first #Search {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px;
+  font-size: 1.2rem;
+  width: fit-content;
+  height: 50px;
+  background-color: transparent;
+  border: none;
+  border-radius: 40px;
+  outline: none;
+}
+
+.search-box-first #inputSearch {
+  width: 90%;
+  font-size: 1.2rem;
+  padding: 5px 10px;
+  width: 100%;
+  height: 50px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  width: 100%;
+  border-bottom: 1px solid black;
+}
+
+.nav ul {
+  float: left;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding-left: 2rem;
+}
+
+.nav li a {
+  font-size: 1.2rem;
+  margin: 0 10px;
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+  transition: border-bottom 0.3s ease-in-out;
+  color: black;
+  list-style-type: none;
+  text-decoration: none;
+}
+
+.nav li a:first-child {
+  border-bottom: 1px solid transparent;
+}
+
+.nav li a:hover {
+  border-bottom: 1px solid black;
+  transition: border-bottom 0.3s ease-in-out;
+}
+
+.nav .iconPage {
+  margin-left: -235px;
+}
+
+.nav .account {
+  display: flex;
+  align-items: center;
+  padding-right: 2rem;
+}
+
+.nav .account a {
+  margin: 0 10px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.nav .account #product-dropdown-btn,
+.nav .account #user-dropdown-btn {
+  margin-right: 10px;
+}
+
+.nav .account #product-dropdown-btn+ul,
+.nav .account #user-dropdown-btn+ul {
+  display: flex;
+  flex-flow: column nowrap;
+  background-color: white;
+  margin-top: 1.6rem;
+  top: 30px;
+  opacity: 0;
+  height: 0px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.nav .account #product-dropdown-btn+ul {
+  right: 105px;
+}
+
+.nav .account #user-dropdown-btn+ul {
+  right: 58px;
+}
+
+.nav .account img {
+  width: 23px;
+  height: 23px;
+}
+
+.nav .account button img {
+  opacity: 0.7;
+}
+
+.drop-down-show {
+  opacity: 0.95 !important;
+}
+
+.nav .account #product-dropdown-btn+ul.drop-down-show {
+  height: 108px !important;
+}
+
+.nav .account #user-dropdown-btn+ul.drop-down-show {
+  height: 61px !important;
+}
+
+.wrapper > div{
+    display:flex;
+    font-size: 2rem;
+    
+}
+
+.wrapper > div > label{
+    margin-right: 1rem;
+}
