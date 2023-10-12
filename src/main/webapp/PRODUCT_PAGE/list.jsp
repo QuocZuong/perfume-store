@@ -1,3 +1,4 @@
+<%@page import="Lib.ExceptionUtils"%>
 <%@page import="Models.Brand"%>
 <%@page import="Models.Product"%>
 <%@page import="java.util.List"%>
@@ -13,18 +14,20 @@
 
 <%! ProductDAO pdao = new ProductDAO();%>
 <%! BrandDAO bdao = new BrandDAO();%>
-
-<%! boolean isProductNotFound;%>
+<%! boolean isError;%>
+<%! String exceptionMessage; %>
 <%! int currentPage, numberOfPage;%>
 <%
     List<Product> productList = (List<Product>) request.getAttribute("productList");
     List<Brand> brandList = (List<Brand>) request.getAttribute("brandList");
     currentPage = (int) (request.getAttribute("currentPage") == null ? 0 : request.getAttribute("currentPage"));
     numberOfPage = (int) (request.getAttribute("numberOfPages") == null ? 0 : request.getAttribute("numberOfPages"));
-    // Handling exception
-    String err = "err";
-    isProductNotFound = (request.getParameter(err + "PNF") == null ? false : Boolean.parseBoolean(request.getParameter(err + "PNF")));
     String shopName = (request.getAttribute("shopName") == null ? "" : (String) request.getAttribute("shopName"));
+
+    // Handling exception
+    String queryString = request.getQueryString();
+    isError = ExceptionUtils.isWebsiteError(queryString);
+    exceptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
 %>
 
 <!DOCTYPE html>
@@ -97,7 +100,7 @@
             <div class="row no-gutters center">
                 <div class="content">
                     <h1 class="header-for-shop">
-                        <%= shopName %>
+                        <%= shopName%>
                     </h1>
                     <div class="col-md-12 main">
                         <div class="search-bar">
@@ -155,9 +158,9 @@
                         </div>
 
                         <c:choose>
-                            <c:when  test="<%= isProductNotFound%>">
+                            <c:when  test='<%= isError%>'>
                                 <div> 
-                                    <h1 class="display-6">Không tìm thấy sản phẩm nào khớp với lựa chọn của bạn.</h1>
+                                    <h1 class="display-6"><%= exceptionMessage%> </h1>
                                 </div>
                             </c:when>
                             <c:otherwise>

@@ -1,3 +1,4 @@
+<%@page import="Lib.ExceptionUtils"%>
 <%@page import="Lib.Converter"%>
 <%@page import="DAOs.CustomerDAO"%>
 <%@page import="Models.Customer"%>
@@ -20,13 +21,13 @@
 <%! Cookie currentUserCookie = null;%>
 <%! String fullname, username, email, Tinh = "", QuanHuyen = "", PhuongXa = "";%>
 
-<%! boolean isAccountDeactivated, isAccountNotFound, isExistEmail, isExistUsername;%>
+<%! boolean isError; %>
+<%! String exceptionMessage;%>
 <%! boolean isUpdateAccountExecption;%>
-
-<%! boolean isExistPhone, isNotEnoughInfomation;%>
 <%! boolean isUpdateAddressExecption;%>
 
 <%
+
     currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
     customer = cusDAO.getCustomer(currentUserCookie.getValue());
     fullname = customer.getName();
@@ -40,19 +41,20 @@
 //        QuanHuyen = Address[1];
 //        PhuongXa = Address[2];
 //    }
+
     // Handling exception
-    String err = "err";
-    isAccountNotFound = (request.getParameter(err + "AccNF") == null ? false : Boolean.parseBoolean(request.getParameter(err + "AccNF")));
-    isAccountDeactivated = (request.getParameter(err + "AccD") == null ? false : Boolean.parseBoolean(request.getParameter(err + "AccD")));
-    isExistEmail = (request.getParameter(err + "Email") == null ? false : Boolean.parseBoolean(request.getParameter(err + "Email")));
-    isExistUsername = (request.getParameter(err + "Username") == null ? false : Boolean.parseBoolean(request.getParameter(err + "Username")));
+    String queryString = request.getQueryString();
+    isError = ExceptionUtils.isWebsiteError(queryString);x
+    exceptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
+    isUpdateAccountExecption
+            = ExceptionUtils.isAccountNotFound(queryString)
+            || ExceptionUtils.isAccountDeactivated(queryString)
+            || ExceptionUtils.isEmailDuplication(queryString)
+            || ExceptionUtils.isUsernameDuplication(queryString);
 
-    isUpdateAccountExecption = isAccountNotFound || isAccountDeactivated || isExistEmail || isExistUsername;
-
-    isExistPhone = (request.getParameter(err + "Phone") == null ? false : Boolean.parseBoolean(request.getParameter(err + "Phone")));
-    isNotEnoughInfomation = (request.getParameter(err + "NEInfo") == null ? false : Boolean.parseBoolean(request.getParameter(err + "NEInfo")));
-
-    isUpdateAddressExecption = isExistPhone || isNotEnoughInfomation;
+    isUpdateAddressExecption
+            = ExceptionUtils.isPhoneNumberDuplication(queryString)
+            || ExceptionUtils.isNotEnoughInformation(queryString);
 %>
 
 <!DOCTYPE html>
@@ -108,6 +110,8 @@
                 </div>
                 <div class="right">
 
+                    <!--  ==================================Account PAGE ==================================== -->
+
                     <div class="account-page">
                         <p>Xin chào <b><strong><%=  (fullname != null && !fullname.isEmpty()) ? fullname : username%></strong></b> (không phải tài khoản
                             <b><strong><%=  (fullname != null && !fullname.isEmpty()) ? fullname : username%></strong></b>? Hãy <a href="/Log/Logout">thoát ra</a> và đăng nhập vào tài
@@ -119,7 +123,7 @@
                             và <a  class="account-link" data-page="info-page">sửa mật khẩu và thông tin tài khoản</a>.
                         </p>
                     </div>
-
+                    <!--  ==================================Order PAGE ==================================== -->
                     <div class="order-page">
                         <c:choose>
                             <c:when test='<%=orders.size() == 0%>'>
@@ -137,8 +141,8 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                            <c:if test='<%=orders.size() != 0%>'>
-                                                <c:forEach var="i" begin="0" end="<%=orders.size() - 1%>">
+                                        <c:if test='<%=orders.size() != 0%>'>
+                                            <c:forEach var="i" begin="0" end="<%=orders.size() - 1%>">
                                                 <tr>
                                                     <th scope="row"><%=orders.get((int) pageContext.getAttribute("i")).getId()%></th>
                                                     <td><%=orders.get((int) pageContext.getAttribute("i")).getCreatedAt()%></td>
@@ -152,23 +156,18 @@
                             </c:otherwise>
                         </c:choose>
                     </div>
+
+                    <!--  ==================================Adrdress PAGE ==================================== -->
                     <div class="address-page">
                         <p>Các địa chỉ bên dưới mặc định sẽ được sử dụng ở trang thanh toán sản phẩm.</p>
 
 
                         <!--Execption Handling-->
-                        <c:choose>
-                            <c:when test='<%= isNotEnoughInfomation%>'>
-                                <h2 class="alert alert-danger text-center">
-                                    Vui lòng chọn đầy đủ tỉnh thành, quận huyện, phường xã
-                                </h2>
-                            </c:when>
-                            <c:when test='<%= isExistPhone%>'>
-                                <h2 class="alert alert-danger text-center">
-                                    Số điện thoại đã tồn tại
-                                </h2>
-                            </c:when>
-                        </c:choose>
+                        <c:if test='<%= isError%>'>
+                            <h2 class="alert alert-danger text-center">
+                                <%= exceptionMessage%>
+                            </h2>
+                        </c:if>
                         <!--Execption Handling-->
                         <div class="default">
 
@@ -203,32 +202,16 @@
                         </div>
 
                     </div>
+                    <!--  ==================================Info PAGE ==================================== -->
                     <div class="info-page">
 
 
                         <!--Execption Handling-->
-                        <c:choose>
-                            <c:when test='<%= isAccountNotFound%>'>
-                                <h2 class="alert alert-danger text-center">
-                                    Sai mật khẩu hiện tại
-                                </h2>
-                            </c:when>
-                            <c:when test='<%= isAccountDeactivated%>'>
-                                <h2 class="alert alert-danger text-center">
-                                    Tài khoản đã bị vô hiệu hóa
-                                </h2>
-                            </c:when>
-                            <c:when test='<%= isExistEmail%>'>
-                                <h2 class="alert alert-danger text-center">
-                                    Email đã tồn tại
-                                </h2>
-                            </c:when>
-                            <c:when test='<%= isExistUsername%>'>
-                                <h2 class="alert alert-danger text-center">
-                                    Tên đăng nhập đã tồn tại
-                                </h2>
-                            </c:when>
-                        </c:choose>
+                        <c:if test='<%= isError%>'>
+                            <h2 class="alert alert-danger text-center">
+                                <%= exceptionMessage%>
+                            </h2>
+                        </c:if>
                         <!--Execption Handling-->
 
                         <!--  Form Update Client account -->
@@ -268,7 +251,7 @@
                 </div>
             </div>
 
-
+            <!--  ================================== Other informaton  ==================================== -->
             <div class="row">
                 <div class="col-md-12 register">
                     <h1>Đăng ký thành viên để nhận khuyến mại</h1>

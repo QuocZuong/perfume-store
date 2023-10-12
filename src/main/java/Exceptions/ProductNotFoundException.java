@@ -12,7 +12,7 @@ public class ProductNotFoundException extends Exception implements Interfaces.Ex
         return super.getMessage();
     }
     public ProductNotFoundException() {
-        super("Không tìm thấy sản phẩm");
+        super("Không tìm thấy sản phẩm nào khớp với lựa chọn của bạn.");
         queryString = "PNF";
     }
 
