@@ -1,3 +1,7 @@
+<%@page import="Lib.ExceptionUtils"%>
+<%@page import="Lib.Converter"%>
+<%@page import="DAOs.CustomerDAO"%>
+<%@page import="Models.Customer"%>
 <%@page import="DAOs.ProductDAO"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="Models.Order"%>
@@ -10,46 +14,47 @@
 
 <%! ProductDAO pDAO = new ProductDAO();  %>
 <%! UserDAO usDAO = new UserDAO();%>
+<%! CustomerDAO cusDAO = new CustomerDAO(); %>
 <%! OrderDAO od = new OrderDAO();%>
 <%! List<Order> orders = null; %>
-<%! User user = null; %>
+<%! Customer customer = null; %>
 <%! Cookie currentUserCookie = null;%>
 <%! String fullname, username, email, Tinh = "", QuanHuyen = "", PhuongXa = "";%>
 
-<%! boolean isAccountDeactivated, isAccountNotFound, isExistEmail, isExistUsername;%>
+<%! boolean isError; %>
+<%! String exceptionMessage;%>
 <%! boolean isUpdateAccountExecption;%>
-
-<%! boolean isExistPhone, isNotEnoughInfomation;%>
 <%! boolean isUpdateAddressExecption;%>
 
 <%
-    currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
-    user = usDAO.getUser(currentUserCookie.getValue());
-    fullname = user.getName();
-    username = user.getUsername();
-    email = user.getEmail();
-    orders = od.getOrderByClientId(user.getID());
 
-    if (user.getAddress() != null && user.getAddress().split(" - ").length == 3) {
-        String Address[] = user.getAddress().split(" - ");
-        Tinh = Address[0];
-        QuanHuyen = Address[1];
-        PhuongXa = Address[2];
-    }
+    currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
+    customer = cusDAO.getCustomer(currentUserCookie.getValue());
+    fullname = customer.getName();
+    username = customer.getUsername();
+    email = customer.getEmail();
+    orders = od.getOrderByCustomerId(customer.getCustomerId());
+
+//    if (user.getAddress() != null && user.getAddress().split(" - ").length == 3) {
+//        String Address[] = user.getAddress().split(" - ");
+//        Tinh = Address[0];
+//        QuanHuyen = Address[1];
+//        PhuongXa = Address[2];
+//    }
 
     // Handling exception
-    String err = "err";
-    isAccountNotFound = (request.getParameter(err + "AccNF") == null ? false : Boolean.parseBoolean(request.getParameter(err + "AccNF")));
-    isAccountDeactivated = (request.getParameter(err + "AccD") == null ? false : Boolean.parseBoolean(request.getParameter(err + "AccD")));
-    isExistEmail = (request.getParameter(err + "Email") == null ? false : Boolean.parseBoolean(request.getParameter(err + "Email")));
-    isExistUsername = (request.getParameter(err + "Username") == null ? false : Boolean.parseBoolean(request.getParameter(err + "Username")));
+    String queryString = request.getQueryString();
+    isError = ExceptionUtils.isWebsiteError(queryString);x
+    exceptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
+    isUpdateAccountExecption
+            = ExceptionUtils.isAccountNotFound(queryString)
+            || ExceptionUtils.isAccountDeactivated(queryString)
+            || ExceptionUtils.isEmailDuplication(queryString)
+            || ExceptionUtils.isUsernameDuplication(queryString);
 
-    isUpdateAccountExecption = isAccountNotFound || isAccountDeactivated || isExistEmail || isExistUsername;
-
-    isExistPhone = (request.getParameter(err + "Phone") == null ? false : Boolean.parseBoolean(request.getParameter(err + "Phone")));
-    isNotEnoughInfomation = (request.getParameter(err + "NEInfo") == null ? false : Boolean.parseBoolean(request.getParameter(err + "NEInfo")));
-
-    isUpdateAddressExecption = isExistPhone || isNotEnoughInfomation;
+    isUpdateAddressExecption
+            = ExceptionUtils.isPhoneNumberDuplication(queryString)
+            || ExceptionUtils.isNotEnoughInformation(queryString);
 %>
 
 <!DOCTYPE html>
@@ -105,9 +110,11 @@
                 </div>
                 <div class="right">
 
+                    <!--  ==================================Account PAGE ==================================== -->
+
                     <div class="account-page">
-                        <p>Xin chào <b><strong><%=  (user.getName() != null && !user.getName().isEmpty()) ? user.getName() : user.getUsername()%></strong></b> (không phải tài khoản
-                            <b><strong><%=  (user.getName() != null && !user.getName().isEmpty()) ? user.getName() : user.getUsername()%></strong></b>? Hãy <a href="/Log/Logout">thoát ra</a> và đăng nhập vào tài
+                        <p>Xin chào <b><strong><%=  (fullname != null && !fullname.isEmpty()) ? fullname : username%></strong></b> (không phải tài khoản
+                            <b><strong><%=  (fullname != null && !fullname.isEmpty()) ? fullname : username%></strong></b>? Hãy <a href="/Log/Logout">thoát ra</a> và đăng nhập vào tài
                             khoản của bạn)</p>
                         <p>
                             Từ trang quản lý tài khoản bạn có thể xem
@@ -116,7 +123,7 @@
                             và <a  class="account-link" data-page="info-page">sửa mật khẩu và thông tin tài khoản</a>.
                         </p>
                     </div>
-
+                    <!--  ==================================Order PAGE ==================================== -->
                     <div class="order-page">
                         <c:choose>
                             <c:when test='<%=orders.size() == 0%>'>
@@ -134,47 +141,38 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-
-                                            <c:if test='<%=orders.size() != 0%>'>
-                                                <c:forEach var="i" begin="0" end="<%=orders.size() - 1%>">
+                                        <c:if test='<%=orders.size() != 0%>'>
+                                            <c:forEach var="i" begin="0" end="<%=orders.size() - 1%>">
                                                 <tr>
-                                                    <th scope="row"><%=orders.get((int) pageContext.getAttribute("i")).getID()%></th>
-                                                    <td><%=orders.get((int) pageContext.getAttribute("i")).getDate()%></td>
-                                                    <td><%=pDAO.IntegerToMoney(orders.get((int) pageContext.getAttribute("i")).getSum())%></td>
-                                                    <td><a href="/Client/Order/Detail/ID/<%=orders.get((int) pageContext.getAttribute("i")).getID()%>" target="_blank">Xem chi tiết</a></td>
+                                                    <th scope="row"><%=orders.get((int) pageContext.getAttribute("i")).getId()%></th>
+                                                    <td><%=orders.get((int) pageContext.getAttribute("i")).getCreatedAt()%></td>
+                                                    <td><%=Converter.covertIntergerToMoney(orders.get((int) pageContext.getAttribute("i")).getTotal())%></td>
+                                                    <td><a href="/Customer/Order/Detail/ID/<%=orders.get((int) pageContext.getAttribute("i")).getId()%>" target="_blank">Xem chi tiết</a></td>
                                                 </tr>
                                             </c:forEach>
                                         </c:if>
-
-                                        </tr>
                                     </tbody>
                                 </table>
                             </c:otherwise>
                         </c:choose>
                     </div>
+
+                    <!--  ==================================Adrdress PAGE ==================================== -->
                     <div class="address-page">
                         <p>Các địa chỉ bên dưới mặc định sẽ được sử dụng ở trang thanh toán sản phẩm.</p>
 
 
                         <!--Execption Handling-->
-                        <c:choose>
-                            <c:when test='<%= isNotEnoughInfomation%>'>
-                                <h2 class="alert alert-danger text-center">
-                                    Vui lòng chọn đầy đủ tỉnh thành, quận huyện, phường xã
-                                </h2>
-                            </c:when>
-                            <c:when test='<%= isExistPhone%>'>
-                                <h2 class="alert alert-danger text-center">
-                                    Số điện thoại đã tồn tại
-                                </h2>
-                            </c:when>
-                        </c:choose>
+                        <c:if test='<%= isError%>'>
+                            <h2 class="alert alert-danger text-center">
+                                <%= exceptionMessage%>
+                            </h2>
+                        </c:if>
                         <!--Execption Handling-->
                         <div class="default">
 
                             <!-- Add new Form. Maybe Change later-->
-                            <form action="/Client/Update/Address" method="POST" id="form-address-update">
+                            <form action="/Customer/Update/Address" method="POST" id="form-address-update">
                                 <h3>Địa chỉ giao hàng mặc định</h3>
 
                                 <div class="d-flex flex-column gap-2 mb-2">
@@ -189,8 +187,8 @@
                                     <select id="ward" class="form-select">
                                         <option value="" selected>Chọn phường xã</option>
                                     </select>
-                                    <input type="text" name="txtAddress" id="txtAddress" readonly="true" value="<%= user.getAddress() == null || user.getAddress().isEmpty() ? "" : user.getAddress()%>" placeholder="Địa chỉ">
-                                    <input style="width:100%" type="text" name="txtPhoneNumber" id="txtPhoneNumber" value="<%= user.getPhoneNumber() == null || user.getPhoneNumber().isEmpty() ? "" : user.getPhoneNumber()%>" placeholder="Số điện thoại">
+                                    <input type="text" name="txtAddress" id="txtAddress" readonly="true" value="" placeholder="Địa chỉ">
+                                    <input style="width:100%" type="text" name="txtPhoneNumber" id="txtPhoneNumber" value="" placeholder="Số điện thoại">
                                 </div>
                                 <button type="submit" name="btnUpdateAdress" value="Submit"> <h4>Sửa</h4> </button>
                             </form>
@@ -199,43 +197,26 @@
                         </div>
 
                         <div class="address d-none">
-                            <p><%= user.getName()%></p>
-                            <p><%= user.getPhoneNumber()%></p>
-                            <p><%= user.getAddress()%></p>
+                            <p><%= customer.getName()%></p>
+                            get Phone and address data here
                         </div>
 
                     </div>
+                    <!--  ==================================Info PAGE ==================================== -->
                     <div class="info-page">
 
 
                         <!--Execption Handling-->
-                        <c:choose>
-                            <c:when test='<%= isAccountNotFound%>'>
-                                <h2 class="alert alert-danger text-center">
-                                    Sai mật khẩu hiện tại
-                                </h2>
-                            </c:when>
-                            <c:when test='<%= isAccountDeactivated%>'>
-                                <h2 class="alert alert-danger text-center">
-                                    Tài khoản đã bị vô hiệu hóa
-                                </h2>
-                            </c:when>
-                            <c:when test='<%= isExistEmail%>'>
-                                <h2 class="alert alert-danger text-center">
-                                    Email đã tồn tại
-                                </h2>
-                            </c:when>
-                            <c:when test='<%= isExistUsername%>'>
-                                <h2 class="alert alert-danger text-center">
-                                    Tên đăng nhập đã tồn tại
-                                </h2>
-                            </c:when>
-                        </c:choose>
+                        <c:if test='<%= isError%>'>
+                            <h2 class="alert alert-danger text-center">
+                                <%= exceptionMessage%>
+                            </h2>
+                        </c:if>
                         <!--Execption Handling-->
 
                         <!--  Form Update Client account -->
 
-                        <form action="/Client/Update/Info" method="POST" id="formUpdateAccount">
+                        <form action="/Customer/Update/Info" method="POST" id="formUpdateAccount">
                             <div class="fullname">
                                 <div>
                                     <label>
@@ -270,7 +251,7 @@
                 </div>
             </div>
 
-
+            <!--  ================================== Other informaton  ==================================== -->
             <div class="row">
                 <div class="col-md-12 register">
                     <h1>Đăng ký thành viên để nhận khuyến mại</h1>

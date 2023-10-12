@@ -1,12 +1,23 @@
 package Exceptions;
 
-public class EmailDuplicationException extends Exception {
+public class EmailDuplicationException extends Exception implements Interfaces.Exceptions.ICustomException {
 
-  public EmailDuplicationException() {
-    super("User's email cannot be the same.");
-  }
+    private String queryString;
 
-  public EmailDuplicationException(String message) {
-    super(message);
-  }
+    public String getQueryString() {
+        return queryString;
+    }
+    @Override
+    public String getMessage() {
+        return super.getMessage();
+    }
+    public EmailDuplicationException() {
+        super("Email đã tồn tại");
+        queryString = "EmailDup";
+    }
+
+    public EmailDuplicationException(String message) {
+        super(message);
+        queryString = "EmailDup";
+    }
 }

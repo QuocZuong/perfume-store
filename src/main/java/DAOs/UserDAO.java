@@ -83,9 +83,9 @@ public class UserDAO implements IUserDAO {
 
     @Override
     public User getUser(int ID) {
-        String sql = String.format("SELECT * FROM [%s] WHERE %s", TABLE_NAME, USER_ID);
+        String sql = String.format("SELECT * FROM [User] WHERE USER_ID = ?");
         ResultSet rs;
-
+        System.out.println("go to getUser");
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, ID);

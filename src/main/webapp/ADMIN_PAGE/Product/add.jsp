@@ -1,12 +1,17 @@
-<%!  boolean isAddFailed;%>
 
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+
+<%@page import="Lib.ExceptionUtils"%>
+<%! boolean isError;%>
+<%! String exceptionMessage = "";%>
 <%
-    isAddFailed = request.getParameter("ODFE") == null ? false : Boolean.parseBoolean(request.getParameter("ODFE"));
+    // Handling execption
+    String queryString = request.getQueryString();
+    isError = ExceptionUtils.isWebsiteError(queryString);
+    exceptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
 %>
 
 
-
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -42,12 +47,17 @@
             <div class="row">
                 <div class="col-md-12 nav">
                     <jsp:include page="/NAVBAR/AdminNavbar.jsp"></jsp:include>
+                    </div>
                 </div>
-            </div>
 
-            <div class="container">
+                <div class="container">
 
-                <div class="row">
+                    <div class="row">
+                        <!--Execption Handling-->
+                        <c:if test='<%= isError%>'>
+                        <h1 class="alert alert-danger text-center"> <%= exceptionMessage%></h1>
+                    </c:if>
+                    <!--Execption Handling-->
                     <h1>Add Product</h1>
                     <form action="/Admin/Product/Add" id="Add-form" method="POST" enctype="multipart/form-data">
                         <div class="name">

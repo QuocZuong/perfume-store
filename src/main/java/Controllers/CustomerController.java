@@ -110,15 +110,15 @@ public class CustomerController extends HttpServlet {
             request.getRequestDispatcher("/CUSTOMER_PAGE/cart.jsp").forward(request, response);
             return;
         }
-//
-//        if (path.startsWith(CLIENT_USER_URI)) {
-//            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-//            response.setHeader("Pragma", "no-cache");
-//            response.setHeader("Expires", "0");
-//            System.out.println("Going user");
-//            request.getRequestDispatcher("/CLIENT_PAGE/user.jsp").forward(request, response);
-//            return;
-//        }
+
+        if (path.startsWith(CUSTOMER_USER_URI)) {
+            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            response.setHeader("Pragma", "no-cache");
+            response.setHeader("Expires", "0");
+            System.out.println("Going user");
+            request.getRequestDispatcher("/CUSTOMER_PAGE/user.jsp").forward(request, response);
+            return;
+        }
 //
 //        if (path.startsWith(CLIENT_ORDER_DETAIL_URI)) {
 //            System.out.println("Going Order Detail");
@@ -570,7 +570,7 @@ public class CustomerController extends HttpServlet {
                 return State.Fail.value;
             }
             int CustomerID = cus.getCustomerId();
-            System.out.println("cus id checkout cart :"+ cus.getCustomerId());
+            System.out.println("cus id checkout cart :" + cus.getCustomerId());
             ArrayList<CartItem> cartItemList = ciDAO.getAllCartItemOfCustomer(CustomerID);
 
             if (cartItemList.isEmpty()) {
@@ -623,32 +623,33 @@ public class CustomerController extends HttpServlet {
         if (request.getAttribute("exceptionType") == null) {
             return "";
         }
-        String exception = "?err";
+        return null;
 
-        switch ((String) request.getAttribute("exceptionType")) {
-            case "WrongPasswordException":
-            case "AccountNotFoundException":
-                exception += "AccNF";
-                break;
-            case "AccountDeactivatedException":
-                exception += "AccD";
-                break;
-            case "EmailDuplicationException":
-                exception += "Email";
-                break;
-            case "UsernameDuplicationException":
-                exception += "Username";
-                break;
-            case "PhoneNumberDuplicationException":
-                exception += "Phone";
-                break;
-            case "NotEnoughInformationException":
-                exception += "NEInfo";
-            default:
-                break;
-        }
-        exception += "=true";
-        return exception;
     }
+//        private boolean handleCheckout(HttpServletRequest request, HttpServletResponse response) {
+//        UserDAO usDAO = new UserDAO();
+//        CartDAO cDAO = new CartDAO();
+//        ProductDAO pDAO = new ProductDAO();
+//        
+//        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+//        String username = currentUserCookie.getValue();
+//        int ClientID = usDAO.getUser(username).getID();
+//        ArrayList<int[]> CartProductQuan = cDAO.getAllCartProductQuantity(ClientID);
+//        
+//        if (CartProductQuan.size() == 0) {
+//            System.out.println("The cart is empty");
+//            return false;
+//        }
+//        for (int i = 0; i < CartProductQuan.size(); i++) {
+//            int ProductID = CartProductQuan.get(i)[0];
+//            int Quantity = CartProductQuan.get(i)[1];
+//            int StoreQuan = pDAO.getProduct(ProductID).getQuantity();
+//            if (StoreQuan < Quantity) {
+//                System.out.println("Kho khong du so luong san pham co ID:" + ProductID);
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 
 }
