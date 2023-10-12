@@ -44,7 +44,7 @@
 
     // Handling exception
     String queryString = request.getQueryString();
-    isError = ExceptionUtils.isWebsiteError(queryString);x
+    isError = ExceptionUtils.isWebsiteError(queryString);
     exceptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
     isUpdateAccountExecption
             = ExceptionUtils.isAccountNotFound(queryString)

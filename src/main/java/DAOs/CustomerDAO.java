@@ -156,7 +156,7 @@ ROLLBACK
                 Customer customer = new Customer(uDAO.userFactory(rs));
                 customer.setCustomerCreditPoint(rs.getInt(CUSTOMER_CREDIT_POINT));
                 customer.setCustomerId(rs.getInt(CUSTOMER_ID));
-                customer.setCustomerDeliveryAddress(deliDAO.getAll(customer.getCustomerId()));
+                customer.setDeliveryAddress(deliDAO.getAll(customer.getCustomerId()));
                 return customer;
             }
         } catch (SQLException ex) {

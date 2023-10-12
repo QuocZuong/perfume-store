@@ -21,6 +21,8 @@ import Exceptions.NotEnoughInformationException;
 import Exceptions.PhoneNumberDuplicationException;
 import Exceptions.UsernameDuplicationException;
 import Exceptions.WrongPasswordException;
+import Interfaces.DAOs.IUserDAO;
+import Lib.Converter;
 import Lib.EmailSender;
 import Models.CartItem;
 import Models.Customer;
@@ -170,18 +172,19 @@ public class CustomerController extends HttpServlet {
                 }
             }
         }
-//        if (path.startsWith(CLIENT_UPDATE_INFO_URI)) {
-//            if (request.getParameter("btnUpdateInfo") != null
-//                    && request.getParameter("btnUpdateInfo").equals("Submit")) {
-//                System.out.println("Going update info");
-//                if (updateClientInfomation(request, response)) {
-//                    response.sendRedirect(CLIENT_USER_URI);
-//                } else {
-//                    response.sendRedirect(CLIENT_USER_URI + checkException(request));
-//                }
-//                return;
-//            }
-//        }
+
+        if (path.startsWith(CUSTOMER_UPDATE_ADDRESS_URI)) {
+            if (request.getParameter("btnUpdateInfo") != null
+                    && request.getParameter("btnUpdateInfo").equals("Submit")) {
+                System.out.println("Going update info");
+                if (updateClientInfomation(request, response)) {
+                    response.sendRedirect(CUSTOMER_USER_URI);
+                } else {
+                    response.sendRedirect(CUSTOMER_USER_URI + checkException(request));
+                }
+                return;
+            }
+        }
 //        if (path.startsWith(CLIENT_UPDATE_ADDRESS_URI)) {
 //            if (request.getParameter("btnUpdateAdress") != null
 //                    && request.getParameter("btnUpdateAdress").equals("Submit")) {
@@ -345,129 +348,129 @@ public class CustomerController extends HttpServlet {
 //    }
 //
 //    // ---------------------------- UPDATE SECTION ----------------------------
-//    private boolean updateClientInfomation(HttpServletRequest request, HttpServletResponse response) {
-//        /*
-//         * txtFullname
-//         * txtUserName
-//         * txtEmail
-//         * pwdCurrent
-//         * pwdNew
-//         * pwdConfirmNew
-//         * btnUpdateInfo (value = Submit)
-//         */
-//        
-//        String fullname = request.getParameter("txtFullname");
-//        
-//        String username = request.getParameter("txtUserName");
-//        String email = request.getParameter("txtEmail");
-//        String currentPassword = request.getParameter("pwdCurrent");
-//        String newPassword = "";
-//        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
-//        
-//        UserDAO usDAO = new UserDAO();
-//        User user = usDAO.getUser(currentUserCookie.getValue());
-//        
-//        boolean isChangedEmail = true;
-//        boolean isChangedPassword = true;
-//        boolean isChangedUsername = true;
-//        // Username, email, phone number is unique
-//        try {
-//            if (!email.equals(user.getEmail())) {
-//                if (usDAO.isExistEmail(email)) {
-//                    throw new EmailDuplicationException();
-//                }
-//            } else {
-//                isChangedEmail = false;
-//            }
-//            
-//            if (!username.equals(user.getUsername())) {
-//                if (usDAO.isExistUsername(username)) {
-//                    throw new UsernameDuplicationException();
-//                }
-//                
-//            } else {
-//                isChangedUsername = false;
-//            }
-//            
-//            if (currentPassword == null || currentPassword.equals("")) {
-//                currentPassword = user.getPassword();
-//                isChangedPassword = false;
-//                // check if currentPassword is true
-//            } else if (!usDAO.login(user.getUsername(), currentPassword)) {
-//                throw new WrongPasswordException();
-//            }
-//
-//            // Email and username duplication must come first
-//        } catch (WrongPasswordException e) {
-//            request.setAttribute("exceptionType", "WrongPasswordException");
-//            return false;
-//        } catch (AccountDeactivatedException e) {
-//            request.setAttribute("exceptionType", "AccountDeactivatedException");
-//            return false;
-//        } catch (AccountNotFoundException e) {
-//            request.setAttribute("exceptionType", "AccountNotFoundException");
-//            return false;
-//        } catch (EmailDuplicationException e) {
-//            request.setAttribute("exceptionType", "EmailDuplicationException");
-//            return false;
-//        } catch (UsernameDuplicationException e) {
-//            request.setAttribute("exceptionType", "UsernameDuplicationException");
-//            return false;
-//        }
-//        if (isChangedPassword && request.getParameter("pwdNew") != null && !request.getParameter("pwdNew").equals("")) {
-//            newPassword = request.getParameter("pwdNew");
-//            newPassword = usDAO.getMD5hash(newPassword);
-//        } else {
-//            newPassword = user.getPassword();
-//        }
-//        
-//        User updateUser = new User(
-//                user.getID(),
-//                fullname,
-//                username,
-//                newPassword,
-//                email,
-//                user.getPhoneNumber(),
-//                user.getAddress(),
-//                user.getRole());
-//        
-//        usDAO.updateUser(updateUser);
-//
-//        // Update cookie
-//        Cookie c = ((Cookie) request.getSession().getAttribute("userCookie"));
-//        c.setValue(username);
-//        c.setPath("/");
-//        response.addCookie(c);
-//
-//        // Sending mail
-//        try {
-//            EmailSender es = new EmailSender();
-//            if (isChangedPassword) {
-//                System.out.println("Detect password change");
-//                System.out.println("sending mail changing password");
-//                es.setEmailTo(email);
-//                es.sendToEmail(es.CHANGE_PASSWORD_NOTFICATION, es.changePasswordNotifcation());
-//            }
-//            if (isChangedEmail) {
-//                System.out.println("Detect email change");
-//                System.out.println("sending mail changing email");
-//                es.setEmailTo(user.getEmail());
-//                es.sendToEmail(es.CHANGE_EMAIL_NOTFICATION, es.changeEmailNotification(email));
-//            }
-//            if (isChangedUsername) {
-//                System.out.println("Detect username change");
-//                System.out.println("sending mail changing username");
-//                es.setEmailTo(email);
-//                es.sendToEmail(es.CHANGE_USERNAME_NOTFICATION, es.changeUsernameNotification(username));
-//            }
-//            
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//        }
-//        
-//        System.out.println("update account with ID " + user.getID() + " successfully");
-//        return true;
-//    }
+
+    private boolean updateClientInfomation(HttpServletRequest request, HttpServletResponse response) {
+        /*
+         * txtFullname
+         * txtUserName
+         * txtEmail
+         * pwdCurrent
+         * pwdNew
+         * pwdConfirmNew
+         * btnUpdateInfo (value = Submit)
+         */
+
+        String fullname = request.getParameter("txtFullname");
+
+        String username = request.getParameter("txtUserName");
+        String email = request.getParameter("txtEmail");
+        String currentPassword = request.getParameter("pwdCurrent");
+        String newPassword = "";
+        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+
+        CustomerDAO cusDAO = new CustomerDAO();
+        UserDAO usDAO = new UserDAO();
+        User user = usDAO.getUser(currentUserCookie.getValue());
+
+        boolean isChangedEmail = true;
+        boolean isChangedPassword = true;
+        boolean isChangedUsername = true;
+        // Username, email, phone number is unique
+        try {
+            if (!email.equals(user.getEmail())) {
+                if (usDAO.getUserByEmail(email) != null) {
+                    throw new EmailDuplicationException();
+                }
+            } else {
+                isChangedEmail = false;
+            }
+
+            if (!username.equals(user.getUsername())) {
+                if (usDAO.getUser(username) != null) {
+                    throw new UsernameDuplicationException();
+                }
+
+            } else {
+                isChangedUsername = false;
+            }
+
+            if (currentPassword == null || currentPassword.equals("")) {
+                isChangedPassword = false;
+                // check if currentPassword is true
+            } else {
+                usDAO.getUser(user.getUsername(), currentPassword, IUserDAO.loginType.Username);
+            }
+
+            // Email and username duplication must come first
+        } catch (WrongPasswordException e) {
+            request.setAttribute("exceptionType", "WrongPasswordException");
+            return false;
+        } catch (AccountDeactivatedException e) {
+            request.setAttribute("exceptionType", "AccountDeactivatedException");
+            return false;
+        } catch (AccountNotFoundException e) {
+            request.setAttribute("exceptionType", "AccountNotFoundException");
+            return false;
+        } catch (EmailDuplicationException e) {
+            request.setAttribute("exceptionType", "EmailDuplicationException");
+            return false;
+        } catch (UsernameDuplicationException e) {
+            request.setAttribute("exceptionType", "UsernameDuplicationException");
+            return false;
+        }
+        if (isChangedPassword
+                && request.getParameter("pwdNew") != null
+                && !request.getParameter("pwdNew").equals("")) {
+            newPassword = request.getParameter("pwdNew");
+            newPassword = Converter.convertToMD5Hash(newPassword);
+        } else {
+            newPassword = user.getPassword();
+        }
+
+        Customer updateCustomer = new Customer();
+        updateCustomer.setId(user.getId());
+        updateCustomer.setName(fullname);
+        updateCustomer.setUsername(username);
+        updateCustomer.setPassword(newPassword);
+        updateCustomer.setEmail(email);
+        
+        cusDAO.updateUser(updateCustomer);
+
+        // Update cookie
+        Cookie c = ((Cookie) request.getSession().getAttribute("userCookie"));
+        c.setValue(username);
+        c.setPath("/");
+        response.addCookie(c);
+
+        // Sending mail
+        try {
+            EmailSender es = new EmailSender();
+            if (isChangedPassword) {
+                System.out.println("Detect password change");
+                System.out.println("sending mail changing password");
+                es.setEmailTo(email);
+                es.sendToEmail(es.CHANGE_PASSWORD_NOTFICATION, es.changePasswordNotifcation());
+            }
+            if (isChangedEmail) {
+                System.out.println("Detect email change");
+                System.out.println("sending mail changing email");
+                es.setEmailTo(user.getEmail());
+                es.sendToEmail(es.CHANGE_EMAIL_NOTFICATION, es.changeEmailNotification(email));
+            }
+            if (isChangedUsername) {
+                System.out.println("Detect username change");
+                System.out.println("sending mail changing username");
+                es.setEmailTo(email);
+                es.sendToEmail(es.CHANGE_USERNAME_NOTFICATION, es.changeUsernameNotification(username));
+            }
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("update account with ID " + user.getId() + " successfully");
+        return true;
+    }
 //    
 //    private boolean updateClientAddress(HttpServletRequest request, HttpServletResponse response) {
 //        String phoneNumber = request.getParameter("txtPhoneNumber");
@@ -651,5 +654,4 @@ public class CustomerController extends HttpServlet {
 //        }
 //        return true;
 //    }
-
 }

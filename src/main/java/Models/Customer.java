@@ -1,12 +1,13 @@
 package Models;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Customer extends User {
 
     private int customerId;
     private int customerCreditPoint;
-    private ArrayList<DeliveryAddress> customerDeliveryAddress;
+    private List<DeliveryAddress> deliveryAddress;
 
     public Customer() {
     }
@@ -20,7 +21,7 @@ public class Customer extends User {
         super(user);
         customerId = 0;
         customerCreditPoint = 0;
-        customerDeliveryAddress = new ArrayList();
+        deliveryAddress = new ArrayList();
     }
 
     public int getCustomerId() {
@@ -39,12 +40,12 @@ public class Customer extends User {
         this.customerCreditPoint = customerCreditPoint;
     }
 
-    public ArrayList<DeliveryAddress> getCustomerDeliveryAddress() {
-        return customerDeliveryAddress;
+    public List<DeliveryAddress> getDeliveryAddress() {
+        return deliveryAddress;
     }
 
-    public void setCustomerDeliveryAddress(ArrayList<DeliveryAddress> customerDeliveryAddress) {
-        this.customerDeliveryAddress = customerDeliveryAddress;
+    public void setDeliveryAddress(List<DeliveryAddress> deliveryAddress) {
+        this.deliveryAddress = deliveryAddress;
     }
-
+    
 }
