@@ -21,6 +21,7 @@ import Exceptions.UsernameDuplicationException;
 import Exceptions.WrongPasswordException;
 import Lib.Converter;
 import Lib.EmailSender;
+import Lib.ExceptionUtils;
 import Models.Stock;
 import Models.Customer;
 import Models.Employee;
@@ -62,7 +63,7 @@ public class AdminController extends HttpServlet {
     public static final String ADMIN_PRODUCT_UPDATE_URI = "/Admin/Product/Update";
     public static final String ADMIN_PRODUCT_DELETE_URI = "/Admin/Product/Delete";
     public static final String ADMIN_PRODUCT_RESTORE_URI = "/Admin/Product/Restore";
-    
+
     public static final String ADMIN_USER_LIST_URI = "/Admin/User/List";
     public static final String ADMIN_USER_ADD_URI = "/Admin/User/Add";
     public static final String ADMIN_USER_UPDATE_URI = "/Admin/User/Update";
@@ -70,17 +71,17 @@ public class AdminController extends HttpServlet {
     public static final String ADMIN_USER_RESTORE_URI = "/Admin/User/Restore";
     public static final String ADMIN_CLIENT_DETAIL_URI = "/Admin/User/Detail";
     public static final String ADMIN_CLIENT_ORDER_URI = "/Admin/User/OrderDetail";
-    
+
     public static final String ADMIN_UPDATE_INFO_URI = "/Admin/Update/Info";
-    
+
     public static final String IMGUR_API_ENDPOINT = "https://api.imgur.com/3/image";
     public static final String IMGUR_CLIENT_ID = "87da474f87f4754";
-    
+
     public enum State {
         Success(1),
         Fail(0);
         private int value;
-        
+
         State(int value) {
             this.value = value;
         }
@@ -100,7 +101,6 @@ public class AdminController extends HttpServlet {
         String path = request.getRequestURI();
 
         // ---------------------------- PRODUCT SECTION ----------------------------
-
 //        if (path.startsWith(ADMIN_PRODUCT_LIST_URI) || path.startsWith(ADMIN_PRODUCT_LIST_URI + "/page")) {
 //            searchProduct(request, response);
 //            request.getRequestDispatcher("/ADMIN_PAGE/Product/list.jsp").forward(request, response);
@@ -186,20 +186,20 @@ public class AdminController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         String path = request.getRequestURI();
-        
+
         if (path.startsWith(ADMIN_PRODUCT_ADD_URI)) {
             if (request.getParameter("btnAddProduct") != null
                     && request.getParameter("btnAddProduct").equals("Submit")) {
                 int result = addProduct(request, response);
-                
+
                 if (result == State.Success.value) {
                     response.sendRedirect(ADMIN_PRODUCT_LIST_URI);
                 } else if (result == State.Fail.value) {
-                    response.sendRedirect(ADMIN_PRODUCT_LIST_URI + checkException(request));
+                    response.sendRedirect(ADMIN_PRODUCT_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
                 }
-                
+
             }
             return;
         }
@@ -243,7 +243,6 @@ public class AdminController extends HttpServlet {
 
     /* CRUD */
     // ---------------------------- CREATE SECTION ----------------------------
-
     private int addProduct(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
         ProductDAO pDAO = new ProductDAO();
@@ -263,7 +262,7 @@ public class AdminController extends HttpServlet {
 
         // Upload to Imgur database
         String imgURL = uploadImageToClound(imgPart);
-        
+
         Product product = new Product();
         product.setName(pName);
         product.setBrandId(bDAO.getBrand(bName).getId());
@@ -273,7 +272,7 @@ public class AdminController extends HttpServlet {
         product.setVolume(volume);
         product.setImgURL(imgURL);
         product.setDescription(description);
-        
+
         Stock stock = new Stock();
         stock.setPrice(pPrice);
         stock.setQuantity(quantity);
@@ -287,7 +286,7 @@ public class AdminController extends HttpServlet {
         }
         System.out.println("Add successfully");
         return State.Success.value;
-        
+
     }
 
     // ---------------------------- READ SECTION ----------------------------
@@ -925,22 +924,22 @@ public class AdminController extends HttpServlet {
 
             // Display the image URL
             System.out.println("Image uploaded successfully. Image URL: " + imageUrl);
-            
+
         } else {
             System.out.println("Error occurred while uploading the image. Response Cod");
         }
-        
+
         URLconn.disconnect();
         fileInputStream.close();
         return imgURL;
     }
-    
+
     public static File convertPartToFile(Part part) throws IOException {
         // String fileName = part.getSubmittedFileName();
         File tempFile = File.createTempFile("temp", null);
         tempFile.deleteOnExit();
-        
-        try (InputStream inputStream = part.getInputStream(); OutputStream outputStream = new FileOutputStream(tempFile)) {
+
+        try ( InputStream inputStream = part.getInputStream();  OutputStream outputStream = new FileOutputStream(tempFile)) {
 
             byte[] buffer = new byte[1024];
             int bytesRead;
@@ -948,54 +947,16 @@ public class AdminController extends HttpServlet {
                 outputStream.write(buffer, 0, bytesRead);
             }
         }
-        
+
         return tempFile;
     }
-    
+
     private String extractImageUrl(String response) {
         // Parse the JSON response to extract the image URL
         int startIndex = response.indexOf("\"link\":\"") + 8;
         int endIndex = response.indexOf("\"", startIndex);
         return response.substring(startIndex, endIndex);
     }
-
-    // ------------------------- EXEPTION HANDLING SECTION -------------------------
-    private String checkException(HttpServletRequest request) {
-        if (request.getAttribute("exceptionType") == null) {
-            return "";
-        }
-        String exception = "?err";
-        
-        switch ((String) request.getAttribute("exceptionType")) {
-            case "WrongPasswordException":
-            case "AccountNotFoundException":
-                exception += "AccNF";
-                break;
-            case "AccountDeactivatedException":
-                exception += "AccD";
-                break;
-            case "EmailDuplicationException":
-                exception += "Email";
-                break;
-            case "UsernameDuplicationException":
-                exception += "Username";
-                break;
-            case "PhoneNumberDuplicationException":
-                exception += "Phone";
-                break;
-            case "NotEnoughInformationException":
-                exception += "NEInfo";
-                break;
-            case "OperationAddFailedException":
-                exception += "ODFE";
-                break;
-            default:
-                break;
-        }
-        exception += "=true";
-        return exception;
-    }
-    
 }
 
 // ---------------------------- TRASH SECTION ----------------------------

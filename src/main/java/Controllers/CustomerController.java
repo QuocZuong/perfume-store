@@ -107,15 +107,15 @@ public class CustomerController extends HttpServlet {
             request.getRequestDispatcher("/CUSTOMER_PAGE/cart.jsp").forward(request, response);
             return;
         }
-//
-//        if (path.startsWith(CLIENT_USER_URI)) {
-//            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-//            response.setHeader("Pragma", "no-cache");
-//            response.setHeader("Expires", "0");
-//            System.out.println("Going user");
-//            request.getRequestDispatcher("/CLIENT_PAGE/user.jsp").forward(request, response);
-//            return;
-//        }
+
+        if (path.startsWith(CUSTOMER_USER_URI)) {
+            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            response.setHeader("Pragma", "no-cache");
+            response.setHeader("Expires", "0");
+            System.out.println("Going user");
+            request.getRequestDispatcher("/CUSTOMER_PAGE/user.jsp").forward(request, response);
+            return;
+        }
 //
 //        if (path.startsWith(CLIENT_ORDER_DETAIL_URI)) {
 //            System.out.println("Going Order Detail");
@@ -565,37 +565,6 @@ public class CustomerController extends HttpServlet {
 //        }
 //        return true;
 //    }
-    // ------------------------- EXEPTION HANDLING SECTION -------------------------
-    private String checkException(HttpServletRequest request) {
-        if (request.getAttribute("exceptionType") == null) {
-            return "";
-        }
-        String exception = "?err";
 
-        switch ((String) request.getAttribute("exceptionType")) {
-            case "WrongPasswordException":
-            case "AccountNotFoundException":
-                exception += "AccNF";
-                break;
-            case "AccountDeactivatedException":
-                exception += "AccD";
-                break;
-            case "EmailDuplicationException":
-                exception += "Email";
-                break;
-            case "UsernameDuplicationException":
-                exception += "Username";
-                break;
-            case "PhoneNumberDuplicationException":
-                exception += "Phone";
-                break;
-            case "NotEnoughInformationException":
-                exception += "NEInfo";
-            default:
-                break;
-        }
-        exception += "=true";
-        return exception;
-    }
 
 }

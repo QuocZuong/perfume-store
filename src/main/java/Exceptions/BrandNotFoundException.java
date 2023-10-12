@@ -1,12 +1,23 @@
 package Exceptions;
 
-public class BrandNotFoundException extends Exception {
+public class BrandNotFoundException extends Exception implements Interfaces.Exceptions.ICustomException {
 
-  public BrandNotFoundException() {
-    super("Brand not found.");
-  }
+    private String queryString;
 
-  public BrandNotFoundException(String message) {
-    super(message);
-  }
+    public String getQueryString() {
+        return queryString;
+    }
+
+    public BrandNotFoundException() {
+        super("Thương hiệu không tìm thấy");
+        queryString = "BrandNF";
+    }
+    @Override
+    public String getMessage() {
+        return super.getMessage();
+    }
+    public BrandNotFoundException(String message) {
+        super(message);
+        queryString = "BrandNF";
+    }
 }
