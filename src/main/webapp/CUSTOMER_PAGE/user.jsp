@@ -1,3 +1,4 @@
+<%@page import="Models.DeliveryAddress"%>
 <%@page import="Lib.ExceptionUtils"%>
 <%@page import="Lib.Converter"%>
 <%@page import="DAOs.CustomerDAO"%>
@@ -20,6 +21,7 @@
 <%! Customer customer = null; %>
 <%! Cookie currentUserCookie = null;%>
 <%! String fullname, username, email, Tinh = "", QuanHuyen = "", PhuongXa = "";%>
+<%! List<DeliveryAddress> deliveryAddress;%>
 
 <%! boolean isError; %>
 <%! String exceptionMessage;%>
@@ -35,6 +37,8 @@
     email = customer.getEmail();
     orders = od.getOrderByCustomerId(customer.getCustomerId());
 
+    deliveryAddress = customer.getDeliveryAddress();
+
 //    if (user.getAddress() != null && user.getAddress().split(" - ").length == 3) {
 //        String Address[] = user.getAddress().split(" - ");
 //        Tinh = Address[0];
@@ -46,6 +50,7 @@
     String queryString = request.getQueryString();
     isError = ExceptionUtils.isWebsiteError(queryString);
     exceptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
+
     isUpdateAccountExecption
             = ExceptionUtils.isAccountNotFound(queryString)
             || ExceptionUtils.isAccountDeactivated(queryString)
@@ -93,7 +98,6 @@
                     <jsp:include page="/NAVBAR/ClientNavbar.jsp"></jsp:include>
                     </div>
                 </div>
-
 
                 <div class="main">
                     <div class="left">
@@ -165,8 +169,7 @@
                         <!--Execption Handling-->
                         <c:if test='<%= isError%>'>
                             <h2 class="alert alert-danger text-center">
-                                <%= exceptionMessage%>
-                            </h2>
+                                    </h2>
                         </c:if>
                         <!--Execption Handling-->
                         <div class="default">
@@ -192,8 +195,40 @@
                                 </div>
                                 <button type="submit" name="btnUpdateAdress" value="Submit"> <h4>Sửa</h4> </button>
                             </form>
-                            <!--  Add new Form. Maybe Change later-->
 
+                            <div class="address-list">
+                                <h3>Danh sách địa chỉ</h3>
+                                
+                                <c:choose>
+
+                                    <c:when test='<%=deliveryAddress.size() == 0%>'>
+                                        <div><div>Bạn chưa thêm địa chỉ nào</div></div>
+                                    </c:when>
+
+                                    <c:otherwise>
+
+                                        <div class="scroll-list">
+                                            <c:forEach var="i" begin="0" end="<%=deliveryAddress.size() - 1%>">
+                                              <% DeliveryAddress d = deliveryAddress.get((int) pageContext.getAttribute("i")); %>
+                                              <div>
+                                                <div class="delivery-address-item">
+                                                    <div class="row">
+                                                        <div class="col-12 col-sm"><%= d.getAddress() %></div>
+                                                        <div class="col-12 col-sm-2 status <%= d.getStatus().equals("Default") ? "active" : "" %>"><%= d.getStatus()%></div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-12"><%= d.getPhoneNumber()%></div>
+                                                    </div>
+                                                </div>
+                                              </div>   
+                                            </c:forEach>
+                                        </div>
+
+                                    </c:otherwise>
+
+                                  </c:choose>
+                            </div>
+                            <!--  Add new List. Maybe Change later-->
                         </div>
 
                         <div class="address d-none">
