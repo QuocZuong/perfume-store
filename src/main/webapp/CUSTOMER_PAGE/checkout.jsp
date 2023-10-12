@@ -1,3 +1,8 @@
+<%@page import="Models.Product"%>
+<%@page import="Models.Voucher"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="Models.DeliveryAddress"%>
+<%@page import="Models.Customer"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
@@ -7,16 +12,27 @@
 <%! UserDAO usDAO = new UserDAO();%>
 <%! String Tinh = "", QuanHuyen = "", PhuongXa = "";%>
 <%
-    Cookie currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
-    User user = usDAO.getUser(currentUserCookie.getValue());
-    String fullname = user.getName();
-    String username = user.getUsername();
-    String email = user.getEmail();
-    String phone = user.getPhoneNumber();
-    String address = user.getAddress();
+    Customer customer = (Customer) request.getAttribute("Customer");
+    Voucher voucher = (Voucher) request.getAttribute("voucher");
+    ArrayList<Product> approveVoucherProduct = (ArrayList<Product>) request.getAttribute("approveVoucherProduct");
+    String username = customer.getUsername();
+    String email = customer.getEmail();
+    String name = customer.getName();
+    String phone = null;
+    String address = null;
+    ArrayList<DeliveryAddress> cusDeliveryAddress = customer.getCustomerDeliveryAddress();
+    if (!cusDeliveryAddress.isEmpty()) {
+        for (int i = 0; i < cusDeliveryAddress.size(); i++) {
+            if (cusDeliveryAddress.get(i).getStatus().equals("Default")) {
+                name = cusDeliveryAddress.get(i).getReceiverName();
+                phone = cusDeliveryAddress.get(i).getPhoneNumber();
+                address = cusDeliveryAddress.get(i).getAddress();
+            }
+        }
+    }
 
-    if (user.getAddress() != null && user.getAddress().split(" - ").length == 3) {
-        String Address[] = user.getAddress().split(" - ");
+    if (address != null && address.split(" - ").length == 3) {
+        String Address[] = address.split(" - ");
         Tinh = Address[0];
         QuanHuyen = Address[1];
         PhuongXa = Address[2];
@@ -58,7 +74,7 @@
 
     <body>
         <div class="container-fluid">
-            
+
             <!--Navbar section-->
             <div class="row">
                 <div class="col-md-12 nav">
@@ -70,7 +86,7 @@
                     <div class="main">
                         <div class="box">
 
-                            <form action="/Client/Checkout" method="POST">
+                            <form action="/Customer/Checkout" method="POST">
 
                                 <div class="left">
                                     <h1 class="mb-4">Checkout</h1>
@@ -79,26 +95,40 @@
                                         <div class="d-flex flex-column col-4">
                                             <label><input type="radio" name="rdoCustomAddress" id="rdoCustomAddress" value="no" class="form-check-input" checked=""> Sử
                                                 dụng địa chỉ mặc định</label>
-                                            <label><input type="radio" name="rdoCustomAddress" id="rdoCustomAddress" value="yes" class="form-check-input"> Địa chỉ giao
-                                                hàng khác</label>
-                                        </div>
+                                            <br>
+                                        <c:if test='<%= cusDeliveryAddress.size() != 0%>'>
+                                            <select id="selectAddress" name="selectAddress">
+                                                <c:forEach var="i" begin="0" end="<%= cusDeliveryAddress.size() - 1%>">
+                                                    <option value="<%= (int) pageContext.getAttribute("i")%>">Địa chỉ <%= (int) pageContext.getAttribute("i") + 1%></option>
+                                                    <option id="optName<%= (int) pageContext.getAttribute("i")%>" disabled style="font-style:italic" value="<%= cusDeliveryAddress.get((int) pageContext.getAttribute("i")).getReceiverName()%>">&nbsp;&nbsp;&nbsp;Tên: <%= cusDeliveryAddress.get((int) pageContext.getAttribute("i")).getReceiverName()%></option>
+                                                    <option id="optPhoneNumber<%= (int) pageContext.getAttribute("i")%>" disabled style="font-style:italic" value="<%= cusDeliveryAddress.get((int) pageContext.getAttribute("i")).getPhoneNumber()%>">&nbsp;&nbsp;&nbsp;Số điện thoại:  <%= cusDeliveryAddress.get((int) pageContext.getAttribute("i")).getPhoneNumber()%></option>
+                                                    <option id="optAddress<%= (int) pageContext.getAttribute("i")%>" disabled style="font-style:italic" value="<%= cusDeliveryAddress.get((int) pageContext.getAttribute("i")).getAddress()%>">&nbsp;&nbsp;&nbsp;Địa chỉ:  <%= cusDeliveryAddress.get((int) pageContext.getAttribute("i")).getAddress()%></option>
+                                                </c:forEach>
+                                            </select>
+                                        </c:if>
 
-                                        <div class="d-flex flex-column ms-5">
-                                            <label for="txtNote" class="d-block w-100">Ghi chú đơn hàng (tuỳ chọn)</label>
-                                            <textarea name="txtNote" cols="57" rows="2" class="border-1"
-                                                      placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn."></textarea>
-                                        </div>
+                                        <hr />
+                                        <label><input type="radio" name="rdoCustomAddress" id="rdoCustomAddress" value="yes" class="form-check-input"> Địa chỉ giao
+                                            hàng khác</label>
                                     </div>
 
+                                    <div class="d-flex flex-column ms-5">
+                                        <label for="txtNote" class="d-block w-100">Ghi chú đơn hàng (tuỳ chọn)</label>
+                                        <textarea name="txtNote" cols="57" rows="2" class="border-1"
+                                                  placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn."></textarea>
+                                    </div>
                                 </div>
 
-                                <div class="right">
-                                    <div class="checkout">
+                            </div>
 
-                                        <h2 class="text-start">Thông tin thanh toán</h2>
+                            <div class="right">
+                                <div class="checkout">
 
-                                        <div class="d-flex flex-column flex-wrap w-100">
-                                            <input type="text" name="txtUsername" value="<%= username%>" placeholder="Tên người dùng">
+                                    <h2 class="text-start">Thông tin thanh toán</h2>
+
+                                    <div class="d-flex flex-column flex-wrap w-100">
+                                        <input type="text" name="txtUsername" value="<%= username%>" placeholder="Tên người dùng">
+                                        <input type="text" name="txtReceiverName" id="txtReceiverName" value="<%= name%>" placeholder="Tên người nhận">
                                         <input type="text" name="txtEmail" value="<%= email%>" placeholder="Email">
                                         <input class="inputHide" type="text" name="txtPhone" id="txtPhone" class="" value="<%= (phone == null ? "" : phone)%>" placeholder="Số điện thoại"  readonly="true">
                                         <input class="inputHide" type="text" name="txtAddress" id="txtAddress" value="<%= (address == null ? "" : address)%>" placeholder="Địa chỉ" readonly="true">
@@ -442,6 +472,20 @@
                     }
 
                 });
+            });
+
+            document.getElementById("selectAddress").addEventListener("change", function () {
+                let selectValue = document.getElementById("selectAddress").value;
+                let nameParameter = 'optName' + selectValue;
+                let phoneNumberParameter = 'optPhoneNumber' + selectValue;
+                let addressParameter = 'optAddress' + selectValue;
+                console.log(phoneNumberParameter);
+                console.log(addressParameter);
+
+                document.getElementById("txtPhone").value = document.getElementById(phoneNumberParameter).value;
+                document.getElementById("txtAddress").value = document.getElementById(addressParameter).value;
+                document.getElementById("txtReceiverName").value = document.getElementById(nameParameter).value;
+
             });
         </script>
     </body>

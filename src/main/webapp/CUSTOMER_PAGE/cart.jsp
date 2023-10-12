@@ -168,19 +168,27 @@
                             <c:when test='<%= listCartItem.size() > 0%>'>
                                 <div class="right">
                                     <div class="checkout">
-                                        <h2>Phiếu thanh toán</h2>
-                                        <div>
-                                            <h4>Tạm tính</h4>
-                                            <span><%= Converter.covertIntergerToMoney(Total)%><span>₫</span></span>
-                                        </div>
-                                        <hr />
-                                        <div>
-                                            <h4>Tổng</h4>
-                                            <span><%= Converter.covertIntergerToMoney(Total)%><span>₫</span></span>
-                                        </div>
-                                        <div>
-                                            <a href="/Client/Cart/Checkout" class="text-decoration-none"><button class="btn-checkout">TIẾN HÀNH THANH TOÁN</button></a>
-                                        </div>
+                                        <form action="/Customer/Cart/Checkout" method="POST">
+                                            <h2>Phiếu thanh toán</h2>
+                                            <div>
+                                                <h4>Tạm tính</h4>
+                                                <span><%= Converter.covertIntergerToMoney(Total)%><span>₫</span></span>
+                                            </div>
+                                            <hr />
+                                            <div>
+                                                <h4>Tổng</h4>
+                                                <span><%= Converter.covertIntergerToMoney(Total)%><span>₫</span></span>
+                                            </div>
+                                            <hr />
+                                            <div>
+                                                <h4>Voucher</h4>
+                                                <input type="text" name="VoucherTXT">
+                                            </div>
+                                            <hr />
+                                            <div>
+                                                <button type="submit" class="btn-checkout" name="btnCheckoutCart" value="Submit">TIẾN HÀNH THANH TOÁN</button>
+                                            </div>
+                                        </form>
                                     </div>
                                     <div class="drop-down">
                                         <ul>

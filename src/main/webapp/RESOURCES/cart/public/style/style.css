@@ -286,7 +286,7 @@ a:has(#come-back-link) {
     width: min-content;
 }
 
-.box .right .checkout div:nth-child(5) button {
+.box .right .checkout div:nth-child(8) button {
     background-color: black;
     color: white;
     margin-top: 20px;

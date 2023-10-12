@@ -34,20 +34,19 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
         }
 
         DeliveryAddress deliveryAddress = new DeliveryAddress();
-        if (rs.next()) {
-            deliveryAddress.setCustomerId(rs.getInt("Customer_ID"));
-            deliveryAddress.setReceiverName(rs.getNString("Receiver_Name"));
-            deliveryAddress.setPhoneNumber(rs.getString("Phone_Number"));
-            deliveryAddress.setAddress(rs.getNString("Address"));
-            deliveryAddress.setStatus(rs.getNString("Status"));
-            deliveryAddress.setCreateAt(rs.getDate("Create_At"));
-            deliveryAddress.setModifiedAt(rs.getDate("Modified_At"));
-        }
+
+        deliveryAddress.setCustomerId(rs.getInt("Customer_ID"));
+        deliveryAddress.setReceiverName(rs.getNString("Receiver_Name"));
+        deliveryAddress.setPhoneNumber(rs.getString("Phone_Number"));
+        deliveryAddress.setAddress(rs.getNString("Address"));
+        deliveryAddress.setStatus(rs.getNString("Status"));
+        deliveryAddress.setCreateAt(rs.getDate("Create_At"));
+        deliveryAddress.setModifiedAt(rs.getDate("Modified_At"));
+
         return deliveryAddress;
     }
 
     /* --------------------- CREATE SECTION --------------------- */
-
     public int addDeliveryAddress(DeliveryAddress deliveryAddress) {
         String sql = "INSERT INTO DeliveryAddress VALUES (?, ?, ?, ?, ?, ?, ?)";
 
@@ -55,7 +54,7 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, deliveryAddress.getCustomerId());
             ps.setNString(2, deliveryAddress.getReceiverName());
-            ps.setString(3, deliveryAddress.getPhoneNumber());
+            ps.setNString(3, deliveryAddress.getPhoneNumber());
             ps.setNString(4, deliveryAddress.getAddress());
             ps.setNString(5, deliveryAddress.getStatus());
             ps.setDate(6, deliveryAddress.getCreateAt());
@@ -70,12 +69,11 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
     }
 
     /* --------------------- READ SECTION --------------------- */
-
-    public List<DeliveryAddress> getAll(int customerId) {
+    public ArrayList<DeliveryAddress> getAll(int customerId) {
         String sql = "SELECT * FROM DeliveryAddress WHERE Customer_ID = ?";
 
         ResultSet rs;
-        List<DeliveryAddress> result = new ArrayList<>();
+        ArrayList<DeliveryAddress> result = new ArrayList<>();
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -93,7 +91,6 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
     }
 
     /* --------------------- UPDATE SECTION --------------------- */
-
     public boolean updateDeliveryAddress(DeliveryAddress deliveryAddress) throws NullPointerException {
         if (deliveryAddress == null) {
             throw new NullPointerException("DeliveryAddress is null");
@@ -176,7 +173,6 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
     }
 
     /* --------------------- DELETE SECTION --------------------- */
-
     public boolean deleteDeliveryAddress(DeliveryAddress deliveryAddress) throws NullPointerException {
         if (deliveryAddress == null) {
             throw new NullPointerException("DeliveryAddress is null");

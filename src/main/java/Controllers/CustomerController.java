@@ -14,6 +14,7 @@ import javax.security.auth.login.AccountNotFoundException;
 import DAOs.OrderDAO;
 import DAOs.ProductDAO;
 import DAOs.UserDAO;
+import DAOs.VoucherDAO;
 import Exceptions.AccountDeactivatedException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.NotEnoughInformationException;
@@ -26,6 +27,7 @@ import Models.Customer;
 import Models.Order;
 import Models.Product;
 import Models.User;
+import Models.Voucher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
@@ -50,6 +52,7 @@ public class CustomerController extends HttpServlet {
     public static final String CUSTOMER_ORDER_DETAIL_URI = "/Customer/Order/Detail/ID";
 
     public static final String BTN_ADD_TO_CART = "btnAddToCart";
+    public static final String BTN_CHECKOUT_CART = "btnCheckoutCart";
     public static final String SUBMIT_VALUE = "Submit";
 
     public enum State {
@@ -152,6 +155,19 @@ public class CustomerController extends HttpServlet {
                 int pID = Integer.parseInt(request.getParameter("ProductID"));
                 response.sendRedirect("/Product/Detail/ID/" + pID);
                 return;
+            }
+        }
+        if (path.startsWith(CUSTOMER_CART_CHECKOUT_URI)) {
+            if (request.getParameter(BTN_CHECKOUT_CART) != null && request.getParameter(BTN_CHECKOUT_CART).equals(SUBMIT_VALUE)) {
+                System.out.println("going checkout cart");
+                int result = checkOutCart(request, response);
+                if (result == State.Success.value) {
+                    System.out.println("Chek cart valid. Going to /Customer/Checkout");
+                    request.getRequestDispatcher("/CUSTOMER_PAGE/checkout.jsp").forward(request, response);
+                } else {
+                    System.out.println("Chek cart invalid. Going to /Customer/Cart");
+                    response.sendRedirect(CUSTOMER_CART_URI + checkException(request));
+                }
             }
         }
 //        if (path.startsWith(CLIENT_UPDATE_INFO_URI)) {
@@ -540,31 +556,68 @@ public class CustomerController extends HttpServlet {
         ciDAO.deleteCartItem(CustomerID, ProductID);
     }
 
-//        private boolean handleCheckout(HttpServletRequest request, HttpServletResponse response) {
-//        UserDAO usDAO = new UserDAO();
-//        CartDAO cDAO = new CartDAO();
-//        ProductDAO pDAO = new ProductDAO();
-//        
-//        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
-//        String username = currentUserCookie.getValue();
-//        int ClientID = usDAO.getUser(username).getID();
-//        ArrayList<int[]> CartProductQuan = cDAO.getAllCartProductQuantity(ClientID);
-//        
-//        if (CartProductQuan.size() == 0) {
-//            System.out.println("The cart is empty");
-//            return false;
-//        }
-//        for (int i = 0; i < CartProductQuan.size(); i++) {
-//            int ProductID = CartProductQuan.get(i)[0];
-//            int Quantity = CartProductQuan.get(i)[1];
-//            int StoreQuan = pDAO.getProduct(ProductID).getQuantity();
-//            if (StoreQuan < Quantity) {
-//                System.out.println("Kho khong du so luong san pham co ID:" + ProductID);
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
+    private int checkOutCart(HttpServletRequest request, HttpServletResponse response) {
+        CustomerDAO cusDAO = new CustomerDAO();
+        CartItemDAO ciDAO = new CartItemDAO();
+        ProductDAO pDAO = new ProductDAO();
+
+        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+        String username = currentUserCookie.getValue();
+        Customer cus = cusDAO.getCustomer(username);
+        try {
+            if (cus == null) {
+                System.out.println("Unknow Username to checkout");
+                return State.Fail.value;
+            }
+            int CustomerID = cus.getCustomerId();
+            System.out.println("cus id checkout cart :"+ cus.getCustomerId());
+            ArrayList<CartItem> cartItemList = ciDAO.getAllCartItemOfCustomer(CustomerID);
+
+            if (cartItemList.isEmpty()) {
+                System.out.println("The cart is empty");
+                return State.Fail.value;
+            }
+
+            //check xem cac san pham trong kho co du de checkout khong
+            for (int i = 0; i < cartItemList.size(); i++) {
+                int ProductID = cartItemList.get(i).getProductId();
+                int Quantity = cartItemList.get(i).getQuantity();
+                int stockQuantity = pDAO.getProduct(ProductID).getStock().getQuantity();
+                if (stockQuantity < Quantity) {
+                    System.out.println("Kho khong du so luong san pham co ID:" + ProductID);
+                    return State.Fail.value;
+                }
+            }
+
+            String voucherCode = request.getParameter("VoucherTXT");
+            //Co su dung voucher
+            if (voucherCode != null && !voucherCode.equals("")) {
+                VoucherDAO vDAO = new VoucherDAO();
+                Voucher v = vDAO.getVoucher(voucherCode);
+                //Kiem tra tinh hop le va quang exception
+                if (vDAO.checkValidVoucher(v, cus)) {
+                    ArrayList<Product> approveVoucherProduct = new ArrayList();
+                    for (int i = 0; i < cartItemList.size(); i++) {
+                        if (v.getApprovedProductId().contains(cartItemList.get(i).getProductId())) {
+                            approveVoucherProduct.add(pDAO.getProduct(cartItemList.get(i).getProductId()));
+                        }
+                    }
+                    if (approveVoucherProduct.isEmpty()) {
+                        System.out.println("Khong co san pham nao ap dung duong voucher nay");
+                        return State.Fail.value;
+                    }
+                    request.setAttribute("approveVoucherProduct", approveVoucherProduct);
+                    request.setAttribute("voucher", v);
+                }
+            }
+
+        } catch (Exception ex) {
+            return State.Fail.value;
+        }
+        request.setAttribute("Customer", cus);
+        return State.Success.value;
+    }
+
     // ------------------------- EXEPTION HANDLING SECTION -------------------------
     private String checkException(HttpServletRequest request) {
         if (request.getAttribute("exceptionType") == null) {
