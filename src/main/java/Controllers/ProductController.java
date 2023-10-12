@@ -2,6 +2,7 @@ package Controllers;
 
 import DAOs.BrandDAO;
 import DAOs.ProductDAO;
+import Lib.ExceptionUtils;
 import Models.Brand;
 import Models.Product;
 import java.io.IOException;
@@ -68,10 +69,10 @@ public class ProductController extends HttpServlet {
                 return;
             }
             if (kq == Action.Throw404.value) {
-                response.sendRedirect(LIST_URI + checkException(request));
+                response.sendRedirect(LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
                 return;
             }
-            
+
             BrandDAO bDao = new BrandDAO();
             List<Brand> brandList = bDao.getAll();
             request.setAttribute("brandList", brandList);
@@ -215,39 +216,4 @@ public class ProductController extends HttpServlet {
     }
 
     // ------------------------- EXEPTION HANDLING SECTION -------------------------
-    private String checkException(HttpServletRequest request) {
-        if (request.getAttribute("exceptionType") == null) {
-            return "";
-        }
-        String exception = "?err";
-
-        switch ((String) request.getAttribute("exceptionType")) {
-            case "WrongPasswordException":
-            case "AccountNotFoundException":
-                exception += "AccNF";
-                break;
-            case "ProductNotFoundException":
-                exception += "PNF";
-                break;
-            case "AccountDeactivatedException":
-                exception += "AccD";
-                break;
-            case "EmailDuplicationException":
-                exception += "Email";
-                break;
-            case "UsernameDuplicationException":
-                exception += "Username";
-                break;
-            case "PhoneNumberDuplicationException":
-                exception += "Phone";
-            case "NotEnoughInformationException":
-                exception += "NEInfo";
-
-            default:
-                break;
-        }
-        exception += "=true";
-        return exception;
-    }
-
 }

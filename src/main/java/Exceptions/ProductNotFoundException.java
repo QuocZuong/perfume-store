@@ -1,12 +1,23 @@
 package Exceptions;
 
-public class ProductNotFoundException extends Exception {
+public class ProductNotFoundException extends Exception implements Interfaces.Exceptions.ICustomException {
 
-  public ProductNotFoundException() {
-    super("Product not found.");
-  }
+    private String queryString;
 
-  public ProductNotFoundException(String message) {
-    super(message);
-  }
+    public String getQueryString() {
+        return queryString;
+    }
+    @Override
+    public String getMessage() {
+        return super.getMessage();
+    }
+    public ProductNotFoundException() {
+        super("Không tìm thấy sản phẩm");
+        queryString = "PNF";
+    }
+
+    public ProductNotFoundException(String message) {
+        super(message);
+        queryString = "PNF";
+    }
 }

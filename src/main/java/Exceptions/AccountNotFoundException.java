@@ -1,14 +1,14 @@
+package Exceptions;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Exceptions;
-
 /**
  *
  * @author Acer
  */
-public class OperationAddFailedException extends Exception implements Interfaces.Exceptions.ICustomException {
+public class AccountNotFoundException extends Exception implements Interfaces.Exceptions.ICustomException {
 
     private String queryString;
 
@@ -19,13 +19,13 @@ public class OperationAddFailedException extends Exception implements Interfaces
     public String getMessage() {
         return super.getMessage();
     }
-    public OperationAddFailedException() {
-        super("Thêm thất bại");
-        queryString = "OAFE";
+    public AccountNotFoundException() {
+        super("Sai tài khoản hoặc mật khẩu");
+        queryString = "AccNF";
     }
 
-    public OperationAddFailedException(String message) {
+    public AccountNotFoundException(String message) {
         super(message);
-        queryString = "OAFE";
+        queryString = "AccNF";
     }
 }

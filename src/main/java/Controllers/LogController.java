@@ -10,6 +10,7 @@ import javax.security.auth.login.AccountNotFoundException;
 
 import DAOs.UserDAO;
 import Interfaces.DAOs.IUserDAO;
+import Lib.ExceptionUtils;
 import Models.Employee;
 import Models.User;
 
@@ -23,7 +24,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class LogController extends HttpServlet {
-    
+
     public static final String LOGIN_URI = "/Log/Login";
     public static final String LOGOUT_URI = "/Log/Logout";
 
@@ -38,21 +39,21 @@ public class LogController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         String path = request.getRequestURI();
-        
+
         if (path.startsWith(LOGIN_URI)) {
             request.getRequestDispatcher("/LOGIN_PAGE/logIn.jsp").forward(request, response);
             return;
         }
-        
+
         if (path.startsWith(LOGOUT_URI)) {
             System.out.println("going logout");
             logout(request, response);
             response.sendRedirect("/");
             return;
         }
-        
+
     }
 
     /**
@@ -74,7 +75,7 @@ public class LogController extends HttpServlet {
                 response.sendRedirect("/Product/List");
             } else {
                 System.out.println("Login failed. Going to /Log/Login");
-                response.sendRedirect(LOGIN_URI + checkException(request));
+                response.sendRedirect(LOGIN_URI + ExceptionUtils.generateExceptionQueryString(request));
             }
             return;
         }
@@ -85,7 +86,7 @@ public class LogController extends HttpServlet {
                 response.sendRedirect("/Product/List");
             } else {
                 System.out.println("Register failed. Going to /Log/Login");
-                response.sendRedirect(LOGIN_URI + checkException(request));
+                response.sendRedirect(LOGIN_URI + ExceptionUtils.generateExceptionQueryString(request));
             }
             return;
         }
@@ -97,7 +98,7 @@ public class LogController extends HttpServlet {
         String pw = request.getParameter("txtPassword");
         boolean rememberPw = request.getParameter("txtRememberPassword") != null;
         UserDAO uDAO = new UserDAO();
-        
+
         User user;
         //Try to login first
         try {
@@ -112,7 +113,7 @@ public class LogController extends HttpServlet {
             request.setAttribute("exceptionType", "WrongPasswordException");
             return false;
         }
-        
+
         if (user == null) {
             return false;
         }
@@ -120,7 +121,7 @@ public class LogController extends HttpServlet {
         //Set cookie
         String cookieKey = "";
         String cookieValue = user.getUsername();
-        
+
         String userType = user.getType();
         if (userType.equals("Customer")) {
             cookieKey = "Customer";
@@ -140,33 +141,33 @@ public class LogController extends HttpServlet {
         response.addCookie(c);
         return true;
     }
-    
+
     public boolean register(HttpServletRequest request, HttpServletResponse response) {
         String email = request.getParameter("txtEmail");
         CustomerDAO cusDAO = new CustomerDAO();
-        
+
         try {
             if (cusDAO.register(email)) {
                 String username = cusDAO.getUserByEmail(email).getUsername();
-                
+
                 Cookie c = new Cookie("Customer", username);
                 c.setMaxAge(3 * 24 * 60 * 60);
                 c.setPath("/");
-                
+
                 response.addCookie(c);
-                
+
                 return true;
             }
         } catch (EmailDuplicationException e) {
             request.setAttribute("exceptionType", "EmailDuplicationException");
         }
-        
+
         return false;
     }
-    
+
     public boolean logout(HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
-        
+
         for (Cookie c : cookies) {
             if (c.getName().equals("Customer")
                     || c.getName().equals("Admin")
@@ -177,37 +178,8 @@ public class LogController extends HttpServlet {
                 response.addCookie(c);
             }
         }
-        
+
         return true;
     }
 
-    // ------------------------- EXEPTION HANDLING SECTION -------------------------
-    private String checkException(HttpServletRequest request) {
-        String exception = "";
-        
-        if (request.getAttribute("exceptionType") == null) {
-            return "";
-        }
-        
-        switch ((String) request.getAttribute("exceptionType")) {
-            case "WrongPasswordException":
-            case "AccountNotFoundException":
-                exception = "?errAccNF=true";
-                break;
-            case "AccountDeactivatedException":
-                exception = "?errAccD=true";
-                break;
-            case "EmailDuplicationException":
-                exception = "?errEmail=true";
-                break;
-            case "UsernameDuplicationException":
-                exception = "?errUsername=true";
-                break;
-            default:
-                break;
-        }
-        
-        return exception;
-    }
-    
 }

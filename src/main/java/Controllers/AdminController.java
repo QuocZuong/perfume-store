@@ -21,6 +21,7 @@ import Exceptions.UsernameDuplicationException;
 import Exceptions.WrongPasswordException;
 import Lib.Converter;
 import Lib.EmailSender;
+import Lib.ExceptionUtils;
 import Models.Stock;
 import Models.Customer;
 import Models.Employee;
@@ -203,7 +204,7 @@ public class AdminController extends HttpServlet {
                 if (result == State.Success.value) {
                     response.sendRedirect(ADMIN_PRODUCT_LIST_URI);
                 } else if (result == State.Fail.value) {
-                    response.sendRedirect(ADMIN_PRODUCT_LIST_URI + checkException(request));
+                    response.sendRedirect(ADMIN_PRODUCT_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
                 }
 
             }
