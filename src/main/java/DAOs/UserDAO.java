@@ -333,21 +333,22 @@ public class UserDAO implements IUserDAO {
      * Create a new {@link User} object from a {@link ResultSet}.
      *
      * @param queryResult The {@code ResultSet} containing the user's
-     * information.
+     *                    information.
      * @return An {@code User} object containing the user's information.
      * @throws SQLException If an error occurs while retrieving the data.
      */
     public User userFactory(ResultSet queryResult) throws SQLException {
         User user = new User();
+
         user.setId(queryResult.getInt(USER_ID));
-        user.setName(queryResult.getString(USER_NAME));
+        user.setName(queryResult.getNString(USER_NAME));
         user.setUsername(queryResult.getString(USER_USERNAME));
         user.setPassword(queryResult.getString(USER_PASSWORD));
         user.setEmail(queryResult.getString(USER_EMAIL));
         user.setActive(queryResult.getBoolean(USER_ACTIVE));
         user.setType(queryResult.getString(USER_TYPE));
-        System.out.println("create user sussess");
 
+        System.out.println("create user sussess");
         return user;
     }
 
