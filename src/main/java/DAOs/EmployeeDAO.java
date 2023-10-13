@@ -19,6 +19,11 @@ import Exceptions.UsernameDuplicationException;
 import Interfaces.DAOs.IEmployeeDAO;
 import Lib.Converter;
 import Models.Role;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
 
@@ -155,7 +160,7 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
         employee.setActive(rs.getBoolean("User_Active"));
         employee.setType(rs.getNString("User_Type"));
 
-        employee.setId(rs.getInt("Employee_ID"));
+        employee.setEmployeeId(rs.getInt("Employee_ID"));
         employee.setCitizenId(rs.getNString("Employee_Citizen_ID"));
         employee.setDayOfBirth(rs.getDate("Employee_DoB"));
         employee.setPhoneNumber(rs.getString("Employee_Phone_Number"));
@@ -253,6 +258,8 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
             if (rs.next()) {
                 employee = generateFullyEmployeeByResultSet(rs);
             }
+
+            System.out.println("employee id in EmployeeDAO: " + employee.getEmployeeId());
             return employee;
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -366,6 +373,50 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
         }
 
         return result;
+    }
+
+    public int updateEmployeeRetireDate(int employeeId, Date retireDate) {
+        int result = -1;
+
+        String sql = "UPDATE Employee SET Employee_Retire_Date = ? WHERE Employee_ID = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            System.out.println("employeeId: " + employeeId);
+            System.out.println("retireDate: " + retireDate);
+            ps.setDate(1, retireDate);
+            ps.setInt(2, employeeId);
+            result = ps.executeUpdate();
+            System.out.println("result of updateEmployeeRetireDate: " + result);
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return result;
+    }
+
+    /*--------------------- DELETE SECTION ---------------------  */
+    public boolean disableEmployee(Employee employee) {
+        try {
+            java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
+            employee.setRetireDate(currentDate);
+            updateEmployeeRetireDate(employee.getEmployeeId(), employee.getRetireDate());
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /*--------------------- RESTORE SECTION ---------------------  */
+    public boolean restoreEmployee(Employee employee) {
+        try {
+            employee.setRetireDate(null);
+            updateEmployeeRetireDate(employee.getEmployeeId(), employee.getRetireDate());
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }
