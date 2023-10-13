@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Lib;
 
 import java.security.MessageDigest;
@@ -103,7 +99,7 @@ public class Converter {
             sb.append(String.format("%02x", b & 0xff));
         }
         pwdMD5 = sb.toString();
-        System.out.println(pwdMD5);
+        // System.out.println(pwdMD5);
 
         return pwdMD5;
     }

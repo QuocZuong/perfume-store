@@ -11,6 +11,7 @@ import javax.security.auth.login.AccountNotFoundException;
 import DAOs.UserDAO;
 import Interfaces.DAOs.IUserDAO;
 import Lib.ExceptionUtils;
+import Lib.Converter;
 import Models.Employee;
 import Models.User;
 
@@ -31,10 +32,10 @@ public class LogController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -59,10 +60,10 @@ public class LogController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -100,7 +101,7 @@ public class LogController extends HttpServlet {
         UserDAO uDAO = new UserDAO();
 
         User user;
-        //Try to login first
+        // Try to login first
         try {
             user = uDAO.getUser(us, pw, us.contains("@") ? IUserDAO.loginType.Email : IUserDAO.loginType.Username);
         } catch (AccountNotFoundException e) {
@@ -118,7 +119,7 @@ public class LogController extends HttpServlet {
             return false;
         }
 
-        //Set cookie
+        // Set cookie
         String cookieKey = "";
         String cookieValue = user.getUsername();
 

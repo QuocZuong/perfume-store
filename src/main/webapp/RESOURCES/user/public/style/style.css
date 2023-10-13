@@ -313,6 +313,8 @@ h1 {
   flex-direction: column;
   align-items: flex-start;
 
+  position: relative;
+
   padding: 1rem;
 
   border-width: 1px 0px 0px 0px;
@@ -320,6 +322,10 @@ h1 {
   border-color: rgba(0, 0, 0, 0.3);
 
   cursor: pointer;
+}
+
+.main .right .address-page .address-list .delivery-address-item.active {
+  background-color: var(--bs-gray-300);
 }
 
 .main
@@ -346,6 +352,11 @@ h1 {
 
 .main .right .address-page .address-list .delivery-address-item .status {
   height: 20px;
+  position: absolute;
+
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
 
   display: flex;
   justify-content: center;
@@ -359,7 +370,7 @@ h1 {
 }
 
 .main .right .address-page .address-list .delivery-address-item:hover {
-  background-color: var(--bs-gray-300);
+  background-color: var(--bs-gray-500);
 }
 
 .main .right .address-page .address-list .delivery-address-item .status.active {

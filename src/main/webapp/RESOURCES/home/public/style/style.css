@@ -1,4 +1,4 @@
-html{
+html {
   scroll-behavior: smooth;
 }
 
@@ -31,7 +31,7 @@ body::-webkit-scrollbar-thumb:hover {
   margin: 0;
 }
 
-h1{
+h1 {
   min-width: 200px;
 }
 
@@ -126,8 +126,16 @@ h1{
   transition: border-bottom 0.3s ease-in-out;
 }
 
+.nav {
+  position: relative;
+  padding: 1.5rem 0rem;
+}
+
 .nav .iconPage {
-  margin-left: -235px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .nav .account {
@@ -152,7 +160,7 @@ h1{
 .nav .account #product-dropdown-btn + ul,
 .nav .account #user-dropdown-btn + ul {
   display: flex;
-  flex-flow:column nowrap;
+  flex-flow: column nowrap;
   background-color: white;
   margin-top: 1.6rem;
   top: 585px;
@@ -163,10 +171,10 @@ h1{
 }
 
 .nav .account #product-dropdown-btn + ul {
-   right: 105px;
+  right: 105px;
 }
-.nav .account #user-dropdown-btn + ul  {
-   right: 58px;
+.nav .account #user-dropdown-btn + ul {
+  right: 58px;
 }
 
 .nav .account button img {
@@ -195,15 +203,15 @@ h1{
   margin-bottom: 120px;
 }
 
-.brand h1{
+.brand h1 {
   padding-bottom: 2rem;
   width: 100%;
   font-size: 4vw;
 }
 
-.brand a{
+.brand a {
   border-radius: 12px;
-  border: 1px solid rgba(0,0,0,0.2);
+  border: 1px solid rgba(0, 0, 0, 0.2);
   padding: 10px;
   max-width: 180px;
   max-height: 180px;
@@ -215,46 +223,44 @@ h1{
   margin-right: 10px;
   margin-bottom: 10px;
   text-decoration: none;
-  cursor:pointer;
+  cursor: pointer;
 }
 
-
-.brand .logo{
-  width:max-content;
+.brand .logo {
+  width: max-content;
   height: 80%;
   max-width: 1275px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   margin-left: 10px;
-
 }
 
-.brand .logo a img{
+.brand .logo a img {
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
 
-.brand hr{
+.brand hr {
   width: 98%;
   margin-left: -10px;
   max-width: 1130px;
   margin-top: 2rem;
-  color: rgba(0,0,0,0.5);
+  color: rgba(0, 0, 0, 0.5);
 }
 
-.product h1{
+.product h1 {
   margin-bottom: 20px;
   font-size: 4vw;
 }
 
-.product .item a{
+.product .item a {
   text-decoration: none;
 }
 
-.product .classify button{
-  outline:none;
+.product .classify button {
+  outline: none;
   border: none;
   background-color: transparent;
   font-size: 2.5vw;
@@ -290,7 +296,6 @@ h1{
   align-items: center;
   flex-direction: column;
   min-height: 926px;
-
 }
 
 .product .item {
@@ -311,14 +316,14 @@ h1{
   max-height: 390px;
 }
 
-.product .item .card{
-  border-radius: 1px solid rgba(0,0,0,0.1);
+.product .item .card {
+  border-radius: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 15px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  text-align:center;
+  text-align: center;
   width: 25%;
   max-width: 250px;
   min-width: 250px;
@@ -327,14 +332,13 @@ h1{
   cursor: pointer;
 }
 
-.product .item .card .product-brand{
+.product .item .card .product-brand {
   color: #6f3620;
   font-size: 1.3rem;
   padding: 10px;
-
 }
 
-.product .item .card hr{
+.product .item .card hr {
   opacity: 1;
   position: absolute;
   top: 264px;
@@ -345,17 +349,17 @@ h1{
   border-bottom: 1px solid rgb(0, 0, 0);
 }
 
-.product .item .card img{
+.product .item .card img {
   width: 200px;
   height: 80%;
 }
 
-.product .item .card .product-name{
+.product .item .card .product-name {
   margin-top: 10px;
   font-size: 1.4rem;
 }
 
-.product .item .card .product-price{
+.product .item .card .product-price {
   margin: 10px 0 20px 0;
 }
 
@@ -373,24 +377,23 @@ h1{
   margin: 0 5px;
   background-color: #fff;
   cursor: pointer;
-  border: 1px solid rgba(0,0,0,0.2);
+  border: 1px solid rgba(0, 0, 0, 0.2);
   display: none;
 }
 
-.dot:hover{
+.dot:hover {
   background-color: #bbb;
-
 }
 
 .dot.active {
   background-color: #bbb;
 }
 
-.scroll-animation{
+.scroll-animation {
   transition: scroll-left 0.3s ease-in-out;
 }
 
-.reason{
+.reason {
   margin: 1rem 0;
   display: flex;
   justify-content: center;
@@ -398,12 +401,12 @@ h1{
   flex-direction: column;
 }
 
-.reason hr{
-  color: rgba(0,0,0,0.5);
-  margin-bottom:5rem;
+.reason hr {
+  color: rgba(0, 0, 0, 0.5);
+  margin-bottom: 5rem;
 }
 
-.reason h1{
+.reason h1 {
   font-size: 4vw;
   margin-bottom: 5rem;
 }
@@ -415,81 +418,79 @@ h1{
   width: 90%;
   max-width: 1100px;
   margin-bottom: 20px;
-
 }
 
-.reason .listReason img{
+.reason .listReason img {
   height: 48px;
   margin-bottom: 20px;
 }
-.reason .listReason img:first-child{
+.reason .listReason img:first-child {
   height: 90px;
 }
 
-.reason .listReason .advantage{
+.reason .listReason .advantage {
   min-width: 90px;
 }
 
-.reason .listReason .advantage h4{
+.reason .listReason .advantage h4 {
   margin-bottom: 15px;
 }
-.reason .listReason .advantage + .advantage{
+.reason .listReason .advantage + .advantage {
   margin-left: 3vw;
 }
 
-.contact hr{
-  color: rgba(0,0,0,0.5);
+.contact hr {
+  color: rgba(0, 0, 0, 0.5);
   margin-bottom: 40px;
 }
 
-.contact h1{
+.contact h1 {
   font-size: 4vw;
 }
 
-.contact div{
+.contact div {
   text-align: center;
   display: flex;
   justify-content: center;
 }
 
-.contact div p{
+.contact div p {
   font-size: 1.15rem;
 }
 
-.contact div img{
+.contact div img {
   margin: 0 10px 0 25px;
   height: 24px;
 }
 
-.theme{
+.theme {
   width: 100%;
   height: 30%;
   margin: 50px 0 50px 0;
   padding: 0;
 }
 
-.theme img{
+.theme img {
   object-fit: cover;
   width: 100%;
   height: 700px;
 }
 
-.register{
+.register {
   margin: 20px 0;
   text-align: center;
-
 }
 
-.register h1{
+.register h1 {
   font-size: 3vw;
   min-width: 300px;
 }
 
-.register p{
+.register p {
   font-size: 2vw;
 }
 
-.register input{
+.register input {
   border: none;
   border-bottom: 1px solid black;
   width: 220px;
@@ -497,7 +498,7 @@ h1{
   outline: none;
 }
 
-.register button{
+.register button {
   margin-right: 20px;
   background-color: transparent;
   outline: none;
@@ -506,24 +507,24 @@ h1{
   padding: 7px 70px 1px 70px;
   border-radius: 2px;
 }
-.register button:hover{
-  box-shadow: 0px 2px 3px rgba(0,0,0,0.2);
+.register button:hover {
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
 }
 
-.social{
+.social {
   text-align: center;
   margin-top: 30px;
 }
 
-.social a + a{
+.social a + a {
   margin-left: 7px;
 }
 
-.social img{
+.social img {
   height: 32px;
 }
 
-.footer{
+.footer {
   margin-top: 50px;
   text-align: center;
   display: flex;
@@ -532,61 +533,60 @@ h1{
   justify-content: center;
 }
 
-.footer div{
+.footer div {
   text-align: center;
   display: flex;
   justify-content: center;
   flex-direction: column;
 }
 
-.footer div:nth-child(1){
+.footer div:nth-child(1) {
   margin-right: 110px;
   margin-left: 80px;
 }
 
-.footer div:nth-child(2){
+.footer div:nth-child(2) {
   margin-right: 80px;
 }
 
-.footer ul{
+.footer ul {
   padding: 0;
-
 }
 
-.footer h2{
+.footer h2 {
   color: #fff;
   font-size: 3vw;
 }
 
-.footer li{
+.footer li {
   list-style-type: none;
   margin: 5px 0;
 }
 
-.footer a{
+.footer a {
   color: #fff;
   text-decoration: none;
   font-size: 1.5vw;
   width: 100%;
 }
 
-.footer a:hover{
+.footer a:hover {
   text-decoration: underline;
   text-decoration-color: white;
   transition: text-decoration 0.3s ease-in-out;
 }
 
-.copyright{
+.copyright {
   margin-top: 20px;
   padding: 10px 0;
 }
 
-.copyright p{
+.copyright p {
   font-size: 1.2rem;
 }
 
 @media screen and (max-width: 700px) {
-  h1{
+  h1 {
     font-size: 100px;
   }
 }
