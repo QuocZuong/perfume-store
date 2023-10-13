@@ -1,3 +1,4 @@
+<%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="Models.Product"%>
 <%@page import="DAOs.BrandDAO"%>
@@ -11,14 +12,15 @@
 
 <%! UserDAO uDAO = new UserDAO();%>
 <%! BrandDAO bDAO = new BrandDAO(); %>
-<%! ResultSet rs = null;%>
-<%! ArrayList<User> listUser = null; %>
+<%! List<User> listUser = null; %>
 <%! int currentPage, numberOfPage;%>
-<%! boolean isAdmin;%>
+
 
 <%
-    rs = uDAO.getAllForAdmin();
-    listUser = (ArrayList<User>) request.getAttribute("listUser");
+    Cookie currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
+    String currentUsername = currentUserCookie.getValue();
+    
+    listUser = (List<User>) request.getAttribute("listUser");
     currentPage = (int) request.getAttribute("page");
     numberOfPage = (int) request.getAttribute("numberOfPage");
 %>
@@ -39,7 +41,7 @@
               integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
               crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css"/>
-        <link rel="stylesheet" href="/RESOURCES/admin/user/public/style/list.css">
+        <link rel="stylesheet" href="/RESOURCES/admin/user/public/style/info.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
               rel="stylesheet"
               integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
@@ -80,9 +82,8 @@
                                 <td>Name</td>
                                 <td>Username</td>
                                 <td>Email</td>
-                                <td style="width: 10%;">Phone Number</td>
-                                <td>Address</td>
                                 <td>Role</td>
+                                <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -95,22 +96,23 @@
                                     <%
                                         User us = listUser.get((int) pageContext.getAttribute("i"));
                                     %>
-                                    <tr class="rowTable  ">
-                                        <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getID()%></td>
+                                    <tr class="rowTable">
+                                        <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getId()%></td>
                                         <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getName() == null ? "" : us.getName()%></td>
                                         <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getUsername() == null ? "" : us.getUsername()%></td>
-                                        <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getPhoneNumber() == null ? "" : us.getPhoneNumber()%></td>
                                         <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getEmail()%></td>
-                                        <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getAddress()%></td>
-                                        <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getRole()%></td>
-                                        <td class="<%= us.isActive() ? " " : "faded"%>">
-                                            <a href="/Admin/User/Update/ID/<%= us.getID()%>" class="<%= us.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0">Update</a>
+                                        <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getType()%></td>
+                                        <td>
+                                            <a href="/Admin/User/Info/ID/<%= us.getId()%>" class="btn btn-outline-success rounded-0">Detail</a>
                                         </td>
                                         <td class="<%= us.isActive() ? " " : "faded"%>">
-                                            <a href="/Admin/User/Detail/ID/<%= us.getID()%>" class="<%= us.isActive() && !us.getRole().equals("Admin") ? "" : "disabled"%> btn btn-outline-info rounded-0">Order</a>
+                                            <a href="/Admin/User/Update/ID/<%= us.getId()%>" class="<%= us.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0">Update</a>
+                                        </td>
+                                        <td class="<%= us.isActive() ? " " : "faded"%>">
+                                            <a href="/Admin/User/Detail/ID/<%= us.getId()%>" class="<%= us.isActive() && !us.getType().equals("Admin") ? "" : "disabled"%> btn btn-outline-info rounded-0">Order</a>
                                         </td>
                                         <td class="buttonStatus <%= us.isActive() ? "" : "unfaded"%>">
-                                            <a href="/Admin/User/<%= us.isActive() ? "Delete" : "Restore"%>/ID/<%=  us.getID()%>" class="btn btn-outline-<%= us.isActive() ? "danger" : "success"%> rounded-0"> <%= us.isActive() ? "Delete" : "Restore"%></a>
+                                            <a href="/Admin/User/<%= us.isActive() ? "Delete" : "Restore"%>/ID/<%= us.getId()%>/<%= currentUsername%>/" class="<%=us.getUsername().equals(currentUsername) ? "disabled" : ""%> btn btn-outline-<%= us.isActive() ? "danger" : "success"%> rounded-0"> <%= us.isActive() ? "Delete" : "Restore"%></a>
                                         </td>
                                     </tr>
 
@@ -142,7 +144,7 @@
                     </c:forEach>
                 <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>"><a class="page-link" href="/Admin/User/List/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a></li>
                 <li class="page-item"><a class="page-link" href="/Admin/User/List/page/${numberOfPage}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-right" style="color: #000000;"></i></a></li>
-            </ul>
+            </ul>   
         </nav>
         <script>
             function changeLink() {

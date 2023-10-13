@@ -1,7 +1,7 @@
 
 package Controllers;
 
-import static Controllers.ClientController.CLIENT_CART_URI;
+import static Controllers.CustomerController.CUSTOMER_CART_URI;
 import Lib.EmailSender;
 import java.io.IOException;
 
@@ -108,7 +108,7 @@ public class HomeController extends HttpServlet {
             es.sendToEmail(subject, html);
         } catch (UnsupportedEncodingException ex) {
             System.out.println("Send mail fail");
-            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

@@ -1,82 +1,234 @@
 package Models;
 
-import java.util.Date;
+import java.sql.Date;
+import java.util.ArrayList;
 
 public class Order {
-  private int ID;
-  private int clientID;
-  private Date date;
-  private String Address;
-  private String PhoneNumber;
-  private String Note;
-  private int sum;
 
-  public Order() {
-  }
+    private int Id;
+    private int customerId;
+    private int voucherId;
+    private String receiverName;
+    private String deliveryAddress;
+    private String phoneNumber;
+    private String note;
+    private int total;
+    private int deductedPrice;
+    private String status;
+    private Date createdAt;
+    private Date checkoutAt;
+    private Date updateAt;
+    private int updateByOrderManager;
+    private ArrayList<OrderDetail> orderDetailList;
 
-  public Order(int iD, int clientID, Date date, String address, String phoneNumber, String note, int sum) {
-    ID = iD;
-    this.clientID = clientID;
-    this.date = date;
-    Address = address;
-    PhoneNumber = phoneNumber;
-    Note = note;
-    this.sum = sum;
-  }
+    /**
+     * @return int return the Id
+     */
+    public int getId() {
+        return Id;
+    }
 
-  public void setPhoneNumber(String phoneNumber) {
-    PhoneNumber = phoneNumber;
-  }
+    /**
+     * @param Id the Id to set
+     */
+    public void setId(int Id) {
+        this.Id = Id;
+    }
 
-  public String getNote() {
-    return Note;
-  }
+    /**
+     * @return int return the customerId
+     */
+    public int getCustomerId() {
+        return customerId;
+    }
 
-  public void setNote(String note) {
-    Note = note;
-  }
+    /**
+     * @param customerId the customerId to set
+     */
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
 
-  public int getID() {
-    return ID;
-  }
+    /**
+     * @return int return the voucherId
+     */
+    public int getVoucherId() {
+        return voucherId;
+    }
 
-  public void setID(int ID) {
-    this.ID = ID;
-  }
+    /**
+     * @param voucherId the voucherId to set
+     */
+    public void setVoucherId(int voucherId) {
+        this.voucherId = voucherId;
+    }
 
-  public int getClientID() {
-    return clientID;
-  }
+    /**
+     * @return String return the receiverName
+     */
+    public String getReceiverName() {
+        return receiverName;
+    }
 
-  public void setClientID(int clientID) {
-    this.clientID = clientID;
-  }
+    /**
+     * @param receiverName the receiverName to set
+     */
+    public void setReceiverName(String receiverName) {
+        this.receiverName = receiverName;
+    }
 
-  public Date getDate() {
-    return date;
-  }
+    /**
+     * @return String return the deliveryAddress
+     */
+    public String getDeliveryAddress() {
+        return deliveryAddress;
+    }
 
-  public void setDate(Date date) {
-    this.date = date;
-  }
+    /**
+     * @param deliveryAddress the deliveryAddress to set
+     */
+    public void setDeliveryAddress(String deliveryAddress) {
+        this.deliveryAddress = deliveryAddress;
+    }
 
-  public int getSum() {
-    return sum;
-  }
+    /**
+     * @return String return the phoneNumber
+     */
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
 
-  public void setSum(int sum) {
-    this.sum = sum;
-  }
+    /**
+     * @param phoneNumber the phoneNumber to set
+     */
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 
-  public String getAddress() {
-    return Address;
-  }
+    /**
+     * @return String return the note
+     */
+    public String getNote() {
+        return note;
+    }
 
-  public void setAddress(String address) {
-    Address = address;
-  }
+    /**
+     * @param note the note to set
+     */
+    public void setNote(String note) {
+        this.note = note;
+    }
 
-  public String getPhoneNumber() {
-    return PhoneNumber;
-  }
+    /**
+     * @return int return the total
+     */
+    public int getTotal() {
+        return total;
+    }
+
+    /**
+     * @param total the total to set
+     */
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+    /**
+     * @return int return the deductedPrice
+     */
+    public int getDeductedPrice() {
+        return deductedPrice;
+    }
+
+    /**
+     * @param deductedPrice the deductedPrice to set
+     */
+    public void setDeductedPrice(int deductedPrice) {
+        this.deductedPrice = deductedPrice;
+    }
+
+    /**
+     * @return String return the status
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * @param status the status to set
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    /**
+     * @return Date return the createdAt
+     */
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    /**
+     * @param createdAt the createdAt to set
+     */
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    /**
+     * @return Date return the checkoutAt
+     */
+    public Date getCheckoutAt() {
+        return checkoutAt;
+    }
+
+    /**
+     * @param checkoutAt the checkoutAt to set
+     */
+    public void setCheckoutAt(Date checkoutAt) {
+        this.checkoutAt = checkoutAt;
+    }
+
+    /**
+     * @return Date return the updateAt
+     */
+    public Date getUpdateAt() {
+        return updateAt;
+    }
+
+    /**
+     * @param updateAt the updateAt to set
+     */
+    public void setUpdateAt(Date updateAt) {
+        this.updateAt = updateAt;
+    }
+
+    /**
+     * @return int return the updateByOrderManager
+     */
+    public int getUpdateByOrderManager() {
+        return updateByOrderManager;
+    }
+
+    /**
+     * @param updateByOrderManager the updateByOrderManager to set
+     */
+    public void setUpdateByOrderManager(int updateByOrderManager) {
+        this.updateByOrderManager = updateByOrderManager;
+    }
+
+    /**
+     * @return ArrayList OrderDetail return the order detail list
+     */
+    public ArrayList<OrderDetail> getOrderDetailList() {
+        return orderDetailList;
+    }
+
+    /**
+     * @param orderDetailList
+     */
+    public void setOrderDetailList(ArrayList<OrderDetail> orderDetailList) {
+        this.orderDetailList = orderDetailList;
+    }
+
 }

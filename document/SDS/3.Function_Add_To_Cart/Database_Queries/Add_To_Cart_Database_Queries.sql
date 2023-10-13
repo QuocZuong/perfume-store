@@ -16,46 +16,41 @@ WHERE cus.[User_ID] = u.[User_ID]
 AND cus.[Customer_ID] = '<customerID>'
 
 --getCartQuantity()
-SELECT Quantity FROM Cart
+SELECT Quantity FROM CartItem
 WHERE Customer_ID = '<customerID>'
 AND Product_ID = '<productID>'
 
 --addToCart()
+USE projectPrj;
 
 BEGIN TRANSACTION
 
 GO
-CREATE OR ALTER PROC INSERT_TO_CART @ClientID INT, @ProductID INT, @BuyQuantity INT
+CREATE OR ALTER PROC INSERT_CART_ITEM @Customer_ID INT, @Product_ID INT, @Buy_Quantity INT, @Price INT, @Sum INT
 AS
 BEGIN
-	DECLARE @count INT = 0,
-			@PriceProduct INT;
+	DECLARE @count INT = 0
 	-- Check if the product is existed in customer's cart
 	SET @count = (
 		SELECT COUNT(*) 
-		FROM Cart 
+		FROM CartItem 
 		WHERE 
-		Cart.Customer_ID = @ClientID 
-		AND Cart.Product_ID = @ProductID
-	);
-	-- Get the price of the specific product
-	SET	@PriceProduct = (
-		SELECT stk.Price 
-		FROM Product p, Stock stk 
-		WHERE p.Product_ID = stk.Product_ID 
-		AND p.Product_ID = @ProductID
+		CartItem.Customer_ID = @Customer_ID AND
+		CartItem.Product_ID = @Product_ID
 	);
 	-- If product isn't exist, insert like normal
 	IF @count = 0 
 	BEGIN
-		INSERT INTO Cart (Customer_ID, Product_ID, Quantity) VALUES(@ClientID, @ProductID, @BuyQuantity);
+		INSERT INTO CartItem(Customer_ID, Product_ID, Quantity, Price, [Sum]) VALUES(@Customer_ID, @Product_ID, @Buy_Quantity, @Price, @Sum);
 	END
 	-- If product is exist, update the quantity
 	IF @count != 0
 	BEGIN
-		UPDATE Cart 
-		SET Quantity = @BuyQuantity
-		WHERE Cart.Customer_ID = @ClientID AND Cart.Product_ID = @ProductID
+		UPDATE CartItem 
+		SET Quantity = @Buy_Quantity,
+			Price = @Price,
+			[Sum] = @Sum
+		WHERE CartItem.Customer_ID = @Customer_ID AND CartItem.Product_ID = @Product_ID
 	END
 END
 

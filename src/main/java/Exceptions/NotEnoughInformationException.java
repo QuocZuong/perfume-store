@@ -1,12 +1,23 @@
 package Exceptions;
 
-public class NotEnoughInformationException extends Exception {
-  
-  public NotEnoughInformationException() {
-    super("Not enough information that is required.");
-  }
+public class NotEnoughInformationException extends Exception implements Interfaces.Exceptions.ICustomException {
 
-  public NotEnoughInformationException(String message) {
-    super(message);
-  }
+    private String queryString;
+
+    public String getQueryString() {
+        return queryString;
+    }
+    @Override
+    public String getMessage() {
+        return super.getMessage();
+    }
+    public NotEnoughInformationException() {
+        super("Không đủ thông tin! Hãy thử lại");
+        queryString = "NEInfo";
+    }
+
+    public NotEnoughInformationException(String message) {
+        super(message);
+        queryString = "NEInfo";
+    }
 }

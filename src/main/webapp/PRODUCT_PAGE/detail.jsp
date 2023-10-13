@@ -1,3 +1,5 @@
+<%@page import="Lib.Converter"%>
+<%@page import="Models.Brand"%>
 <%@page import="java.util.List"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="DAOs.ProductDAO"%>
@@ -12,18 +14,18 @@
 <%
     Product pd = (Product) request.getAttribute("product");
 
-    int id = pd.getID();
+    int id = pd.getId();
     String name = pd.getName();
-    String brandName = bDao.getBrandName(pd.getBrandID());
-    int price = pd.getPrice();
+    Brand brand = bDao.getBrand(pd.getBrandId());
+    int price = pd.getStock().getPrice();
     String gender = pd.getGender();
     String smell = pd.getSmell();
-    int quantity = pd.getQuantity();
+    int quantity = pd.getStock().getQuantity();
     int releaseYear = pd.getReleaseYear();
     int volume = pd.getVolume();
     String imgURL = pd.getImgURL();
     String description = pd.getDescription();
-    List<Product> productSuggestList = pDAO.getProductsByBrandName(pd.getBrandID(), name);
+    List<Product> productSuggestList = pDAO.filterProductByBrand(brand);
 %>
 
 <!DOCTYPE html>
@@ -60,7 +62,7 @@
     </head>
     <body>
         <div class="container-fluid">
-            
+
             <!--Navbar section-->
             <div class="row">
                 <div class="col-md-12 nav">
@@ -78,9 +80,9 @@
 
                         </div>
                         <div class="right">
-                            <p id="brandName"><%= brandName%></p>
+                            <p id="brandName"><%= brand.getName()%></p>
                             <h1 id="productName"><%= name%></h1>
-                            <span id="productPrice"><%= pDAO.IntegerToMoney(price)%><span>đ</span></span>
+                            <span id="productPrice"><%= Converter.covertIntergerToMoney(price)%><span>đ</span></span>
                             <div>
                                 <img src="/RESOURCES/images/icons/sex.png" alt="">
                                 <span id="gender"><%= gender%></span>
@@ -89,9 +91,10 @@
                                 <p id="volume">Dung tích</p>
                                 <span><%= volume%>ml</span>
                             </div>
-                            <form action="/Client/addToCart" method="POST">
+                            <form action="/Customer/addToCart" method="POST">
                                 <input type="number" name="ProductQuantity" id="" value="1" >
                                 <input type="hidden" name="ProductID" value="<%= id%>">
+                                <input type="hidden" name="ProductPrice" value = <%= price%>>
                                 <button name="btnAddToCart" class="btnAddToCart" value="Submit" type="submit" <%= (quantity == 0 ? "disabled" : "")%>><%= (quantity == 0 ? "HẾT HÀNG" : "THÊM VÀO GIỎ HÀNG")%></button>
                             </form>
                         </div>
@@ -119,10 +122,10 @@
                     <div class="suggest-product-list">
                         <%
                             for (Product product : productSuggestList) {
-                                String productBrandName = bDao.getBrandName(product.getBrandID());
-                                String productSuggestPrice = pDAO.IntegerToMoney(product.getPrice());
+                                String productBrandName = brand.getName();
+                                String productSuggestPrice = Converter.covertIntergerToMoney(product.getStock().getPrice());
                         %>
-                        <a class="product-wrapper" href="/Product/Detail/ID/<%=product.getID()%>">
+                        <a class="product-wrapper" href="/Product/Detail/ID/<%=product.getId()%>">
                             <div class="product">
                                 <img src="<%=product.getImgURL()%>" alt="" class="product-img">
                                 <span class="product-brand"><%=productBrandName%></span>

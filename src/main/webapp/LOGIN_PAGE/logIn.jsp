@@ -1,12 +1,17 @@
+<%@page import="Lib.ExceptionUtils"%>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib  uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
-<%! boolean isAccountDeactivated, isAccountNotFound, isExistEmail;%>
+<%! boolean isError, isExistEmail;%>
+<%! String exceptionMessage = "";%>
 <%
     // Handling execption
-    isAccountDeactivated = (request.getParameter("errAccD") == null ? false : Boolean.parseBoolean(request.getParameter("errAccD")));
-    isAccountNotFound = (request.getParameter("errAccNF") == null ? false : Boolean.parseBoolean(request.getParameter("errAccNF")));
-    isExistEmail = (request.getParameter("errEmail") == null ? false : Boolean.parseBoolean(request.getParameter("errEmail")));
+    String queryString = request.getQueryString();
+    isError = ExceptionUtils.isWebsiteError(queryString);
+    exceptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
+
+    // For navigating login form or register form (UI problem related)
+    isExistEmail = ExceptionUtils.isEmailDuplication(queryString);
 %>
 
 <!DOCTYPE html>
@@ -49,24 +54,9 @@
                 <div class="row">
 
                     <!--Execption Handling-->
-                <c:choose>
-                    <c:when test='<%= isAccountNotFound%>'>
-                        <h1 class="alert alert-danger text-center">
-                            Sai tên đăng nhập hoặc mật khẩu
-                        </h1>
-                    </c:when>
-                    <c:when test='<%= isAccountDeactivated%>'>
-                        <h1 class="alert alert-danger text-center">
-                            Tài khoản đã bị vô hiệu hóa
-                        </h1>
-                    </c:when>
-
-                    <c:when test='<%= isExistEmail%>'>
-                        <h1 class="alert alert-danger text-center">
-                            Email đã tồn tại
-                        </h1>
-                    </c:when>
-                </c:choose>
+                <c:if test='<%= isError%>'>
+                    <h1 class="alert alert-danger text-center"> <%= exceptionMessage%></h1>
+                </c:if>
                 <!--Execption Handling-->
 
                 <div class="col-md-12 login-form">

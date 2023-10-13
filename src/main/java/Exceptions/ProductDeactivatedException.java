@@ -1,12 +1,23 @@
 package Exceptions;
 
-public class ProductDeactivatedException extends Exception {
+public class ProductDeactivatedException extends Exception implements Interfaces.Exceptions.ICustomException {
 
-  public ProductDeactivatedException() {
-    super("Product is deactivated.");
-  }
+    private String queryString;
 
-  public ProductDeactivatedException(String message) {
-    super(message);
-  }
+    public String getQueryString() {
+        return queryString;
+    }
+    @Override
+    public String getMessage() {
+        return super.getMessage();
+    }
+    public ProductDeactivatedException() {
+        super("Sản phẩm đã bị vô hiệu hóa");
+        queryString = "PD";
+    }
+
+    public ProductDeactivatedException(String message) {
+        super(message);
+        queryString = "PD";
+    }
 }

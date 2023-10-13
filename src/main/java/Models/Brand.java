@@ -1,29 +1,18 @@
 package Models;
 
 public class Brand {
-    private int ID;
+    private int Id;
     private String name;
     private String logo;
     private String imgURL;
     private int totalProduct;
 
-    public Brand() {
+    public int getId() {
+        return Id;
     }
 
-    public Brand(int iD, String name, String logo, String imgURL, int totalProduct) {
-        ID = iD;
-        this.name = name;
-        this.logo = logo;
-        this.imgURL = imgURL;
-        this.totalProduct = totalProduct;
-    }
-
-    public int getID() {
-        return ID;
-    }
-
-    public void setID(int iD) {
-        ID = iD;
+    public void setId(int Id) {
+        this.Id = Id;
     }
 
     public String getName() {
@@ -57,4 +46,6 @@ public class Brand {
     public void setTotalProduct(int totalProduct) {
         this.totalProduct = totalProduct;
     }
+
+
 }

@@ -1,60 +1,79 @@
 package Models;
 
 public class OrderDetail {
-    private int orderID;
-    private int productID;
-    private int quantity;
-    private int price;
-    private int sum;
+  private int orderId;
+  private int productId;
+  private int quantity;
+  private int price;
+  private int total;
 
-    public OrderDetail() {
-    }
+  /**
+   * @return int return the orderId
+   */
+  public int getOrderId() {
+    return orderId;
+  }
 
-    public OrderDetail(int orderID, int productID, int quantity, int price, int sum) {
-        this.orderID = orderID;
-        this.productID = productID;
-        this.quantity = quantity;
-        this.price = price;
-        this.sum = sum;
-    }
+  /**
+   * @param orderId the orderId to set
+   */
+  public void setOrderId(int orderId) {
+    this.orderId = orderId;
+  }
 
-    public int getOrderID() {
-        return orderID;
-    }
+  /**
+   * @return int return the productId
+   */
+  public int getProductId() {
+    return productId;
+  }
 
-    public void setOrderID(int orderID) {
-        this.orderID = orderID;
-    }
+  /**
+   * @param productId the productId to set
+   */
+  public void setProductId(int productId) {
+    this.productId = productId;
+  }
 
-    public int getProductID() {
-        return productID;
-    }
+  /**
+   * @return int return the quantity
+   */
+  public int getQuantity() {
+    return quantity;
+  }
 
-    public void setProductID(int productID) {
-        this.productID = productID;
-    }
+  /**
+   * @param quantity the quantity to set
+   */
+  public void setQuantity(int quantity) {
+    this.quantity = quantity;
+  }
 
-    public int getQuantity() {
-        return quantity;
-    }
+  /**
+   * @return int return the price
+   */
+  public int getPrice() {
+    return price;
+  }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
+  /**
+   * @param price the price to set
+   */
+  public void setPrice(int price) {
+    this.price = price;
+  }
 
-    public int getPrice() {
-        return price;
-    }
+  /**
+   * @return int return the total
+   */
+  public int getTotal() {
+    return total;
+  }
 
-    public void setPrice(int price) {
-        this.price = price;
-    }
-
-    public int getSum() {
-        return sum;
-    }
-
-    public void setSum(int sum) {
-        this.sum = sum;
-    }
+  /**
+   * @param total the total to set
+   */
+  public void setTotal(int total) {
+    this.total = total;
+  }
 }

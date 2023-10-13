@@ -1,30 +1,27 @@
+<%@page import="java.util.ArrayList"%>
 <%@page import="DAOs.BrandDAO"%>
-<%@page import="DAOs.CartDAO"%>
-<%@page import="DAOs.UserDAO"%>
+<%@page import="DAOs.CartItemDAO"%>
+<%@page import="DAOs.CustomerDAO"%>
 <%@page import="DAOs.ProductDAO"%>
 <%@page import="Models.Product"%>
 <%@page import="java.util.List"%>
-<%@page import="Models.Cart"%>
+<%@page import="Models.CartItem"%>
+<%@page import="Lib.Converter"%>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
-
-
-<%! List<Cart> listCart = null;%>
+<%! ArrayList<CartItem> listCartItem = null;%>
 <%! ProductDAO pDAO = new ProductDAO();%>
 <%! BrandDAO bDAO = new BrandDAO(); %>
-<%! UserDAO uDao = new UserDAO();%>
-<%! CartDAO cDAO = new CartDAO(); %>
+<%! CartItemDAO ciDAO = new CartItemDAO(); %>
 <%! List<Product> listOutOfStock; %>
 <%! int Total;%>
 <%
-    Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
-    String username = userCookie.getValue();
-    int ClientID = uDao.getUser(username).getID();
-    Total = cDAO.getCartTotal(ClientID);
-    listCart = (List<Cart>) request.getAttribute("listCart");
+    int CustomerID = (int) request.getAttribute("customerID");
+    listCartItem = (ArrayList<CartItem>) request.getAttribute("listCartItem");
     listOutOfStock = (List<Product>) request.getAttribute("listOutOfStock");
-
+    Total = ciDAO.getCartTotal(listCartItem);
 %>
 
 <!DOCTYPE html>
@@ -56,7 +53,7 @@
     </head>
     <body>
         <div class="container-fluid">
-            
+
             <!--Navbar section-->
             <div class="row">
                 <div class="col-md-12 nav">
@@ -69,8 +66,8 @@
                         <div class="box">
 
                             <div class="left w-100">
-                                <form action="/Client/Cart/Update" method="GET">
-                                    <input type="hidden" name="ClientID" value="<%= ClientID%>" />
+                                <form action="/Customer/Cart/Update" method="GET">
+                                    <input type="hidden" name="CustomerID" value="<%= CustomerID%>" />
 
                                 <!--  Handling Product out of stock still in Client Cart -->
                                 <c:if test='<%= listOutOfStock.size() != 0%>'>
@@ -80,7 +77,7 @@
                                     <c:forEach var="i" begin="0" end="<%= listOutOfStock.size() - 1%>">
                                         <%
                                             Product opd = listOutOfStock.get((int) pageContext.getAttribute("i"));
-                                            curBrandID = opd.getBrandID();
+                                            curBrandID = opd.getBrandId();
                                         %>  
 
                                         <c:if test='<%= lastBrandID != curBrandID%>'>
@@ -89,7 +86,7 @@
                                             <c:if test='<%= (int) pageContext.getAttribute("i") != 0%>'>
                                                 <hr>
                                             </c:if>
-                                            <p>Please choose other product from the same brand by visitting <a href="/Product/List/BrandID/<%= lastBrandID%>" target="_blank"><%= bDAO.getBrandName(lastBrandID)%></a></p>
+                                            <p>Please choose other product from the same brand by visitting <a href="/Product/List/BrandID/<%= lastBrandID%>" target="_blank"><%= bDAO.getBrand(lastBrandID).getName()%></a></p>
                                             </c:if>
                                         <div class="OFS">
                                             <p>Bạn không thể thêm "<span><%= opd.getName()%></span>" vào giỏ hàng vì sản phẩm này không đủ số lượng hoặc đã hết hàng</p>
@@ -103,35 +100,35 @@
                                 <table class="w-100">
 
                                     <c:choose>
-                                        <c:when test='<%= listCart.size() > 0%>'>
-                                            <c:forEach var="i" begin="0" end="<%= listCart.size() - 1%>">
+                                        <c:when test='<%= listCartItem.size() > 0%>'>
+                                            <c:forEach var="i" begin="0" end="<%= listCartItem.size() - 1%>">
                                                 <%
-                                                    Product p = pDAO.getProduct(listCart.get((int) pageContext.getAttribute("i")).getProductID());
-                                                    int sum = listCart.get((int) pageContext.getAttribute("i")).getSum();
-                                                    int CartQuan = listCart.get((int) pageContext.getAttribute("i")).getQuantity();
+                                                    Product p = pDAO.getProduct(listCartItem.get((int) pageContext.getAttribute("i")).getProductId());
+                                                    int sum = listCartItem.get((int) pageContext.getAttribute("i")).getSum();
+                                                    int CartQuan = listCartItem.get((int) pageContext.getAttribute("i")).getQuantity();
+                                                    int CartPrice = listCartItem.get((int) pageContext.getAttribute("i")).getPrice();
                                                 %>
                                                 <tr>
                                                     <td>
-                                                        <a href="/Product/Detail/ID/<%= p.getID()%>">
+                                                        <a href="/Product/Detail/ID/<%= p.getId()%>">
                                                             <img src="<%= p.getImgURL()%>"alt=""/>
                                                         </a>
                                                     </td>
                                                     <td>
-                                                        <a href="/Product/Detail/ID/<%= p.getID()%>">
+                                                        <a href="/Product/Detail/ID/<%= p.getId()%>">
                                                             <%= p.getName()%> - <%= p.getVolume()%>ml
                                                         </a>
-                                                        <span><%= pDAO.IntegerToMoney(p.getPrice())%> <span>₫</span></span>
-                                                        <span>Total: <%= pDAO.IntegerToMoney(sum)%> <span>₫</span></span>
+                                                        <span><%= Converter.covertIntergerToMoney(p.getStock().getPrice())%> <span>₫</span></span>
+                                                        <span>Total: <%= Converter.covertIntergerToMoney(sum)%> <span>₫</span></span>
                                                     </td>
                                                     <td>
-
-                                                        <input type="hidden" name="<%= "ProductID" + pageContext.getAttribute("i")%>" value="<%= p.getID()%>" />
-                                                        <span class="ProductMaxQuantity" > <%= p.getQuantity()%> </span>     <input type="number" name="<%= "ProductQuan" + pageContext.getAttribute("i")%>" value="<%= CartQuan%>" /> 
-
-                                                        <a href="/Client/Cart/Delete/ProductID/<%= p.getID()%>/ClientID/<%= ClientID%>">
+                                                        <input type="hidden" name="<%= "ProductID" + pageContext.getAttribute("i")%>" value="<%= p.getId()%>" />
+                                                        <span class="ProductMaxQuantity" > <%= p.getStock().getPrice()%> </span>  
+                                                        <input type="number" name="<%= "ProductQuan" + pageContext.getAttribute("i")%>" value="<%= CartQuan%>" /> 
+                                                        <input type="hidden" name="<%= "ProductPrice" + pageContext.getAttribute("i")%>" value="<%= CartPrice%>" /> 
+                                                        <a href="/Customer/Cart/Delete/ProductID/<%= p.getId()%>/CustomerID/<%= CustomerID%>">
                                                             <img src="/RESOURCES/images/icons/close.png" alt="" />
                                                         </a>
-
                                                     </td>
                                                 </tr>
                                             </c:forEach>
@@ -148,9 +145,9 @@
                                     </c:choose>
 
                                 </table>
-                                <input type="hidden" name="ListSize" value="<%= listCart.size()%>" />
+                                <input type="hidden" name="ListSize" value="<%= listCartItem.size()%>" />
                                 <c:choose>
-                                    <c:when test='<%= listCart.size() > 0%>'>
+                                    <c:when test='<%= listCartItem.size() > 0%>'>
                                         <div>
                                             <button type="submit" class="btn-disabled"><span>Cập nhật giỏ hàng</span></button>
                                         </div>
@@ -168,22 +165,30 @@
                         </div>
 
                         <c:choose>
-                            <c:when test='<%= listCart.size() > 0%>'>
+                            <c:when test='<%= listCartItem.size() > 0%>'>
                                 <div class="right">
                                     <div class="checkout">
-                                        <h2>Phiếu thanh toán</h2>
-                                        <div>
-                                            <h4>Tạm tính</h4>
-                                            <span><%= pDAO.IntegerToMoney(Total)%><span>₫</span></span>
-                                        </div>
-                                        <hr />
-                                        <div>
-                                            <h4>Tổng</h4>
-                                            <span><%= pDAO.IntegerToMoney(Total)%><span>₫</span></span>
-                                        </div>
-                                        <div>
-                                            <a href="/Client/Cart/Checkout" class="text-decoration-none"><button class="btn-checkout">TIẾN HÀNH THANH TOÁN</button></a>
-                                        </div>
+                                        <form action="/Customer/Cart/Checkout" method="POST">
+                                            <h2>Phiếu thanh toán</h2>
+                                            <div>
+                                                <h4>Tạm tính</h4>
+                                                <span><%= Converter.covertIntergerToMoney(Total)%><span>₫</span></span>
+                                            </div>
+                                            <hr />
+                                            <div>
+                                                <h4>Tổng</h4>
+                                                <span><%= Converter.covertIntergerToMoney(Total)%><span>₫</span></span>
+                                            </div>
+                                            <hr />
+                                            <div>
+                                                <h4>Voucher</h4>
+                                                <input type="text" name="VoucherTXT">
+                                            </div>
+                                            <hr />
+                                            <div>
+                                                <button type="submit" class="btn-checkout" name="btnCheckoutCart" value="Submit">TIẾN HÀNH THANH TOÁN</button>
+                                            </div>
+                                        </form>
                                     </div>
                                     <div class="drop-down">
                                         <ul>

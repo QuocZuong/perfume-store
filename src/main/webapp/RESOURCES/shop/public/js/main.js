@@ -2,8 +2,8 @@ const storage = document.getElementById("products");
 let brandStorage = document.getElementById("box-brand");
 let products = [];
 // Handling if the products is empty
-if (storage !== null && storage.getElementsByClassName("product") !== null) {
-    products = Array.from(storage.getElementsByClassName("product"));
+if (storage !== null && storage.getElementsByClassName("productA") !== null) {
+    products = Array.from(storage.getElementsByClassName("productA"));
 }
 const searchBox = document.getElementById("searchBox");
 const selection = document.getElementById("top");
