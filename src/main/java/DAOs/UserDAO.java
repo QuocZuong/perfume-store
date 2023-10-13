@@ -334,7 +334,7 @@ public class UserDAO implements IUserDAO {
      * Create a new {@link User} object from a {@link ResultSet}.
      *
      * @param queryResult The {@code ResultSet} containing the user's
-     * information.
+     *                    information.
      * @return An {@code User} object containing the user's information.
      * @throws SQLException If an error occurs while retrieving the data.
      */
