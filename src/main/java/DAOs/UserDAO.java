@@ -245,7 +245,6 @@ public class UserDAO implements IUserDAO {
 
         String sql = String.format("UPDATE [%s] SET %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ? WHERE %s = ?",
                 TABLE_NAME, USER_NAME, USER_USERNAME, USER_PASSWORD, USER_EMAIL, USER_ACTIVE, USER_TYPE, USER_ID);
-
         int kq = 0;
 
         try {
@@ -257,6 +256,7 @@ public class UserDAO implements IUserDAO {
             ps.setString(4, updateUser.getEmail());
             ps.setBoolean(5, updateUser.isActive());
             ps.setNString(6, updateUser.getType());
+            ps.setInt(7, updateUser.getId());
 
             kq = ps.executeUpdate();
         } catch (SQLException ex) {
@@ -302,13 +302,14 @@ public class UserDAO implements IUserDAO {
         // return 0;
     }
 
-    /*--------------------- DELETE SECTION ---------------------  */
+    /*--------------------- RESTORE SECTION ---------------------  */
     @Override
     public int restoreUser(User user) {
         user.setActive(true);
         return updateUser(user);
     }
 
+    /*--------------------- DELETE SECTION ---------------------  */
     @Override
     public int disableUser(User user) {
         user.setActive(false);
@@ -333,7 +334,7 @@ public class UserDAO implements IUserDAO {
      * Create a new {@link User} object from a {@link ResultSet}.
      *
      * @param queryResult The {@code ResultSet} containing the user's
-     *                    information.
+     * information.
      * @return An {@code User} object containing the user's information.
      * @throws SQLException If an error occurs while retrieving the data.
      */

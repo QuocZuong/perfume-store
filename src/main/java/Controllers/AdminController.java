@@ -152,18 +152,18 @@ public class AdminController extends HttpServlet {
             }
             return;
         }
-//
-//        if (path.startsWith(ADMIN_USER_DELETE_URI)) {
-//            deleteUser(request, response);
-//            response.sendRedirect(ADMIN_USER_LIST_URI);
-//            return;
-//        }
-//
-//        if (path.startsWith(ADMIN_USER_RESTORE_URI)) {
-//            restoreUser(request, response);
-//            response.sendRedirect(ADMIN_USER_LIST_URI);
-//            return;
-//        }
+
+        if (path.startsWith(ADMIN_USER_DELETE_URI)) {
+            deleteUser(request, response);
+            response.sendRedirect(ADMIN_USER_LIST_URI);
+            return;
+        }
+
+        if (path.startsWith(ADMIN_USER_RESTORE_URI)) {
+            restoreUser(request, response);
+            response.sendRedirect(ADMIN_USER_LIST_URI);
+            return;
+        }
 //
 //        if (path.startsWith(ADMIN_CLIENT_DETAIL_URI)) {
 //            clientDetail(request, response);
@@ -630,32 +630,47 @@ public class AdminController extends HttpServlet {
 //        System.out.println("Restore Product with ID: " + productId + " successfully!");
 //    }
 //
-//    private void restoreUser(HttpServletRequest request, HttpServletResponse response) {
-//        // Admin/User/Restore/ID/1
-//        String path = request.getRequestURI();
-//        String data[] = path.split("/");
-//
-//        UserDAO uDAO = new UserDAO();
-//        Integer userId = null;
-//
-//        for (int i = 0; i < data.length; i++) {
-//            if (data[i].equals("ID")) {
-//                userId = Integer.parseInt(data[i + 1]);
-//            }
-//        }
-//
-//        if (userId == null) {
-//            System.out.println("Restore Failed, Lacking userID");
-//            return;
-//        }
-//
-//        int kq = uDAO.restoreUser(userId);
-//        if (kq == 0) {
-//            System.out.println("Restore Failed, The User is not in the database");
-//            return;
-//        }
-//        System.out.println("Restore User with ID: " + userId + " successfully!");
-//    }
+    private void restoreUser(HttpServletRequest request, HttpServletResponse response) {
+        // Admin/User/Restore/ID/1
+        String path = request.getRequestURI();
+        String currentUsername = "";
+        String data[] = path.split("/");
+
+        UserDAO uDAO = new UserDAO();
+        Integer userId = null;
+
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("ID")) {
+                userId = Integer.parseInt(data[i + 1]);
+                currentUsername = data[i + 2];
+            }
+        }
+
+        if (userId == null) {
+            System.out.println("Restore Failed, Lacking userID");
+            return;
+        }
+
+        User user = uDAO.getUser(userId);
+        if (user.getUsername().equals(currentUsername)) {
+            System.out.println("Can't restore itself");
+            return;
+        }
+
+        int kq = uDAO.restoreUser(user);
+
+        if (user.getType().equals("Employee")) {
+            EmployeeDAO eDAO = new EmployeeDAO();
+            Employee employee = eDAO.getEmployeeByUserId(userId);
+            eDAO.restoreEmployee(employee);
+        }
+
+        if (kq == 0) {
+            System.out.println("Restore Failed, The User is not in the database");
+            return;
+        }
+        System.out.println("Restore User with ID: " + userId + " successfully!");
+    }
 //
 //    private boolean handleUpdateProduct(HttpServletRequest request, HttpServletResponse response) {
 //        ProductDAO pDAO = new ProductDAO();
@@ -673,6 +688,7 @@ public class AdminController extends HttpServlet {
 //        return false;
 //    }
 //
+
     private boolean handleUpdateUser(HttpServletRequest request, HttpServletResponse response) {
         UserDAO uDAO = new UserDAO();
         String data[] = request.getRequestURI().split("/");
@@ -855,33 +871,49 @@ public class AdminController extends HttpServlet {
 //        }
 //        System.out.println("Delete Product with ID: " + productId + " successfully!");
 //    }
-//
-//    private void deleteUser(HttpServletRequest request, HttpServletResponse response) {
-//        // Admin/User/Delete/ID/1
-//        String path = request.getRequestURI();
-//        String data[] = path.split("/");
-//
-//        UserDAO uDAO = new UserDAO();
-//        Integer userId = null;
-//
-//        for (int i = 0; i < data.length; i++) {
-//            if (data[i].equals("ID")) {
-//                userId = Integer.parseInt(data[i + 1]);
-//            }
-//        }
-//
-//        if (userId == null) {
-//            System.out.println("Deactivate Failed, Lacking userID");
-//            return;
-//        }
-//
-//        int kq = uDAO.deactivateUser(userId);
-//        if (kq == 0) {
-//            System.out.println("Deactivate Failed, The User is not in the database");
-//            return;
-//        }
-//        System.out.println("Deactivated User with ID: " + userId + " successfully!");
-//    }
+
+    private void deleteUser(HttpServletRequest request, HttpServletResponse response) {
+        // Admin/User/Delete/ID/1/currentUsername
+        String path = request.getRequestURI();
+        String data[] = path.split("/");
+
+        UserDAO uDAO = new UserDAO();
+        Integer userId = null;
+        String currentUsername = "";
+
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("ID")) {
+                userId = Integer.parseInt(data[i + 1]);
+                currentUsername = data[i + 2];
+            }
+        }
+
+        if (userId == null) {
+            System.out.println("Deactivate Failed, Lacking userID");
+            return;
+        }
+
+        User user = uDAO.getUser(userId);
+        if (user.getUsername().equals(currentUsername)) {
+            System.err.println("Can't delete itself");
+            return;
+        }
+
+        int kq = uDAO.disableUser(user);
+
+        if (user.getType().equals("Employee")) {
+            EmployeeDAO eDAO = new EmployeeDAO();
+            Employee employee = eDAO.getEmployeeByUserId(userId);
+            System.out.println("Employee id in Admin controller: " + employee.getEmployeeId());
+            eDAO.disableEmployee(employee);
+        }
+
+        if (kq == 0) {
+            System.out.println("Deactivate Failed, The User is not in the database");
+            return;
+        }
+        System.out.println("Deactivated User with ID: " + userId + " successfully!");
+    }
     // ---------------------------- CLOUD SECTION ----------------------------
 
     private String uploadImageToClound(Part imagePart) throws IOException {

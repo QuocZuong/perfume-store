@@ -14,9 +14,12 @@
 <%! BrandDAO bDAO = new BrandDAO(); %>
 <%! List<User> listUser = null; %>
 <%! int currentPage, numberOfPage;%>
-<%! boolean isAdmin;%>
+
 
 <%
+    Cookie currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
+    String currentUsername = currentUserCookie.getValue();
+    
     listUser = (List<User>) request.getAttribute("listUser");
     currentPage = (int) request.getAttribute("page");
     numberOfPage = (int) request.getAttribute("numberOfPage");
@@ -93,14 +96,14 @@
                                     <%
                                         User us = listUser.get((int) pageContext.getAttribute("i"));
                                     %>
-                                    <tr class="rowTable  ">
+                                    <tr class="rowTable">
                                         <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getId()%></td>
                                         <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getName() == null ? "" : us.getName()%></td>
                                         <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getUsername() == null ? "" : us.getUsername()%></td>
                                         <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getEmail()%></td>
                                         <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getType()%></td>
-                                        <td class="<%= us.isActive() ? " " : "faded"%>">
-                                            <a href="/Admin/User/Info/ID/<%= us.getId()%>" class="<%= us.isActive() ? "" : "disabled"%> btn btn-outline-success rounded-0">Detail</a>
+                                        <td>
+                                            <a href="/Admin/User/Info/ID/<%= us.getId()%>" class="btn btn-outline-success rounded-0">Detail</a>
                                         </td>
                                         <td class="<%= us.isActive() ? " " : "faded"%>">
                                             <a href="/Admin/User/Update/ID/<%= us.getId()%>" class="<%= us.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0">Update</a>
@@ -109,7 +112,7 @@
                                             <a href="/Admin/User/Detail/ID/<%= us.getId()%>" class="<%= us.isActive() && !us.getType().equals("Admin") ? "" : "disabled"%> btn btn-outline-info rounded-0">Order</a>
                                         </td>
                                         <td class="buttonStatus <%= us.isActive() ? "" : "unfaded"%>">
-                                            <a href="/Admin/User/<%= us.isActive() ? "Delete" : "Restore"%>/ID/<%=  us.getId()%>" class="btn btn-outline-<%= us.isActive() ? "danger" : "success"%> rounded-0"> <%= us.isActive() ? "Delete" : "Restore"%></a>
+                                            <a href="/Admin/User/<%= us.isActive() ? "Delete" : "Restore"%>/ID/<%= us.getId()%>/<%= currentUsername%>/" class="<%=us.getUsername().equals(currentUsername) ? "disabled" : ""%> btn btn-outline-<%= us.isActive() ? "danger" : "success"%> rounded-0"> <%= us.isActive() ? "Delete" : "Restore"%></a>
                                         </td>
                                     </tr>
 
