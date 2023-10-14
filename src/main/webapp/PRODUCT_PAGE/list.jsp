@@ -79,8 +79,8 @@
                     <!-- This is search function -->                                     
                     <div class="account">
                         <a class="searchIcon"><img src="/RESOURCES/images/icons/search.png" alt=""></a>
-                        <a href="/Client/User"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
-                        <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
+                        <a href="/Customer/User"><img src="/RESOURCES/images/icons/user.png" alt=""></a>
+                        <a href="/Customer/Cart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a>
                     </div>
                     <div class="search-box">
                         <div class="search-box-first">
