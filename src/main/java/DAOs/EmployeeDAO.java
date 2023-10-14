@@ -127,7 +127,7 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
 
         employee.setId(rs.getInt("Employee_ID"));
         employee.setCitizenId(rs.getNString("Employee_Citizen_ID"));
-        employee.setDayOfBirth(rs.getDate("Employee_DoB"));
+        employee.setDateOfBirth(rs.getDate("Employee_DoB"));
         employee.setPhoneNumber(rs.getString("Employee_Phone_Number"));
         employee.setAddress(rs.getNString("Employee_Address"));
         Role role = new Role();
@@ -162,7 +162,7 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
 
         employee.setEmployeeId(rs.getInt("Employee_ID"));
         employee.setCitizenId(rs.getNString("Employee_Citizen_ID"));
-        employee.setDayOfBirth(rs.getDate("Employee_DoB"));
+        employee.setDateOfBirth(rs.getDate("Employee_DoB"));
         employee.setPhoneNumber(rs.getString("Employee_Phone_Number"));
         employee.setAddress(rs.getNString("Employee_Address"));
         Role role = new Role();
@@ -333,7 +333,7 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
                 ps.setString(3, Converter.convertToMD5Hash(employee.getPassword()));
                 ps.setString(4, employee.getEmail());
                 ps.setString(5, employee.getCitizenId());
-                ps.setDate(6, employee.getDayOfBirth());
+                ps.setDate(6, employee.getDateOfBirth());
                 ps.setString(7, employee.getPhoneNumber());
                 ps.setNString(8, employee.getAddress());
                 ps.setDate(9, employee.getJoinDate());
@@ -358,7 +358,7 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
             try {
                 PreparedStatement ps = conn.prepareStatement(sql);
                 ps.setString(1, employee.getCitizenId());
-                ps.setDate(2, employee.getDayOfBirth());
+                ps.setDate(2, employee.getDateOfBirth());
                 ps.setString(3, employee.getPhoneNumber());
                 ps.setString(4, employee.getAddress());
                 ps.setInt(5, employee.getRole().getId());

@@ -111,7 +111,7 @@
                                     </div>
                                     <div class="employeeDoB">
                                         <label>Employee DoB: </label>
-                                        <p><%= employee.getDayOfBirth()%></p>
+                                        <p><%= employee.getDateOfBirth()%></p>
                                     </div>
                                     <div class="employeePhoneNumber">
                                         <label>Employee Phone Number: </label>

@@ -19,7 +19,7 @@
 <%
     Cookie currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
     String currentUsername = currentUserCookie.getValue();
-    
+
     listUser = (List<User>) request.getAttribute("listUser");
     currentPage = (int) request.getAttribute("page");
     numberOfPage = (int) request.getAttribute("numberOfPage");
@@ -115,7 +115,6 @@
                                             <a href="/Admin/User/<%= us.isActive() ? "Delete" : "Restore"%>/ID/<%= us.getId()%>/<%= currentUsername%>/" class="<%=us.getUsername().equals(currentUsername) ? "disabled" : ""%> btn btn-outline-<%= us.isActive() ? "danger" : "success"%> rounded-0"> <%= us.isActive() ? "Delete" : "Restore"%></a>
                                         </td>
                                     </tr>
-
                                 </c:forEach>
                             </c:if>
                         </tbody>
@@ -146,17 +145,18 @@
                 <li class="page-item"><a class="page-link" href="/Admin/User/List/page/${numberOfPage}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-right" style="color: #000000;"></i></a></li>
             </ul>   
         </nav>
-        <script>
-            function changeLink() {
-                let SearchURL = document.getElementById("inputSearch").value;
-                SearchURL = encodeURIComponent(SearchURL);
-                document.getElementById("Search").href = "/Admin/User/List/page/1?txtSearch=" + SearchURL;
-            }
-        </script>
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
-        crossorigin="anonymous"></script>
-        <script src="/RESOURCES/admin/user/public/js/list.js"></script>
-    </body>
+    </div>
+    <script>
+        function changeLink() {
+            let SearchURL = document.getElementById("inputSearch").value;
+            SearchURL = encodeURIComponent(SearchURL);
+            document.getElementById("Search").href = "/Admin/User/List/page/1?txtSearch=" + SearchURL;
+        }
+    </script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+    crossorigin="anonymous"></script>
+    <script src="/RESOURCES/admin/user/public/js/list.js"></script>
+</body>
 </html>

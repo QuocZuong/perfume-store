@@ -7,7 +7,7 @@ public class Employee extends User {
     private int employeeId;
     private int UserId;
     private String citizenId;
-    private Date dayOfBirth;
+    private Date dateOfBirth;
     private String phoneNumber;
     private String address;
     private Role role;
@@ -38,12 +38,12 @@ public class Employee extends User {
         this.citizenId = citizenId;
     }
 
-    public Date getDayOfBirth() {
-        return dayOfBirth;
+    public Date getDateOfBirth() {
+        return dateOfBirth;
     }
 
-    public void setDayOfBirth(Date dayOfBirth) {
-        this.dayOfBirth = dayOfBirth;
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     public String getPhoneNumber() {

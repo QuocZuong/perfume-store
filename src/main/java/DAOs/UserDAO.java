@@ -224,8 +224,12 @@ public class UserDAO implements IUserDAO {
             return new ArrayList<>();
         }
 
+        // start index to cut list
         int offset = ROWS * (page - 1);
+
+        // end index to cut list
         int toIndex = offset + ROWS;
+
         if (toIndex >= users.size()) {
             toIndex = users.size();
         }

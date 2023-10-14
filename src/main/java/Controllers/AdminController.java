@@ -67,7 +67,8 @@ public class AdminController extends HttpServlet {
     public static final String ADMIN_USER_INFO = "/Admin/User/Info";
     public static final String ADMIN_USER_LIST_URI = "/Admin/User/List";
     public static final String ADMIN_USER_ADD_URI = "/Admin/User/Add";
-    public static final String ADMIN_USER_UPDATE_URI = "/Admin/User/Update";
+    public static final String ADMIN_USER_UPDATE_CUSTOMER_URI = "/Admin/User/Update/Customer";
+    public static final String ADMIN_USER_UPDATE_EMPLOYEE_URI = "/Admin/User/Update/Employee";
     public static final String ADMIN_USER_DELETE_URI = "/Admin/User/Delete";
     public static final String ADMIN_USER_RESTORE_URI = "/Admin/User/Restore";
     public static final String ADMIN_CLIENT_DETAIL_URI = "/Admin/User/Detail";
@@ -144,9 +145,18 @@ public class AdminController extends HttpServlet {
             return;
         }
 //
-        if (path.startsWith(ADMIN_USER_UPDATE_URI)) {
-            if (handleUpdateUser(request, response)) {
-                request.getRequestDispatcher("/ADMIN_PAGE/User/update.jsp").forward(request, response);
+        if (path.startsWith(ADMIN_USER_UPDATE_CUSTOMER_URI)) {
+            if (handleUpdateCustomer(request, response)) {
+                request.getRequestDispatcher("/ADMIN_PAGE/User/updateCustomer.jsp").forward(request, response);
+            } else {
+                response.sendRedirect(ADMIN_USER_LIST_URI);
+            }
+            return;
+        }
+
+        if (path.startsWith(ADMIN_USER_UPDATE_EMPLOYEE_URI)) {
+            if (handleUpdateEmployee(request, response)) {
+                request.getRequestDispatcher("/ADMIN_PAGE/User/updateEmployee.jsp").forward(request, response);
             } else {
                 response.sendRedirect(ADMIN_USER_LIST_URI);
             }
@@ -689,7 +699,38 @@ public class AdminController extends HttpServlet {
 //    }
 //
 
-    private boolean handleUpdateUser(HttpServletRequest request, HttpServletResponse response) {
+    private boolean handleUpdateCustomer(HttpServletRequest request, HttpServletResponse response) {
+        UserDAO uDAO = new UserDAO();
+        String data[] = request.getRequestURI().split("/");
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("ID")) {
+                int UserID = Integer.parseInt(data[i + 1]);
+                User us = uDAO.getUser(UserID);
+                if (us.getType().equals("Employee")) {
+                    EmployeeDAO employeeDAO = new EmployeeDAO();
+                    Employee employee = employeeDAO.getEmployeeByUserId(us.getId());
+
+                    if (employee != null) {
+                        request.setAttribute("UserUpdate", employee);
+                        return true;
+                    }
+                }
+
+                if (us.getType().equals("Customer")) {
+                    CustomerDAO customerDAO = new CustomerDAO();
+                    Customer customer = customerDAO.getCustomerByUserId(UserID);
+                    if (customer != null) {
+                        request.setAttribute("UserUpdate", customer);
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean handleUpdateEmployee(HttpServletRequest request, HttpServletResponse response) {
         UserDAO uDAO = new UserDAO();
         String data[] = request.getRequestURI().split("/");
         for (int i = 0; i < data.length; i++) {

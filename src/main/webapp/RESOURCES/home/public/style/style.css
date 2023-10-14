@@ -132,10 +132,10 @@ h1 {
 }
 
 .nav .iconPage {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
 }
 
 .nav .account {
@@ -171,9 +171,11 @@ h1 {
 }
 
 .nav .account #product-dropdown-btn + ul {
+  top: 52px;
   right: 105px;
 }
 .nav .account #user-dropdown-btn + ul {
+  top: 52px;
   right: 58px;
 }
 
