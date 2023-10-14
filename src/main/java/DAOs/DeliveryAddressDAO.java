@@ -105,8 +105,6 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
 
             if (rs.next()) {
                 result = deliveryAddressFactory(rs);
-            } else {
-                return null;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -122,7 +120,7 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
         }
 
         String sql = "UPDATE [DeliveryAddress]\n"
-                + "SET [Receiver_Name] = ?, [Phone_Number] = ?, [Address] = ?, [Status] = ?, [Create_At] = ?, [Modified_At] = ?\n"
+                + "SET [Customer_ID] = ?, [Receiver_Name] = ?, [Phone_Number] = ?, [Address] = ?, [Status] = ?, [Create_At] = ?, [Modified_At] = ?\n"
                 + "WHERE [DeliveryAddress_ID] = ?";
 
         PreparedStatement ps = null;
@@ -130,13 +128,14 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
         try {
             ps = conn.prepareStatement(sql);
 
-            ps.setNString(1, deliveryAddress.getReceiverName());
-            ps.setString(2, deliveryAddress.getPhoneNumber());
-            ps.setNString(3, deliveryAddress.getAddress());
-            ps.setNString(4, deliveryAddress.getStatus());
-            ps.setString(5, deliveryAddress.getCreateAt());
-            ps.setString(6, deliveryAddress.getModifiedAt());
-            ps.setInt(7, deliveryAddress.getId());
+            ps.setInt(1, deliveryAddress.getCustomerId());
+            ps.setNString(2, deliveryAddress.getReceiverName());
+            ps.setString(3, deliveryAddress.getPhoneNumber());
+            ps.setNString(4, deliveryAddress.getAddress());
+            ps.setNString(5, deliveryAddress.getStatus());
+            ps.setString(6, deliveryAddress.getCreateAt());
+            ps.setString(7, deliveryAddress.getModifiedAt());
+            ps.setInt(8, deliveryAddress.getId());
 
             return ps.executeUpdate() > 0;
         } catch (SQLException ex) {
@@ -160,7 +159,7 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
         }
 
         String sql = "UPDATE [DeliveryAddress]\n"
-                + "SET [Receiver_Name] = ?, [Phone_Number] = ?, [Address] = ?, [Status] = ?, [Create_At] = ?, [Modified_At] = ?\n"
+                + "SET [Customer_ID] = ?, [Receiver_Name] = ?, [Phone_Number] = ?, [Address] = ?, [Status] = ?, [Create_At] = ?, [Modified_At] = ?\n"
                 + "WHERE [DeliveryAddress_ID] = ?";
 
         PreparedStatement ps = null;

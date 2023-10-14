@@ -20,7 +20,7 @@
 <%! List<Order> orders = null; %>
 <%! Customer customer = null; %>
 <%! Cookie currentUserCookie = null;%>
-<%! String fullname, username, email, Tinh = "", QuanHuyen = "", PhuongXa = "";%>
+<%! String fullname, username, email, Tinh, address = "", phoneNumber = "", QuanHuyen = "", PhuongXa = "", addressId = "", status = "";%>
 <%! List<DeliveryAddress> deliveryAddress;%>
 <%! DeliveryAddress currentDeliveryAddress = null;%>
 <%! boolean isError; %>
@@ -44,6 +44,11 @@
             currentDeliveryAddress = deliveryAddress.get(i);
         }
     }
+
+    phoneNumber = currentDeliveryAddress == null ? "" : currentDeliveryAddress.getPhoneNumber();
+    address = currentDeliveryAddress == null ? "" : currentDeliveryAddress.getAddress();
+    addressId = currentDeliveryAddress == null ? "" : String.valueOf(currentDeliveryAddress.getId());
+    status = currentDeliveryAddress == null ? "" : currentDeliveryAddress.getStatus();
 
     if (currentDeliveryAddress != null && currentDeliveryAddress.getAddress().split(" - ").length == 3) {
         String Address[] = currentDeliveryAddress.getAddress().split(" - ");
@@ -183,7 +188,7 @@
 
               <!-- Add new Form. Maybe Change later-->
               <form action="/Customer/Update/Address" method="POST" id="form-address-update">
-                <h3>Địa chỉ giao hàng mặc định</h3>
+                <h3>Địa chỉ giao hàng</h3>
 
                 <div class="d-flex flex-column gap-2 mb-2">
                   <select id="city" class="form-select">
@@ -197,8 +202,10 @@
                   <select id="ward" class="form-select">
                     <option value="" selected>Chọn phường xã</option>
                   </select>
-                  <input type="text" name="txtAddress" id="txtAddress" readonly="true" value="" placeholder="Địa chỉ">
-                  <input style="width:100%" type="text" name="txtPhoneNumber" id="txtPhoneNumber" value="" placeholder="Số điện thoại">
+                  <input type="text" name="txtAddress" id="txtAddress" readonly="true" placeholder="Địa chỉ" value="<%= address%>">
+                  <input style="width:100%" type="text" name="txtPhoneNumber" id="txtPhoneNumber" placeholder="Số điện thoại" value="<%= phoneNumber%>">
+                  <input type="hidden" name="txtAddressId" id="txtAddressId" value="<%= addressId%>">
+                  <input type="hidden" name="txtStatus" id="txtStatus" value="<%= status%>">
                 </div>
                 <button type="submit" name="btnUpdateAdress" value="Submit"> <h4>Sửa</h4> </button>
               </form>
@@ -241,6 +248,10 @@
                                                     String city;
                                                     String district;
                                                     String ward;
+                                                    String phoneNumber = d.getPhoneNumber();
+                                                    String addressId;
+                                                    String status = d.getStatus();
+
                                                     if (isExceptionalAddress) {
                                                         city = String.format("%s - %s", addresses[0], addresses[1]);
                                                         district = addresses[2];
@@ -251,12 +262,17 @@
                                                         ward = addresses[2];
                                                     }
 
+                                                    addressId = String.valueOf(d.getId());
+
+                                                    // Ensuring there is no null value
                                                     city = city.equals(null) ? "" : city;
                                                     district = district.equals(null) ? "" : district;
                                                     ward = ward.equals(null) ? "" : ward;
+                                                    phoneNumber = phoneNumber.equals(null) ? "" : phoneNumber;
+                                                    status = status.equals(null) ? "" : status;
                         %>
                         <div>
-                          <div class="delivery-address-item <%= isActive ? "active" : ""%>" data-address-city="<%= city%>" data-address-district="<%= district%>" data-address-ward="<%= ward%>" >
+                          <div class="delivery-address-item <%= isActive ? "active" : ""%>" data-address-city="<%= city%>" data-address-district="<%= district%>" data-address-ward="<%= ward%>" data-phone-number="<%= phoneNumber%>" data-address-id="<%= addressId%>" data-status="<%= status%>">
                             <div class="row">
                               <c:choose>
                                 <c:when test='<%= longAddress%>'>
@@ -488,6 +504,7 @@
       $("#ward").change(() => {
         printResult();
       });
+
       var printResult = () => {
         if ($("#district").find(':selected').data('id') != "" && $("#city").find(':selected').data('id') != "" &&
                 $("#ward").find(':selected').data('id') != "") {
@@ -510,6 +527,55 @@
           }
         }
       };
+
+      // This script is used to handle changing address in address list
+      $(document).ready(function () {
+
+        let city = "";
+        let district = "";
+        let ward = "";
+        let phoneNumber = "";
+        let addressId = "";
+        let status = "";
+
+        $('.delivery-address-item').click(function (e) {
+
+          const target = $(this);
+
+          city = target.attr('data-address-city');
+          district = target.attr('data-address-district');
+          ward = target.attr('data-address-ward');
+          phoneNumber = target.attr('data-phone-number');
+          addressId = target.attr('data-address-id');
+          status = target.attr('data-status');
+
+          // debugging
+          console.log({city, district, ward, phoneNumber, addressId, status});
+
+          changeAddress(city, district, ward, phoneNumber, status);
+        });
+
+        async function changeAddress(city, district, ward, phoneNumber, status) {
+          $(`select[id='city'] > option[selected]`).prop("selected", false);
+          $(`select[id='district'] > option[selected]`).prop("selected", false);
+          $(`select[id='ward'] > option[selected]`).prop("selected", false);
+
+          $(`select[id='city'] > option[value*='` + city + `']`).prop("selected", true);
+          await callApiDistrict(host + "p/" + $("#city").find(':selected').data('id') + "?depth=2");
+          printResult();
+
+          $(`select[id='district'] > option[value*='` + district + `']`).prop("selected", true);
+          await callApiWard(host + "d/" + $("#district").find(':selected').data('id') + "?depth=2");
+          printResult();
+
+          $(`select[id='ward'] > option[value*='` + ward + `']`).prop("selected", true);
+          printResult();
+
+          $('#txtPhoneNumber').val(phoneNumber);
+          $('#txtAddressId').val(addressId);
+          $('#txtStatus').val(status);
+        }
+      });
     </script>
 
 
@@ -669,43 +735,6 @@
 
         });
       });
-    </script>
-
-    <script> // This script is used to handle changing address in address list
-      $(document).ready(function () {
-
-        let city = "";
-        let district = "";
-        let ward = "";
-
-        $('.delivery-address-item').click(function (e) {
-
-          console.log($(this).attr('data-address-city'));
-          const target = $(this);
-
-          city = target.attr('data-address-city');
-          district = target.attr('data-address-district');
-          ward = target.attr('data-address-ward');
-          // console.log({city, district, ward});
-          //         console.log({target.prop('data-address-city'), target.prop('data-address-district'), target.prop('data-address-ward')}
-          //         );
-
-          alert(`Local var ${target.attr('data-address-city')} - ${district} - ${ward}`);
-          changeAddress.call(city, district, ward);
-        });
-
-        function changeAddress(city, district, ward) {
-
-          $(`select[id='city'] > option[selected]`).prop("selected", false);
-          $(`select[id='district'] > option[selected]`).prop("selected", false);
-          $(`select[id='ward'] > option[selected]`).prop("selected", false);
-
-          $(`select[id='city'] > option[value='` + city + `']`).prop("selected", true);
-          $(`select[id='district'] > option[value='` + district + `']`).prop("selected", true);
-          $(`select[id='ward'] > option[value='` + ward + `']`).prop("selected", true);
-        }
-      });
-
     </script>
   </body>
 
