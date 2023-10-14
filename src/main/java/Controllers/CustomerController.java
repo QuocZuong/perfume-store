@@ -57,6 +57,8 @@ public class CustomerController extends HttpServlet {
     public static final String BTN_CHECKOUT_CART = "btnCheckoutCart";
     public static final String SUBMIT_VALUE = "Submit";
 
+    public static final String PRODUCT_DETAIL_URI = "/Product/Detail/ID/";
+
     public enum State {
         Success(1),
         Fail(0);
@@ -149,12 +151,13 @@ public class CustomerController extends HttpServlet {
             if (request.getParameter(BTN_ADD_TO_CART) != null
                     && request.getParameter(BTN_ADD_TO_CART).equals(SUBMIT_VALUE)) {
                 int result = addToCart(request, response);
+                int pID = Integer.parseInt(request.getParameter("ProductID"));
                 if (result == State.Success.value) {
 
                 } else if (result == State.Fail.value) {
-
+                    response.sendRedirect(PRODUCT_DETAIL_URI + pID);
+                     
                 }
-                int pID = Integer.parseInt(request.getParameter("ProductID"));
                 response.sendRedirect("/Product/Detail/ID/" + pID);
                 return;
             }
@@ -231,7 +234,8 @@ public class CustomerController extends HttpServlet {
         // Assume having client Username and get Client ID from username
         Customer cus = cusDAO.getCustomer(username);
         if (cus == null) {
-            return 0;
+            request.setAttribute("exceptionType", "AccountNotFoundException");
+            return State.Fail.value;
         }
 
         int CustomerID = cus.getCustomerId();
@@ -246,9 +250,11 @@ public class CustomerController extends HttpServlet {
         ci.setSum(pSum);
         result = ciDAO.addToCart(ci);
         if (result == 0) {
-            return 0;
+            request.setAttribute("exceptionType", "OperationAddFailedException");
+            return State.Fail.value;
         }
-        return 1;
+        return State.Success.value;
+
     }
 //
 //    private boolean ClientCheckout(HttpServletRequest request, HttpServletResponse response) {
@@ -433,7 +439,7 @@ public class CustomerController extends HttpServlet {
         updateCustomer.setUsername(username);
         updateCustomer.setPassword(newPassword);
         updateCustomer.setEmail(email);
-        
+
         cusDAO.updateUser(updateCustomer);
 
         // Update cookie

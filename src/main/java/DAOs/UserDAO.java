@@ -340,7 +340,6 @@ public class UserDAO implements IUserDAO {
      */
     public User userFactory(ResultSet queryResult) throws SQLException {
         User user = new User();
-
         user.setId(queryResult.getInt(USER_ID));
         user.setName(queryResult.getNString(USER_NAME));
         user.setUsername(queryResult.getString(USER_USERNAME));
@@ -348,8 +347,6 @@ public class UserDAO implements IUserDAO {
         user.setEmail(queryResult.getString(USER_EMAIL));
         user.setActive(queryResult.getBoolean(USER_ACTIVE));
         user.setType(queryResult.getString(USER_TYPE));
-
-        System.out.println("create user sussess");
         return user;
     }
 

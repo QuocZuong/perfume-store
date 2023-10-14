@@ -1,3 +1,4 @@
+<%@page import="java.util.List"%>
 <%@page import="Models.Product"%>
 <%@page import="Models.Voucher"%>
 <%@page import="java.util.ArrayList"%>
@@ -20,7 +21,7 @@
     String name = customer.getName();
     String phone = null;
     String address = null;
-    ArrayList<DeliveryAddress> cusDeliveryAddress = customer.getCustomerDeliveryAddress();
+    List<DeliveryAddress> cusDeliveryAddress = customer.getDeliveryAddress();
     if (!cusDeliveryAddress.isEmpty()) {
         for (int i = 0; i < cusDeliveryAddress.size(); i++) {
             if (cusDeliveryAddress.get(i).getStatus().equals("Default")) {
