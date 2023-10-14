@@ -131,7 +131,6 @@ CREATE TABLE [Voucher](
 CREATE TABLE [Voucher_Product](
     [Voucher_ID] INT NOT NULL, -- Foreign key to Voucher
     [Product_ID] INT NOT NULL, -- Foreign key to Product
-    PRIMARY KEY ([Voucher_ID], [Product_ID]),
     FOREIGN KEY ([Voucher_ID]) REFERENCES [Voucher]([Voucher_ID]),
     FOREIGN KEY ([Product_ID]) REFERENCES [Product]([Product_ID])
 );
@@ -149,6 +148,7 @@ CREATE TABLE [CartItem](
 
 -- Create Table DeliveryAddress (Weak Entity)
 CREATE TABLE [DeliveryAddress](
+    [DeliveryAddress_ID] INT NOT NULL IDENTITY(1,1), -- Primary key
     [Customer_ID] INT NOT NULL, -- Duplicate, Foreign key to Customer
     [Receiver_Name] NVARCHAR(200) NOT NULL,
     [Phone_Number] VARCHAR(10) NOT NULL,
@@ -156,6 +156,7 @@ CREATE TABLE [DeliveryAddress](
     [Status] NVARCHAR(200) NOT NULL,
     [Create_At] DATETIME NOT NULL,
     [Modified_At] DATETIME,
+    PRIMARY KEY (DeliveryAddress_ID),
     FOREIGN KEY ([Customer_ID]) REFERENCES [Customer]([Customer_ID])
 );
 

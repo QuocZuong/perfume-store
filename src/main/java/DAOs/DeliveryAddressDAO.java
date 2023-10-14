@@ -36,12 +36,13 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
         DeliveryAddress deliveryAddress = new DeliveryAddress();
 
         deliveryAddress.setCustomerId(rs.getInt("Customer_ID"));
+        deliveryAddress.setId(rs.getInt("DeliveryAddress_ID"));
         deliveryAddress.setReceiverName(rs.getNString("Receiver_Name"));
         deliveryAddress.setPhoneNumber(rs.getString("Phone_Number"));
         deliveryAddress.setAddress(rs.getNString("Address"));
         deliveryAddress.setStatus(rs.getNString("Status"));
-        deliveryAddress.setCreateAt(rs.getDate("Create_At"));
-        deliveryAddress.setModifiedAt(rs.getDate("Modified_At"));
+        deliveryAddress.setCreateAt(rs.getString("Create_At"));
+        deliveryAddress.setModifiedAt(rs.getString("Modified_At"));
 
         return deliveryAddress;
     }
@@ -52,13 +53,14 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
+
             ps.setInt(1, deliveryAddress.getCustomerId());
             ps.setNString(2, deliveryAddress.getReceiverName());
             ps.setNString(3, deliveryAddress.getPhoneNumber());
             ps.setNString(4, deliveryAddress.getAddress());
             ps.setNString(5, deliveryAddress.getStatus());
-            ps.setDate(6, deliveryAddress.getCreateAt());
-            ps.setDate(7, deliveryAddress.getModifiedAt());
+            ps.setString(6, deliveryAddress.getCreateAt());
+            ps.setString(7, deliveryAddress.getModifiedAt());
 
             return ps.executeUpdate();
         } catch (Exception e) {
@@ -90,6 +92,27 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
         return result;
     }
 
+    public DeliveryAddress getDeliveryAdress(int addressId) {
+        String sql = "SELECT * FROM DeliveryAddress WHERE [DeliveryAddress_ID] = ?";
+
+        ResultSet rs;
+        DeliveryAddress result = null;
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, addressId);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                result = deliveryAddressFactory(rs);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
     /* --------------------- UPDATE SECTION --------------------- */
     public boolean updateDeliveryAddress(DeliveryAddress deliveryAddress) throws NullPointerException {
         if (deliveryAddress == null) {
@@ -97,21 +120,22 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
         }
 
         String sql = "UPDATE [DeliveryAddress]\n"
-                + "SET [Receiver_Name] = ?, [Phone_Number] = ?, [Address] = ?, [Status] = ?, [Create_At] = ?, [Modified_At] = ?\n"
-                + "WHERE [Customer_ID] = ?";
+                + "SET [Customer_ID] = ?, [Receiver_Name] = ?, [Phone_Number] = ?, [Address] = ?, [Status] = ?, [Create_At] = ?, [Modified_At] = ?\n"
+                + "WHERE [DeliveryAddress_ID] = ?";
 
         PreparedStatement ps = null;
 
         try {
             ps = conn.prepareStatement(sql);
 
-            ps.setNString(1, deliveryAddress.getReceiverName());
-            ps.setString(2, deliveryAddress.getPhoneNumber());
-            ps.setNString(3, deliveryAddress.getAddress());
-            ps.setNString(4, deliveryAddress.getStatus());
-            ps.setDate(5, deliveryAddress.getCreateAt());
-            ps.setDate(6, deliveryAddress.getModifiedAt());
-            ps.setInt(7, deliveryAddress.getCustomerId());
+            ps.setInt(1, deliveryAddress.getCustomerId());
+            ps.setNString(2, deliveryAddress.getReceiverName());
+            ps.setString(3, deliveryAddress.getPhoneNumber());
+            ps.setNString(4, deliveryAddress.getAddress());
+            ps.setNString(5, deliveryAddress.getStatus());
+            ps.setString(6, deliveryAddress.getCreateAt());
+            ps.setString(7, deliveryAddress.getModifiedAt());
+            ps.setInt(8, deliveryAddress.getId());
 
             return ps.executeUpdate() > 0;
         } catch (SQLException ex) {
@@ -135,8 +159,8 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
         }
 
         String sql = "UPDATE [DeliveryAddress]\n"
-                + "SET [Receiver_Name] = ?, [Phone_Number] = ?, [Address] = ?, [Status] = ?, [Create_At] = ?, [Modified_At] = ?\n"
-                + "WHERE [Customer_ID] = ?";
+                + "SET [Customer_ID] = ?, [Receiver_Name] = ?, [Phone_Number] = ?, [Address] = ?, [Status] = ?, [Create_At] = ?, [Modified_At] = ?\n"
+                + "WHERE [DeliveryAddress_ID] = ?";
 
         PreparedStatement ps = null;
 
@@ -150,9 +174,9 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
                 ps.setString(2, deliveryAddress.getPhoneNumber());
                 ps.setNString(3, deliveryAddress.getAddress());
                 ps.setNString(4, deliveryAddress.getStatus());
-                ps.setDate(5, deliveryAddress.getCreateAt());
-                ps.setDate(6, deliveryAddress.getModifiedAt());
-                ps.setInt(7, deliveryAddress.getCustomerId());
+                ps.setString(5, deliveryAddress.getCreateAt());
+                ps.setString(6, deliveryAddress.getModifiedAt());
+                ps.setInt(7, deliveryAddress.getId());
 
                 ps.addBatch();
                 ps.clearParameters();
@@ -179,14 +203,14 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
         }
 
         String sql = "DELETE FROM [DeliveryAddress]\n"
-                + "WHERE [Customer_ID] = ?";
+                + "WHERE [DeliveryAddress_ID] = ?";
 
         PreparedStatement ps = null;
 
         try {
             ps = conn.prepareStatement(sql);
 
-            ps.setInt(1, deliveryAddress.getCustomerId());
+            ps.setInt(1, deliveryAddress.getId());
 
             return ps.executeUpdate() > 0;
         } catch (SQLException ex) {
@@ -210,7 +234,7 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
         }
 
         String sql = "DELETE FROM [DeliveryAddress]\n"
-                + "WHERE [Customer_ID] = ?";
+                + "WHERE [DeliveryAddress_ID] = ?";
 
         PreparedStatement ps = null;
 
@@ -220,7 +244,7 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
             for (int i = 0; i < dList.size(); i++) {
                 DeliveryAddress deliveryAddress = dList.get(i);
 
-                ps.setInt(1, deliveryAddress.getCustomerId());
+                ps.setInt(1, deliveryAddress.getId());
 
                 ps.addBatch();
                 ps.clearParameters();

@@ -1,16 +1,29 @@
 package Models;
 
-import java.sql.Date;
-
 public class DeliveryAddress {
 
+    private int id;
     private int customerId;
     private String receiverName;
     private String phoneNumber;
     private String address;
     private String status;
-    private Date createAt;
-    private Date modifiedAt;
+    private String createAt;
+    private String modifiedAt;
+
+    /**
+     * @return int return the id
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
 
     /**
      * @return int return the customerId
@@ -82,19 +95,19 @@ public class DeliveryAddress {
         this.status = status;
     }
 
-    public Date getCreateAt() {
+    public String getCreateAt() {
         return createAt;
     }
 
-    public void setCreateAt(Date createAt) {
+    public void setCreateAt(String createAt) {
         this.createAt = createAt;
     }
 
-    public Date getModifiedAt() {
+    public String getModifiedAt() {
         return modifiedAt;
     }
 
-    public void setModifiedAt(Date modifiedAt) {
+    public void setModifiedAt(String modifiedAt) {
         this.modifiedAt = modifiedAt;
     }
 
