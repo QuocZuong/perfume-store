@@ -285,14 +285,20 @@ a:has(#come-back-link) {
 .box .right .checkout div h4 {
     width: min-content;
 }
-
-.box .right .checkout div:nth-child(8) button {
+/*.box .right .checkout div:nth-child(8) button{
     background-color: black;
     color: white;
     margin-top: 20px;
     padding: 10px 20px;
     border: .5px solid black;
+}*/
 
+#btn-checkout{
+    background-color: black;
+    color: white;
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: .5px solid black;
 }
 
 .box .right .drop-down {
@@ -465,6 +471,34 @@ a:has(#come-back-link) {
 
 .copyright p {
     font-size: 1.2rem;
+}
+
+#addVoucher{
+    border-style: solid;
+    border-color: black;
+    border-width: 0.3px;
+    border-radius: 50%;
+    text-align: center;
+    height: 25px;
+    width: 25px;
+    margin-top: auto;
+    margin-bottom: auto;
+    text-decoration: none;
+    color: black;
+}
+
+#addVoucher:hover{
+    border-style: solid;
+    border-color: red;
+    border-width: 0.3px;
+    border-radius: 50%;
+    text-align: center;
+    height: 25px;
+    width: 25px;
+    margin-top: auto;
+    margin-bottom: auto;
+    text-decoration: none;
+    color: red;
 }
 
 @media screen and (max-width: 700px) {

@@ -1,3 +1,5 @@
+<%@page import="Models.Voucher"%>
+<%@page import="Lib.ExceptionUtils"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="DAOs.BrandDAO"%>
 <%@page import="DAOs.CartItemDAO"%>
@@ -18,10 +20,17 @@
 <%! List<Product> listOutOfStock; %>
 <%! int Total;%>
 <%
+    String queryString = request.getQueryString();
+    boolean isError = ExceptionUtils.isWebsiteError(queryString);
+    String exceptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
     int CustomerID = (int) request.getAttribute("customerID");
     listCartItem = (ArrayList<CartItem>) request.getAttribute("listCartItem");
     listOutOfStock = (List<Product>) request.getAttribute("listOutOfStock");
     Total = ciDAO.getCartTotal(listCartItem);
+    Voucher v = (Voucher) request.getAttribute("voucher");
+    ArrayList<Product> approvedProduct = (ArrayList<Product>) request.getAttribute("approvedProduct");
+    Integer sumDeductPrice = (Integer) request.getAttribute("sumDeductPrice");
+
 %>
 
 <!DOCTYPE html>
@@ -118,12 +127,22 @@
                                                         <a href="/Product/Detail/ID/<%= p.getId()%>">
                                                             <%= p.getName()%> - <%= p.getVolume()%>ml
                                                         </a>
-                                                        <span><%= Converter.covertIntergerToMoney(p.getStock().getPrice())%> <span>₫</span></span>
-                                                        <span>Total: <%= Converter.covertIntergerToMoney(sum)%> <span>₫</span></span>
+                                                        <c:choose>
+                                                            <c:when test="<%= (v != null && approvedProduct != null && ProductDAO.isContain(p, approvedProduct))%>">  
+                                                                <span><%= Converter.covertIntergerToMoney(p.getStock().getPrice())%> <span>₫</span></span>
+                                                                <span style="text-decoration: line-through;color: rgba(0,0,0,0.5);">Total:<%= Converter.covertIntergerToMoney(sum)%> <span>₫</span></span>
+                                                                <span>Total: <%= Converter.covertIntergerToMoney(sum - p.getStock().getPrice() * v.getDiscountPercent() / 100)%> <span>₫</span></span>
+
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <span><%= Converter.covertIntergerToMoney(p.getStock().getPrice())%> <span>₫</span></span>
+                                                                <span>Total: <%= Converter.covertIntergerToMoney(sum)%> <span>₫</span></span>
+                                                            </c:otherwise>
+                                                        </c:choose>
                                                     </td>
                                                     <td>
                                                         <input type="hidden" name="<%= "ProductID" + pageContext.getAttribute("i")%>" value="<%= p.getId()%>" />
-                                                        <span class="ProductMaxQuantity" > <%= p.getStock().getPrice()%> </span>  
+                                                        <span class="ProductMaxQuantity" > <%= p.getStock().getQuantity()%> </span>  
                                                         <input type="number" name="<%= "ProductQuan" + pageContext.getAttribute("i")%>" value="<%= CartQuan%>" /> 
                                                         <input type="hidden" name="<%= "ProductPrice" + pageContext.getAttribute("i")%>" value="<%= CartPrice%>" /> 
                                                         <a href="/Customer/Cart/Delete/ProductID/<%= p.getId()%>/CustomerID/<%= CustomerID%>">
@@ -175,21 +194,40 @@
                                                 <span><%= Converter.covertIntergerToMoney(Total)%><span>₫</span></span>
                                             </div>
                                             <hr />
-                                            <div>
-                                                <h4>Tổng</h4>
-                                                <span><%= Converter.covertIntergerToMoney(Total)%><span>₫</span></span>
-                                            </div>
+                                            <c:choose>   
+                                                <c:when test="<%= (sumDeductPrice != null)%>">
+                                                    <div>
+                                                        <h4>Tổng</h4>
+                                                        <span style="text-decoration: line-through; color: rgba(0,0,0,0.5);"><%= Converter.covertIntergerToMoney(Total)%><span>₫</span></span>
+                                                    </div>
+                                                    <div style="justify-content: flex-end;">
+                                                        <span><%= Converter.covertIntergerToMoney(Total - sumDeductPrice)%><span>₫</span></span>
+                                                    </div>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <div>
+                                                        <h4>Tổng</h4>
+                                                        <span><%= Converter.covertIntergerToMoney(Total)%><span>₫</span></span>
+                                                    </div>
+                                                </c:otherwise>
+                                            </c:choose>
                                             <hr />
                                             <div>
                                                 <h4>Voucher</h4>
-                                                <input type="text" name="VoucherTXT">
+                                                <input type="text" name="VoucherTXT" id="VoucherTXT">
+                                                <a id="addVoucher"  href="">+</a>
                                             </div>
                                             <hr />
                                             <div>
-                                                <button type="submit" class="btn-checkout" name="btnCheckoutCart" value="Submit">TIẾN HÀNH THANH TOÁN</button>
+                                                <button id="btn-checkout" type="submit" class="btn-checkout" name="btnCheckoutCart" value="Submit">TIẾN HÀNH THANH TOÁN</button>
                                             </div>
                                         </form>
                                     </div>
+                                    <c:if test='<%=isError%>'>
+                                        <div class="error-exception">
+                                            <p style="color: red; margin-top: 1rem; text-align: left"><%= exceptionMessage%> </p>
+                                        </div>
+                                    </c:if>
                                     <div class="drop-down">
                                         <ul>
                                             <li>

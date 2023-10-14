@@ -475,6 +475,7 @@
                 });
             });
 
+
             document.getElementById("selectAddress").addEventListener("change", function () {
                 let selectValue = document.getElementById("selectAddress").value;
                 let nameParameter = 'optName' + selectValue;

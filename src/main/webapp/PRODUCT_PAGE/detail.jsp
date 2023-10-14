@@ -1,3 +1,4 @@
+<%@page import="Lib.ExceptionUtils"%>
 <%@page import="Lib.Converter"%>
 <%@page import="Models.Brand"%>
 <%@page import="java.util.List"%>
@@ -6,12 +7,17 @@
 <%@page import="DAOs.BrandDAO"%>
 <%@page import="Models.Product"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
 <%! ProductDAO pdao = new ProductDAO();%>
 <%! BrandDAO bdao = new BrandDAO();%>
 <%! ResultSet rs = null;%>
 <%! ProductDAO pDAO = new ProductDAO(); %>
 <%! BrandDAO bDao = new BrandDAO();%>
 <%
+    String queryString = request.getQueryString();
+    boolean isError = ExceptionUtils.isWebsiteError(queryString);
+    String exceptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
     Product pd = (Product) request.getAttribute("product");
 
     int id = pd.getId();
@@ -97,6 +103,12 @@
                                 <input type="hidden" name="ProductPrice" value = <%= price%>>
                                 <button name="btnAddToCart" class="btnAddToCart" value="Submit" type="submit" <%= (quantity == 0 ? "disabled" : "")%>><%= (quantity == 0 ? "HẾT HÀNG" : "THÊM VÀO GIỎ HÀNG")%></button>
                             </form>
+                            <c:if test='<%=isError%>'>
+                                <div>
+                                    <p style="color: red"><%= exceptionMessage%> </p>
+                                </div>
+                            </c:if>
+                                
                         </div>
                     </div>
                     <div class="bottom">

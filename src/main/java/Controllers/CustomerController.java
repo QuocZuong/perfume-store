@@ -17,13 +17,18 @@ import DAOs.UserDAO;
 import DAOs.VoucherDAO;
 import Exceptions.AccountDeactivatedException;
 import Exceptions.EmailDuplicationException;
+import Exceptions.InvalidVoucherException;
 import Exceptions.NotEnoughInformationException;
+import Exceptions.NotEnoughVoucherQuantityException;
+import Exceptions.OperationAddFailedException;
 import Exceptions.PhoneNumberDuplicationException;
 import Exceptions.UsernameDuplicationException;
+import Exceptions.VoucherNotFoundException;
 import Exceptions.WrongPasswordException;
 import Interfaces.DAOs.IUserDAO;
 import Lib.Converter;
 import Lib.EmailSender;
+import Lib.ExceptionUtils;
 import Models.CartItem;
 import Models.Customer;
 import Models.Order;
@@ -110,8 +115,13 @@ public class CustomerController extends HttpServlet {
 //
         if (path.startsWith(CUSTOMER_CART_URI)) {
             System.out.println("Going cart");
-            getCartProduct(request);
-            request.getRequestDispatcher("/CUSTOMER_PAGE/cart.jsp").forward(request, response);
+            int result = getCartProduct(request);
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/CUSTOMER_PAGE/cart.jsp").forward(request, response);
+            } else if (result == State.Fail.value) {
+                System.out.println("Invalid voucher to add. Going to /Customer/Cart");
+                response.sendRedirect(CUSTOMER_CART_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
             return;
         }
 
@@ -155,8 +165,7 @@ public class CustomerController extends HttpServlet {
                 if (result == State.Success.value) {
 
                 } else if (result == State.Fail.value) {
-                    response.sendRedirect(PRODUCT_DETAIL_URI + pID);
-                     
+                    response.sendRedirect(PRODUCT_DETAIL_URI + pID + ExceptionUtils.generateExceptionQueryString(request));
                 }
                 response.sendRedirect("/Product/Detail/ID/" + pID);
                 return;
@@ -171,7 +180,7 @@ public class CustomerController extends HttpServlet {
                     request.getRequestDispatcher("/CUSTOMER_PAGE/checkout.jsp").forward(request, response);
                 } else {
                     System.out.println("Chek cart invalid. Going to /Customer/Cart");
-                    response.sendRedirect(CUSTOMER_CART_URI + checkException(request));
+                    response.sendRedirect(CUSTOMER_CART_URI + ExceptionUtils.generateExceptionQueryString(request));
                 }
             }
         }
@@ -311,7 +320,7 @@ public class CustomerController extends HttpServlet {
 //    }
 // ---------------------------- READ SECTION ----------------------------
 
-    private void getCartProduct(HttpServletRequest request) {
+    private int getCartProduct(HttpServletRequest request) {
         CustomerDAO cusDAO = new CustomerDAO();
         CartItemDAO ciDAO = new CartItemDAO();
         Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
@@ -339,6 +348,50 @@ public class CustomerController extends HttpServlet {
         request.setAttribute("listCartItem", listCartItem);
         request.setAttribute("customerID", CustomerID);
 
+        String voucherCode = request.getParameter("VoucherCode");
+        if (voucherCode != null && !voucherCode.equals("")) {
+            VoucherDAO vDAO = new VoucherDAO();
+            Voucher v = vDAO.getVoucher(voucherCode);
+            try {
+                if (vDAO.checkValidVoucher(v, CustomerID)) {
+                    ProductDAO pDAO = new ProductDAO();
+                    System.out.println("cus id add voucher:" + CustomerID);
+                    ArrayList<CartItem> cartItemList = ciDAO.getAllCartItemOfCustomer(CustomerID);
+                    ArrayList<Product> approvedProduct = new ArrayList();
+                    int sumDeductPrice = 0;
+                    Product p;
+                    for (int i = 0; i < cartItemList.size(); i++) {
+                        if (v.getApprovedProductId().contains(cartItemList.get(i).getProductId())) {
+                            p = pDAO.getProduct(cartItemList.get(i).getProductId());
+                            approvedProduct.add(p);
+                            sumDeductPrice += p.getStock().getPrice() * v.getDiscountPercent() / 100;
+                        }
+                    }
+                    sumDeductPrice = (sumDeductPrice < v.getDiscountMax() ? sumDeductPrice : v.getDiscountMax());
+
+                    request.setAttribute("sumDeductPrice", sumDeductPrice);
+                    request.setAttribute("approvedProduct", approvedProduct);
+                    request.setAttribute("voucher", v);
+                }
+            } catch (VoucherNotFoundException ex) {
+                request.setAttribute("exceptionType", "VoucherNotFoundException");
+                Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);
+                return State.Fail.value;
+
+            } catch (InvalidVoucherException ex) {
+                request.setAttribute("exceptionType", "InvalidVoucherException");
+                Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);
+                return State.Fail.value;
+
+            } catch (NotEnoughVoucherQuantityException ex) {
+                request.setAttribute("exceptionType", "NotEnoughVoucherQuantityException");
+                Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);
+                return State.Fail.value;
+
+            }
+
+        }
+        return State.Success.value;
     }
 //    
 //    private void ClientOrderDetail(HttpServletRequest request, HttpServletResponse response) {
@@ -573,38 +626,42 @@ public class CustomerController extends HttpServlet {
         Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
         String username = currentUserCookie.getValue();
         Customer cus = cusDAO.getCustomer(username);
-        try {
-            if (cus == null) {
-                System.out.println("Unknow Username to checkout");
+
+        if (cus == null) {
+            System.out.println("Unknow Username to checkout");
+            request.setAttribute("exceptionType", "AccountNotFoundException");
+            return State.Fail.value;
+        }
+        int CustomerID = cus.getCustomerId();
+        System.out.println("cus id checkout cart :" + cus.getCustomerId());
+        ArrayList<CartItem> cartItemList = ciDAO.getAllCartItemOfCustomer(CustomerID);
+
+        if (cartItemList.isEmpty()) {
+            System.out.println("The cart is empty");
+            request.setAttribute("exceptionType", "OperationAddFailedException");
+            return State.Fail.value;
+        }
+
+        //check xem cac san pham trong kho co du de checkout khong
+        for (int i = 0; i < cartItemList.size(); i++) {
+            int ProductID = cartItemList.get(i).getProductId();
+            int Quantity = cartItemList.get(i).getQuantity();
+            int stockQuantity = pDAO.getProduct(ProductID).getStock().getQuantity();
+            if (stockQuantity < Quantity) {
+                System.out.println("Kho khong du so luong san pham co ID:" + ProductID);
+                request.setAttribute("exceptionType", "NotEnoughProductQuantityException");
                 return State.Fail.value;
             }
-            int CustomerID = cus.getCustomerId();
-            System.out.println("cus id checkout cart :" + cus.getCustomerId());
-            ArrayList<CartItem> cartItemList = ciDAO.getAllCartItemOfCustomer(CustomerID);
+        }
 
-            if (cartItemList.isEmpty()) {
-                System.out.println("The cart is empty");
-                return State.Fail.value;
-            }
-
-            //check xem cac san pham trong kho co du de checkout khong
-            for (int i = 0; i < cartItemList.size(); i++) {
-                int ProductID = cartItemList.get(i).getProductId();
-                int Quantity = cartItemList.get(i).getQuantity();
-                int stockQuantity = pDAO.getProduct(ProductID).getStock().getQuantity();
-                if (stockQuantity < Quantity) {
-                    System.out.println("Kho khong du so luong san pham co ID:" + ProductID);
-                    return State.Fail.value;
-                }
-            }
-
-            String voucherCode = request.getParameter("VoucherTXT");
-            //Co su dung voucher
-            if (voucherCode != null && !voucherCode.equals("")) {
-                VoucherDAO vDAO = new VoucherDAO();
-                Voucher v = vDAO.getVoucher(voucherCode);
+        String voucherCode = request.getParameter("VoucherTXT");
+        //Co su dung voucher
+        if (voucherCode != null && !voucherCode.equals("")) {
+            VoucherDAO vDAO = new VoucherDAO();
+            Voucher v = vDAO.getVoucher(voucherCode);
+            try {
                 //Kiem tra tinh hop le va quang exception
-                if (vDAO.checkValidVoucher(v, cus)) {
+                if (vDAO.checkValidVoucher(v, cus.getCustomerId())) {
                     ArrayList<Product> approveVoucherProduct = new ArrayList();
                     for (int i = 0; i < cartItemList.size(); i++) {
                         if (v.getApprovedProductId().contains(cartItemList.get(i).getProductId())) {
@@ -613,16 +670,30 @@ public class CustomerController extends HttpServlet {
                     }
                     if (approveVoucherProduct.isEmpty()) {
                         System.out.println("Khong co san pham nao ap dung duong voucher nay");
+                        request.setAttribute("exceptionType", "OperationAddFailedException");
                         return State.Fail.value;
                     }
                     request.setAttribute("approveVoucherProduct", approveVoucherProduct);
                     request.setAttribute("voucher", v);
                 }
-            }
+            } catch (VoucherNotFoundException ex) {
+                request.setAttribute("exceptionType", "VoucherNotFoundException");
+                Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);
+                return State.Fail.value;
 
-        } catch (Exception ex) {
-            return State.Fail.value;
+            } catch (InvalidVoucherException ex) {
+                request.setAttribute("exceptionType", "InvalidVoucherException");
+                Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);
+                return State.Fail.value;
+
+            } catch (NotEnoughVoucherQuantityException ex) {
+                request.setAttribute("exceptionType", "NotEnoughVoucherException");
+                Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);
+                return State.Fail.value;
+
+            }
         }
+
         request.setAttribute("Customer", cus);
         return State.Success.value;
     }

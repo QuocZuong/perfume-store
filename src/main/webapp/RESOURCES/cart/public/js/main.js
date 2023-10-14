@@ -23,25 +23,25 @@ const buttons = document.querySelectorAll(".btnDropDown");
 const opens = document.querySelectorAll(".open");
 
 buttons.forEach((button) => {
-  button.addEventListener("click", function (e) {
-    const currentButton = e.currentTarget;
-    const dropdownContent = currentButton.nextElementSibling;
-    const span = currentButton.querySelector("span");
+    button.addEventListener("click", function (e) {
+        const currentButton = e.currentTarget;
+        const dropdownContent = currentButton.nextElementSibling;
+        const span = currentButton.querySelector("span");
 
-    opens.forEach((element) => {
-      if (element !== dropdownContent) {
-        element.classList.remove("active");
-      }
+        opens.forEach((element) => {
+            if (element !== dropdownContent) {
+                element.classList.remove("active");
+            }
+        });
+
+        if (span.innerText === "-") {
+            span.innerText = "+";
+        } else {
+            span.innerText = "-";
+        }
+
+        dropdownContent.classList.toggle("active");
     });
-
-    if (span.innerText === "-") {
-      span.innerText = "+";
-    } else {
-      span.innerText = "-";
-    }
-
-    dropdownContent.classList.toggle("active");
-  });
 });
 
 
@@ -71,5 +71,15 @@ inputs.forEach((input) => {
             disabledBtn.classList.remove('btn-disabled');
         }
     });
+});
+
+document.getElementById("addVoucher").addEventListener("click", function () {
+    let voucherCode = document.getElementById("VoucherTXT").value;
+    if (voucherCode !== null && voucherCode !== "") {
+        document.getElementById("addVoucher").href = "/Customer/Cart?VoucherCode=" + voucherCode;
+    } else {
+        document.getElementById("addVoucher").href = "/Customer/Cart";
+    }
+
 });
 

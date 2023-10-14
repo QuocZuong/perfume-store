@@ -33,9 +33,15 @@ public class ExceptionUtils {
         //Product
         ProductNotFoundException,
         ProductDeactivatedException,
+        NotEnoughProductQuantityException,
         //Other
         NotEnoughInformationException,
-        OperationAddFailedException
+        OperationAddFailedException,
+        //Voucher
+        InvalidVoucherException,
+        VoucherNotFoundException,
+        NotEnoughVoucherQuantityException
+
     }
 
     static {
@@ -58,6 +64,12 @@ public class ExceptionUtils {
                 //Other
                 put(ExceptionType.NotEnoughInformationException.toString(), new NotEnoughInformationException());
                 put(ExceptionType.OperationAddFailedException.toString(), new OperationAddFailedException());
+                //Voucher
+                put(ExceptionType.InvalidVoucherException.toString(), new InvalidVoucherException());
+                put(ExceptionType.VoucherNotFoundException.toString(), new VoucherNotFoundException());
+                put(ExceptionType.NotEnoughProductQuantityException.toString(), new NotEnoughProductQuantityException());
+                put(ExceptionType.NotEnoughVoucherQuantityException.toString(), new NotEnoughProductQuantityException());
+
             }
         };
 
@@ -179,5 +191,21 @@ public class ExceptionUtils {
 
     public static boolean isOperationAddFailed(String queryString) {
         return getExceptionNameByQueryString(queryString).equals(ExceptionType.OperationAddFailedException.toString());
+    }
+
+    public static boolean isInvalidVoucher(String queryString) {
+        return getExceptionNameByQueryString(queryString).equals(ExceptionType.InvalidVoucherException.toString());
+    }
+
+    public static boolean isVoucherNotFound(String queryString) {
+        return getExceptionNameByQueryString(queryString).equals(ExceptionType.VoucherNotFoundException.toString());
+    }
+
+    public static boolean isNotEnoughProductQuantityException(String queryString) {
+        return getExceptionNameByQueryString(queryString).equals(ExceptionType.NotEnoughProductQuantityException.toString());
+    }
+
+    public static boolean isNotEnoughVoucherQuantityException(String queryString) {
+        return getExceptionNameByQueryString(queryString).equals(ExceptionType.NotEnoughVoucherQuantityException.toString());
     }
 }
