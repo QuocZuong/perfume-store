@@ -14,18 +14,18 @@
 <%! ProductDAO pDAO = new ProductDAO(); %>
 <%! List<String[]> order;%>
 <%!Order OrderInfor;%>
-<%! User client = null;%>
+<%! User customer = null;%>
 <%
     OrderInfor = (Order) request.getAttribute("OrderInfor");
     order = (List<String[]>) (request.getAttribute("OrderDetail"));
-    client = (User) request.getAttribute("client");
+    customer = (User) request.getAttribute("customer");
 %>
 
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Chi tiết đơn hàng của <%= client.getUsername()%></title>
+        <title>Chi tiết đơn hàng của <%= customer.getUsername()%></title>
         <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
         <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 
@@ -59,7 +59,7 @@
                 <div class="row">
                     <div class="col-md-10 offset-1">
                         <div>
-                            <h1 class="display-6">Thông tin khách hàng: <%= client.getUsername()%></h1>
+                            <h1 class="display-6">Thông tin khách hàng: <%= customer.getUsername()%></h1>
                     </div>
                     <table class="table">
                         <thead class="thead-dark">
