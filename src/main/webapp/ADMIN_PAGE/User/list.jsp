@@ -1,3 +1,5 @@
+<%@page import="Models.Employee"%>
+<%@page import="DAOs.EmployeeDAO"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="Models.Product"%>
@@ -82,7 +84,7 @@
                                 <td>Name</td>
                                 <td>Username</td>
                                 <td>Email</td>
-                                <td>Role</td>
+                                <td>Type</td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -94,7 +96,20 @@
                             <c:if test='<%= (listUser.size() != 0)%>'>
                                 <c:forEach var="i" begin="0" end="<%= listUser.size() - 1%>">
                                     <%
+                                        boolean isDisableUpdate = false;
                                         User us = listUser.get((int) pageContext.getAttribute("i"));
+
+                                        if (us.getType().equals("Employee")) {
+                                            EmployeeDAO employeeDAO = new EmployeeDAO();
+                                            Employee employee = employeeDAO.getEmployeeByUserId(us.getId());
+                                            if (employee.getRole().getName().equals("Admin")) {
+                                                isDisableUpdate = true;
+                                            }
+                                        }
+
+                                        if (!us.isActive()) {
+                                            isDisableUpdate = true;
+                                        }
                                     %>
                                     <tr class="rowTable">
                                         <td class="<%= us.isActive() ? " " : "faded"%>"><%= us.getId()%></td>
@@ -106,7 +121,7 @@
                                             <a href="/Admin/User/Info/ID/<%= us.getId()%>" class="btn btn-outline-success rounded-0">Detail</a>
                                         </td>
                                         <td class="<%= us.isActive() ? " " : "faded"%>">
-                                            <a href="/Admin/User/Update/ID/<%= us.getId()%>" class="<%= us.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0">Update</a>
+                                            <a href="/Admin/User/Update/<%=us.getType().equals("Customer") ? "Customer" : "Employee"%>/ID/<%= us.getId()%>" class="<%= isDisableUpdate ? "disabled" : ""%> <%= us.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0">Update</a>
                                         </td>
                                         <td class="<%= us.isActive() ? " " : "faded"%>">
                                             <a href="/Admin/User/Detail/ID/<%= us.getId()%>" class="<%= us.isActive() && !us.getType().equals("Admin") ? "" : "disabled"%> btn btn-outline-info rounded-0">Order</a>

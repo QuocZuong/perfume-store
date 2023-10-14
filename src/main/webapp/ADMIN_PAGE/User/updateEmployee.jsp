@@ -64,7 +64,7 @@
 
         </style>
 
-        <title>Cập nhật người dùng</title>
+        <title>Cập nhật nhân viên</title>
     </head>
     <body>
         <div class="container-fluid">
@@ -99,7 +99,7 @@
             </div>
             <div class="container mt-5">
                 <div class="row">
-                    <h1>Update User</h1>
+                    <h1>Update Employee</h1>
                     <form action="/Admin/User/Update/Employee" method="POST">
                         <div class="id">
                             <label>User ID *</label>
@@ -134,22 +134,16 @@
                             <select id="city" class="form-select">
                                 <option value="" selected>Chọn tỉnh thành</option>           
                             </select>
-
+                            <br>
                             <select id="district" class="form-select">
                                 <option value="" selected>Chọn quận huyện</option>
                             </select>
-
+                            <br>
                             <select id="ward" class="form-select">
                                 <option value="" selected>Chọn phường xã</option>
                             </select>
+                            <br>
                             <input type="text" name="txtAddress" id="txtAddress" value="<%= employee.getAddress() == null ? "" : employee.getAddress()%>" readonly="true">
-                        </div>
-                        <div class="role">
-                            <label>Role *</label>
-                            <select name="txtRole" class="roleSelect">
-                                <option value="OrderManager" <%= (employee.getRole().equals("OrderManager")) ? "selected" : ""%>>Order Manager</option>
-                                <option value="InventoryManager" <%= (employee.getRole().equals("InventoryManager")) ? "selected" : ""%>>Inventory Manager</option>
-                            </select>
                         </div>
                         <div class="joinDate">
                             <label>Join date *</label>
@@ -157,9 +151,10 @@
                         </div>
                         <div class="retireDate">
                             <label>Retire date*</label>
-                            <input type="date" name="txtRetireDate" value="<%= employee.getRetireDate().equals(null) ? "Not retired":employee.getRetireDate()%>">
+                            <input type="date" name="txtRetireDate" value="<%= employee.getRetireDate() == null ? "Not retired":employee.getRetireDate()%>">
                         </div>
-                        <button type="submit" name="btnUpdateUser" value="Submit" class="btnUpdateUser">Update User</button>
+                        <button type="submit" name="btnUpdateEmployee" value="Submit" class="btnUpdateEmployee mb-3">Update Employee</button>
+                        <br>
                     </form>
                 </div>
             </div> 

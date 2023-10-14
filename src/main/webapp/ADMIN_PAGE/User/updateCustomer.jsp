@@ -1,26 +1,27 @@
 
 
+<%@page import="Models.Customer"%>
+<%@page import="Models.Employee"%>
 <%@page import="DAOs.ProductDAO"%>
 <%@page import="DAOs.BrandDAO"%>
 <%@page import="Models.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib  uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
-<%! BrandDAO bDAO = new BrandDAO();  %>
-<%! ProductDAO pDAO = new ProductDAO(); %>
 
-<%! User us;%>
+<%! Customer customer;%>
 <%! String Tinh, QuanHuyen, PhuongXa;%>
-<% us = (User) request.getAttribute("UserUpdate");
-    Tinh = "";
-    QuanHuyen = "";
-    PhuongXa = "";
-    if (us.getAddress() != null && !us.getAddress().equals("") && us.getAddress().split(" - ").length == 3) {
-        String Address[] = us.getAddress().split(" - ");
-        Tinh = Address[0];
-        QuanHuyen = Address[1];
-        PhuongXa = Address[2];
-    }
+<% customer = (Customer) request.getAttribute("CustomerUpdate");
+
+//    Tinh = "";
+//    QuanHuyen = "";
+//    PhuongXa = "";
+//    if (us.getAddress() != null && !us.getAddress().equals("") && us.getAddress().split(" - ").length == 3) {
+//        String Address[] = us.getAddress().split(" - ");
+//        Tinh = Address[0];
+//        QuanHuyen = Address[1];
+//        PhuongXa = Address[2];
+//    }
 %>
 
 
@@ -100,54 +101,74 @@
             <div class="container mt-5">
                 <div class="row">
                     <h1>Update User</h1>
-                    <form action="/Admin/User/Update" method="POST">
+                    <form action="/Admin/User/Update/Employee" method="POST">
                         <div class="id">
                             <label>User ID *</label>
-                            <input type="number" name="txtUserID" readonly="true" value="<%= us.getID()%>">
+                            <input type="number" name="txtUserID" readonly="true" value="<%= customer.getId()%>">
                         </div>
                         <div class="name">
                             <label>Name *</label>
-                            <input type="text" name="txtName" value="<%= us.getName() == null ? "" : us.getName()%>">
+                            <input type="text" name="txtName" value="<%= customer.getName() == null ? "" : customer.getName()%>">
                         </div>
                         <div class="username">
                             <label>Username *</label>
-                            <input type="text" name="txtUsername" value="<%= us.getUsername()%>">
+                            <input type="text" name="txtUsername" value="<%= customer.getUsername()%>">
                         </div>
                         <div class="password">
                             <label>Password *</label>
-                            <input type="password" name="txtPassword" value="<%= us.getPassword()%>">
-                        </div>
-                        <div class="phone">
-                            <label>Phone Number *</label>
-                            <input type="text" name="txtPhoneNumber" value="<%= us.getPhoneNumber() == null ? "" : us.getPhoneNumber()%>">
+                            <input type="password" name="txtPassword" value="<%= customer.getPassword()%>">
                         </div>
                         <div class="email">
                             <label>Email *</label>
-                            <input type="text" name="txtEmail" value="<%= us.getEmail()%>">
+                            <input type="text" name="txtEmail" value="<%= customer.getEmail()%>">
+                        </div>
+                        <div class="type">
+                            <label>Type *</label>
+                            <select name="txtType" class="typeSelect py-2">
+                                <option value="Customer" <%= (customer.getType().equals("Customer")) ? "selected" : ""%>>Customer</option>
+                                <option value="Employee" <%= (customer.getType().equals("Employee")) ? "selected" : ""%>>Employee</option>
+                            </select>
+                        </div>
+                        <div class="dateOfBirth">
+                            <label>Date of birth *</label>
+                            <input type="date" name="txtDOB" >
+                        </div>
+                        <div class="phone">
+                            <label>Phone Number *</label>
+                            <input type="text" name="txtPhoneNumber">
                         </div>
                         <div class="address">
                             <label>Address *</label>
                             <select id="city" class="form-select">
                                 <option value="" selected>Chọn tỉnh thành</option>           
                             </select>
-
+                            <br>
                             <select id="district" class="form-select">
                                 <option value="" selected>Chọn quận huyện</option>
                             </select>
-
+                            <br>
                             <select id="ward" class="form-select">
                                 <option value="" selected>Chọn phường xã</option>
                             </select>
-                            <input type="text" name="txtAddress" id="txtAddress" value="<%= us.getAddress() == null ? "" : us.getAddress()%>" readonly="true">
+                            <br>
+                            <input type="text" name="txtAddress" id="txtAddress" readonly="true">
                         </div>
                         <div class="role">
                             <label>Role *</label>
                             <select name="txtRole" class="roleSelect">
-                                <option value="Client" <%= (us.getRole().equals("Client")) ? "selected" : ""%>>Client</option>
-                                <option value="Admin" <%= (us.getRole().equals("Admin")) ? "selected" : ""%>>Admin</option>
+                                <option value="OrderManager" >Order Manager</option>
+                                <option value="InventoryManager" >Inventory Manager</option>
                             </select>
                         </div>
-                        <button type="submit" name="btnUpdateUser" value="Submit" class="btnUpdateUser">Update User</button>
+                        <div class="joinDate">
+                            <label>Join date *</label>
+                            <input type="date" name="txtJoinDate">
+                        </div>
+                        <div class="retireDate">
+                            <label>Retire date*</label>
+                            <input type="date" name="txtRetireDate">
+                        </div>
+                        <button type="submit" name="btnUpdateEmployee" value="Submit" class="btnUpdateEmployee">Update Employee</button>
                     </form>
                 </div>
             </div> 
@@ -333,6 +354,53 @@
                     }
                 });
             });
+        </script>
+
+
+        <script>
+            const typeSelect = document.querySelector('.typeSelect');
+
+            const role = document.querySelector('.role');
+            const dateOfBirth = document.querySelector('.dateOfBirth');
+            const phone = document.querySelector('.phone');
+            const address = document.querySelector('.address');
+            const joinDate = document.querySelector('.joinDate');
+            const retireDate = document.querySelector('.retireDate');
+
+            typeSelect.addEventListener('change', function () {
+                if (typeSelect.value === "Employee") {
+                    role.classList.remove('hidden');
+                    dateOfBirth.classList.remove('hidden');
+                    phone.classList.remove('hidden');
+                    address.classList.remove('hidden');
+                    joinDate.classList.remove('hidden');
+                    retireDate.classList.remove('hidden');
+
+                } else {
+                    role.classList.add('hidden');
+                    dateOfBirth.classList.add('hidden');
+                    phone.classList.add('hidden');
+                    address.classList.add('hidden');
+                    joinDate.classList.add('hidden');
+                    retireDate.classList.add('hidden');
+                }
+            });
+
+            if (typeSelect.value === "Employee") {
+                role.classList.remove('hidden');
+                dateOfBirth.classList.remove('hidden');
+                phone.classList.remove('hidden');
+                address.classList.remove('hidden');
+                joinDate.classList.remove('hidden');
+                retireDate.classList.remove('hidden');
+            } else {
+                role.classList.add('hidden');
+                dateOfBirth.classList.add('hidden');
+                phone.classList.add('hidden');
+                address.classList.add('hidden');
+                joinDate.classList.add('hidden');
+                retireDate.classList.add('hidden');
+            }
         </script>
 
     </body>

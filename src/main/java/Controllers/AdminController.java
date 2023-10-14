@@ -9,9 +9,7 @@ import java.util.List;
 
 import javax.security.auth.login.AccountNotFoundException;
 
-import Models.Order;
 import Models.Product;
-import DAOs.OrderDAO;
 import DAOs.ProductDAO;
 import DAOs.UserDAO;
 import Exceptions.AccountDeactivatedException;
@@ -25,9 +23,7 @@ import Lib.ExceptionUtils;
 import Models.Stock;
 import Models.Customer;
 import Models.Employee;
-import java.sql.ResultSet;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.sql.SQLException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -700,30 +696,14 @@ public class AdminController extends HttpServlet {
 //
 
     private boolean handleUpdateCustomer(HttpServletRequest request, HttpServletResponse response) {
-        UserDAO uDAO = new UserDAO();
         String data[] = request.getRequestURI().split("/");
         for (int i = 0; i < data.length; i++) {
             if (data[i].equals("ID")) {
-                int UserID = Integer.parseInt(data[i + 1]);
-                User us = uDAO.getUser(UserID);
-                if (us.getType().equals("Employee")) {
-                    EmployeeDAO employeeDAO = new EmployeeDAO();
-                    Employee employee = employeeDAO.getEmployeeByUserId(us.getId());
-
-                    if (employee != null) {
-                        request.setAttribute("UserUpdate", employee);
-                        return true;
-                    }
-                }
-
-                if (us.getType().equals("Customer")) {
-                    CustomerDAO customerDAO = new CustomerDAO();
-                    Customer customer = customerDAO.getCustomerByUserId(UserID);
-                    if (customer != null) {
-                        request.setAttribute("UserUpdate", customer);
-                        return true;
-                    }
-                }
+                int UserId = Integer.parseInt(data[i + 1]);
+                CustomerDAO customerDAO = new CustomerDAO();
+                Customer customer = customerDAO.getCustomerByUserId(UserId);
+                request.setAttribute("CustomerUpdate", customer);
+                return true;
             }
         }
 
@@ -731,30 +711,18 @@ public class AdminController extends HttpServlet {
     }
 
     private boolean handleUpdateEmployee(HttpServletRequest request, HttpServletResponse response) {
-        UserDAO uDAO = new UserDAO();
         String data[] = request.getRequestURI().split("/");
         for (int i = 0; i < data.length; i++) {
             if (data[i].equals("ID")) {
-                int UserID = Integer.parseInt(data[i + 1]);
-                User us = uDAO.getUser(UserID);
-                if (us.getType().equals("Employee")) {
-                    EmployeeDAO employeeDAO = new EmployeeDAO();
-                    Employee employee = employeeDAO.getEmployeeByUserId(us.getId());
-
-                    if (employee != null) {
-                        request.setAttribute("UserUpdate", employee);
-                        return true;
-                    }
+                int UserId = Integer.parseInt(data[i + 1]);
+                EmployeeDAO employeeDAO = new EmployeeDAO();
+                Employee employee = employeeDAO.getEmployeeByUserId(UserId);
+                if (employee.getRole().getName().equals("Admin")) {
+                    System.out.println("Can't update Admin");
+                    return false;
                 }
-
-                if (us.getType().equals("Customer")) {
-                    CustomerDAO customerDAO = new CustomerDAO();
-                    Customer customer = customerDAO.getCustomerByUserId(UserID);
-                    if (customer != null) {
-                        request.setAttribute("UserUpdate", customer);
-                        return true;
-                    }
-                }
+                request.setAttribute("EmployeeUpdate", employee);
+                return true;
             }
         }
 
