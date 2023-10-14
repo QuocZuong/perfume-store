@@ -41,8 +41,8 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
         deliveryAddress.setPhoneNumber(rs.getString("Phone_Number"));
         deliveryAddress.setAddress(rs.getNString("Address"));
         deliveryAddress.setStatus(rs.getNString("Status"));
-        deliveryAddress.setCreateAt(rs.getDate("Create_At"));
-        deliveryAddress.setModifiedAt(rs.getDate("Modified_At"));
+        deliveryAddress.setCreateAt(rs.getString("Create_At"));
+        deliveryAddress.setModifiedAt(rs.getString("Modified_At"));
 
         return deliveryAddress;
     }
@@ -53,13 +53,14 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
+
             ps.setInt(1, deliveryAddress.getCustomerId());
             ps.setNString(2, deliveryAddress.getReceiverName());
             ps.setNString(3, deliveryAddress.getPhoneNumber());
             ps.setNString(4, deliveryAddress.getAddress());
             ps.setNString(5, deliveryAddress.getStatus());
-            ps.setDate(6, deliveryAddress.getCreateAt());
-            ps.setDate(7, deliveryAddress.getModifiedAt());
+            ps.setString(6, deliveryAddress.getCreateAt());
+            ps.setString(7, deliveryAddress.getModifiedAt());
 
             return ps.executeUpdate();
         } catch (Exception e) {
@@ -91,6 +92,29 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
         return result;
     }
 
+    public DeliveryAddress getDeliveryAdress(int addressId) {
+        String sql = "SELECT * FROM DeliveryAddress WHERE [DeliveryAddress_ID] = ?";
+
+        ResultSet rs;
+        DeliveryAddress result = null;
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, addressId);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                result = deliveryAddressFactory(rs);
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
     /* --------------------- UPDATE SECTION --------------------- */
     public boolean updateDeliveryAddress(DeliveryAddress deliveryAddress) throws NullPointerException {
         if (deliveryAddress == null) {
@@ -110,8 +134,8 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
             ps.setString(2, deliveryAddress.getPhoneNumber());
             ps.setNString(3, deliveryAddress.getAddress());
             ps.setNString(4, deliveryAddress.getStatus());
-            ps.setDate(5, deliveryAddress.getCreateAt());
-            ps.setDate(6, deliveryAddress.getModifiedAt());
+            ps.setString(5, deliveryAddress.getCreateAt());
+            ps.setString(6, deliveryAddress.getModifiedAt());
             ps.setInt(7, deliveryAddress.getId());
 
             return ps.executeUpdate() > 0;
@@ -151,8 +175,8 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
                 ps.setString(2, deliveryAddress.getPhoneNumber());
                 ps.setNString(3, deliveryAddress.getAddress());
                 ps.setNString(4, deliveryAddress.getStatus());
-                ps.setDate(5, deliveryAddress.getCreateAt());
-                ps.setDate(6, deliveryAddress.getModifiedAt());
+                ps.setString(5, deliveryAddress.getCreateAt());
+                ps.setString(6, deliveryAddress.getModifiedAt());
                 ps.setInt(7, deliveryAddress.getId());
 
                 ps.addBatch();
