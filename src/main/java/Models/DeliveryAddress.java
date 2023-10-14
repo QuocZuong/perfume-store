@@ -4,6 +4,7 @@ import java.sql.Date;
 
 public class DeliveryAddress {
 
+    private int id;
     private int customerId;
     private String receiverName;
     private String phoneNumber;
@@ -11,6 +12,20 @@ public class DeliveryAddress {
     private String status;
     private Date createAt;
     private Date modifiedAt;
+
+    /**
+     * @return int return the id
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
 
     /**
      * @return int return the customerId
