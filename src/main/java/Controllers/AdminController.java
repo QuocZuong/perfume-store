@@ -7,17 +7,13 @@ import Models.User;
 
 import java.util.List;
 
-import javax.security.auth.login.AccountNotFoundException;
-
 import Models.Product;
 import DAOs.ProductDAO;
 import DAOs.UserDAO;
-import Exceptions.AccountDeactivatedException;
 import Exceptions.CitizenIDDuplicationException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.PhoneNumberDuplicationException;
 import Exceptions.UsernameDuplicationException;
-import Exceptions.WrongPasswordException;
 import Lib.Converter;
 import Lib.EmailSender;
 import Lib.ExceptionUtils;
@@ -25,17 +21,13 @@ import Models.Stock;
 import Models.Customer;
 import Models.Employee;
 import java.io.InputStream;
-import java.sql.Date;
-import java.sql.SQLException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -47,8 +39,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, // 1MB
         maxFileSize = 1024 * 1024 * 5, // 5MB
@@ -93,10 +83,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -201,10 +191,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -236,6 +226,21 @@ public class AdminController extends HttpServlet {
         // return;
         // }
         //
+        if (path.startsWith(ADMIN_USER_UPDATE_CUSTOMER_URI)) {
+            if (request.getParameter("btnUpdateCustomer") != null
+                    && request.getParameter("btnUpdateCustomer").equals("Submit")) {
+                if (updateCustomer(request, response)) {
+                    response.sendRedirect(ADMIN_USER_LIST_URI);
+                } else {
+                    System.out.println(ADMIN_USER_UPDATE_CUSTOMER_URI + "/ID/" + request.getAttribute("errUserID")
+                            + checkException(request));
+                    response.sendRedirect(ADMIN_USER_UPDATE_CUSTOMER_URI + "/ID/" + request.getAttribute("errUserID")
+                            + checkException(request));
+                }
+            }
+            return;
+        }
+
         if (path.startsWith(ADMIN_USER_UPDATE_EMPLOYEE_URI)) {
             if (request.getParameter("btnUpdateEmployee") != null
                     && request.getParameter("btnUpdateEmployee").equals("Submit")) {
@@ -250,6 +255,7 @@ public class AdminController extends HttpServlet {
             }
             return;
         }
+
         //
         // if (path.startsWith(ADMIN_UPDATE_INFO_URI)) {
         // if (request.getParameter("btnUpdateInfo") != null
@@ -504,6 +510,174 @@ public class AdminController extends HttpServlet {
     // System.out.println("Update Product with ID: " + pID + " successfully!");
     // }
     //
+    private boolean updateCustomer(HttpServletRequest request, HttpServletResponse response) {
+        UserDAO uDAO = new UserDAO();
+        CustomerDAO cDAO = new CustomerDAO();
+        EmployeeDAO eDAO = new EmployeeDAO();
+        int result = 0;
+
+        // [User] Update Section
+        int uID = Integer.parseInt(request.getParameter("txtUserID"));
+        String uName = request.getParameter("txtName");
+        String uUsername = request.getParameter("txtUsername");
+        String uPassword = request.getParameter("txtPassword");
+        String uEmail = request.getParameter("txtEmail");
+        String uType = request.getParameter("txtType");
+
+        if (uType.equals("Customer")) {
+
+        }
+
+        // [Employee] Update Section
+        String eCitizenId = request.getParameter("txtCitizenId");
+        String eDateOfBirth = request.getParameter("txtDOB");
+        String ePhoneNumber = request.getParameter("txtPhoneNumber");
+        String eAddress = request.getParameter("txtAddress");
+        String eJoinDate = request.getParameter("txtJoinDate");
+        String eRetireDate = request.getParameter("txtRetireDate");
+
+        Employee employeeForUpdate = eDAO.getEmployeeByUserId(uID);
+
+        // For sending email
+        boolean isChangedUsername = false;
+        boolean isChangedEmail = false;
+        boolean isChangedPassword = false;
+        boolean isChangedCitizenId = false;
+        boolean isChangedPhoneNumber = false;
+
+        User userForUpdate = uDAO.getUser(uID);
+        Employee employeeForChecking = eDAO.getEmployeeByUserId(uID);
+
+        if (!uUsername.equals(employeeForChecking.getUsername())) {
+            isChangedUsername = true;
+            userForUpdate.setUsername(uUsername);
+        }
+        if (!uEmail.equals(employeeForChecking.getEmail())) {
+            isChangedEmail = true;
+            userForUpdate.setEmail(uEmail);
+        }
+
+        // Checking update it self
+        // Only hash the new password if the password is different from the user's old
+        // md5 password.
+        if (!uPassword.equals(employeeForChecking.getPassword())) {
+            isChangedPassword = true;
+            uPassword = Converter.convertToMD5Hash(uPassword);
+            userForUpdate.setPassword(uPassword);
+        }
+        if (!eCitizenId.equals(employeeForChecking.getCitizenId())) {
+            isChangedCitizenId = true;
+            employeeForUpdate.setCitizenId(eCitizenId);
+
+        }
+        if (!ePhoneNumber.equals(employeeForChecking.getPhoneNumber())) {
+            isChangedPhoneNumber = true;
+            employeeForUpdate.setPhoneNumber(ePhoneNumber);
+        }
+
+        // For checking duplicate
+        boolean isDuplicatedUsername = false;
+        boolean isDuplicatedEmail = false;
+        boolean isDuplicatedCitizenId = false;
+        boolean isDuplicatedPhoneNumber = false;
+
+        if (eDAO.isExistUsername(uUsername)) {
+            isDuplicatedUsername = true;
+        }
+        if (uDAO.isExistEmail(eCitizenId)) {
+            isDuplicatedEmail = true;
+        }
+        if (eDAO.isExistCitizen(eCitizenId)) {
+            isDuplicatedCitizenId = true;
+        }
+        if (eDAO.isExistPhoneNumber(ePhoneNumber)) {
+            isDuplicatedPhoneNumber = true;
+        }
+
+        try {
+            if (isDuplicatedUsername || isDuplicatedEmail || isDuplicatedCitizenId || isDuplicatedPhoneNumber) {
+                request.setAttribute("errUserID", uID);
+                if (isDuplicatedUsername && isChangedUsername) {
+                    throw new UsernameDuplicationException();
+                }
+                if (isDuplicatedEmail && isChangedEmail) {
+                    throw new EmailDuplicationException();
+                }
+                if (isDuplicatedCitizenId && isChangedCitizenId) {
+                    throw new CitizenIDDuplicationException();
+                }
+                if (isDuplicatedPhoneNumber && isChangedPhoneNumber) {
+                    throw new PhoneNumberDuplicationException();
+                }
+            }
+        } catch (UsernameDuplicationException ex) {
+            System.out.println("username dup");
+            request.setAttribute("exceptionType", "UsernameDuplicationException");
+            return false;
+        } catch (PhoneNumberDuplicationException ex) {
+            System.out.println("phone dup");
+            request.setAttribute("exceptionType", "PhoneNumberDuplicationException");
+            return false;
+        } catch (EmailDuplicationException ex) {
+            System.out.println("Email dup");
+            request.setAttribute("exceptionType", "EmailDuplicationException");
+            return false;
+        } catch (CitizenIDDuplicationException ex) {
+            System.out.println("Email dup");
+            request.setAttribute("exceptionType", "CitizenIDDuplicationException");
+            return false;
+        }
+
+        // Start to update
+        userForUpdate.setName(uName);
+        employeeForUpdate.setDateOfBirth(Converter.convertStringToDate(eDateOfBirth));
+        employeeForUpdate.setAddress(eAddress);
+        employeeForUpdate.setJoinDate(Converter.convertStringToDate(eJoinDate));
+        employeeForUpdate.setRetireDate(Converter.convertStringToDate(eRetireDate));
+
+        eDAO.disableEmployee(employeeForUpdate);
+        result = uDAO.updateUser(userForUpdate);
+        result += eDAO.updateEmployee(employeeForUpdate);
+
+        if (result < 2) {
+            System.out.println("Failed to update the user with ID " + uID + " to database");
+            return false;
+        } else if (!"".equals(eRetireDate) && eRetireDate != null) {
+            uDAO.disableUser(userForUpdate);
+            eDAO.disableEmployee(employeeForUpdate);
+        }
+
+        // Sending mail
+        try {
+            EmailSender es = new EmailSender();
+            if (isChangedPassword) {
+                System.out.println("Detect password change");
+                System.out.println("sending mail changing password");
+                es.setEmailTo(uEmail);
+                es.sendToEmail(es.CHANGE_PASSWORD_NOTFICATION,
+                        es.changePasswordNotifcation());
+            }
+            if (isChangedEmail) {
+                System.out.println("Detect email change");
+                System.out.println("sending mail changing email");
+                es.setEmailTo(uDAO.getUser(uID).getEmail());
+                es.sendToEmail(es.CHANGE_EMAIL_NOTFICATION,
+                        es.changeEmailNotification(uEmail));
+            }
+            if (isChangedUsername) {
+                System.out.println("Detect username change");
+                System.out.println("sending mail changing username");
+                es.setEmailTo(uEmail);
+                es.sendToEmail(es.CHANGE_USERNAME_NOTFICATION, es.changeUsernameNotification(uUsername));
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        System.out.println("update account with ID " + employeeForUpdate.getId() + " successfully");
+
+        return true;
+    }
+
     private boolean updateEmployee(HttpServletRequest request, HttpServletResponse response) {
         UserDAO uDAO = new UserDAO();
         EmployeeDAO eDAO = new EmployeeDAO();
@@ -524,8 +698,6 @@ public class AdminController extends HttpServlet {
         String eRetireDate = request.getParameter("txtRetireDate");
 
         Employee employeeForUpdate = eDAO.getEmployeeByUserId(uID);
-
-        System.out.println("email: " + uEmail);
 
         // For sending email
         boolean isChangedUsername = false;
@@ -626,16 +798,16 @@ public class AdminController extends HttpServlet {
 
         int result = 0;
 
-        if (!"".equals(eRetireDate) && eRetireDate != null) {
-            eDAO.disableEmployee(employeeForUpdate);
-        } else {
-            result = eDAO.updateEmployee(employeeForUpdate);
-            result += uDAO.updateUser(userForUpdate);
-        }
+        eDAO.disableEmployee(employeeForUpdate);
+        result = uDAO.updateUser(userForUpdate);
+        result += eDAO.updateEmployee(employeeForUpdate);
 
         if (result < 2) {
             System.out.println("Failed to update the user with ID " + uID + " to database");
             return false;
+        } else if (!"".equals(eRetireDate) && eRetireDate != null) {
+            uDAO.disableUser(userForUpdate);
+            eDAO.disableEmployee(employeeForUpdate);
         }
 
         // Sending mail
@@ -1072,8 +1244,7 @@ public class AdminController extends HttpServlet {
         File tempFile = File.createTempFile("temp", null);
         tempFile.deleteOnExit();
 
-        try (InputStream inputStream = part.getInputStream();
-                OutputStream outputStream = new FileOutputStream(tempFile)) {
+        try (InputStream inputStream = part.getInputStream(); OutputStream outputStream = new FileOutputStream(tempFile)) {
 
             byte[] buffer = new byte[1024];
             int bytesRead;
@@ -1115,6 +1286,9 @@ public class AdminController extends HttpServlet {
                 break;
             case "PhoneNumberDuplicationException":
                 exception += "Phone";
+                break;
+            case "CitizenIDDuplicationException":
+                exception += "CitizenId";
                 break;
             case "NotEnoughInformationException":
                 exception += "NEInfo";
