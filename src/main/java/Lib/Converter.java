@@ -2,6 +2,9 @@ package Lib;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 /**
  *
@@ -102,5 +105,16 @@ public class Converter {
         // System.out.println(pwdMD5);
 
         return pwdMD5;
+    }
+
+    public static Date convertStringToDate(String str) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            java.util.Date utilDate = sdf.parse(str);
+            return new Date(utilDate.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

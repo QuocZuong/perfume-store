@@ -120,6 +120,23 @@ public class UserDAO implements IUserDAO {
         return false;
     }
 
+    public boolean isExistEmail(String email) {
+        String sql = "SELECT * FROM [User] WHERE User_Email = ?";
+
+        ResultSet rs;
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setNString(1, email);
+
+            rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
     @Override
     public User getUserByEmail(String email) {
         if (email == null) {
@@ -338,7 +355,7 @@ public class UserDAO implements IUserDAO {
      * Create a new {@link User} object from a {@link ResultSet}.
      *
      * @param queryResult The {@code ResultSet} containing the user's
-     *                    information.
+     * information.
      * @return An {@code User} object containing the user's information.
      * @throws SQLException If an error occurs while retrieving the data.
      */
