@@ -109,6 +109,5 @@ public interface IEmployeeDAO {
      * date, and employee ID.
      * @return The method is returning an integer value.
      */
-    int updateEmployee(Employee employee) throws UsernameDuplicationException, EmailDuplicationException,
-            PhoneNumberDuplicationException, CitizenIDDuplicationException;
+    int updateEmployee(Employee employee);
 }

@@ -1,11 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Lib;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 /**
  *
@@ -103,8 +102,19 @@ public class Converter {
             sb.append(String.format("%02x", b & 0xff));
         }
         pwdMD5 = sb.toString();
-        System.out.println(pwdMD5);
+        // System.out.println(pwdMD5);
 
         return pwdMD5;
+    }
+
+    public static Date convertStringToDate(String str) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            java.util.Date utilDate = sdf.parse(str);
+            return new Date(utilDate.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

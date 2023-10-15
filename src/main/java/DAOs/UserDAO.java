@@ -120,6 +120,23 @@ public class UserDAO implements IUserDAO {
         return false;
     }
 
+    public boolean isExistEmail(String email) {
+        String sql = "SELECT * FROM [User] WHERE User_Email = ?";
+
+        ResultSet rs;
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setNString(1, email);
+
+            rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
     @Override
     public User getUserByEmail(String email) {
         if (email == null) {
@@ -224,8 +241,12 @@ public class UserDAO implements IUserDAO {
             return new ArrayList<>();
         }
 
+        // start index to cut list
         int offset = ROWS * (page - 1);
+
+        // end index to cut list
         int toIndex = offset + ROWS;
+
         if (toIndex >= users.size()) {
             toIndex = users.size();
         }
@@ -340,7 +361,6 @@ public class UserDAO implements IUserDAO {
      */
     public User userFactory(ResultSet queryResult) throws SQLException {
         User user = new User();
-
         user.setId(queryResult.getInt(USER_ID));
         user.setName(queryResult.getNString(USER_NAME));
         user.setUsername(queryResult.getString(USER_USERNAME));
@@ -348,8 +368,6 @@ public class UserDAO implements IUserDAO {
         user.setEmail(queryResult.getString(USER_EMAIL));
         user.setActive(queryResult.getBoolean(USER_ACTIVE));
         user.setType(queryResult.getString(USER_TYPE));
-
-        System.out.println("create user sussess");
         return user;
     }
 

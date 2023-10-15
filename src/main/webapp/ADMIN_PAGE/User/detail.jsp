@@ -12,19 +12,19 @@
 <%@ taglib  uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
 
 <%!List<Order> orders = null;%>
-<%!User client;%>
+<%!User customer;%>
 <%!ProductDAO pDAO = new ProductDAO();%>
 
 <%
     orders = (List<Order>) request.getAttribute("orderList");
-    client = (User) request.getAttribute("client");
+    customer = (User) request.getAttribute("customer");
 %>
 
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title><%= client.getUsername()%>'s Detail</title>
+        <title><%= customer.getUsername()%>'s Detail</title>
         <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
         <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
         <!--        <script>
@@ -64,7 +64,7 @@
                 <div class="row">
                     <div class="col-md-10 offset-1">
                         <div>
-                            <h1 class="display-6">Thông tin khách hàng: <%= client.getUsername()%></h1>
+                            <h1 class="display-6">Thông tin khách hàng: <%= customer.getUsername()%></h1>
                     </div>
 
                     <c:choose>

@@ -1,5 +1,8 @@
 package DAOs;
 
+import Exceptions.InvalidVoucherException;
+import Exceptions.NotEnoughVoucherQuantityException;
+import Exceptions.VoucherNotFoundException;
 import Models.Voucher;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -121,6 +124,7 @@ public class VoucherDAO implements IVoucherDAO {
         String sql = "SELECT * FROM [Voucher] WHERE Voucher_Code = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setNString(1, vCode);
             rs = ps.executeQuery();
             if (rs.next()) {
                 Voucher v = new Voucher();
@@ -178,6 +182,7 @@ public class VoucherDAO implements IVoucherDAO {
         String sql = "SELECT Product_ID FROM Voucher_Product WHERE Voucher_ID = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, vId);
             rs = ps.executeQuery();
             while (rs.next()) {
                 arrProductId.add(rs.getInt("Product_ID"));
@@ -298,23 +303,28 @@ public class VoucherDAO implements IVoucherDAO {
     }
 
     /* ------------------------- EXCEPTION SECTION ---------------------------- */
-    public boolean checkValidVoucher(Voucher v, Customer cus) throws Exception {
+    public boolean checkValidVoucher(Voucher v, int cusId) throws VoucherNotFoundException, InvalidVoucherException, NotEnoughVoucherQuantityException {
         Date now = new Date(System.currentTimeMillis());
         if (v == null) {
-            throw new Exception();
+            System.out.println("voucher not found");
+            throw new VoucherNotFoundException();
         }
         if (now.after(v.getExpiredAt()) || now.before(v.getCreatedAt())) {
-            throw new Exception();
+            System.out.println("invalid voucher");
+            throw new InvalidVoucherException();
         }
         if (v.getQuantity() <= 0) {
-            throw new Exception();
+            System.out.println("not enough voucher");
+            throw new NotEnoughVoucherQuantityException();
         }
-        if (usedVoucher(cus.getId(), v.getId())) {
-            throw new Exception();
+        if (usedVoucher(cusId, v.getId())) {
+            System.out.println("used voucher");
+            throw new InvalidVoucherException();
         }
 
         if (v.getApprovedProductId().isEmpty()) {
-            throw new Exception();
+            System.out.println("invalid voucher");
+            throw new InvalidVoucherException();
         }
         return true;
     }

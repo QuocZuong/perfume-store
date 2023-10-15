@@ -247,6 +247,17 @@ public class ProductDAO implements IProductDAO {
         return product.isActive() ? product : null;
     }
 
+    public static boolean isContain(Product p, ArrayList<Product> arrP) {
+        if (arrP != null && !arrP.isEmpty() && p != null) {
+            for (int i = 0; i < arrP.size(); i++) {
+                if (arrP.get(i).getId() == p.getId()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     // TODO: Refactor later because lack of model Order
     @Override
     public List<Product> getProductByOrderID(int id) {
