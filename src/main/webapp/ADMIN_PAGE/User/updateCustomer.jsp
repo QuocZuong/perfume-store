@@ -129,6 +129,10 @@
                                 <option value="Employee" <%= (customer.getType().equals("Employee")) ? "selected" : ""%>>Employee</option>
                             </select>
                         </div>
+                        <div class="citizenId">
+                            <label>Citizen id *</label>
+                            <input type="text" name="txtCitizenId">
+                        </div>
                         <div class="dateOfBirth">
                             <label>Date of birth *</label>
                             <input type="date" name="txtDOB" >
@@ -361,6 +365,7 @@
             const typeSelect = document.querySelector('.typeSelect');
 
             const role = document.querySelector('.role');
+            const citizenId = document.querySelector('.citizenId');
             const dateOfBirth = document.querySelector('.dateOfBirth');
             const phone = document.querySelector('.phone');
             const address = document.querySelector('.address');
@@ -369,6 +374,7 @@
 
             typeSelect.addEventListener('change', function () {
                 if (typeSelect.value === "Employee") {
+                    citizenId.classList.remove('hidden');
                     role.classList.remove('hidden');
                     dateOfBirth.classList.remove('hidden');
                     phone.classList.remove('hidden');
@@ -377,6 +383,7 @@
                     retireDate.classList.remove('hidden');
 
                 } else {
+                    citizenId.classList.add('hidden');
                     role.classList.add('hidden');
                     dateOfBirth.classList.add('hidden');
                     phone.classList.add('hidden');
@@ -387,6 +394,7 @@
             });
 
             if (typeSelect.value === "Employee") {
+                citizenId.classList.remove('hidden');
                 role.classList.remove('hidden');
                 dateOfBirth.classList.remove('hidden');
                 phone.classList.remove('hidden');
@@ -394,6 +402,7 @@
                 joinDate.classList.remove('hidden');
                 retireDate.classList.remove('hidden');
             } else {
+                citizenId.classList.add('hidden');
                 role.classList.add('hidden');
                 dateOfBirth.classList.add('hidden');
                 phone.classList.add('hidden');

@@ -121,9 +121,13 @@
                             <label>Email *</label>
                             <input type="text" name="txtEmail" value="<%= employee.getEmail()%>">
                         </div>
-                        <div class="dateOfBirth">
+                        <div class="citizenId">
                             <label>Date of birth *</label>
                             <input type="date" name="txtDOB" value="<%= employee.getDateOfBirth()%>">
+                        </div>
+                        <div class="citizenId">
+                            <label>Citizen id *</label>
+                            <input type="text" name="txtCitizenId" value="<%= employee.getCitizenId()%>">
                         </div>
                         <div class="phone">
                             <label>Phone Number *</label>
