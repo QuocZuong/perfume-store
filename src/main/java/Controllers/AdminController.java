@@ -86,10 +86,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -205,10 +205,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -346,107 +346,6 @@ public class AdminController extends HttpServlet {
         }
         System.out.println("Add successfully");
         return State.Success.value;
-    }
-
-    private boolean addEmployee(HttpServletRequest request, HttpServletResponse response) {
-        UserDAO uDAO = new UserDAO();
-        EmployeeDAO eDAO = new EmployeeDAO();
-
-        // [User] Update Section
-        String uName = request.getParameter("txtName");
-        String uUsername = request.getParameter("txtUsername");
-        String uPassword = request.getParameter("txtPassword");
-        String uEmail = request.getParameter("txtEmail");
-
-        // [Employee] Update Section
-        String eCitizenId = request.getParameter("txtCitizenId");
-        String eDateOfBirth = request.getParameter("txtDOB");
-        String ePhoneNumber = request.getParameter("txtPhoneNumber");
-        String eAddress = request.getParameter("txtAddress");
-        String eJoinDate = request.getParameter("txtJoinDate");
-        Role eRole = eDAO.getRole(Integer.parseInt(request.getParameter("txtRole")));
-        System.out.println("Vao add employee");
-        Employee employeeToAdd = new Employee();
-
-        // For checking duplicate
-        boolean isDuplicatedUsername = false;
-        boolean isDuplicatedEmail = false;
-        boolean isDuplicatedCitizenId = false;
-        boolean isDuplicatedPhoneNumber = false;
-
-        if (eDAO.isExistUsername(uUsername)) {
-            isDuplicatedUsername = true;
-        }
-        if (uDAO.isExistEmail(uEmail)) {
-            isDuplicatedEmail = true;
-        }
-        if (eDAO.isExistCitizen(eCitizenId)) {
-            isDuplicatedCitizenId = true;
-        }
-        if (eDAO.isExistPhoneNumber(ePhoneNumber)) {
-            isDuplicatedPhoneNumber = true;
-        }
-
-        try {
-            if (isDuplicatedUsername || isDuplicatedEmail || isDuplicatedCitizenId || isDuplicatedPhoneNumber) {
-                if (isDuplicatedUsername) {
-                    throw new UsernameDuplicationException();
-                }
-                if (isDuplicatedEmail) {
-                    throw new EmailDuplicationException();
-                }
-                if (isDuplicatedCitizenId) {
-                    throw new CitizenIDDuplicationException();
-                }
-                if (isDuplicatedPhoneNumber) {
-                    throw new PhoneNumberDuplicationException();
-                }
-            }
-        } catch (UsernameDuplicationException ex) {
-            System.out.println("username dup");
-            request.setAttribute("exceptionType", "UsernameDuplicationException");
-            return false;
-        } catch (PhoneNumberDuplicationException ex) {
-            System.out.println("phone dup");
-            request.setAttribute("exceptionType", "PhoneNumberDuplicationException");
-            return false;
-        } catch (EmailDuplicationException ex) {
-            System.out.println("Email dup");
-            request.setAttribute("exceptionType", "EmailDuplicationException");
-            return false;
-        } catch (CitizenIDDuplicationException ex) {
-            System.out.println("CitizenId dup");
-            request.setAttribute("exceptionType", "CitizenIDDuplicationException");
-            return false;
-        }
-
-        // Start to add
-        employeeToAdd.setName(uName);
-        employeeToAdd.setUsername(uUsername);
-        employeeToAdd.setPassword(uPassword);
-        employeeToAdd.setEmail(uEmail);
-        employeeToAdd.setType("Employee");
-        employeeToAdd.setCitizenId(eCitizenId);
-        employeeToAdd.setDateOfBirth(Converter.convertStringToDate(eDateOfBirth));
-        employeeToAdd.setPhoneNumber(ePhoneNumber);
-        employeeToAdd.setAddress(eAddress);
-        employeeToAdd.setJoinDate(Converter.convertStringToDate(eJoinDate));
-        employeeToAdd.setRetireDate(null);
-        employeeToAdd.setRole(eRole);
-
-        System.out.println("employee join date: " + employeeToAdd.getJoinDate());
-        System.out.println("employee DOB date: " + employeeToAdd.getDateOfBirth());
-        System.out.println("Da build");
-        int result = 0;
-
-        result = eDAO.addEmployee(employeeToAdd);
-
-        if (result == 0) {
-            System.out.println("Failed to update the user with ID " + uName + " to database");
-            return false;
-        }
-
-        return true;
     }
 
     private boolean addEmployee(HttpServletRequest request, HttpServletResponse response) {
@@ -1447,8 +1346,7 @@ public class AdminController extends HttpServlet {
         File tempFile = File.createTempFile("temp", null);
         tempFile.deleteOnExit();
 
-        try (InputStream inputStream = part.getInputStream();
-                OutputStream outputStream = new FileOutputStream(tempFile)) {
+        try (InputStream inputStream = part.getInputStream(); OutputStream outputStream = new FileOutputStream(tempFile)) {
 
             byte[] buffer = new byte[1024];
             int bytesRead;
