@@ -83,7 +83,7 @@ public class OrderDetailDao implements IOrderDetailDAO {
       }
 
       int status[] = ps.executeBatch();
-      
+
       for (int s : status) {
         if (s < 0) {
           return false;
@@ -178,7 +178,7 @@ public class OrderDetailDao implements IOrderDetailDAO {
       }
 
       int status[] = ps.executeBatch();
-      
+
       for (int s : status) {
         if (s < 0) {
           return false;
@@ -205,6 +205,40 @@ public class OrderDetailDao implements IOrderDetailDAO {
     } catch (SQLException ex) {
       Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
     }
+    return result;
+  }
+
+  public boolean deleteOrderDetail(List<OrderDetail> odList) throws NullPointerException {
+    if (odList == null) {
+      throw new NullPointerException("OrderDetail is null");
+    }
+
+    boolean result = false;
+    String sql = "DELETE FROM [OrderDetail] WHERE Order_ID = ?";
+
+    try {
+      PreparedStatement ps = conn.prepareStatement(sql);
+
+      for (int i = 0; i < odList.size(); i++) {
+        ps.setInt(1, odList.get(i).getOrderId());
+
+        ps.addBatch();
+        ps.clearParameters();
+      }
+
+      int status[] = ps.executeBatch();
+
+      for (int s : status) {
+        if (s < 1) {
+          return false;
+        }
+      }
+
+      result = true;
+    } catch (SQLException ex) {
+      Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+    }
+
     return result;
   }
 
