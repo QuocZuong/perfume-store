@@ -30,6 +30,7 @@ import Exceptions.VoucherNotFoundException;
 import Exceptions.WrongPasswordException;
 import Interfaces.DAOs.IUserDAO;
 import Lib.Converter;
+import Lib.DatabaseUtils;
 import Lib.EmailSender;
 import Lib.ExceptionUtils;
 import Lib.Generator;
@@ -59,9 +60,17 @@ public class CustomerController extends HttpServlet {
     public static final String CUSTOMER_ADD_TO_CART_URI = "/Customer/addToCart";
     public static final String CUSTOMER_USER_URI = "/Customer/User";
     public static final String CUSTOMER_UPDATE_INFO_URI = "/Customer/Update/Info";
+
     public static final String CUSTOMER_UPDATE_ADDRESS_URI = "/Customer/Update/Address";
+    public static final String CUSTOMER_ADD_ADDRESS_URI = "/Customer/Update/Address";
+    public static final String CUSTOMER_DELETE_ADDRESS_URI = "/Customer/User/Delete/Address/ID";
+
     public static final String CUSTOMER_CHECKOUT_URI = "/Customer/Checkout";
     public static final String CUSTOMER_ORDER_DETAIL_URI = "/Customer/Order/Detail/ID";
+
+    public static final String BTN_ADD_DELIVERY_ADDRESS = "btnAddAddress";
+    public static final String BTN_DELETE_DELIVERY_ADDRESS = "btnDeleteAddress";
+    public static final String BTN_UPDATE_DELIVERY_ADDRESS = "btnUpdateAddress";
 
     public static final String BTN_ADD_TO_CART = "btnAddToCart";
     public static final String BTN_CHECKOUT_CART = "btnCheckoutCart";
@@ -140,6 +149,12 @@ public class CustomerController extends HttpServlet {
             request.getRequestDispatcher("/CUSTOMER_PAGE/user.jsp").forward(request, response);
             return;
         }
+        if (path.startsWith(CUSTOMER_DELETE_ADDRESS_URI)) {
+            System.out.println("Going delete address");
+            deleteCustomerDeliveryAddress(request);
+            response.sendRedirect(CUSTOMER_USER_URI);
+            return;
+        }
         //
         // if (path.startsWith(CLIENT_ORDER_DETAIL_URI)) {
         // System.out.println("Going Order Detail");
@@ -180,6 +195,7 @@ public class CustomerController extends HttpServlet {
                 return;
             }
         }
+
         if (path.startsWith(CUSTOMER_CART_CHECKOUT_URI)) {
             if (request.getParameter(BTN_CHECKOUT_CART) != null
                     && request.getParameter(BTN_CHECKOUT_CART).equals(SUBMIT_VALUE)) {
@@ -207,15 +223,41 @@ public class CustomerController extends HttpServlet {
                 return;
             }
         }
+
         if (path.startsWith(CUSTOMER_UPDATE_ADDRESS_URI)) {
-            if (request.getParameter("btnUpdateAdress") != null
-                    && request.getParameter("btnUpdateAdress").equals("Submit")) {
+            if (request.getParameter("btnUpdateAddress") != null
+                    && request.getParameter("btnUpdateAddress").equals("Submit")) {
                 System.out.println("Going update address");
-                if (updateCustomerAddress(request, response)) {
+                if (updateCustomerDeliveryAddress(request, response) > 0) {
                     response.sendRedirect(CUSTOMER_USER_URI);
                 } else {
-                    response.sendRedirect(CUSTOMER_USER_URI + checkException(request));
+                    response.sendRedirect(CUSTOMER_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
                 }
+                return;
+            }
+
+            if (request.getParameter("btnAddAddress") != null
+                    && request.getParameter("btnAddAddress").equals("Submit")) {
+                System.out.println("Going add address");
+                if (addCustomerDeliveryAddress(request) > 0) {
+                    response.sendRedirect(CUSTOMER_USER_URI);
+                } else {
+                    response.sendRedirect(CUSTOMER_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
+                }
+                return;
+            }
+
+            if (request.getParameter("btnDeleteAddress") != null
+                    && request.getParameter("btnDeleteAddress").equals("Submit")) {
+                System.out.println("Going delete delivery address");
+                int result = deleteCustomerDeliveryAddress(request);
+
+                if (result == State.Success.value) {
+                    response.sendRedirect(CUSTOMER_USER_URI);
+                } else if (result == State.Fail.value) {
+                    response.sendRedirect(CUSTOMER_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
+                }
+
                 return;
             }
         }
@@ -331,6 +373,73 @@ public class CustomerController extends HttpServlet {
     // }
     //
     // }
+
+    /**
+     * Add a new delivery address to the database
+     * 
+     * @param request The request object
+     * @return 1 if the operation is successful, 0 otherwise
+     */
+    private int addCustomerDeliveryAddress(HttpServletRequest request) {
+        final Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
+        final String username = userCookie.getValue();
+        final String address = request.getParameter("txtAddress");
+        final String phoneNumber = request.getParameter("txtPhoneNumber");
+        final String status = request.getParameter("txtStatus") == null ? "non" : "Default";
+        final String receiverName = request.getParameter("txtReceiverName");
+
+        if (username == null || username.equals("")) {
+            request.setAttribute("exceptionType",
+                    ExceptionUtils.ExceptionType.NotEnoughInformationException.toString());
+            return State.Fail.value;
+        }
+        if (address == null || address.equals("")) {
+            request.setAttribute("exceptionType",
+                    ExceptionUtils.ExceptionType.NotEnoughInformationException.toString());
+            return State.Fail.value;
+        }
+        if (phoneNumber == null || phoneNumber.equals("")) {
+            request.setAttribute("exceptionType",
+                    ExceptionUtils.ExceptionType.NotEnoughInformationException.toString());
+            return State.Fail.value;
+        }
+        if (receiverName == null || receiverName.equals("")) {
+            request.setAttribute("exceptionType",
+                    ExceptionUtils.ExceptionType.NotEnoughInformationException.toString());
+            return State.Fail.value;
+        }
+
+        final DeliveryAddressDAO daDao = new DeliveryAddressDAO();
+        final CustomerDAO cDao = new CustomerDAO();
+
+        final DeliveryAddress da = new DeliveryAddress();
+        final int customerID = cDao.getCustomer(username).getCustomerId();
+
+        da.setCustomerId(customerID);
+        da.setAddress(address);
+        da.setPhoneNumber(phoneNumber);
+        da.setStatus(status);
+        da.setReceiverName(receiverName);
+        da.setCreateAt(Generator.generateDateTime());
+        da.setModifiedAt(da.getCreateAt());
+
+        // If the address is set to default, set all other addresses to non-default
+        if (da.getStatus().equals("Default")) {
+            final List<DeliveryAddress> temp = daDao.getAll(customerID);
+
+            for (int i = 0; i < temp.size(); i++) {
+                if (temp.get(i).getStatus().equals("Default")) {
+                    temp.get(i).setStatus("non");
+                    daDao.updateDeliveryAddress(temp.get(i));
+                }
+            }
+        }
+
+        final int result = daDao.addDeliveryAddress(da) > 0 ? State.Success.value : State.Fail.value;
+
+        return result;
+    }
+
     // ---------------------------- READ SECTION ----------------------------
 
     private int getCartProduct(HttpServletRequest request) {
@@ -545,13 +654,58 @@ public class CustomerController extends HttpServlet {
         return true;
     }
 
-    private boolean updateCustomerAddress(HttpServletRequest request, HttpServletResponse response) {
-        int addressId = Integer.parseInt(request.getParameter("txtAddressId"));
-        String address = request.getParameter("txtAddress");
-        String phoneNumber = request.getParameter("txtPhoneNumber");
-        String status = request.getParameter("txtStatus");
+    /**
+     * Update a delivery address
+     * 
+     * @param request  The request object
+     * @param response The response object
+     * @return 1 if the operation is successful, 0 otherwise
+     */
+    private int updateCustomerDeliveryAddress(HttpServletRequest request, HttpServletResponse response) {
+        final Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
+        final CustomerDAO cDao = new CustomerDAO();
+        final DeliveryAddressDAO daDao = new DeliveryAddressDAO();
 
-        String[] exceptionalAddresses = new String[] {
+        final String username = userCookie.getValue();
+        final Customer c = cDao.getCustomer(username);
+        final int customerID = c.getCustomerId();
+
+        final String addressId = request.getParameter("txtAddressId");
+
+        int id = -1;
+        try {
+            id = Integer.parseInt(addressId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        final String address = request.getParameter("txtAddress");
+        final String phoneNumber = request.getParameter("txtPhoneNumber");
+        final String status = request.getParameter("txtStatus") == null ? "non" : "Default";
+        final String receiverName = request.getParameter("txtReceiverName");
+
+        if (addressId == null || addressId.equals("")) {
+            request.setAttribute("exceptionType",
+                    ExceptionUtils.ExceptionType.NotEnoughInformationException.toString());
+            return State.Fail.value;
+        }
+        if (address == null || address.equals("")) {
+            request.setAttribute("exceptionType",
+                    ExceptionUtils.ExceptionType.NotEnoughInformationException.toString());
+            return State.Fail.value;
+        }
+        if (phoneNumber == null || phoneNumber.equals("")) {
+            request.setAttribute("exceptionType",
+                    ExceptionUtils.ExceptionType.NotEnoughInformationException.toString());
+            return State.Fail.value;
+        }
+        if (receiverName == null || receiverName.equals("")) {
+            request.setAttribute("exceptionType",
+                    ExceptionUtils.ExceptionType.NotEnoughInformationException.toString());
+            return State.Fail.value;
+        }
+
+        final String[] exceptionalAddresses = new String[] {
                 "Tỉnh Bà Rịa - Vũng Tàu"
         };
 
@@ -571,30 +725,25 @@ public class CustomerController extends HttpServlet {
                 throw new NotEnoughInformationException();
             }
         } catch (NotEnoughInformationException e) { // TODO: Show the error to the customer's screen
-            request.setAttribute("exceptionType", "NotEnoughInformationException");
-            return false;
+            request.setAttribute("exceptionType",
+                    ExceptionUtils.ExceptionType.NotEnoughInformationException.toString());
+            return State.Fail.value;
         } catch (Exception e) {
             request.setAttribute("exceptionType", "Exception");
-            return false;
+            return State.Fail.value;
         }
 
-        CustomerDAO cDao = new CustomerDAO();
-        DeliveryAddressDAO daDao = new DeliveryAddressDAO();
-        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
-
-        String username = currentUserCookie.getValue();
-        Customer c = cDao.getCustomer(username);
-
-        DeliveryAddress da = new DeliveryAddress();
-        DeliveryAddress existingDa = daDao.getDeliveryAdress(addressId);
+        final DeliveryAddress da = new DeliveryAddress();
+        final DeliveryAddress existingDa = daDao.getDeliveryAdress(id);
 
         try {
-            da.setId(addressId);
+            da.setId(id);
             da.setCustomerId(c.getCustomerId());
             da.setReceiverName(existingDa.getReceiverName());
             da.setPhoneNumber(phoneNumber);
             da.setAddress(address);
             da.setStatus(status);
+            da.setReceiverName(receiverName);
             da.setModifiedAt(Generator.generateDateTime());
 
             if (existingDa != null) { // Doesn't update the create at, since it already existed
@@ -607,15 +756,57 @@ public class CustomerController extends HttpServlet {
             e.printStackTrace();
         }
 
-        boolean result = daDao.updateDeliveryAddress(da);
+        // If the address is non-deafult, and all other addresses are non-default,
+        // return error
+        System.out.println("Status: " + da.getStatus());
+        if (!da.getStatus().equals("Default")) {
+            System.out.println("Checking if all addresses are non-default");
+            final List<DeliveryAddress> temp = daDao.getAll(customerID);
+            boolean isAllNonDefault = true;
 
-        if (!result) { // TODO: Show the error to the customer's screen
-            System.out.println("Update address and phone number failed");
-            return false;
+            for (int i = 0; i < temp.size(); i++) {
+                DeliveryAddress tempDa = temp.get(i);
+
+                if (tempDa.getId() != da.getId() && tempDa.getStatus().equals("Default")) {
+                    isAllNonDefault = false;
+                    break;
+                }
+            }
+
+            if (isAllNonDefault) {
+                request.setAttribute("exceptionType",
+                        ExceptionUtils.ExceptionType.DefaultDeliveryAddressWillBeNotFoundException.toString());
+                System.out.println("All addresses are non-default. Cannot add new non-default address");
+                return State.Fail.value;
+            }
         }
 
-        System.out.println("Update address and phone number successfully");
-        return true;
+        int result = State.Fail.value;
+        if (daDao.updateDeliveryAddress(da)) {
+            result = State.Success.value;
+        }
+
+        if (result == State.Fail.value) { // TODO: Show the error to the customer's screen
+            System.out.println("Update address failed");
+            return State.Fail.value;
+        }
+
+        // If the address is set to default, set all other addresses to non-default
+        if (da.getStatus().equals("Default")) {
+            List<DeliveryAddress> temp = daDao.getAll(c.getCustomerId());
+
+            for (int i = 0; i < temp.size(); i++) {
+                DeliveryAddress tempDa = temp.get(i);
+
+                if (tempDa.getId() != da.getId() && tempDa.getStatus().equals("Default")) {
+                    temp.get(i).setStatus("non");
+                    daDao.updateDeliveryAddress(temp.get(i));
+                }
+            }
+        }
+
+        System.out.println("Update address successfully");
+        return State.Success.value;
     }
 
     private int updateCartProduct(HttpServletRequest request, HttpServletResponse response) {
@@ -738,6 +929,57 @@ public class CustomerController extends HttpServlet {
         }
 
         request.setAttribute("Customer", cus);
+        return State.Success.value;
+    }
+
+    /**
+     * Delete a delivery address
+     * 
+     * @param request The request object
+     * @return 1 if the operation is successful, 0 otherwise
+     */
+    private int deleteCustomerDeliveryAddress(HttpServletRequest request) {
+        final String addressId = request.getParameter("txtAddressId");
+
+        if (addressId == null || addressId.equals("")) {
+            request.setAttribute("exceptionType", "NotEnoughInformationException");
+            return State.Fail.value;
+        }
+
+        int id = -1;
+        try {
+            id = Integer.parseInt(addressId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        final Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+        final String username = currentUserCookie.getValue();
+
+        final CustomerDAO cDao = new CustomerDAO();
+        final DeliveryAddressDAO daDao = new DeliveryAddressDAO();
+        final DeliveryAddress da = daDao.getDeliveryAdress(id);
+
+        System.out.println("Delete address with ID " + id);
+        boolean result = daDao.deleteDeliveryAddress(id);
+
+        if (!result) { // TODO: Show the error to the customer's screen
+            System.out.println("Delete address failed");
+            return State.Fail.value;
+        }
+
+        // If the default address is deleted, set another address to default
+        if (da.getStatus().equals("Default")) {
+            Customer c = cDao.getCustomer(username);
+            List<DeliveryAddress> temp = daDao.getAll(c.getCustomerId());
+
+            if (!temp.isEmpty()) {
+                temp.get(0).setStatus("Default");
+                daDao.updateDeliveryAddress(temp.get(0));
+            }
+        }
+
+        System.out.println("Delete address successfully");
         return State.Success.value;
     }
 
