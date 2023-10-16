@@ -1,10 +1,10 @@
 package Models;
 
-public class OrderManager extends Employee{
+public class OrderManager extends Employee {
 
     private int orderManagerId;
     private int employeeId;
-    
+
     public int getOrderManagerId() {
         return orderManagerId;
     }
