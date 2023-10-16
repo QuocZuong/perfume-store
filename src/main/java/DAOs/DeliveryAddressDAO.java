@@ -220,6 +220,25 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
         return false;
     }
 
+    public boolean deleteDeliveryAddress(int addressId) {
+        String sql = "DELETE FROM [DeliveryAddress]\n"
+                + "WHERE [DeliveryAddress_ID] = ?";
+
+        PreparedStatement ps = null;
+
+        try {
+            ps = conn.prepareStatement(sql);
+
+            ps.setInt(1, addressId);
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(DeliveryAddressDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return false;
+    }
+
     public boolean deleteDeliveryAddress(List<DeliveryAddress> dList) throws NullPointerException {
         if (dList == null) {
             throw new NullPointerException("DeliveryAddress List is null");
@@ -263,5 +282,6 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
 
         return false;
     }
+    
 
 }

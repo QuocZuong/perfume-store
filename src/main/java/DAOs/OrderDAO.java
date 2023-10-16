@@ -121,6 +121,7 @@ public class OrderDAO implements IOrderDAO {
 
             if (!result) {
                 deleteOrder(DatabaseUtils.getLastIndentityOf("Order"));
+                odDAO.deleteOrderDetail(odList);
             }
         } catch (SQLException ex) {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
