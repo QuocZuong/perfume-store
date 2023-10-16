@@ -32,7 +32,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Danh sách người dùng</title>
         <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+            <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
         <!--        <script>
                     $(document).ready(function () {
                         $('#table').DataTable();
@@ -69,7 +69,6 @@
                     </div>
                 </div>
 
-
                 <div class="row">
                     <div class="col-md-10 offset-1 d-flex justify-content-center align-items-center flex-column">
 
@@ -88,7 +87,9 @@
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td></td>
+                                <td>
+                                    <a href="/Admin/User/Add/Employee" class="btn btn-outline-dark rounded-0">Add employee</a>
+                                </td>
                             </tr>
                         </thead>
 

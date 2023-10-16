@@ -149,8 +149,9 @@
                         <div class="role">
                             <label>Role *</label>
                             <select name="txtRole" class="roleSelect py-2">
-                                <option value="OrderManager" selected>Order Manager</option>
-                                <option value="InventoryManager">Inventory Manager</option>
+                                <option value="1">Admin</option>
+                                <option value="2" selected>Order Manager</option>
+                                <option value="3">Inventory Manager</option>
                             </select>
                         </div>
                         <div class="citizenId">
