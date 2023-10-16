@@ -19,56 +19,67 @@ public class ExceptionUtils {
     private static Map<String, ICustomException> exceptionMap;
 
     public enum ExceptionType {
-        //User info
+        // User info
         WrongPasswordException,
         AccountNotFoundException,
         AccountDeactivatedException,
         PhoneNumberDuplicationException,
         UsernameDuplicationException,
         EmailDuplicationException,
-        //Employee info
+        DefaultDeliveryAddressNotFoundException,
+        DefaultDeliveryAddressWillBeNotFoundException,
+        // Employee info
         CitizenIDDuplicationException,
-        //Brand
+        // Brand
         BrandNotFoundException,
-        //Product
+        // Product
         ProductNotFoundException,
         ProductDeactivatedException,
         NotEnoughProductQuantityException,
-        //Other
+        // Other
         NotEnoughInformationException,
         OperationAddFailedException,
-        //Voucher
+        OperationDeleteFailedException,
+        OperationEditFailedException,
+        // Voucher
         InvalidVoucherException,
         VoucherNotFoundException,
         NotEnoughVoucherQuantityException
-
     }
 
     static {
         exceptionMap = new HashMap<String, ICustomException>() {
             {
-                //User info
+                // User info
                 put(ExceptionType.WrongPasswordException.toString(), new WrongPasswordException());
                 put(ExceptionType.AccountNotFoundException.toString(), new AccountNotFoundException());
                 put(ExceptionType.AccountDeactivatedException.toString(), new AccountDeactivatedException());
                 put(ExceptionType.PhoneNumberDuplicationException.toString(), new PhoneNumberDuplicationException());
                 put(ExceptionType.UsernameDuplicationException.toString(), new UsernameDuplicationException());
                 put(ExceptionType.EmailDuplicationException.toString(), new EmailDuplicationException());
-                //Employee info
+                put(ExceptionType.DefaultDeliveryAddressNotFoundException.toString(),
+                        new DefaultDeliveryAddressNotFoundException());
+                put(ExceptionType.DefaultDeliveryAddressWillBeNotFoundException.toString(),
+                        new DefaultDeliveryAddressWillBeNotFoundException());
+                // Employee info
                 put(ExceptionType.CitizenIDDuplicationException.toString(), new CitizenIDDuplicationException());
-                //Brand
+                // Brand
                 put(ExceptionType.BrandNotFoundException.toString(), new BrandNotFoundException());
-                //Product
+                // Product
                 put(ExceptionType.ProductNotFoundException.toString(), new ProductNotFoundException());
                 put(ExceptionType.ProductDeactivatedException.toString(), new ProductDeactivatedException());
-                //Other
+                // Other
                 put(ExceptionType.NotEnoughInformationException.toString(), new NotEnoughInformationException());
                 put(ExceptionType.OperationAddFailedException.toString(), new OperationAddFailedException());
-                //Voucher
+                put(ExceptionType.OperationDeleteFailedException.toString(), new OperationDeleteFailedException());
+                put(ExceptionType.OperationEditFailedException.toString(), new OperationEditFailedException());
+                // Voucher
                 put(ExceptionType.InvalidVoucherException.toString(), new InvalidVoucherException());
                 put(ExceptionType.VoucherNotFoundException.toString(), new VoucherNotFoundException());
-                put(ExceptionType.NotEnoughProductQuantityException.toString(), new NotEnoughProductQuantityException());
-                put(ExceptionType.NotEnoughVoucherQuantityException.toString(), new NotEnoughProductQuantityException());
+                put(ExceptionType.NotEnoughProductQuantityException.toString(),
+                        new NotEnoughProductQuantityException());
+                put(ExceptionType.NotEnoughVoucherQuantityException.toString(),
+                        new NotEnoughProductQuantityException());
 
             }
         };
@@ -80,22 +91,23 @@ public class ExceptionUtils {
             return "";
         }
         String exceptionKey = (String) request.getAttribute("exceptionType");
-        String exception = "?err" + exceptionMap.getOrDefault(exceptionKey, new DefaultException()).getQueryString() + "=true";
+        String exception = "?err" + exceptionMap.getOrDefault(exceptionKey, new DefaultException()).getQueryString()
+                + "=true";
         return exception;
     }
 
-    //Query String can be "errPNF=true&&otherAttribute=..."
+    // Query String can be "errPNF=true&&otherAttribute=..."
     private static String getExceptionNameByQueryString(String queryString) {
         if (queryString == null) {
             return "";
         }
-        //Extract the exception attribute. Example: PNF instead of errPNF
+        // Extract the exception attribute. Example: PNF instead of errPNF
         String attribute = extractExceptionQueryString(queryString);
         if (attribute == null) {
             return null;
         }
 
-        //Iterate through a map entry to compare query string
+        // Iterate through a map entry to compare query string
         for (Map.Entry<String, ICustomException> entry : exceptionMap.entrySet()) {
             if (entry.getValue().getQueryString().equals(attribute)) {
                 return entry.getKey();
@@ -124,27 +136,41 @@ public class ExceptionUtils {
         return exception.getMessage();
     }
 
-// =================================== VALIDATION SECTION =================================
+    // =================================== VALIDATION SECTION
+    // =================================
     public static boolean isWebsiteError(String queryString) {
         return !getExceptionNameByQueryString(queryString).isEmpty();
     }
 
-//                    put(ExceptionType.WrongPasswordException.toString(), new WrongPasswordException());
-//                put(ExceptionType.AccountNotFoundException.toString(), new AccountNotFoundException());
-//                put(ExceptionType.AccountDeactivatedException.toString(), new AccountDeactivatedException());
-//                put(ExceptionType.PhoneNumberDuplicationException.toString(), new PhoneNumberDuplicationException());
-//                put(ExceptionType.UsernameDuplicationException.toString(), new UsernameDuplicationException());
-//                put(ExceptionType.EmailDuplicationException.toString(), new EmailDuplicationException());
-//                //Employee info
-//                put(ExceptionType.CitizenIDDuplicationException.toString(), new CitizenIDDuplicationException());
-//                //Brand
-//                put(ExceptionType.BrandNotFoundException.toString(), new BrandNotFoundException());
-//                //Product
-//                put(ExceptionType.ProductNotFoundException.toString(), new ProductNotFoundException());
-//                put(ExceptionType.ProductDeactivatedException.toString(), new ProductDeactivatedException());
-//                //Other
-//                put(ExceptionType.NotEnoughInformationException.toString(), new NotEnoughInformationException());
-//                put(ExceptionType.OperationAddFailedException.toString(), new OperationAddFailedException());
+    // put(ExceptionType.WrongPasswordException.toString(), new
+    // WrongPasswordException());
+    // put(ExceptionType.AccountNotFoundException.toString(), new
+    // AccountNotFoundException());
+    // put(ExceptionType.AccountDeactivatedException.toString(), new
+    // AccountDeactivatedException());
+    // put(ExceptionType.PhoneNumberDuplicationException.toString(), new
+    // PhoneNumberDuplicationException());
+    // put(ExceptionType.UsernameDuplicationException.toString(), new
+    // UsernameDuplicationException());
+    // put(ExceptionType.EmailDuplicationException.toString(), new
+    // EmailDuplicationException());
+    // //Employee info
+    // put(ExceptionType.CitizenIDDuplicationException.toString(), new
+    // CitizenIDDuplicationException());
+    // //Brand
+    // put(ExceptionType.BrandNotFoundException.toString(), new
+    // BrandNotFoundException());
+    // //Product
+    // put(ExceptionType.ProductNotFoundException.toString(), new
+    // ProductNotFoundException());
+    // put(ExceptionType.ProductDeactivatedException.toString(), new
+    // ProductDeactivatedException());
+    // //Other
+    // put(ExceptionType.NotEnoughInformationException.toString(), new
+    // NotEnoughInformationException());
+    // put(ExceptionType.OperationAddFailedException.toString(), new
+    // OperationAddFailedException());
+    // User info
     public static boolean isWrongPassword(String queryString) {
         return getExceptionNameByQueryString(queryString).equals(ExceptionType.WrongPasswordException.toString());
     }
@@ -158,7 +184,8 @@ public class ExceptionUtils {
     }
 
     public static boolean isPhoneNumberDuplication(String queryString) {
-        return getExceptionNameByQueryString(queryString).equals(ExceptionType.PhoneNumberDuplicationException.toString());
+        return getExceptionNameByQueryString(queryString)
+                .equals(ExceptionType.PhoneNumberDuplicationException.toString());
     }
 
     public static boolean isUsernameDuplication(String queryString) {
@@ -169,14 +196,28 @@ public class ExceptionUtils {
         return getExceptionNameByQueryString(queryString).equals(ExceptionType.EmailDuplicationException.toString());
     }
 
-    public static boolean isCitizenIDDuplication(String queryString) {
-        return getExceptionNameByQueryString(queryString).equals(ExceptionType.CitizenIDDuplicationException.toString());
+    public static boolean isDefaultDeliveryAddressNotFound(String queryString) {
+        return getExceptionNameByQueryString(queryString)
+                .equals(ExceptionType.DefaultDeliveryAddressNotFoundException.toString());
     }
+
+    public static boolean isDefaultDeliveryAddressWillBeNotFound(String queryString) {
+        return getExceptionNameByQueryString(queryString)
+                .equals(ExceptionType.DefaultDeliveryAddressWillBeNotFoundException.toString());
+    }
+    // Employee info
+
+    public static boolean isCitizenIDDuplication(String queryString) {
+        return getExceptionNameByQueryString(queryString)
+                .equals(ExceptionType.CitizenIDDuplicationException.toString());
+    }
+    // Brand
 
     public static boolean isBrandNotFound(String queryString) {
         return getExceptionNameByQueryString(queryString).equals(ExceptionType.BrandNotFoundException.toString());
     }
 
+    // Product
     public static boolean isProductNotFound(String queryString) {
         return getExceptionNameByQueryString(queryString).equals(ExceptionType.ProductNotFoundException.toString());
     }
@@ -184,14 +225,26 @@ public class ExceptionUtils {
     public static boolean isProductDeactivated(String queryString) {
         return getExceptionNameByQueryString(queryString).equals(ExceptionType.ProductDeactivatedException.toString());
     }
+    // Other
 
     public static boolean isNotEnoughInformation(String queryString) {
-        return getExceptionNameByQueryString(queryString).equals(ExceptionType.NotEnoughInformationException.toString());
+        return getExceptionNameByQueryString(queryString)
+                .equals(ExceptionType.NotEnoughInformationException.toString());
     }
 
     public static boolean isOperationAddFailed(String queryString) {
         return getExceptionNameByQueryString(queryString).equals(ExceptionType.OperationAddFailedException.toString());
     }
+
+    public static boolean isOperationDeleteFailed(String queryString) {
+        return getExceptionNameByQueryString(queryString)
+                .equals(ExceptionType.OperationDeleteFailedException.toString());
+    }
+
+    public static boolean isOperationEditFailed(String queryString) {
+        return getExceptionNameByQueryString(queryString).equals(ExceptionType.OperationEditFailedException.toString());
+    }
+    // Voucher
 
     public static boolean isInvalidVoucher(String queryString) {
         return getExceptionNameByQueryString(queryString).equals(ExceptionType.InvalidVoucherException.toString());
@@ -202,10 +255,12 @@ public class ExceptionUtils {
     }
 
     public static boolean isNotEnoughProductQuantityException(String queryString) {
-        return getExceptionNameByQueryString(queryString).equals(ExceptionType.NotEnoughProductQuantityException.toString());
+        return getExceptionNameByQueryString(queryString)
+                .equals(ExceptionType.NotEnoughProductQuantityException.toString());
     }
 
     public static boolean isNotEnoughVoucherQuantityException(String queryString) {
-        return getExceptionNameByQueryString(queryString).equals(ExceptionType.NotEnoughVoucherQuantityException.toString());
+        return getExceptionNameByQueryString(queryString)
+                .equals(ExceptionType.NotEnoughVoucherQuantityException.toString());
     }
 }

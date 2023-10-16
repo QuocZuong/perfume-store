@@ -1,5 +1,6 @@
 
 
+<%@page import="Lib.Converter"%>
 <%@page import="DAOs.ProductDAO"%>
 <%@page import="DAOs.BrandDAO"%>
 <%@page import="Models.Product"%>
@@ -58,7 +59,7 @@
                         <form action="/Admin/Product/Update" method="POST" enctype="multipart/form-data">
                             <div class="id">
                                 <label class="required">Product ID</label>
-                                <input type="number" name="txtProductID" readonly="true" value="<%= pd.getID()%>">
+                                <input type="number" name="txtProductID" readonly="true" value="<%= pd.getId()%>">
                         </div>
                         <div class="name">
                             <label class="required">Product name</label>
@@ -66,11 +67,11 @@
                         </div>
                         <div class="brand">
                             <label class="required">Product brand</label>
-                            <input type="text" name="txtBrandName" value="<%= bDAO.getBrandName(pd.getBrandID())%>" >
+                            <input type="text" name="txtBrandName" value="<%= bDAO.getBrand(pd.getBrandId()).getName()%>" >
                         </div>
                         <div class="price">
                             <label class="required">Product price</label>
-                            <input type="text" name="txtProductPrice"  value="<%= pDAO.IntegerToMoney(pd.getPrice()).replace(".", ",")%>">
+                            <input type="text" name="txtProductPrice"  value="<%= Converter.convertMoneyToInteger(String.valueOf(pd.getStock().getPrice())).replace(".", ",")%>">
                         </div>
                         <div class="gender"  >
                             <fieldset>
@@ -91,7 +92,7 @@
                         </div>
                         <div class="quantity">
                             <label class="required">Quantity</label>
-                            <input type="number" name="txtProductQuantity" value="<%= pd.getQuantity()%>">
+                            <input type="number" name="txtProductQuantity" value="<%= pd.getStock().getQuantity()%>">
                         </div>
                         <div class="releaseyear">
                             <label class="required">Release Year</label>

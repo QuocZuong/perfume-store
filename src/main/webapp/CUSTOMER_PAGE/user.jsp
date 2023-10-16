@@ -20,7 +20,8 @@
 <%! List<Order> orders = null; %>
 <%! Customer customer = null; %>
 <%! Cookie currentUserCookie = null;%>
-<%! String fullname, username, email, Tinh, address = "", phoneNumber = "", QuanHuyen = "", PhuongXa = "", addressId = "", status = "";%>
+<%! String fullname, username, email, Tinh, address = "", phoneNumber = "", QuanHuyen = "", PhuongXa = "", addressId = "", status = "", receiverName = "";
+%>
 <%! List<DeliveryAddress> deliveryAddress;%>
 <%! DeliveryAddress currentDeliveryAddress = null;%>
 <%! boolean isError; %>
@@ -49,6 +50,7 @@
     address = currentDeliveryAddress == null ? "" : currentDeliveryAddress.getAddress();
     addressId = currentDeliveryAddress == null ? "" : String.valueOf(currentDeliveryAddress.getId());
     status = currentDeliveryAddress == null ? "" : currentDeliveryAddress.getStatus();
+    receiverName = currentDeliveryAddress == null ? "" : currentDeliveryAddress.getReceiverName();
 
     if (currentDeliveryAddress != null && currentDeliveryAddress.getAddress().split(" - ").length == 3) {
         String Address[] = currentDeliveryAddress.getAddress().split(" - ");
@@ -71,7 +73,8 @@
 
     isUpdateAddressExecption
                     = ExceptionUtils.isPhoneNumberDuplication(queryString)
-                    || ExceptionUtils.isNotEnoughInformation(queryString);
+                    || ExceptionUtils.isNotEnoughInformation(queryString)
+                    || ExceptionUtils.isDefaultDeliveryAddressNotFound(queryString);
 %>
 
 <!DOCTYPE html>
@@ -181,9 +184,11 @@
             <!--Execption Handling-->
             <c:if test='<%= isError%>'>
               <h2 class="alert alert-danger text-center">
+                <%= exceptionMessage%>
               </h2>
             </c:if>
             <!--Execption Handling-->
+
             <div class="default">
 
               <!-- Add new Form. Maybe Change later-->
@@ -202,16 +207,19 @@
                   <select id="ward" class="form-select">
                     <option value="" selected>Chọn phường xã</option>
                   </select>
-                  <input type="text" name="txtAddress" id="txtAddress" readonly="true" placeholder="Địa chỉ" value="<%= address%>">
-                  <input style="width:100%" type="text" name="txtPhoneNumber" id="txtPhoneNumber" placeholder="Số điện thoại" value="<%= phoneNumber%>">
                   <input type="hidden" name="txtAddressId" id="txtAddressId" value="<%= addressId%>">
-                  <input type="hidden" name="txtStatus" id="txtStatus" value="<%= status%>">
+                  <input type="text" name="txtAddress" id="txtAddress" readonly="true" placeholder="Địa chỉ" value="<%= address%>">
+                  <input style="width:100%" type="text" name="txtPhoneNumber" id="txtPhoneNumber" placeholder="Số điện thoại" value="<%= phoneNumber%>" >
+                  <input type="text" name="txtReceiverName" id="txtReceiverName" value="<%= receiverName%>" placeholder="Người nhận">
+                  <label><input type="checkbox" name="txtStatus" id="txtStatus" value="<%= status%>" <%= status.equals("Default") ? "checked" : ""%>> Đặt làm địa chỉ mặc định</label>
                 </div>
-                <button type="submit" name="btnUpdateAdress" value="Submit"> <h4>Sửa</h4> </button>
-              </form>
+                <c:if test='<%=deliveryAddress.size() != 0%>'><button type="submit" name="btnUpdateAddress" value="Submit"> <h4>Sửa</h4> </button></c:if>
+                  <button type="submit" name="btnAddAddress" value="Submit"> <h4>Thêm</h4> </button>
+                  <button type="submit" name="btnDeleteAddress" value="Submit""><h4>Xoá</h4></button>
+                </form>
 
-              <div class="address-list">
-                <h3>Danh sách địa chỉ</h3>
+                <div class="address-list">
+                  <h3>Danh sách địa chỉ</h3>
 
                 <c:choose>
 
@@ -225,7 +233,7 @@
                       <c:forEach var="i" begin="0" end="<%=deliveryAddress.size() - 1%>">
                         <%
                                                     DeliveryAddress d = deliveryAddress.get((int) pageContext.getAttribute("i"));
-                                                    boolean isActive = d.getStatus().equals("Default");
+                                                    boolean isDefault = d.getStatus().equals("Default");
 
                                                     String[] exceptionalAddress = new String[]{
                                                         "Tỉnh Bà Rịa - Vũng Tàu"
@@ -234,7 +242,7 @@
                                                     String address = d.getAddress();
 
                                                     boolean isExceptionalAddress = false;
-                                                    boolean longAddress = address.length() > 39;
+                                                    boolean longAddress = address.length() > 51;
 
                                                     for (int i = 0; i < exceptionalAddress.length; i++) {
                                                         if (address.contains(exceptionalAddress[i])) {
@@ -251,6 +259,7 @@
                                                     String phoneNumber = d.getPhoneNumber();
                                                     String addressId;
                                                     String status = d.getStatus();
+                                                    String receiverName = d.getReceiverName();
 
                                                     if (isExceptionalAddress) {
                                                         city = String.format("%s - %s", addresses[0], addresses[1]);
@@ -270,28 +279,35 @@
                                                     ward = ward.equals(null) ? "" : ward;
                                                     phoneNumber = phoneNumber.equals(null) ? "" : phoneNumber;
                                                     status = status.equals(null) ? "" : status;
+                                                    receiverName = receiverName.equals(null) ? "" : receiverName;
                         %>
-                        <div>
-                          <div class="delivery-address-item <%= isActive ? "active" : ""%>" data-address-city="<%= city%>" data-address-district="<%= district%>" data-address-ward="<%= ward%>" data-phone-number="<%= phoneNumber%>" data-address-id="<%= addressId%>" data-status="<%= status%>">
+                        <div class="<%= isDefault ? "default-address" : ""%>">
+                          <div class="delivery-address-item <%= isDefault ? "active" : ""%>" 
+                               data-address-city="<%= city%>" data-address-district="<%= district%>" data-address-ward="<%= ward%>" 
+                               data-phone-number="<%= phoneNumber%>" data-address-id="<%= addressId%>" data-status="<%= status%>"
+                               data-receiver-name="<%= receiverName%>">
                             <div class="row">
                               <c:choose>
                                 <c:when test='<%= longAddress%>'>
                                   <div class="col-12 col-sm">
                                     <%= city%> - <%= district%><br>
-                                    <%= ward%>
+                                    <%= ward%><br>
+                                    Người nhận: <%= receiverName%> - <%= d.getPhoneNumber()%>
                                   </div>
                                 </c:when>
                                 <c:otherwise>
                                   <div class="col-12 col-sm">
-                                    <%= d.getAddress()%>
+                                    <%= d.getAddress()%><br>
+                                    Người nhận: <%= receiverName%> - <%= d.getPhoneNumber()%>
                                   </div>
                                 </c:otherwise>
 
                               </c:choose>
-                              <div class="col-12 col-sm-2 status <%= isActive ? "active" : ""%>"><%= d.getStatus()%></div>
-                            </div>
-                            <div class="row">
-                              <div class="col-12"><%= d.getPhoneNumber()%></div>
+
+                              <c:if test='<%= isDefault%>'>
+                                <div id="status-default" class="col-12 col-sm-3 status active">Mặc định</div>
+                              </c:if>
+
                             </div>
                           </div>
                         </div>   
@@ -537,6 +553,7 @@
         let phoneNumber = "";
         let addressId = "";
         let status = "";
+        let receiver = "";
 
         $('.delivery-address-item').click(function (e) {
 
@@ -548,33 +565,40 @@
           phoneNumber = target.attr('data-phone-number');
           addressId = target.attr('data-address-id');
           status = target.attr('data-status');
+          receiverName = target.attr('data-receiver-name');
 
           // debugging
-          console.log({city, district, ward, phoneNumber, addressId, status});
+          console.log({city, district, ward, phoneNumber, addressId, status, receiver});
 
-          changeAddress(city, district, ward, phoneNumber, status);
+          $('.delivery-address-item').removeClass('active');
+          target.addClass('active');
+
+          changeAddress(city, district, ward, phoneNumber, status, receiverName);
         });
 
-        async function changeAddress(city, district, ward, phoneNumber, status) {
+        async function changeAddress(city, district, ward, phoneNumber, status, receiverName) {
           $(`select[id='city'] > option[selected]`).prop("selected", false);
           $(`select[id='district'] > option[selected]`).prop("selected", false);
           $(`select[id='ward'] > option[selected]`).prop("selected", false);
 
           $(`select[id='city'] > option[value*='` + city + `']`).prop("selected", true);
           await callApiDistrict(host + "p/" + $("#city").find(':selected').data('id') + "?depth=2");
-          printResult();
+          await printResult();
 
           $(`select[id='district'] > option[value*='` + district + `']`).prop("selected", true);
           await callApiWard(host + "d/" + $("#district").find(':selected').data('id') + "?depth=2");
-          printResult();
+          await printResult();
 
           $(`select[id='ward'] > option[value*='` + ward + `']`).prop("selected", true);
-          printResult();
+          await printResult();
 
           $('#txtPhoneNumber').val(phoneNumber);
           $('#txtAddressId').val(addressId);
           $('#txtStatus').val(status);
+          $('#txtStatus').prop('checked', status === "Default");
+          $('#txtReceiverName').val(receiverName);
         }
+
       });
     </script>
 
@@ -665,7 +689,6 @@
 
         }
 
-
       }
 
       $("input#pwdCurrent").on("input", function () {
@@ -681,6 +704,7 @@
       });
 
 
+      // Validation for delivery address form
       $(document).ready(function () {
         $.validator.addMethod("regex", function (value, element, regex) {
           return regex.test(value);
@@ -689,13 +713,27 @@
         $("#form-address-update").validate({
           rules: {
             txtPhoneNumber: {
-              regex: /(^$|^0[1-9][\d]{8}$)/
+              regex: /(^$|^0[1-9][\d]{8}$)/,
+              required: true
+            },
+            txtAddress: {
+              required: true
+            },
+            txtReceiverName: {
+              required: true
             }
           },
 
           messages: {
             txtPhoneNumber: {
-              regex: "Số điện thoại không hợp lệ."
+              regex: "Số điện thoại không hợp lệ.",
+              required: "Xin vui lòng nhập số điện thoại."
+            },
+            txtAddress: {
+              required: "Xin vui lòng chọn địa chỉ."
+            },
+            txtReceiverName: {
+              required: "Xin vui lòng nhập tên người nhận."
             }
           }
         });

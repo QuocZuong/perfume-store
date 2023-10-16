@@ -1,3 +1,4 @@
+<%@page import="Lib.ExceptionUtils"%>
 <%@page import="DAOs.ProductDAO"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="Models.Order"%>
@@ -13,8 +14,7 @@
 <%! UserDAO usDAO = new UserDAO();%>
 <%!String fullname, username, email, Tinh = "", QuanHuyen = "", PhuongXa = "";%>
 
-<%! boolean isAccountDeactivated, isAccountNotFound, isExistEmail, isExistUsername;%>
-<%! boolean isUpdateAccountExecption;%>
+<%! boolean isUpdateAccountExeception;%>
 
 <%
     Cookie currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
@@ -24,13 +24,9 @@
     email = user.getEmail();
 
     // Handling exception
-    String err = "err";
-    isAccountNotFound = (request.getParameter(err + "AccNF") == null ? false : Boolean.parseBoolean(request.getParameter(err + "AccNF")));
-    isAccountDeactivated = (request.getParameter(err + "AccD") == null ? false : Boolean.parseBoolean(request.getParameter(err + "AccD")));
-    isExistEmail = (request.getParameter(err + "Email") == null ? false : Boolean.parseBoolean(request.getParameter(err + "Email")));
-    isExistUsername = (request.getParameter(err + "Username") == null ? false : Boolean.parseBoolean(request.getParameter(err + "Username")));
-
-    isUpdateAccountExecption = isAccountNotFound || isAccountDeactivated || isExistEmail || isExistUsername;
+    String queryString = request.getQueryString();
+    boolean isError = ExceptionUtils.isWebsiteError(queryString);
+    String exceptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
 %>
 
 <!DOCTYPE html>
@@ -64,7 +60,7 @@
 
 
         <div class="container-fluid">
-            <h1 class="d-none"><%= user.getID()%></h1>
+            <h1 class="d-none"><%= user.getId()%></h1>
             <h1 class="d-none"><%= user.getName()%></h1>
             <h1 class="d-none"><%= user.getUsername()%></h1>
             <h1 class="d-none"><%= user.getEmail()%></h1>
@@ -76,15 +72,14 @@
                     </div>
                 </div>
 
-
                 <div class="main">
                     <div class="left">
                         <h1>Tài khoản của tôi</h1>
                         <div class="list">
                             <ul>
-                                <li><a class="<%= isUpdateAccountExecption ? "" : "active"%>">Trang tài khoản</a></li>
+                                <li><a class="<%= isError ? "" : "active"%>">Trang tài khoản</a></li>
                             <li><a>Quản lí</a></li>
-                            <li><a class="<%= isUpdateAccountExecption ? "active" : ""%>">Tài khoản</a></li>
+                            <li><a class="<%= isError ? "active" : ""%>">Tài khoản</a></li>
                             <li><a href="/Log/Logout">Đăng xuất</a></li>
                         </ul>
                     </div>
@@ -135,31 +130,14 @@
                         </div>
                     </div>
                     <div class="info-page">
-                        <!--Execption Handling-->
-                        <c:choose>
-                            <c:when test='<%= isAccountNotFound%>'>
-                                <h1 class="alert alert-danger text-center">
-                                    Sai mật khẩu hiện tại
-                                </h1>
-                            </c:when>
-                            <c:when test='<%= isAccountDeactivated%>'>
-                                <h1 class="alert alert-danger text-center">
-                                    Tài khoản đã bị vô hiệu hóa.
-                                </h1>
-                            </c:when>
-                            <c:when test='<%= isExistEmail%>'>
-                                <h1 class="alert alert-danger text-center">
-                                    Email đã tồn tại
-                                </h1>
-                            </c:when>
-                            <c:when test='<%= isExistUsername%>'>
-                                <h1 class="alert alert-danger text-center">
-                                    Tên đăng nhập đã tồn tại
-                                </h1>
-                            </c:when>
-                        </c:choose>
-                        <!--Execption Handling-->
 
+                        <!--Execption Handling-->
+                        <c:if test='<%= isError%>'>
+                            <h1 class="alert alert-danger text-center">
+                                <%= exceptionMessage%>
+                            </h1>
+                        </c:if>
+                        <!--Execption Handling-->
 
                         <form action="/Admin/Update/Info" method="POST" id="formUpdateAccount">
                             <div class="fullname">
@@ -350,10 +328,7 @@
                     $("input#pwdCurrent").rules("remove");
                     $("input#pwdNew").rules("remove");
                     $("input#pwdConfirmNew").rules("remove");
-
                 }
-
-
             }
 
             $("input#pwdCurrent").on("input", function () {

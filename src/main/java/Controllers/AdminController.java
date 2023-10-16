@@ -86,10 +86,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -97,31 +97,37 @@ public class AdminController extends HttpServlet {
         String path = request.getRequestURI();
 
         // ---------------------------- PRODUCT SECTION ----------------------------
-        // if (path.startsWith(ADMIN_PRODUCT_LIST_URI) ||
-        // path.startsWith(ADMIN_PRODUCT_LIST_URI + "/page")) {
-        // searchProduct(request, response);
-        // request.getRequestDispatcher("/ADMIN_PAGE/Product/list.jsp").forward(request,
-        // response);
-        // return;
-        // }
-        // if (path.startsWith(ADMIN_PRODUCT_DELETE_URI)) {
-        // deleteProduct(request, response);
-        // response.sendRedirect(ADMIN_PRODUCT_LIST_URI);
-        // return;
-        // }
+        if (path.startsWith(ADMIN_PRODUCT_LIST_URI)
+                || path.startsWith(ADMIN_PRODUCT_LIST_URI + "/page")) {
+            int result = searchProduct(request, response);
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/ADMIN_PAGE/Product/list.jsp").forward(request,
+                        response);
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(ADMIN_PRODUCT_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
+
+        if (path.startsWith(ADMIN_PRODUCT_DELETE_URI)) {
+            deleteProduct(request, response);
+            response.sendRedirect(ADMIN_PRODUCT_LIST_URI);
+            return;
+        }
+
         if (path.startsWith(ADMIN_PRODUCT_ADD_URI)) {
             request.getRequestDispatcher("/ADMIN_PAGE/Product/add.jsp").forward(request, response);
             return;
         }
-        // if (path.startsWith(ADMIN_PRODUCT_UPDATE_URI)) {
-        // if (handleUpdateProduct(request, response)) {
-        // request.getRequestDispatcher("/ADMIN_PAGE/Product/update.jsp").forward(request,
-        // response);
-        // } else {
-        // response.sendRedirect(ADMIN_PRODUCT_LIST_URI);
-        // }
-        // return;
-        // }
+        if (path.startsWith(ADMIN_PRODUCT_UPDATE_URI)) {
+            if (getUpdateProduct(request, response) == State.Success.value) {
+                request.getRequestDispatcher("/ADMIN_PAGE/Product/update.jsp").forward(request,
+                        response);
+            } else {
+                response.sendRedirect(ADMIN_PRODUCT_LIST_URI);
+            }
+            return;
+        }
         // if (path.startsWith(ADMIN_PRODUCT_RESTORE_URI)) {
         // restoreProduct(request, response);
         // response.sendRedirect(ADMIN_PRODUCT_LIST_URI);
@@ -199,10 +205,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -221,19 +227,18 @@ public class AdminController extends HttpServlet {
                     response.sendRedirect(
                             ADMIN_PRODUCT_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
                 }
-
             }
             return;
         }
-        // if (path.startsWith(ADMIN_PRODUCT_UPDATE_URI)) {
-        // if (request.getParameter("btnUpdateProduct") != null
-        // && request.getParameter("btnUpdateProduct").equals("Submit")) {
-        // updateProduct(request, response);
-        // response.sendRedirect(ADMIN_PRODUCT_LIST_URI);
-        // }
-        // return;
-        // }
-        //
+
+        if (path.startsWith(ADMIN_PRODUCT_UPDATE_URI)) {
+            if (request.getParameter("btnUpdateProduct") != null
+                    && request.getParameter("btnUpdateProduct").equals("Submit")) {
+                updateProduct(request, response);
+                response.sendRedirect(ADMIN_PRODUCT_LIST_URI);
+            }
+            return;
+        }
 
         if (path.startsWith(ADMIN_USER_UPDATE_CUSTOMER_URI)) {
             if (request.getParameter("btnUpdateCustomer") != null
@@ -341,7 +346,107 @@ public class AdminController extends HttpServlet {
         }
         System.out.println("Add successfully");
         return State.Success.value;
+    }
 
+    private boolean addEmployee(HttpServletRequest request, HttpServletResponse response) {
+        UserDAO uDAO = new UserDAO();
+        EmployeeDAO eDAO = new EmployeeDAO();
+
+        // [User] Update Section
+        String uName = request.getParameter("txtName");
+        String uUsername = request.getParameter("txtUsername");
+        String uPassword = request.getParameter("txtPassword");
+        String uEmail = request.getParameter("txtEmail");
+
+        // [Employee] Update Section
+        String eCitizenId = request.getParameter("txtCitizenId");
+        String eDateOfBirth = request.getParameter("txtDOB");
+        String ePhoneNumber = request.getParameter("txtPhoneNumber");
+        String eAddress = request.getParameter("txtAddress");
+        String eJoinDate = request.getParameter("txtJoinDate");
+        Role eRole = eDAO.getRole(Integer.parseInt(request.getParameter("txtRole")));
+        System.out.println("Vao add employee");
+        Employee employeeToAdd = new Employee();
+
+        // For checking duplicate
+        boolean isDuplicatedUsername = false;
+        boolean isDuplicatedEmail = false;
+        boolean isDuplicatedCitizenId = false;
+        boolean isDuplicatedPhoneNumber = false;
+
+        if (eDAO.isExistUsername(uUsername)) {
+            isDuplicatedUsername = true;
+        }
+        if (uDAO.isExistEmail(uEmail)) {
+            isDuplicatedEmail = true;
+        }
+        if (eDAO.isExistCitizen(eCitizenId)) {
+            isDuplicatedCitizenId = true;
+        }
+        if (eDAO.isExistPhoneNumber(ePhoneNumber)) {
+            isDuplicatedPhoneNumber = true;
+        }
+
+        try {
+            if (isDuplicatedUsername || isDuplicatedEmail || isDuplicatedCitizenId || isDuplicatedPhoneNumber) {
+                if (isDuplicatedUsername) {
+                    throw new UsernameDuplicationException();
+                }
+                if (isDuplicatedEmail) {
+                    throw new EmailDuplicationException();
+                }
+                if (isDuplicatedCitizenId) {
+                    throw new CitizenIDDuplicationException();
+                }
+                if (isDuplicatedPhoneNumber) {
+                    throw new PhoneNumberDuplicationException();
+                }
+            }
+        } catch (UsernameDuplicationException ex) {
+            System.out.println("username dup");
+            request.setAttribute("exceptionType", "UsernameDuplicationException");
+            return false;
+        } catch (PhoneNumberDuplicationException ex) {
+            System.out.println("phone dup");
+            request.setAttribute("exceptionType", "PhoneNumberDuplicationException");
+            return false;
+        } catch (EmailDuplicationException ex) {
+            System.out.println("Email dup");
+            request.setAttribute("exceptionType", "EmailDuplicationException");
+            return false;
+        } catch (CitizenIDDuplicationException ex) {
+            System.out.println("CitizenId dup");
+            request.setAttribute("exceptionType", "CitizenIDDuplicationException");
+            return false;
+        }
+
+        // Start to add
+        employeeToAdd.setName(uName);
+        employeeToAdd.setUsername(uUsername);
+        employeeToAdd.setPassword(uPassword);
+        employeeToAdd.setEmail(uEmail);
+        employeeToAdd.setType("Employee");
+        employeeToAdd.setCitizenId(eCitizenId);
+        employeeToAdd.setDateOfBirth(Converter.convertStringToDate(eDateOfBirth));
+        employeeToAdd.setPhoneNumber(ePhoneNumber);
+        employeeToAdd.setAddress(eAddress);
+        employeeToAdd.setJoinDate(Converter.convertStringToDate(eJoinDate));
+        employeeToAdd.setRetireDate(null);
+        employeeToAdd.setRole(eRole);
+
+        System.out.println("employee join date: " + employeeToAdd.getJoinDate());
+        System.out.println("employee DOB date: " + employeeToAdd.getDateOfBirth());
+        System.out.println("Da build");
+        int result = 0;
+
+        result = eDAO.addEmployee(employeeToAdd);
+
+        if (result == 0) {
+            System.out.println("Failed to update the user with ID " + uName + " to database");
+            return false;
+        }
+
+        return true;
     }
 
     private boolean addEmployee(HttpServletRequest request, HttpServletResponse response) {
@@ -446,59 +551,36 @@ public class AdminController extends HttpServlet {
     }
 
     // ---------------------------- READ SECTION ----------------------------
-    // private void searchProduct(HttpServletRequest request, HttpServletResponse
-    // response) {
-    // String URI = request.getRequestURI();
-    // String data[] = URI.split("/");
-    // int page = 1;
-    // String Search = request.getParameter("txtSearch");
-    // ProductDAO pDAO = new ProductDAO();
-    // ResultSet rs = null;
-    // for (int i = 0; i < data.length; i++) {
-    // if (data[i].equals("page")) {
-    // page = Integer.parseInt(data[i + 1]);
-    // }
-    // }
-    // if (Search == null || Search.equals("")) {
-    // Search = "%";
-    // }
-    // rs = pDAO.getFilteredProductForAdminSearch(page, Search);
-    // List<Product> listProduct = new ArrayList<>();
-    // try {
-    // while (rs.next()) {
-    // int id = rs.getInt("ID");
-    // String name = rs.getString("Name");
-    // int brandID = rs.getInt("BrandID");
-    // int price = rs.getInt("Price");
-    // String gender = rs.getString("Gender");
-    // String smell = rs.getString("Smell");
-    // int quantity = rs.getInt("Quantity");
-    // int releaseYear = rs.getInt("ReleaseYear");
-    // int volume = rs.getInt("Volume");
-    // String imgURL = rs.getString("ImgURL");
-    // String description = rs.getString("Description");
-    // boolean active = rs.getBoolean("Active");
-    //
-    // // Create a new Product object and add it to the list
-    // Product product = new Product(id, name, brandID, price, gender, smell,
-    // quantity, releaseYear, volume,
-    // imgURL, description, active);
-    // listProduct.add(product);
-    // }
-    // } catch (SQLException e) {
-    // e.printStackTrace();
-    // }
-    // int NumberOfProduct = pDAO.GetNumberOfProductForSearch(Search);
-    // final int ROWS = 20;
-    // int NumberOfPage = NumberOfProduct / ROWS;
-    // NumberOfPage = (NumberOfProduct % ROWS == 0 ? NumberOfPage : NumberOfPage +
-    // 1);
-    // request.setAttribute("page", page);
-    // request.setAttribute("numberOfPage", NumberOfPage);
-    // request.setAttribute("listProduct", listProduct);
-    // request.setAttribute("Search", Search);
-    // }
-    //
+    private int searchProduct(HttpServletRequest request, HttpServletResponse response) {
+        String URI = request.getRequestURI();
+        String data[] = URI.split("/");
+        int page = 1;
+        String search = request.getParameter("txtSearch");
+        ProductDAO pDAO = new ProductDAO();
+
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("page")) {
+                page = Integer.parseInt(data[i + 1]);
+            }
+        }
+        if (search == null || search.equals("")) {
+            search = "%";
+        }
+        List<Product> productList = pDAO.searchProduct(search);
+        int numberOfPage = (productList.size() / pDAO.ROWS) + (productList.size() % pDAO.ROWS == 0 ? 0 : 1);
+        productList = pDAO.pagingProduct(productList, page);
+        if (productList.isEmpty()) {
+            request.setAttribute("exceptionType", "ProductNotFoundException");
+            return State.Fail.value;
+        }
+        request.setAttribute("page", page);
+        request.setAttribute("numberOfPage", numberOfPage);
+        request.setAttribute("productList", productList);
+        request.setAttribute("search", search);
+
+        return State.Success.value;
+    }
+
     private void searchUser(HttpServletRequest request, HttpServletResponse response) {
         String URI = request.getRequestURI();
         String data[] = URI.split("/");
@@ -586,56 +668,55 @@ public class AdminController extends HttpServlet {
     // }
     //
     // // ---------------------------- UPDATE SECTION ----------------------------
-    // private void updateProduct(HttpServletRequest request, HttpServletResponse
-    // response)
-    // throws IOException, ServletException {
-    // // Get the text parameter in order to update
-    // ProductDAO pDAO = new ProductDAO();
-    // int pID = Integer.parseInt(request.getParameter("txtProductID"));
-    // Product oldProduct = pDAO.getProduct(pID);
-    // String pName = request.getParameter("txtProductName");
-    // String bName = request.getParameter("txtBrandName");
-    // String pPrice = ProductDAO
-    // .IntegerToMoney(Integer.parseInt(request.getParameter("txtProductPrice").replace(",",
-    // "")));
-    // String Gender = request.getParameter("rdoGender");
-    // String Smell = request.getParameter("txtProductSmell");
-    // int Quantity =
-    // Integer.parseInt(request.getParameter("txtProductQuantity").replace(",",
-    // ""));
-    // int ReleaseYear =
-    // Integer.parseInt(request.getParameter("txtProductReleaseYear"));
-    // int Volume =
-    // Integer.parseInt(request.getParameter("txtProductVolume").replace(",", ""));
-    // String Description = request.getParameter("txtProductDescription");
-    //
-    // // Get the part of the image
-    // Part imagePart = null;
-    // imagePart = request.getPart("fileProductImg");
-    // System.out.println("Part of the Product : " + imagePart.getName() + " ||| " +
-    // imagePart.getSize());
-    //
-    // String ImgURL = "";
-    // // Check if user update image
-    // if (imagePart == null || imagePart.getSize() == 0) {
-    // ImgURL = oldProduct.getImgURL();
-    // } else {
-    // // Upload to Imgur Database and save new URL
-    // ImgURL = uploadImageToClound(imagePart);
-    // }
-    //
-    // String updateData = pDAO.convertToStringData(pName, bName, pPrice, Gender,
-    // Smell, Quantity + "",
-    // ReleaseYear + "",
-    // Volume + "", ImgURL, Description);
-    // int kq = pDAO.updateProduct(pID, updateData);
-    // if (kq == 0) {
-    // System.out.println("Update Failed, The Product is not in the database");
-    // return;
-    // }
-    // System.out.println("Update Product with ID: " + pID + " successfully!");
-    // }
-    //
+    private void updateProduct(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        // Get the text parameter in order to update
+        // ProductDAO pDAO = new ProductDAO();
+        // int pID = Integer.parseInt(request.getParameter("txtProductID"));
+        // Product oldProduct = pDAO.getProduct(pID);
+        // String pName = request.getParameter("txtProductName");
+        // String bName = request.getParameter("txtBrandName");
+        // String pPrice =
+        // Converter.covertIntergerToMoney(Integer.parseInt(request.getParameter("txtProductPrice").replace(",",
+        // "")));
+        // String Gender = request.getParameter("rdoGender");
+        // String Smell = request.getParameter("txtProductSmell");
+        // int Quantity =
+        // Integer.parseInt(request.getParameter("txtProductQuantity").replace(",",
+        // ""));
+        // int ReleaseYear =
+        // Integer.parseInt(request.getParameter("txtProductReleaseYear"));
+        // int Volume =
+        // Integer.parseInt(request.getParameter("txtProductVolume").replace(",", ""));
+        // String Description = request.getParameter("txtProductDescription");
+        //
+        // // Get the part of the image
+        // Part imagePart = null;
+        // imagePart = request.getPart("fileProductImg");
+        // System.out.println("Part of the Product : " + imagePart.getName() + " ||| "
+        // + imagePart.getSize());
+        //
+        // String ImgURL = "";
+        // // Check if user update image
+        // if (imagePart == null || imagePart.getSize() == 0) {
+        // ImgURL = oldProduct.getImgURL();
+        // } else {
+        // // Upload to Imgur Database and save new URL
+        // ImgURL = uploadImageToClound(imagePart);
+        // }
+        //
+        // String updateData = pDAO.convertToStringData(pName, bName, pPrice, Gender,
+        // Smell, Quantity + "",
+        // ReleaseYear + "",
+        // Volume + "", ImgURL, Description);
+        // int kq = pDAO.updateProduct(pID, updateData);
+        // if (kq == 0) {
+        // System.out.println("Update Failed, The Product is not in the database");
+        // return;
+        // }
+        // System.out.println("Update Product with ID: " + pID + " successfully!");
+    }
+
     private boolean updateCustomer(HttpServletRequest request, HttpServletResponse response) {
         UserDAO uDAO = new UserDAO();
         CustomerDAO cDAO = new CustomerDAO();
@@ -1033,24 +1114,23 @@ public class AdminController extends HttpServlet {
         }
         System.out.println("Restore User with ID: " + userId + " successfully!");
     }
-    //
-    // private boolean handleUpdateProduct(HttpServletRequest request,
-    // HttpServletResponse response) {
-    // ProductDAO pDAO = new ProductDAO();
-    // String data[] = request.getRequestURI().split("/");
-    // for (int i = 0; i < data.length; i++) {
-    // if (data[i].equals("ID")) {
-    // int ProductID = Integer.parseInt(data[i + 1]);
-    // Product pd = pDAO.getProduct(ProductID);
-    // if (pd != null) {
-    // request.setAttribute("ProductUpdate", pd);
-    // return true;
-    // }
-    // }
-    // }
-    // return false;
-    // }
-    //
+
+    private int getUpdateProduct(HttpServletRequest request, HttpServletResponse response) {
+        ProductDAO pDAO = new ProductDAO();
+        String data[] = request.getRequestURI().split("/");
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("ID")) {
+                int ProductID = Integer.parseInt(data[i + 1]);
+                Product pd = pDAO.getProduct(ProductID);
+                if (pd != null) {
+                    request.setAttribute("ProductUpdate", pd);
+                    return State.Success.value;
+                }
+            }
+        }
+        request.setAttribute("exceptionType", "OperationEditFailedException");
+        return State.Fail.value;
+    }
 
     private boolean handleUpdateCustomer(HttpServletRequest request, HttpServletResponse response) {
         String data[] = request.getRequestURI().split("/");
@@ -1085,6 +1165,7 @@ public class AdminController extends HttpServlet {
 
         return false;
     }
+
     //
     // private boolean updateAdminInfomation(HttpServletRequest request,
     // HttpServletResponse response) {
@@ -1220,31 +1301,30 @@ public class AdminController extends HttpServlet {
     // }
     //
     // // ---------------------------- DELETE SECTION ----------------------------
-    // private void deleteProduct(HttpServletRequest request, HttpServletResponse
-    // response) {
-    // // Admin/Delete/ID/1
-    // String path = request.getRequestURI();
-    // String data[] = path.split("/");
-    // ProductDAO pDAO = new ProductDAO();
-    // String productId = null;
-    // for (int i = 0; i < data.length; i++) {
-    // if (data[i].equals("ID")) {
-    // productId = data[i + 1];
-    // }
-    // }
-    // if (productId == null) {
-    // System.out.println("Delete Failed, Lacking productID");
-    // return;
-    // }
-    //
-    // int kq = pDAO.deleteProduct(Integer.parseInt(productId));
-    // if (kq == 0) {
-    // System.out.println("Delete Failed, The Product is not in the database");
-    // return;
-    // }
-    // System.out.println("Delete Product with ID: " + productId + "
-    // successfully!");
-    // }
+    private void deleteProduct(HttpServletRequest request, HttpServletResponse response) {
+        // Admin/Delete/ID/1
+        String path = request.getRequestURI();
+        String data[] = path.split("/");
+        ProductDAO pDAO = new ProductDAO();
+        String productId = null;
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("ID")) {
+                productId = data[i + 1];
+            }
+        }
+        if (productId == null) {
+            System.out.println("Delete Failed, Lacking productID");
+            request.setAttribute("exceptionType", "");
+            return;
+        }
+        Product product = pDAO.getProduct(Integer.parseInt(productId));
+        int kq = pDAO.disableProduct(product);
+        if (kq == 0) {
+            System.out.println("Delete Failed, The Product is not in the database");
+            return;
+        }
+        System.out.println("Delete Product with ID: " + productId + "successfully!");
+    }
 
     private void deleteUser(HttpServletRequest request, HttpServletResponse response) {
         // Admin/User/Delete/ID/1/currentUsername
@@ -1261,7 +1341,6 @@ public class AdminController extends HttpServlet {
                 currentUsername = data[i + 2];
             }
         }
-
         if (userId == null) {
             System.out.println("Deactivate Failed, Lacking userID");
             return;
@@ -1368,7 +1447,8 @@ public class AdminController extends HttpServlet {
         File tempFile = File.createTempFile("temp", null);
         tempFile.deleteOnExit();
 
-        try (InputStream inputStream = part.getInputStream(); OutputStream outputStream = new FileOutputStream(tempFile)) {
+        try (InputStream inputStream = part.getInputStream();
+                OutputStream outputStream = new FileOutputStream(tempFile)) {
 
             byte[] buffer = new byte[1024];
             int bytesRead;
