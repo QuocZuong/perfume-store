@@ -1,3 +1,4 @@
+<%@page import="Lib.ExceptionUtils"%>
 <%@page import="Models.Employee"%>
 <%@page import="DAOs.ProductDAO"%>
 <%@page import="DAOs.BrandDAO"%>
@@ -6,29 +7,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib  uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
 
-<%! Employee employee;%>
 <%! String Tinh, QuanHuyen, PhuongXa;%>
-<% employee = (Employee) request.getAttribute("EmployeeUpdate");
 
-//    Tinh = "";
-//    QuanHuyen = "";
-//    PhuongXa = "";
-//    if (us.getAddress() != null && !us.getAddress().equals("") && us.getAddress().split(" - ").length == 3) {
-//        String Address[] = us.getAddress().split(" - ");
-//        Tinh = Address[0];
-//        QuanHuyen = Address[1];
-//        PhuongXa = Address[2];
-//    }
-%>
-
-
-<%! boolean isExistedPhone, isExistEmail, isExistedUsername, isExistedCitizenId;%>
 <%    // Handling execption
-    String err = "err";
-    isExistedPhone = (request.getParameter(err + "Phone") == null ? false : Boolean.parseBoolean(request.getParameter(err + "Phone")));
-    isExistEmail = (request.getParameter(err + "Email") == null ? false : Boolean.parseBoolean(request.getParameter(err + "Email")));
-    isExistedUsername = (request.getParameter(err + "Username") == null ? false : Boolean.parseBoolean(request.getParameter(err + "Username")));
-    isExistedCitizenId = (request.getParameter(err + "CitizenId") == null ? false : Boolean.parseBoolean(request.getParameter(err + "CitizenId")));
+    String queryString = request.getQueryString();
+    boolean isErr = ExceptionUtils.isWebsiteError(queryString);
+    String exeptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
 %>
 
 <!DOCTYPE html>
@@ -42,18 +26,18 @@
             rel="stylesheet"
             integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
             crossorigin="anonymous"
-        />
+            />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
             href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond&family=Josefin+Sans:wght@200&family=Josefin+Slab&display=swap"
             rel="stylesheet"
-        />
+            />
         <link
             href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css"
             rel="stylesheet"
             type="text/css"
-        />
+            />
 
         <!--Custom Style-->
         <link rel="stylesheet" href="/RESOURCES/admin/user/public/style/update.css" />
@@ -81,7 +65,7 @@
             }
         </style>
 
-        <title>Cập nhật nhân viên</title>
+        <title>Thêm nhân viên</title>
     </head>
     <body>
         <div class="container-fluid">
@@ -89,64 +73,55 @@
             <div class="row">
                 <div class="col-md-12 nav">
                     <jsp:include page="/NAVBAR/AdminNavbar.jsp"></jsp:include>
+                    </div>
                 </div>
-            </div>
 
-            <div class="row">
-                <!--Execption Handling-->
-                <c:choose>
-                    <c:when test="<%= isExistedPhone%>">
-                        <h1 class="alert alert-danger text-center">Số điện thoại đã tồn tại</h1>
-                    </c:when>
-                    <c:when test="<%= isExistedUsername%>">
-                        <h1 class="alert alert-danger text-center">Tên đăng nhập đã tồn tại</h1>
-                    </c:when>
-                    <c:when test="<%= isExistEmail%>">
-                        <h1 class="alert alert-danger text-center">Email đã tồn tại</h1>
-                    </c:when>
-                    <c:when test="<%= isExistedCitizenId%>">
-                        <h1 class="alert alert-danger text-center">CMND đã tồn tại</h1>
-                    </c:when>
-                </c:choose>
+                <div class="row">
+                    <!--Execption Handling-->
+                <c:if test="<%=isErr%>">
+                    <h1 class="alert alert-danger text-center"><%=exeptionMessage%></h1>
+                </c:if>
                 <!--Execption Handling-->
             </div>
             <div class="container mt-5">
                 <div class="row">
-                    <h1>Update Employee</h1>
-                    <form action="/Admin/User/Update/Employee" method="POST" id="updateEmployee">
-                        <div class="id">
-                            <label>User ID *</label>
-                            <input type="number" name="txtUserID" readonly="true" value="<%= employee.getId()%>" />
-                        </div>
+                    <h1>Add Employee</h1>
+                    <form action="/Admin/User/Add/Employee" method="POST" id="addEmployee">
                         <div class="name">
                             <label>Name *</label>
-                            <input type="text" name="txtName" value="<%= employee.getName() == null ? "" :
-                            employee.getName()%>">
+                            <input type="text" name="txtName">
                         </div>
                         <div class="username">
                             <label>Username *</label>
-                            <input type="text" name="txtUsername" value="<%= employee.getUsername()%>" />
+                            <input type="text" name="txtUsername" />
                         </div>
                         <div class="password">
                             <label>Password *</label>
-                            <input type="password" name="txtPassword" value="<%= employee.getPassword()%>" />
+                            <input type="password" name="txtPassword" />
                         </div>
                         <div class="email">
                             <label>Email *</label>
-                            <input type="text" name="txtEmail" value="<%= employee.getEmail()%>" />
+                            <input type="text" name="txtEmail"/>
+                        </div>
+                        <div class="role">
+                            <label>Role *</label>
+                            <select name="txtRole" class="roleSelect py-2">
+                                <option value="1">Admin</option>
+                                <option value="2" selected>Order Manager</option>
+                                <option value="3">Inventory Manager</option>
+                            </select>
                         </div>
                         <div class="citizenId">
                             <label>Citizen id *</label>
-                            <input type="text" name="txtCitizenId" value="<%= employee.getCitizenId()%>" />
+                            <input type="text" name="txtCitizenId" />
                         </div>
                         <div class="dateOfBirth">
                             <label>Date of birth *</label>
-                            <input type="date" name="txtDOB" value="<%= employee.getDateOfBirth()%>" />
+                            <input type="date" name="txtDOB"/>
                         </div>
                         <div class="phone">
                             <label>Phone Number *</label>
-                            <input type="text" name="txtPhoneNumber" value="<%= employee.getPhoneNumber() == null ? "" :
-                            employee.getPhoneNumber()%>">
+                            <input type="text" name="txtPhoneNumber">
                         </div>
                         <div class="address">
                             <label>Address *</label>
@@ -166,20 +141,15 @@
                                 type="text"
                                 name="txtAddress"
                                 id="txtAddress"
-                                value="<%=employee.getAddress()%>"
                                 readonly="true"
-                            />
+                                />
                         </div>
                         <div class="joinDate">
                             <label>Join date *</label>
-                            <input type="date" name="txtJoinDate" value="<%= employee.getJoinDate()%>" />
+                            <input type="date" name="txtJoinDate"/>
                         </div>
-                        <div class="retireDate">
-                            <label>Retire date*</label>
-                            <input type="date" name="txtRetireDate" value="<%= employee.getRetireDate()%>"/>
-                        </div>
-                        <button type="submit" name="btnUpdateEmployee" value="Submit" class="btnUpdateEmployee mb-3">
-                            Update Employee
+                        <button type="submit" name="btnAddEmployee" value="Submit" class="btnAddEmployee mb-3">
+                            Add Employee
                         </button>
                         <br />
                     </form>
@@ -265,10 +235,10 @@
             });
             var printResult = () => {
                 if (
-                    $("#district").find(":selected").data("id") != "" &&
-                    $("#city").find(":selected").data("id") != "" &&
-                    $("#ward").find(":selected").data("id") != ""
-                ) {
+                        $("#district").find(":selected").data("id") != "" &&
+                        $("#city").find(":selected").data("id") != "" &&
+                        $("#ward").find(":selected").data("id") != ""
+                        ) {
                     let city = $("#city option:selected").text();
                     let district = $("#district option:selected").text();
                     let ward = $("#ward option:selected").text();
@@ -297,7 +267,7 @@
                 //                    return regex.test(value);
                 //                }, "Wrong input.");
 
-                $("#updateEmployee").validate({
+                $("#addEmployee").validate({
                     rules: {
                         txtName: {
                             required: true,
