@@ -39,6 +39,8 @@ public class ExceptionUtils {
         // Other
         NotEnoughInformationException,
         OperationAddFailedException,
+        OperationDeleteFailedException,
+        OperationEditFailedException,
         // Voucher
         InvalidVoucherException,
         VoucherNotFoundException,
@@ -69,6 +71,8 @@ public class ExceptionUtils {
                 // Other
                 put(ExceptionType.NotEnoughInformationException.toString(), new NotEnoughInformationException());
                 put(ExceptionType.OperationAddFailedException.toString(), new OperationAddFailedException());
+                put(ExceptionType.OperationDeleteFailedException.toString(), new OperationDeleteFailedException());
+                put(ExceptionType.OperationEditFailedException.toString(), new OperationEditFailedException());
                 // Voucher
                 put(ExceptionType.InvalidVoucherException.toString(), new InvalidVoucherException());
                 put(ExceptionType.VoucherNotFoundException.toString(), new VoucherNotFoundException());
@@ -166,6 +170,7 @@ public class ExceptionUtils {
     // NotEnoughInformationException());
     // put(ExceptionType.OperationAddFailedException.toString(), new
     // OperationAddFailedException());
+    // User info
     public static boolean isWrongPassword(String queryString) {
         return getExceptionNameByQueryString(queryString).equals(ExceptionType.WrongPasswordException.toString());
     }
@@ -191,15 +196,28 @@ public class ExceptionUtils {
         return getExceptionNameByQueryString(queryString).equals(ExceptionType.EmailDuplicationException.toString());
     }
 
+    public static boolean isDefaultDeliveryAddressNotFound(String queryString) {
+        return getExceptionNameByQueryString(queryString)
+                .equals(ExceptionType.DefaultDeliveryAddressNotFoundException.toString());
+    }
+
+    public static boolean isDefaultDeliveryAddressWillBeNotFound(String queryString) {
+        return getExceptionNameByQueryString(queryString)
+                .equals(ExceptionType.DefaultDeliveryAddressWillBeNotFoundException.toString());
+    }
+    // Employee info
+
     public static boolean isCitizenIDDuplication(String queryString) {
         return getExceptionNameByQueryString(queryString)
                 .equals(ExceptionType.CitizenIDDuplicationException.toString());
     }
+    // Brand
 
     public static boolean isBrandNotFound(String queryString) {
         return getExceptionNameByQueryString(queryString).equals(ExceptionType.BrandNotFoundException.toString());
     }
 
+    // Product
     public static boolean isProductNotFound(String queryString) {
         return getExceptionNameByQueryString(queryString).equals(ExceptionType.ProductNotFoundException.toString());
     }
@@ -207,6 +225,7 @@ public class ExceptionUtils {
     public static boolean isProductDeactivated(String queryString) {
         return getExceptionNameByQueryString(queryString).equals(ExceptionType.ProductDeactivatedException.toString());
     }
+    // Other
 
     public static boolean isNotEnoughInformation(String queryString) {
         return getExceptionNameByQueryString(queryString)
@@ -216,6 +235,16 @@ public class ExceptionUtils {
     public static boolean isOperationAddFailed(String queryString) {
         return getExceptionNameByQueryString(queryString).equals(ExceptionType.OperationAddFailedException.toString());
     }
+
+    public static boolean isOperationDeleteFailed(String queryString) {
+        return getExceptionNameByQueryString(queryString)
+                .equals(ExceptionType.OperationDeleteFailedException.toString());
+    }
+
+    public static boolean isOperationEditFailed(String queryString) {
+        return getExceptionNameByQueryString(queryString).equals(ExceptionType.OperationEditFailedException.toString());
+    }
+    // Voucher
 
     public static boolean isInvalidVoucher(String queryString) {
         return getExceptionNameByQueryString(queryString).equals(ExceptionType.InvalidVoucherException.toString());
@@ -233,15 +262,5 @@ public class ExceptionUtils {
     public static boolean isNotEnoughVoucherQuantityException(String queryString) {
         return getExceptionNameByQueryString(queryString)
                 .equals(ExceptionType.NotEnoughVoucherQuantityException.toString());
-    }
-
-    public static boolean isDefaultDeliveryAddressNotFound(String queryString) {
-        return getExceptionNameByQueryString(queryString)
-                .equals(ExceptionType.DefaultDeliveryAddressNotFoundException.toString());
-    }
-
-    public static boolean isDefaultDeliveryAddressWillBeNotFound(String queryString) {
-        return getExceptionNameByQueryString(queryString)
-                .equals(ExceptionType.DefaultDeliveryAddressWillBeNotFoundException.toString());
     }
 }
