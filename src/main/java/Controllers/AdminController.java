@@ -116,15 +116,15 @@ public class AdminController extends HttpServlet {
             request.getRequestDispatcher("/ADMIN_PAGE/Product/add.jsp").forward(request, response);
             return;
         }
-        // if (path.startsWith(ADMIN_PRODUCT_UPDATE_URI)) {
-        // if (handleUpdateProduct(request, response)) {
-        // request.getRequestDispatcher("/ADMIN_PAGE/Product/update.jsp").forward(request,
-        // response);
-        // } else {
-        // response.sendRedirect(ADMIN_PRODUCT_LIST_URI);
-        // }
-        // return;
-        // }
+        if (path.startsWith(ADMIN_PRODUCT_UPDATE_URI)) {
+            if (getUpdateProduct(request, response) == State.Success.value) {
+                request.getRequestDispatcher("/ADMIN_PAGE/Product/update.jsp").forward(request,
+                        response);
+            } else {
+                response.sendRedirect(ADMIN_PRODUCT_LIST_URI);
+            }
+            return;
+        }
         // if (path.startsWith(ADMIN_PRODUCT_RESTORE_URI)) {
         // restoreProduct(request, response);
         // response.sendRedirect(ADMIN_PRODUCT_LIST_URI);
@@ -223,15 +223,15 @@ public class AdminController extends HttpServlet {
             return;
         }
 
-        // if (path.startsWith(ADMIN_PRODUCT_UPDATE_URI)) {
-        // if (request.getParameter("btnUpdateProduct") != null
-        // && request.getParameter("btnUpdateProduct").equals("Submit")) {
-        // updateProduct(request, response);
-        // response.sendRedirect(ADMIN_PRODUCT_LIST_URI);
-        // }
-        // return;
-        // }
-        //
+        if (path.startsWith(ADMIN_PRODUCT_UPDATE_URI)) {
+            if (request.getParameter("btnUpdateProduct") != null
+                    && request.getParameter("btnUpdateProduct").equals("Submit")) {
+                updateProduct(request, response);
+                response.sendRedirect(ADMIN_PRODUCT_LIST_URI);
+            }
+            return;
+        }
+
         if (path.startsWith(ADMIN_USER_UPDATE_CUSTOMER_URI)) {
             if (request.getParameter("btnUpdateCustomer") != null
                     && request.getParameter("btnUpdateCustomer").equals("Submit")) {
@@ -442,56 +442,49 @@ public class AdminController extends HttpServlet {
     // }
     //
     // // ---------------------------- UPDATE SECTION ----------------------------
-    // private void updateProduct(HttpServletRequest request, HttpServletResponse
-    // response)
-    // throws IOException, ServletException {
-    // // Get the text parameter in order to update
-    // ProductDAO pDAO = new ProductDAO();
-    // int pID = Integer.parseInt(request.getParameter("txtProductID"));
-    // Product oldProduct = pDAO.getProduct(pID);
-    // String pName = request.getParameter("txtProductName");
-    // String bName = request.getParameter("txtBrandName");
-    // String pPrice = ProductDAO
-    // .IntegerToMoney(Integer.parseInt(request.getParameter("txtProductPrice").replace(",",
-    // "")));
-    // String Gender = request.getParameter("rdoGender");
-    // String Smell = request.getParameter("txtProductSmell");
-    // int Quantity =
-    // Integer.parseInt(request.getParameter("txtProductQuantity").replace(",",
-    // ""));
-    // int ReleaseYear =
-    // Integer.parseInt(request.getParameter("txtProductReleaseYear"));
-    // int Volume =
-    // Integer.parseInt(request.getParameter("txtProductVolume").replace(",", ""));
-    // String Description = request.getParameter("txtProductDescription");
-    //
-    // // Get the part of the image
-    // Part imagePart = null;
-    // imagePart = request.getPart("fileProductImg");
-    // System.out.println("Part of the Product : " + imagePart.getName() + " ||| " +
-    // imagePart.getSize());
-    //
-    // String ImgURL = "";
-    // // Check if user update image
-    // if (imagePart == null || imagePart.getSize() == 0) {
-    // ImgURL = oldProduct.getImgURL();
-    // } else {
-    // // Upload to Imgur Database and save new URL
-    // ImgURL = uploadImageToClound(imagePart);
-    // }
-    //
-    // String updateData = pDAO.convertToStringData(pName, bName, pPrice, Gender,
-    // Smell, Quantity + "",
-    // ReleaseYear + "",
-    // Volume + "", ImgURL, Description);
-    // int kq = pDAO.updateProduct(pID, updateData);
-    // if (kq == 0) {
-    // System.out.println("Update Failed, The Product is not in the database");
-    // return;
-    // }
-    // System.out.println("Update Product with ID: " + pID + " successfully!");
-    // }
-    //
+    private void updateProduct(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        // Get the text parameter in order to update
+//        ProductDAO pDAO = new ProductDAO();
+//        int pID = Integer.parseInt(request.getParameter("txtProductID"));
+//        Product oldProduct = pDAO.getProduct(pID);
+//        String pName = request.getParameter("txtProductName");
+//        String bName = request.getParameter("txtBrandName");
+//        String pPrice = Converter.covertIntergerToMoney(Integer.parseInt(request.getParameter("txtProductPrice").replace(",", "")));
+//        String Gender = request.getParameter("rdoGender");
+//        String Smell = request.getParameter("txtProductSmell");
+//        int Quantity = Integer.parseInt(request.getParameter("txtProductQuantity").replace(",", ""));
+//        int ReleaseYear = Integer.parseInt(request.getParameter("txtProductReleaseYear"));
+//        int Volume = Integer.parseInt(request.getParameter("txtProductVolume").replace(",", ""));
+//        String Description = request.getParameter("txtProductDescription");
+//
+//        // Get the part of the image
+//        Part imagePart = null;
+//        imagePart = request.getPart("fileProductImg");
+//        System.out.println("Part of the Product : " + imagePart.getName() + " ||| "
+//                + imagePart.getSize());
+//
+//        String ImgURL = "";
+//        // Check if user update image
+//        if (imagePart == null || imagePart.getSize() == 0) {
+//            ImgURL = oldProduct.getImgURL();
+//        } else {
+//            // Upload to Imgur Database and save new URL
+//            ImgURL = uploadImageToClound(imagePart);
+//        }
+//
+//        String updateData = pDAO.convertToStringData(pName, bName, pPrice, Gender,
+//                Smell, Quantity + "",
+//                ReleaseYear + "",
+//                Volume + "", ImgURL, Description);
+//        int kq = pDAO.updateProduct(pID, updateData);
+//        if (kq == 0) {
+//            System.out.println("Update Failed, The Product is not in the database");
+//            return;
+//        }
+//        System.out.println("Update Product with ID: " + pID + " successfully!");
+    }
+
     private boolean updateCustomer(HttpServletRequest request, HttpServletResponse response) {
         UserDAO uDAO = new UserDAO();
         CustomerDAO cDAO = new CustomerDAO();
@@ -891,24 +884,23 @@ public class AdminController extends HttpServlet {
         }
         System.out.println("Restore User with ID: " + userId + " successfully!");
     }
-    //
-    // private boolean handleUpdateProduct(HttpServletRequest request,
-    // HttpServletResponse response) {
-    // ProductDAO pDAO = new ProductDAO();
-    // String data[] = request.getRequestURI().split("/");
-    // for (int i = 0; i < data.length; i++) {
-    // if (data[i].equals("ID")) {
-    // int ProductID = Integer.parseInt(data[i + 1]);
-    // Product pd = pDAO.getProduct(ProductID);
-    // if (pd != null) {
-    // request.setAttribute("ProductUpdate", pd);
-    // return true;
-    // }
-    // }
-    // }
-    // return false;
-    // }
-    //
+
+    private int getUpdateProduct(HttpServletRequest request, HttpServletResponse response) {
+        ProductDAO pDAO = new ProductDAO();
+        String data[] = request.getRequestURI().split("/");
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("ID")) {
+                int ProductID = Integer.parseInt(data[i + 1]);
+                Product pd = pDAO.getProduct(ProductID);
+                if (pd != null) {
+                    request.setAttribute("ProductUpdate", pd);
+                    return State.Success.value;
+                }
+            }
+        }
+        request.setAttribute("exceptionType", "OperationEditFailedException");
+        return State.Fail.value;
+    }
 
     private boolean handleUpdateCustomer(HttpServletRequest request, HttpServletResponse response) {
         String data[] = request.getRequestURI().split("/");
