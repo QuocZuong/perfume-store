@@ -1,4 +1,6 @@
 
+<%@page import="Lib.Converter"%>
+<%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="Models.Product"%>
 <%@page import="DAOs.BrandDAO"%>
@@ -11,18 +13,15 @@
 <%! ProductDAO pDAO = new ProductDAO();%>
 <%! BrandDAO bDAO = new BrandDAO(); %>
 <%! ResultSet rs = null;%>
-<%! ArrayList<Product> listProduct = null; %>
+<%! List<Product> productList = null; %>
 <%! int currentPage, numberOfPage;%>
 <%! boolean isAdmin;%>
 
 
 <%
-    rs = pDAO.getAllForAdmin();
-    listProduct = (ArrayList<Product>) request.getAttribute("listProduct");
+    productList = (List<Product>) request.getAttribute("productList");
     currentPage = (int) request.getAttribute("page");
     numberOfPage = (int) request.getAttribute("numberOfPage");
-
-
 %>
 <!DOCTYPE html>
 <html>
@@ -95,19 +94,19 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <c:if test='<%= (listProduct.size() != 0)%>'>
-                                <c:forEach var="i" begin="0" end="<%= listProduct.size() - 1%>">
+                            <c:if test='<%= (productList.size() != 0)%>'>
+                                <c:forEach var="i" begin="0" end="<%= productList.size() - 1%>">
                                     <%
-                                        Product pd = listProduct.get((int) pageContext.getAttribute("i"));
+                                        Product pd = productList.get((int) pageContext.getAttribute("i"));
                                     %>
                                     <tr class="rowTable  ">
-                                        <td class="<%= pd.isActive() ? " " : "faded"%>" ><%= pd.getID()%></td>
+                                        <td class="<%= pd.isActive() ? " " : "faded"%>" ><%= pd.getId()%></td>
                                         <td class="<%= pd.isActive() ? " " : "faded"%>"><%= pd.getName()%></td>
-                                        <td class="<%= pd.isActive() ? " " : "faded"%>"><%= bDAO.getBrandName(pd.getBrandID())%></td>
-                                        <td class="<%= pd.isActive() ? " " : "faded"%>"> <%= pDAO.IntegerToMoney(pd.getPrice())%></td>
+                                        <td class="<%= pd.isActive() ? " " : "faded"%>"><%= bDAO.getBrand(pd.getBrandId()).getName()%></td>
+                                        <td class="<%= pd.isActive() ? " " : "faded"%>"> <%= Converter.covertIntergerToMoney(pd.getStock().getPrice())%></td>
                                         <td class="<%= pd.isActive() ? " " : "faded"%>"><%= pd.getGender()%></td>
                                         <td class="<%= pd.isActive() ? " " : "faded"%>" > <%= pd.getSmell()%></td>
-                                        <td class="<%= pd.isActive() ? " " : "faded"%>"><%= pd.getQuantity()%></td>
+                                        <td class="<%= pd.isActive() ? " " : "faded"%>"><%= pd.getStock().getQuantity()%></td>
                                         <td class="<%= pd.isActive() ? " " : "faded"%>"><%= pd.getReleaseYear()%></td>
                                         <td class="<%= pd.isActive() ? " " : "faded"%>"><%= pd.getVolume()%></td>
                                         <td class="<%= pd.isActive() ? " " : "faded"%>"><img src="<%= pd.getImgURL()%>" alt="<%= pd.getName()%>"/></td>
@@ -116,10 +115,10 @@
                                             <button class="expand-btn">Xem thêm</button>
                                         </td>
                                         <td class="<%= pd.isActive() ? " " : "faded"%>">
-                                            <a href="/Admin/Product/Update/ID/<%= pd.getID()%>" class="<%= pd.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0">Update</a>
+                                            <a href="/Admin/Product/Update/ID/<%= pd.getId()%>" class="<%= pd.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0">Update</a>
                                         </td>
                                         <td class="buttonStatus  <%= pd.isActive() ? "" : "unfaded"%>">
-                                            <a href="/Admin/Product/<%= pd.isActive() ? "Delete" : "Restore"%>/ID/<%=  pd.getID()%>" class="btn btn-outline-<%= pd.isActive() ? "danger" : "success"%> rounded-0"> <%= pd.isActive() ? "Delete" : "Restore"%></a>
+                                            <a href="/Admin/Product/<%= pd.isActive() ? "Delete" : "Restore"%>/ID/<%=  pd.getId()%>" class="btn btn-outline-<%= pd.isActive() ? "danger" : "success"%> rounded-0"> <%= pd.isActive() ? "Delete" : "Restore"%></a>
                                         </td>
                                     </tr>
 
