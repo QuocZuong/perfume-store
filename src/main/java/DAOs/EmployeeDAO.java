@@ -223,7 +223,7 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
     public Employee getEmployee(int EmployeeId) {
         ResultSet rs;
 
-        String sql = "SELECT * FROM Employee WHERE User_ID = ?";
+        String sql = "SELECT * FROM Employee WHERE [Employee_ID] = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, EmployeeId);

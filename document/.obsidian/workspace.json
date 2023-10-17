@@ -20,6 +20,18 @@
             }
           },
           {
+            "id": "800bfff03d3170ea",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Project bán nước hoa (PRJ301).md",
+                "mode": "preview",
+                "source": true
+              }
+            }
+          },
+          {
             "id": "f3add32f738a89d9",
             "type": "leaf",
             "state": {
@@ -29,7 +41,8 @@
               }
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -167,7 +180,7 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "fa75f15d861f367c",
+  "active": "800bfff03d3170ea",
   "lastOpenFiles": [
     "cfkpfaxj.14c~",
     "244rc1lr.yah~",

@@ -1,5 +1,6 @@
 package DAOs;
 
+import Exceptions.ProductNotFoundException;
 import Interfaces.DAOs.IProductDAO;
 import Lib.Converter;
 import Models.Product;
@@ -14,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import Lib.DatabaseUtils;
+import Models.Admin;
 import Models.Brand;
 import Models.Stock;
 import java.util.stream.Collectors;
@@ -91,7 +93,7 @@ public class ProductDAO implements IProductDAO {
      */
  /* ------------------------- CREATE SECTION ---------------------------- */
     @Override
-    public int addProduct(Product pd) {
+    public int addProduct(Product pd, Admin admin) {
         int result = 0;
         try {
             StringBuilder sql = new StringBuilder("INSERT INTO Product");
@@ -136,7 +138,7 @@ public class ProductDAO implements IProductDAO {
         return result;
     }
 
-    public int addProduct(String data) {
+    public int addProduct(String data, Admin admin) {
         int result = 0;
         String datas[] = data.split("~");
         BrandDAO brDAO = new BrandDAO();
@@ -177,7 +179,7 @@ public class ProductDAO implements IProductDAO {
         pd.setDescription(description);
         pd.setStock(stock);
 
-        result = addProduct(pd);
+        result = addProduct(pd, admin);
         return result;
     }
 
@@ -401,7 +403,7 @@ public class ProductDAO implements IProductDAO {
 
     /* --------------------------- UPDATE SECTION --------------------------- */
     @Override
-    public int updateProduct(Product product) {
+    public int updateProduct(Product product, Admin admin) {
         String sql = "UPDATE Product\n"
                 + "SET Product_Name = ?,\n" // 1
                 + "Brand_ID = ?,\n" // 2
@@ -442,15 +444,21 @@ public class ProductDAO implements IProductDAO {
     }
 
     @Override
-    public int restoreProduct(Product product) {
+    public int restoreProduct(Product product, Admin admin) throws ProductNotFoundException {
+        if (product == null) {
+            throw new ProductNotFoundException();
+        }
         product.setActive(true);
-        return updateProduct(product);
+        return updateProduct(product, admin);
     }
 
     /* --------------------------- DELETE SECTION --------------------------- */
     @Override
-    public int disableProduct(Product product) {
+    public int disableProduct(Product product, Admin admin) throws ProductNotFoundException {
+        if (product == null) {
+            throw new ProductNotFoundException();
+        }
         product.setActive(false);
-        return updateProduct(product);
+        return updateProduct(product, admin);
     }
 }

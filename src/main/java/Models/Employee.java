@@ -14,6 +14,20 @@ public class Employee extends User {
     private Date joinDate;
     private Date retireDate;
 
+    public Employee() {
+
+    }
+
+    public Employee(User user) {
+        super.setId(user.getId());
+        super.setName(user.getName());
+        super.setUsername(user.getUsername());
+        super.setPassword(user.getUsername());
+        super.setEmail(user.getEmail());
+        super.setActive(user.isActive());
+        super.setType(user.getType());
+    }
+
     public int getEmployeeId() {
         return employeeId;
     }
