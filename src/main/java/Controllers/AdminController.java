@@ -80,10 +80,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -207,10 +207,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -649,7 +649,6 @@ public class AdminController extends HttpServlet {
 
     private boolean updateCustomer(HttpServletRequest request, HttpServletResponse response) {
         UserDAO uDAO = new UserDAO();
-        CustomerDAO cDAO = new CustomerDAO();
         EmployeeDAO eDAO = new EmployeeDAO();
         int result = 0;
 
@@ -659,37 +658,18 @@ public class AdminController extends HttpServlet {
         String uUsername = request.getParameter("txtUsername");
         String uPassword = request.getParameter("txtPassword");
         String uEmail = request.getParameter("txtEmail");
-        String uType = request.getParameter("txtType");
-
-        if (uType.equals("Customer")) {
-
-        }
-
-        // [Employee] Update Section
-        String eCitizenId = request.getParameter("txtCitizenId");
-        String eDateOfBirth = request.getParameter("txtDOB");
-        String ePhoneNumber = request.getParameter("txtPhoneNumber");
-        String eAddress = request.getParameter("txtAddress");
-        String eJoinDate = request.getParameter("txtJoinDate");
-        String eRetireDate = request.getParameter("txtRetireDate");
-
-        Employee employeeForUpdate = eDAO.getEmployeeByUserId(uID);
-
         // For sending email
         boolean isChangedUsername = false;
         boolean isChangedEmail = false;
         boolean isChangedPassword = false;
-        boolean isChangedCitizenId = false;
-        boolean isChangedPhoneNumber = false;
 
         User userForUpdate = uDAO.getUser(uID);
-        Employee employeeForChecking = eDAO.getEmployeeByUserId(uID);
 
-        if (!uUsername.equals(employeeForChecking.getUsername())) {
+        if (!uUsername.equals(userForUpdate.getUsername())) {
             isChangedUsername = true;
             userForUpdate.setUsername(uUsername);
         }
-        if (!uEmail.equals(employeeForChecking.getEmail())) {
+        if (!uEmail.equals(userForUpdate.getEmail())) {
             isChangedEmail = true;
             userForUpdate.setEmail(uEmail);
         }
@@ -697,90 +677,53 @@ public class AdminController extends HttpServlet {
         // Checking update it self
         // Only hash the new password if the password is different from the user's old
         // md5 password.
-        if (!uPassword.equals(employeeForChecking.getPassword())) {
+        if (!uPassword.equals(userForUpdate.getPassword())) {
             isChangedPassword = true;
             uPassword = Converter.convertToMD5Hash(uPassword);
             userForUpdate.setPassword(uPassword);
-        }
-        if (!eCitizenId.equals(employeeForChecking.getCitizenId())) {
-            isChangedCitizenId = true;
-            employeeForUpdate.setCitizenId(eCitizenId);
-
-        }
-        if (!ePhoneNumber.equals(employeeForChecking.getPhoneNumber())) {
-            isChangedPhoneNumber = true;
-            employeeForUpdate.setPhoneNumber(ePhoneNumber);
         }
 
         // For checking duplicate
         boolean isDuplicatedUsername = false;
         boolean isDuplicatedEmail = false;
-        boolean isDuplicatedCitizenId = false;
-        boolean isDuplicatedPhoneNumber = false;
 
-        if (eDAO.isExistUsername(uUsername)) {
+        if (uDAO.isExistUsername(uUsername)) {
             isDuplicatedUsername = true;
         }
-        if (uDAO.isExistEmail(eCitizenId)) {
+
+        if (uDAO.isExistEmail(uEmail)) {
             isDuplicatedEmail = true;
-        }
-        if (eDAO.isExistCitizen(eCitizenId)) {
-            isDuplicatedCitizenId = true;
-        }
-        if (eDAO.isExistPhoneNumber(ePhoneNumber)) {
-            isDuplicatedPhoneNumber = true;
         }
 
         try {
-            if (isDuplicatedUsername || isDuplicatedEmail || isDuplicatedCitizenId || isDuplicatedPhoneNumber) {
+            if (isDuplicatedUsername || isDuplicatedEmail) {
+                request.setAttribute("errUserID", uID);
                 if (isDuplicatedUsername && isChangedUsername) {
                     throw new UsernameDuplicationException();
                 }
                 if (isDuplicatedEmail && isChangedEmail) {
                     throw new EmailDuplicationException();
                 }
-                if (isDuplicatedCitizenId && isChangedCitizenId) {
-                    throw new CitizenIDDuplicationException();
-                }
-                if (isDuplicatedPhoneNumber && isChangedPhoneNumber) {
-                    throw new PhoneNumberDuplicationException();
-                }
             }
         } catch (UsernameDuplicationException ex) {
             System.out.println("username dup");
             request.setAttribute("exceptionType", "UsernameDuplicationException");
             return false;
-        } catch (PhoneNumberDuplicationException ex) {
-            System.out.println("phone dup");
-            request.setAttribute("exceptionType", "PhoneNumberDuplicationException");
-            return false;
         } catch (EmailDuplicationException ex) {
             System.out.println("Email dup");
             request.setAttribute("exceptionType", "EmailDuplicationException");
-            return false;
-        } catch (CitizenIDDuplicationException ex) {
-            System.out.println("Email dup");
-            request.setAttribute("exceptionType", "CitizenIDDuplicationException");
             return false;
         }
 
         // Start to update
         userForUpdate.setName(uName);
-        employeeForUpdate.setDateOfBirth(Converter.convertStringToDate(eDateOfBirth));
-        employeeForUpdate.setAddress(eAddress);
-        employeeForUpdate.setJoinDate(Converter.convertStringToDate(eJoinDate));
-        employeeForUpdate.setRetireDate(Converter.convertStringToDate(eRetireDate));
-
-        eDAO.disableEmployee(employeeForUpdate);
+        userForUpdate.setActive(true);
+        userForUpdate.setType("Customer");
         result = uDAO.updateUser(userForUpdate);
-        result += eDAO.updateEmployee(employeeForUpdate);
 
-        if (result < 2) {
+        if (result < 1) {
             System.out.println("Failed to update the user with ID " + uID + " to database");
             return false;
-        } else if (!"".equals(eRetireDate) && eRetireDate != null) {
-            uDAO.disableUser(userForUpdate);
-            eDAO.disableEmployee(employeeForUpdate);
         }
 
         // Sending mail
@@ -809,7 +752,7 @@ public class AdminController extends HttpServlet {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        System.out.println("update account with ID " + employeeForUpdate.getId() + " successfully");
+        System.out.println("update account with ID " + userForUpdate.getId() + " successfully");
 
         return true;
     }

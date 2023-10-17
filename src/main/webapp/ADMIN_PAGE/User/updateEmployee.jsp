@@ -23,7 +23,6 @@
 %>
 
 
-<%! boolean isExistedPhone, isExistEmail, isExistedUsername, isExistedCitizenId;%>
 <%    // Handling execption
     String queryString = request.getQueryString();
     boolean isErr = ExceptionUtils.isWebsiteError(queryString);
