@@ -169,7 +169,7 @@ ERD
 	+ Order_Total (int default 0)
 	+ Order_Deducted_Price (int default 0)
 	+ Order_Status (varchar(20) not null)
-	+ Order_Created_At (Date) not null
+	+ Order_Created_At (Datetime) not null
 	+ Order_Checkout_At (Datetime)
 	+ Order_Update_At (Datetime)
 	+ *Order_Update_By_Order_Manager (int not null)*
@@ -506,7 +506,7 @@ CREATE TABLE [Order](
     [Order_Total] INT DEFAULT 0,
     [Order_Deducted_Price] INT DEFAULT 0,
     [Order_Status] VARCHAR(20) NOT NULL,
-    [Order_Created_At] DATE NOT NULL,
+    [Order_Created_At] DATETIME NOT NULL,
     [Order_Checkout_At] DATETIME,
     [Order_Update_At] DATETIME,
     [Order_Update_By_Order_Manager] INT NOT NULL, -- Foreign key to Order_Manager

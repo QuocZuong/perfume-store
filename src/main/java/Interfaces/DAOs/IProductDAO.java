@@ -1,12 +1,14 @@
 package Interfaces.DAOs;
 
+import Exceptions.ProductNotFoundException;
+import Models.Admin;
 import Models.Brand;
 import Models.Product;
 import java.util.List;
 
 public interface IProductDAO {
 
-    public int addProduct(Product pd);
+    public int addProduct(Product pd, Admin admin);
 
     public List<Product> getAll();
 
@@ -34,9 +36,9 @@ public interface IProductDAO {
 
     public List<Product> filterProductByBrand(Brand brand);
 
-    public int updateProduct(Product product);
+    public int updateProduct(Product product, Admin admin);
 
-    public int restoreProduct(Product product);
+    public int restoreProduct(Product product, Admin admin) throws ProductNotFoundException;
 
-    public int disableProduct(Product product);
+    public int disableProduct(Product product, Admin admin) throws ProductNotFoundException;
 }

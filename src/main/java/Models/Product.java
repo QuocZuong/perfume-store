@@ -1,5 +1,7 @@
 package Models;
 
+import java.util.List;
+
 public class Product {
 
     private int Id;
@@ -13,6 +15,7 @@ public class Product {
     private String description;
     private boolean active;
     private Stock stock;
+    private List<ProductActivityLog> productActivityLog;
 
     public Product() {
     }
@@ -105,4 +108,11 @@ public class Product {
         this.stock = stock;
     }
 
+    public List<ProductActivityLog> getProductActivityLog() {
+        return productActivityLog;
+    }
+
+    public void setProductActivityLog(List<ProductActivityLog> productActivityLog) {
+        this.productActivityLog = productActivityLog;
+    }
 }

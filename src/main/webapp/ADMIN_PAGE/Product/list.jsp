@@ -1,4 +1,5 @@
 
+<%@page import="Lib.ExceptionUtils"%>
 <%@page import="Lib.Converter"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
@@ -22,6 +23,10 @@
     productList = (List<Product>) request.getAttribute("productList");
     currentPage = (int) request.getAttribute("page");
     numberOfPage = (int) request.getAttribute("numberOfPage");
+
+    String queryString = request.getQueryString();
+    boolean isError = ExceptionUtils.isWebsiteError(queryString);
+    String exceptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
 %>
 <!DOCTYPE html>
 <html>
@@ -70,10 +75,15 @@
 
                 <div class="row">
                     <div class="col-md-10 offset-1 d-flex justify-content-center align-items-center flex-column">
+                        <!--Execption Handling-->
+                    <c:if test='<%= isError%>'>
+                        <h1 class="alert alert-danger text-center"> <%= exceptionMessage%></h1>
+                    </c:if>
+                    <!--Execption Handling-->
 
-                        <div class="search-box-first">
-                            <a class="page-link" href="" id="Search" onclick="changeLink();"><img src="/RESOURCES/images/icons/search.png" alt=""></a>
-                            <input id="inputSearch" type="text" name="txtSearch" placeholder="Tìm kiếm" value="<%= (request.getParameter("txtSearch") != null ? request.getParameter("txtSearch") : "")%>" autofocus onkeydown="handleKeyDown(event)">
+                    <div class="search-box-first">
+                        <a class="page-link" href="" id="Search" onclick="changeLink();"><img src="/RESOURCES/images/icons/search.png" alt=""></a>
+                        <input id="inputSearch" type="text" name="txtSearch" placeholder="Tìm kiếm" value="<%= (request.getParameter("txtSearch") != null ? request.getParameter("txtSearch") : "")%>" autofocus onkeydown="handleKeyDown(event)">
                     </div>
                     <table class="table" id="table">
                         <thead>

@@ -2,6 +2,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%@page import="Lib.ExceptionUtils"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib  uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
 <%! boolean isError;%>
 <%! String exceptionMessage = "";%>
 <%
@@ -54,7 +56,7 @@
 
                     <div class="row">
                         <!--Execption Handling-->
-                        <c:if test='<%= isError%>'>
+                    <c:if test='<%= isError%>'>
                         <h1 class="alert alert-danger text-center"> <%= exceptionMessage%></h1>
                     </c:if>
                     <!--Execption Handling-->
