@@ -624,7 +624,7 @@ public class AdminController extends HttpServlet {
         product.setVolume(volume);
         product.setImgURL(imgURL);
         product.setDescription(description);
-        product.setActive(product.isActive());
+        product.setActive(true);
 
         Stock stock = new Stock();
         stock.setProductID(pID);
@@ -636,7 +636,6 @@ public class AdminController extends HttpServlet {
         String username = userCookie.getValue();
         AdminDAO adDAO = new AdminDAO();
         Admin admin = adDAO.getAdmin(username);
-
         int kq = pDAO.updateProduct(product, admin);
         if (kq == 0) {
             System.out.println("Update Failed, The Product is not in the database");
@@ -942,7 +941,8 @@ public class AdminController extends HttpServlet {
             String username = userCookie.getValue();
             AdminDAO adDAO = new AdminDAO();
             Admin admin = adDAO.getAdmin(username);
-
+            
+            System.out.println("Admin id: " + admin.getAdminId() + "| admin name: " + admin.getName());
             int kq = pDAO.restoreProduct(product, admin);
             if (kq == 0) {
                 System.out.println("Restore Failed, The Product is not in the database");
@@ -1218,7 +1218,9 @@ public class AdminController extends HttpServlet {
             String username = userCookie.getValue();
             AdminDAO adDAO = new AdminDAO();
             Admin admin = adDAO.getAdmin(username);
-
+            
+            System.out.println("Admin id: " + admin.getAdminId() + "| admin name: " + admin.getName());
+            
             int kq = pDAO.disableProduct(product, admin);
             if (kq == 0) {
                 System.out.println("Delete Failed, The Product is not in the database");

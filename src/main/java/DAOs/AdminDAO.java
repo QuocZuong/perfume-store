@@ -25,14 +25,16 @@ public class AdminDAO extends EmployeeDAO {
     public Admin getAdmin(String username) {
         EmployeeDAO empDAO = new EmployeeDAO();
         Employee emp = empDAO.getEmployee(username);
+
         Admin admin = new Admin(emp);
         String sql = "SELECT * FROM [Admin] WHERE Employee_ID = ?;";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, admin.getEmployeeId());
             ResultSet rs = ps.executeQuery();
-
-            admin.setId(rs.getInt("Admin_ID"));
+            if (rs.next()) {
+                admin.setAdminId(rs.getInt("Admin_ID"));
+            }
         } catch (SQLException ex) {
             Logger.getLogger(AdminDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
