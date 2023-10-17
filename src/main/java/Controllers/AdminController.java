@@ -33,20 +33,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
-import java.io.DataOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-
-import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, // 1MB
         maxFileSize = 1024 * 1024 * 5, // 5MB
@@ -92,10 +80,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -128,7 +116,7 @@ public class AdminController extends HttpServlet {
             request.getRequestDispatcher("/ADMIN_PAGE/Product/add.jsp").forward(request, response);
             return;
         }
-        //Load data to update page
+        // Load data to update page
         if (path.startsWith(ADMIN_PRODUCT_UPDATE_URI)) {
             if (getUpdateProduct(request, response) == State.Success.value) {
                 request.getRequestDispatcher("/ADMIN_PAGE/Product/update.jsp").forward(request,
@@ -219,10 +207,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -252,7 +240,8 @@ public class AdminController extends HttpServlet {
                 if (result == State.Success.value) {
                     response.sendRedirect(ADMIN_PRODUCT_LIST_URI);
                 } else {
-                    response.sendRedirect(ADMIN_PRODUCT_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+                    response.sendRedirect(
+                            ADMIN_PRODUCT_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
                 }
             }
             return;
@@ -595,7 +584,7 @@ public class AdminController extends HttpServlet {
     // ---------------------------- UPDATE SECTION ----------------------------
     private int updateProduct(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
-//         Get the text parameter in order to update
+        // Get the text parameter in order to update
         ProductDAO pDAO = new ProductDAO();
         BrandDAO bDAO = new BrandDAO();
         int pID = Integer.parseInt(request.getParameter("txtProductID"));
@@ -1017,7 +1006,7 @@ public class AdminController extends HttpServlet {
                 return State.Fail.value;
             }
         } catch (NumberFormatException e) {
-            //To get default exception
+            // To get default exception
             request.setAttribute("exceptionType", "");
             return State.Fail.value;
         } catch (ProductNotFoundException ex) {
@@ -1294,7 +1283,7 @@ public class AdminController extends HttpServlet {
                 return State.Fail.value;
             }
         } catch (NumberFormatException e) {
-            //default exception
+            // default exception
             request.setAttribute("exceptionType", "");
             return State.Fail.value;
         } catch (ProductNotFoundException ex) {
