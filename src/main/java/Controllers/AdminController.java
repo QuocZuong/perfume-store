@@ -38,6 +38,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, // 1MB
         maxFileSize = 1024 * 1024 * 5, // 5MB
@@ -70,6 +71,9 @@ public class AdminController extends HttpServlet {
     public static final String ADMIN_USER_RESTORE_URI = "/Admin/User/Restore";
     public static final String ADMIN_CLIENT_DETAIL_URI = "/Admin/User/Detail";
     public static final String ADMIN_CLIENT_ORDER_URI = "/Admin/User/OrderDetail";
+
+    //Chart URL
+    public static final String ADMIN_CHART_BEST_SELLING_PRODUCT_BY_GENDER = "/Admin/Chart/BestSellingProductByGender";
 
     public static final String ADMIN_UPDATE_INFO_URI = "/Admin/Update/Info";
 
@@ -220,6 +224,13 @@ public class AdminController extends HttpServlet {
         // response);
         // return;
         // }
+        // ---------------------------- CHART SECTION ----------------------------
+        if (path.startsWith(ADMIN_CHART_BEST_SELLING_PRODUCT_BY_GENDER)) {
+            bestSellingProduct(request, response);
+            request.getRequestDispatcher("/ADMIN_PAGE/Chart/bestProductSellingByGender.jsp").forward(request, response);
+            return;
+        }
+
         // ---------------------------- DEFAULT SECTION ----------------------------
         if (path.startsWith(ADMIN_USER_URI)) { // Put this at the last
             request.getRequestDispatcher("/ADMIN_PAGE/admin.jsp").forward(request, response);
@@ -1337,6 +1348,37 @@ public class AdminController extends HttpServlet {
             return;
         }
         System.out.println("Deactivated User with ID: " + userId + " successfully!");
+    }
+
+    private void bestSellingProduct(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("calling bestSellingProduct");
+        List<Product> listProduct = new ArrayList<>();
+        Product pd1 = new Product();
+        pd1.setName("Sauvage");
+        pd1.setGender("Female");
+        Product pd2 = new Product();
+        pd2.setName("Sauvage2");
+        pd2.setGender("Male");
+        Product pd3 = new Product();
+        pd3.setName("Sauvage3");
+        pd3.setGender("Male");
+        Product pd4 = new Product();
+        pd4.setName("Sauvage4");
+        pd4.setGender("Female");
+        Product pd5 = new Product();
+        pd5.setName("Sauvage5");
+        pd5.setGender("Unisex");
+        Product pd6 = new Product();
+        pd6.setName("Sauvage6");
+        pd6.setGender("Unisex");
+        listProduct.add(pd1);
+        listProduct.add(pd2);
+        listProduct.add(pd3);
+        listProduct.add(pd4);
+        listProduct.add(pd5);
+        listProduct.add(pd6);
+
+        request.setAttribute("listProduct", listProduct);
     }
 
 }
