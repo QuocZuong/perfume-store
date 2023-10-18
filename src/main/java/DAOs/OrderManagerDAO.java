@@ -23,7 +23,7 @@ public class OrderManagerDAO {
     EmployeeDAO empDAO = new EmployeeDAO();
     Employee emp = empDAO.getEmployee(username);
     OrderManager orderManager = new OrderManager(emp);
-    
+
     String sql = "SELECT * FROM [Order_Manager] WHERE Employee_ID = ?;";
 
     try {
@@ -31,7 +31,9 @@ public class OrderManagerDAO {
       ps.setInt(1, orderManager.getEmployeeId());
       ResultSet rs = ps.executeQuery();
 
-      orderManager.setId(rs.getInt("Order_Manager_ID"));
+      if (rs.next()) {
+        orderManager.setId(rs.getInt("Order_Manager_ID"));
+      }
     } catch (SQLException ex) {
       Logger.getLogger(AdminDAO.class.getName()).log(Level.SEVERE, null, ex);
     }

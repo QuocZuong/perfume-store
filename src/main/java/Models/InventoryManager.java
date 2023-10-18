@@ -1,6 +1,6 @@
 package Models;
 
-public class InventoryManager extends Employee{
+public class InventoryManager extends Employee {
     private int inventoryManagerId;
     private int employeeId;
 
@@ -8,22 +8,25 @@ public class InventoryManager extends Employee{
     }
 
     public InventoryManager(Employee emp) {
-        super.setUserId(emp.getUserId());
-        super.setUsername(emp.getUsername());
-        super.setPassword(emp.getPassword());
-        super.setEmail(emp.getEmail());
-        super.setActive(emp.isActive());
-        super.setType(emp.getType());
+        // User
+        setUserId(emp.getUserId());
+        setName(emp.getName());
+        setUsername(emp.getUsername());
+        setPassword(emp.getPassword());
+        setEmail(emp.getEmail());
+        setActive(emp.isActive());
+        setType(emp.getType());
 
-        super.setEmployeeId(employeeId);
-        super.setUserId(emp.getUserId());
-        super.setCitizenId(emp.getCitizenId());
-        super.setDateOfBirth(emp.getDateOfBirth());
-        super.setPhoneNumber(emp.getPhoneNumber());
-        super.setAddress(emp.getAddress());
-        super.setRole(emp.getRole());
-        super.setJoinDate(emp.getJoinDate());
-        super.setRetireDate(emp.getRetireDate());
+        // Employee
+        setEmployeeId(emp.getEmployeeId());
+        setUserId(emp.getUserId());
+        setCitizenId(emp.getCitizenId());
+        setDateOfBirth(emp.getDateOfBirth());
+        setPhoneNumber(emp.getPhoneNumber());
+        setAddress(emp.getAddress());
+        setRole(emp.getRole());
+        setJoinDate(emp.getJoinDate());
+        setRetireDate(emp.getRetireDate());
     }
 
     public int getInventoryManagerId() {
