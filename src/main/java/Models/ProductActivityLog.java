@@ -3,18 +3,19 @@ package Models;
 import java.sql.Date;
 
 public class ProductActivityLog {
-    private int Id;
+
+    private int productId;
     private String action;
     private String description;
     private int updatedByAdmin;
     private Date updatedAt;
 
-    public int getId() {
-        return Id;
+    public int getProductId() {
+        return productId;
     }
 
-    public void setId(int Id) {
-        this.Id = Id;
+    public void setProductId(int productId) {
+        this.productId = productId;
     }
 
     public String getAction() {

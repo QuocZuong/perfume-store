@@ -235,28 +235,6 @@ public class UserDAO implements IUserDAO {
         return userList;
     }
 
-    @Override
-    public List<User> pagingUser(List<User> users, int page) {
-        if (users == null || users.isEmpty() || page <= 0) {
-            return new ArrayList<>();
-        }
-
-        // start index to cut list
-        int offset = ROWS * (page - 1);
-
-        // end index to cut list
-        int toIndex = offset + ROWS;
-
-        if (toIndex >= users.size()) {
-            toIndex = users.size();
-        }
-        if (offset >= users.size()) {
-            offset = users.size();
-        }
-        List<User> subUserList = users.subList(offset, toIndex);
-        return subUserList;
-    }
-
     /* --------------------- UPDATE SECTION --------------------- */
     @Override
     public int updateUser(User updateUser) {

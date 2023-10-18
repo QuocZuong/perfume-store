@@ -4,6 +4,7 @@ import DAOs.AdminDAO;
 import DAOs.BrandDAO;
 import DAOs.CustomerDAO;
 import DAOs.EmployeeDAO;
+import DAOs.OrderDAO;
 import Models.User;
 
 import java.util.List;
@@ -19,11 +20,13 @@ import Exceptions.UsernameDuplicationException;
 import Lib.Converter;
 import Lib.EmailSender;
 import Lib.ExceptionUtils;
+import Lib.Generator;
 import Lib.ImageUploader;
 import Models.Admin;
 import Models.Stock;
 import Models.Customer;
 import Models.Employee;
+import Models.Order;
 import Models.Role;
 import java.io.InputStream;
 import jakarta.servlet.ServletException;
@@ -35,6 +38,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, // 1MB
         maxFileSize = 1024 * 1024 * 5, // 5MB
@@ -44,11 +48,18 @@ public class AdminController extends HttpServlet {
 
     // ----------------------- URI DECLARATION SECTION ----------------------------
     public static final String ADMIN_USER_URI = "/Admin";
+
     public static final String ADMIN_PRODUCT_LIST_URI = "/Admin/Product/List";
     public static final String ADMIN_PRODUCT_ADD_URI = "/Admin/Product/Add";
     public static final String ADMIN_PRODUCT_UPDATE_URI = "/Admin/Product/Update";
     public static final String ADMIN_PRODUCT_DELETE_URI = "/Admin/Product/Delete";
     public static final String ADMIN_PRODUCT_RESTORE_URI = "/Admin/Product/Restore";
+
+    public static final String ADMIN_ORDER_LIST_URI = "/Admin/Order/List";
+    public static final String ADMIN_ORDER_REQUEST_URI = "/Admin/Order/Request";
+    public static final String ADMIN_ORDER_DETAIL_URI = "/Admin/Order/Detail";
+    public static final String ADMIN_ORDER_DELETE_URI = "/Admin/Order/Delete";
+    public static final String ADMIN_ORDER_RESTORE_URI = "/Admin/Order/Restore";
 
     public static final String ADMIN_USER_INFO = "/Admin/User/Info";
     public static final String ADMIN_USER_LIST_URI = "/Admin/User/List";
@@ -60,6 +71,9 @@ public class AdminController extends HttpServlet {
     public static final String ADMIN_USER_RESTORE_URI = "/Admin/User/Restore";
     public static final String ADMIN_CLIENT_DETAIL_URI = "/Admin/User/Detail";
     public static final String ADMIN_CLIENT_ORDER_URI = "/Admin/User/OrderDetail";
+
+    //Chart URL
+    public static final String ADMIN_CHART_BEST_SELLING_PRODUCT_BY_GENDER = "/Admin/Chart/BestSellingProductByGender";
 
     public static final String ADMIN_UPDATE_INFO_URI = "/Admin/Update/Info";
 
@@ -136,7 +150,20 @@ public class AdminController extends HttpServlet {
             return;
         }
 
-        //
+        // ---------------------------- ORDER SECTION ----------------------------
+        if (path.startsWith(ADMIN_ORDER_LIST_URI)
+                || path.startsWith(ADMIN_ORDER_LIST_URI + "/page")) {
+            int result = searchOrder(request);
+
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/ADMIN_PAGE/Order/list.jsp").forward(request, response);
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(ADMIN_ORDER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+
+            return;
+        }
+
         // ---------------------------- USER SECTION ----------------------------
         if (path.startsWith(ADMIN_USER_INFO)) {
             userInfo(request, response);
@@ -197,6 +224,13 @@ public class AdminController extends HttpServlet {
         // response);
         // return;
         // }
+        // ---------------------------- CHART SECTION ----------------------------
+        if (path.startsWith(ADMIN_CHART_BEST_SELLING_PRODUCT_BY_GENDER)) {
+            bestSellingProduct(request, response);
+            request.getRequestDispatcher("/ADMIN_PAGE/Chart/bestProductSellingByGender.jsp").forward(request, response);
+            return;
+        }
+
         // ---------------------------- DEFAULT SECTION ----------------------------
         if (path.startsWith(ADMIN_USER_URI)) { // Put this at the last
             request.getRequestDispatcher("/ADMIN_PAGE/admin.jsp").forward(request, response);
@@ -466,6 +500,7 @@ public class AdminController extends HttpServlet {
         String URI = request.getRequestURI();
         String data[] = URI.split("/");
         int page = 1;
+        int rows = 20;
         String search = request.getParameter("txtSearch");
         ProductDAO pDAO = new ProductDAO();
 
@@ -484,8 +519,8 @@ public class AdminController extends HttpServlet {
             request.setAttribute("exceptionType", "ProductNotFoundException");
             return State.Fail.value;
         }
-        int numberOfPage = (productList.size() / pDAO.ROWS) + (productList.size() % pDAO.ROWS == 0 ? 0 : 1);
-        productList = pDAO.pagingProduct(productList, page);
+        int numberOfPage = (productList.size() / rows) + (productList.size() % rows == 0 ? 0 : 1);
+        productList = Generator.pagingList(productList, page, rows);
 
         request.setAttribute("page", page);
         request.setAttribute("numberOfPage", numberOfPage);
@@ -495,10 +530,43 @@ public class AdminController extends HttpServlet {
         return State.Success.value;
     }
 
+    private int searchOrder(HttpServletRequest request) {
+        String URI = request.getRequestURI();
+        String data[] = URI.split("/");
+        int page = 1;
+        int rows = 20;
+        String search = request.getParameter("txtSearch");
+        OrderDAO oDAO = new OrderDAO();
+
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("page")) {
+                page = Integer.parseInt(data[i + 1]);
+            }
+        }
+
+        List<Order> orderList = oDAO.searchOrder(search);
+
+        if (request.getAttribute("exceptionType") == null && orderList.isEmpty()) {
+            request.setAttribute("exceptionType", "OrderNotFoundException");
+            return State.Fail.value;
+        }
+
+        int numberOfPage = (orderList.size() / rows) + (orderList.size() % rows == 0 ? 0 : 1);
+        orderList = Generator.pagingList(orderList, page, rows);
+
+        request.setAttribute("page", page);
+        request.setAttribute("numberOfPage", numberOfPage);
+        request.setAttribute("orderList", orderList);
+        request.setAttribute("search", search);
+
+        return State.Success.value;
+    }
+
     private void searchUser(HttpServletRequest request, HttpServletResponse response) {
         String URI = request.getRequestURI();
         String data[] = URI.split("/");
         int page = 1;
+        int rows = 20;
         String Search = request.getParameter("txtSearch");
         UserDAO uDAO = new UserDAO();
 
@@ -514,7 +582,7 @@ public class AdminController extends HttpServlet {
 
         List<User> usersFromSearch = uDAO.searchUser(Search);
 
-        List<User> listUser = uDAO.pagingUser(usersFromSearch, page);
+        List<User> listUser = Generator.pagingList(usersFromSearch, page, rows);
 
         final int ROWS = 20;
         int NumberOfPage = usersFromSearch.size() / ROWS;
@@ -624,7 +692,7 @@ public class AdminController extends HttpServlet {
         product.setVolume(volume);
         product.setImgURL(imgURL);
         product.setDescription(description);
-        product.setActive(product.isActive());
+        product.setActive(true);
 
         Stock stock = new Stock();
         stock.setProductID(pID);
@@ -636,7 +704,6 @@ public class AdminController extends HttpServlet {
         String username = userCookie.getValue();
         AdminDAO adDAO = new AdminDAO();
         Admin admin = adDAO.getAdmin(username);
-
         int kq = pDAO.updateProduct(product, admin);
         if (kq == 0) {
             System.out.println("Update Failed, The Product is not in the database");
@@ -942,7 +1009,8 @@ public class AdminController extends HttpServlet {
             String username = userCookie.getValue();
             AdminDAO adDAO = new AdminDAO();
             Admin admin = adDAO.getAdmin(username);
-
+            
+            System.out.println("Admin id: " + admin.getAdminId() + "| admin name: " + admin.getName());
             int kq = pDAO.restoreProduct(product, admin);
             if (kq == 0) {
                 System.out.println("Restore Failed, The Product is not in the database");
@@ -1218,7 +1286,9 @@ public class AdminController extends HttpServlet {
             String username = userCookie.getValue();
             AdminDAO adDAO = new AdminDAO();
             Admin admin = adDAO.getAdmin(username);
-
+            
+            System.out.println("Admin id: " + admin.getAdminId() + "| admin name: " + admin.getName());
+            
             int kq = pDAO.disableProduct(product, admin);
             if (kq == 0) {
                 System.out.println("Delete Failed, The Product is not in the database");
@@ -1278,6 +1348,37 @@ public class AdminController extends HttpServlet {
             return;
         }
         System.out.println("Deactivated User with ID: " + userId + " successfully!");
+    }
+
+    private void bestSellingProduct(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("calling bestSellingProduct");
+        List<Product> listProduct = new ArrayList<>();
+        Product pd1 = new Product();
+        pd1.setName("Sauvage");
+        pd1.setGender("Female");
+        Product pd2 = new Product();
+        pd2.setName("Sauvage2");
+        pd2.setGender("Male");
+        Product pd3 = new Product();
+        pd3.setName("Sauvage3");
+        pd3.setGender("Male");
+        Product pd4 = new Product();
+        pd4.setName("Sauvage4");
+        pd4.setGender("Female");
+        Product pd5 = new Product();
+        pd5.setName("Sauvage5");
+        pd5.setGender("Unisex");
+        Product pd6 = new Product();
+        pd6.setName("Sauvage6");
+        pd6.setGender("Unisex");
+        listProduct.add(pd1);
+        listProduct.add(pd2);
+        listProduct.add(pd3);
+        listProduct.add(pd4);
+        listProduct.add(pd5);
+        listProduct.add(pd6);
+
+        request.setAttribute("listProduct", listProduct);
     }
 
 }

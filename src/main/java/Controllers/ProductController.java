@@ -3,6 +3,7 @@ package Controllers;
 import DAOs.BrandDAO;
 import DAOs.ProductDAO;
 import Lib.ExceptionUtils;
+import Lib.Generator;
 import Models.Brand;
 import Models.Product;
 import java.io.IOException;
@@ -138,8 +139,9 @@ public class ProductController extends HttpServlet {
 
         // Then filter
         List<Product> filteredProductList = pDAO.filterActiveProduct(searchProductList, brandId, gender, price);
+        int rows = 20;
 
-        int numberOfPages = (filteredProductList.size() / pDAO.ROWS) + (filteredProductList.size() % pDAO.ROWS == 0 ? 0 : 1);
+        int numberOfPages = (filteredProductList.size() / rows) + (filteredProductList.size() % rows == 0 ? 0 : 1);
         if (filteredProductList.isEmpty()) {
             request.setAttribute("exceptionType", "ProductNotFoundException");
             return Action.Throw404.value;
@@ -172,7 +174,7 @@ public class ProductController extends HttpServlet {
             shopName = brand.getName();
         }
         // Pagination
-        List<Product> pagingFilteredProductList = pDAO.pagingProduct(filteredProductList, currentPage);
+        List<Product> pagingFilteredProductList = Generator.pagingList(filteredProductList, currentPage, rows);
         request.setAttribute("productList", pagingFilteredProductList);
         request.setAttribute("shopName", shopName);
         return Action.Success.value;

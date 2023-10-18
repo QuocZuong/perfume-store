@@ -29,7 +29,9 @@ public class InventoryManagerDAO {
       ps.setInt(1, inventoryManager.getEmployeeId());
       ResultSet rs = ps.executeQuery();
 
-      inventoryManager.setId(rs.getInt("Inventory_Manager_ID"));
+      if (rs.next()) {
+        inventoryManager.setId(rs.getInt("Inventory_Manager_ID"));
+      }
     } catch (SQLException ex) {
       Logger.getLogger(AdminDAO.class.getName()).log(Level.SEVERE, null, ex);
     }

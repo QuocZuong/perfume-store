@@ -13,7 +13,11 @@ import Models.Customer;
 public interface IOrderDAO {
 
   enum operation {
-    CREATE, READ, UPDATE, DELETE
+    CREATE, READ, UPDATE, DELETE, SEARCH
+  }
+
+  enum status {
+    PENDING, ACCEPTED, REJECTED
   }
 
   /** The name of the table in the database. */
@@ -46,15 +50,16 @@ public interface IOrderDAO {
   String ORDER_UPDATE_AT = "Order_Update_At";
   /** The column name of the order's checkout by order manager. */
   String ORDER_UPDATE_BY_ORDER_MANAGER = "Order_Update_By_Order_Manager";
-  
 
   /**
    * Create an {@link Order} object from a {@link ResultSet}.
    * 
    * @param rs The {@code ResultSet} to create the {@code Order} object from.
+   * @param op The {@code operation} to be performed, as defined in
+   *           {@link IOrderDAO.operation}.
    * @return An {@code Order} object.
    */
-  public Order orderFactory(ResultSet rs);
+  public Order orderFactory(ResultSet rs, operation op) throws SQLException;
 
   /**
    * Fill a {@link PreparedStatement} with an {@link Order} object.
@@ -73,9 +78,11 @@ public interface IOrderDAO {
 
   /**
    * Add an {@link Order} to the database.
-   * @param order The {@code Order} to be added.
+   * 
+   * @param order  The {@code Order} to be added.
    * @param odList The {@code List} of {@code OrderDetail} to be added.
-   * @return {@code true} if the {@code Order} is added successfully, {@code false} otherwise.
+   * @return {@code true} if the {@code Order} is added successfully,
+   *         {@code false} otherwise.
    * @throws NullPointerException If {@code order} or {@code odList} is null.
    */
   public boolean addOrder(Order order, List<OrderDetail> odList) throws NullPointerException;
@@ -106,17 +113,21 @@ public interface IOrderDAO {
 
   /**
    * Update an {@link Order} in the database.
-   * @param order The {@code Order} to be updated.
+   * 
+   * @param order  The {@code Order} to be updated.
    * @param odList The {@code List} of {@code OrderDetail} to be updated.
-   * @return {@code true} if the {@code Order} is updated successfully, {@code false} otherwise.
+   * @return {@code true} if the {@code Order} is updated successfully,
+   *         {@code false} otherwise.
    * @throws NullPointerException If {@code order} or {@code odList} is null.
    */
   public boolean updateOrder(Order order, List<OrderDetail> odList) throws NullPointerException;
 
   /**
    * Delete an {@link Order} from the database.
+   * 
    * @param Id The Id of the {@code Order} to be deleted.
-   * @return {@code true} if the {@code Order} is deleted successfully, {@code false} otherwise.
+   * @return {@code true} if the {@code Order} is deleted successfully,
+   *         {@code false} otherwise.
    */
   public boolean deleteOrder(int Id);
 }

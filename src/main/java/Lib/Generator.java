@@ -1,6 +1,10 @@
 package Lib;
 
 import DAOs.UserDAO;
+import Models.User;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -64,6 +68,36 @@ public class Generator {
         LocalDateTime now = LocalDateTime.now();
 
         return dtf.format(now);
+    }
+
+    /**
+     * Get the filtered list from the original list, according to its page and num
+     * of row.
+     * 
+     * @param <T>  The type of the list.
+     * @param list The original list.
+     * @param page The page number.
+     * @param rows The number of rows per page.
+     * @return The filtered list.
+     */
+    public static <T> List<T> pagingList(List<T> list, int page, int rows) {
+        if (list == null || list.isEmpty() || page <= 0) {
+            return new ArrayList<>();
+        }
+
+        int offset = rows * (page - 1);
+        int toIndex = offset + rows;
+
+        if (toIndex >= list.size()) {
+            toIndex = list.size();
+        }
+
+        if (offset >= list.size()) {
+            offset = list.size();
+        }
+
+        List<T> subList = list.subList(offset, toIndex);
+        return subList;
     }
 
 }
