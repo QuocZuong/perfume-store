@@ -2,6 +2,8 @@ package DAOs;
 
 import Models.Order;
 import Models.OrderDetail;
+import Models.Product;
+import Models.Stock;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -24,26 +26,29 @@ public class OrderDAO implements IOrderDAO {
     }
 
     @Override
-    public Order orderFactory(ResultSet rs) {
+    public Order orderFactory(ResultSet rs, operation op) throws SQLException {
         Order order = new Order();
 
-        try {
-            order.setId(rs.getInt(ORDER_Id));
-            order.setCustomerId(rs.getInt(CUSTOMER_Id));
-            order.setVoucherId(rs.getInt(VOUCHER_Id));
-            order.setReceiverName(rs.getString(ORDER_RECEIVER_NAME));
-            order.setDeliveryAddress(rs.getString(ORDER_DELIVERY_ADDRESS));
-            order.setPhoneNumber(rs.getString(ORDER_PHONE_NUMBER));
-            order.setNote(rs.getString(ORDER_NOTE));
-            order.setTotal(rs.getInt(ORDER_TOTAL));
-            order.setDeductedPrice(rs.getInt(ORDER_DEDUCTED_PRICE));
-            order.setStatus(rs.getString(ORDER_STATUS));
-            order.setCreatedAt(rs.getDate(ORDER_CREATED_AT));
-            order.setCheckoutAt(rs.getDate(ORDER_CHECKOUT_AT));
-            order.setUpdateAt(rs.getDate(ORDER_UPDATE_AT));
-            order.setUpdateByOrderManager(rs.getInt(ORDER_UPDATE_BY_ORDER_MANAGER));
-        } catch (Exception e) {
-            e.printStackTrace();
+        switch (op) {
+            default:
+                try {
+                    order.setId(rs.getInt(ORDER_Id));
+                    order.setCustomerId(rs.getInt(CUSTOMER_Id));
+                    order.setVoucherId(rs.getInt(VOUCHER_Id));
+                    order.setReceiverName(rs.getString(ORDER_RECEIVER_NAME));
+                    order.setDeliveryAddress(rs.getString(ORDER_DELIVERY_ADDRESS));
+                    order.setPhoneNumber(rs.getString(ORDER_PHONE_NUMBER));
+                    order.setNote(rs.getString(ORDER_NOTE));
+                    order.setTotal(rs.getInt(ORDER_TOTAL));
+                    order.setDeductedPrice(rs.getInt(ORDER_DEDUCTED_PRICE));
+                    order.setStatus(rs.getString(ORDER_STATUS));
+                    order.setCreatedAt(rs.getDate(ORDER_CREATED_AT));
+                    order.setCheckoutAt(rs.getDate(ORDER_CHECKOUT_AT));
+                    order.setUpdateAt(rs.getDate(ORDER_UPDATE_AT));
+                    order.setUpdateByOrderManager(rs.getInt(ORDER_UPDATE_BY_ORDER_MANAGER));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
         }
 
         return order;
@@ -144,7 +149,7 @@ public class OrderDAO implements IOrderDAO {
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                result.add(orderFactory(rs));
+                result.add(orderFactory(rs, operation.READ));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -168,9 +173,7 @@ public class OrderDAO implements IOrderDAO {
             ps.setInt(1, customerId);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                orderFactory(rs);
-                Order order = orderFactory(rs);
-                orders.add(order);
+                orders.add(orderFactory(rs, operation.READ));
             }
         } catch (SQLException ex) {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -190,7 +193,7 @@ public class OrderDAO implements IOrderDAO {
             ps.setInt(1, orderId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                order = orderFactory(rs);
+                order = orderFactory(rs, operation.READ);
             }
         } catch (SQLException ex) {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -302,4 +305,65 @@ public class OrderDAO implements IOrderDAO {
         return result;
     }
 
+    /* --------------------------- FILTER SECTION --------------------------- */
+    public List<Order> searchOrder(String search) {
+        if (search == null || search.equals("")) {
+            search = "%";
+        } else {
+            search = "%" + search + "%";
+        }
+
+        ResultSet rs;
+        List<Order> orderList = new ArrayList<>();
+
+        try {
+            String sql = "SELECT o.Order_ID \n"
+                    + "o.Customer_ID, \n"
+                    + "u.User_Name, \n"
+                    + "o.Voucher_ID, \n"
+                    + "o.Order_Receiver_Name, \n"
+                    + "o.Order_Delivery_Address, \n"
+                    + "o.Order_Phone_Number, \n"
+                    + "o.Order_Note, \n"
+                    + "o.Order_Total, \n"
+                    + "o.Order_Deducted_Price, \n"
+                    + "o.Order_Status, \n"
+                    + "o.Order_Created_At, \n"
+                    + "o.Order_Checkout_At, \n"
+                    + "o.Order_Update_At, \n"
+                    + "o.Order_Update_By_Order_Manager \n"
+                    + "FROM [Customer] c \n"
+                    + "JOIN [User] u ON c.User_ID = u.User_ID \n"
+                    + "JOIN [Order] o ON c.Customer_ID = o.Customer_ID \n"
+                    + "WHERE o.Order_Receiver_Name LIKE ? \n"
+                    + "OR o.Order_Created_At LIKE ? \n"
+                    + "OR o.Order_Checkout_At LIKE ? \n"
+                    + "OR o.Order_Update_At LIKE ? \n"
+                    + "OR o.Order_Phone_Number LIKE ? \n"
+                    + "OR o.Order_Delivery_Address LIKE ? \n" // (Only Admin)
+                    + "OR u.User_Name LIKE ? \n" // Customer_Name
+                    + "OR o.Order_Manager_Name LIKE ? \n";
+
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setNString(1, search);
+            ps.setString(2, search);
+            ps.setString(3, search);
+            ps.setString(4, search);
+            ps.setString(5, search);
+            ps.setNString(6, search);
+            ps.setNString(7, search);
+            ps.setNString(8, search);
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                orderList.add(orderFactory(rs, operation.SEARCH));
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return orderList;
+    }
 }
