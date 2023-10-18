@@ -29,8 +29,8 @@ public class UserValidation implements Filter {
     private final UserDAO userDAO = new UserDAO();
     private final EmployeeDAO employeeDAO = new EmployeeDAO();
     private final CustomerDAO customerDAO = new CustomerDAO();
-    private final String[] FOLDER_URL_LIST = {"/ADMIN_PAGE", "/CUSTOMER_PAGE", "/LOGIN_PAGE", "/PRODUCT_PAGE",
-        "/USER_PAGE"};
+    private final String[] FOLDER_URL_LIST = { "/ADMIN_PAGE", "/CUSTOMER_PAGE", "/LOGIN_PAGE", "/PRODUCT_PAGE",
+            "/USER_PAGE" };
 
     public UserValidation() {
     }
@@ -38,11 +38,11 @@ public class UserValidation implements Filter {
     /**
      * Validate cookies and redirect user to login page if not valid.
      *
-     * @param request The servlet request we are processing
+     * @param request  The servlet request we are processing
      * @param response The servlet response we are creating
-     * @param chain The filter chain we are processing
+     * @param chain    The filter chain we are processing
      *
-     * @exception IOException if an input/output error occurs
+     * @exception IOException      if an input/output error occurs
      * @exception ServletException if a servlet error occurs
      */
     public void doFilter(ServletRequest request, ServletResponse response,
@@ -54,6 +54,8 @@ public class UserValidation implements Filter {
 
         boolean isAdmin = isAdmin(req, res);
         boolean isCustomer = isCustomer(req, res);
+        boolean isOrderManager = isOrderManager(req, res);
+        boolean isInventoryManager = isInventoryManager(req, res);
 
         revalidateUserRoleSession(req, res);
 
@@ -88,6 +90,14 @@ public class UserValidation implements Filter {
                 res.sendRedirect("/Admin");
                 return;
             }
+            if (isOrderManager) {
+                res.sendRedirect("/OrderManager");
+                return;
+            }
+            if (isInventoryManager) {
+                res.sendRedirect("/InventoryManager");
+                return;
+            }
         }
 
         // --------------------------PREVENT UNAUTHORISED USER----------------------
@@ -96,6 +106,18 @@ public class UserValidation implements Filter {
             if (isAdmin) {
                 System.out.println("Going admin");
                 res.sendRedirect("/Admin");
+                return;
+            }
+
+            if (isOrderManager) {
+                System.out.println("Going order manager");
+                res.sendRedirect("/OrderManager");
+                return;
+            }
+
+            if (isInventoryManager) {
+                System.out.println("Going inventory manager");
+                res.sendRedirect("/InventoryManager");
                 return;
             }
 
@@ -108,6 +130,20 @@ public class UserValidation implements Filter {
         // --------------------------PREVENT UNAUTHORISED ADMIN----------------------
         if (URI.startsWith("/Admin")) {
             if (!isAdmin) {
+                res.sendError(403);
+                return;
+            }
+        }
+
+        if (URI.startsWith("/OrderManager")) {
+            if (!isOrderManager) {
+                res.sendError(403);
+                return;
+            }
+        }
+
+        if (URI.startsWith("/InventoryManager")) {
+            if (!isInventoryManager) {
                 res.sendError(403);
                 return;
             }
@@ -139,7 +175,8 @@ public class UserValidation implements Filter {
     }
 
     public void revalidateUserRoleSession(HttpServletRequest request, HttpServletResponse response) {
-        boolean isAnonymous = !isAdmin(request, response) && !isCustomer(request, response);
+        boolean isAnonymous = !isAdmin(request, response) && !isCustomer(request, response)
+                && !isOrderManager(request, response) && !isInventoryManager(request, response);
 
         if (isAnonymous) {
             Cookie userCookie = (Cookie) request.getSession().getAttribute("userCookie");
@@ -182,6 +219,56 @@ public class UserValidation implements Filter {
                         response.addCookie(cookie);
                         return false;
                     }
+                    cookie.setPath("/");
+                    request.getSession().setAttribute("userCookie", cookie);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public boolean isOrderManager(HttpServletRequest request, HttpServletResponse response) {
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies != null) {
+
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("Order Manager")) {
+                    if (!userDAO.isExistUsername((cookie.getValue()))
+                            || !employeeDAO.isOrderManager(cookie.getValue())) {
+                        cookie.setMaxAge(0);
+                        cookie.setPath("/");
+                        response.addCookie(cookie);
+                        return false;
+                    }
+
+                    cookie.setPath("/");
+                    request.getSession().setAttribute("userCookie", cookie);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public boolean isInventoryManager(HttpServletRequest request, HttpServletResponse response) {
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies != null) {
+
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("Inventory Manager")) {
+                    if (!userDAO.isExistUsername((cookie.getValue()))
+                            || !employeeDAO.isInventoryManager(cookie.getValue())) {
+                        cookie.setMaxAge(0);
+                        cookie.setPath("/");
+                        response.addCookie(cookie);
+                        return false;
+                    }
+
                     cookie.setPath("/");
                     request.getSession().setAttribute("userCookie", cookie);
                     return true;
