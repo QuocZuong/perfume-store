@@ -15,7 +15,6 @@
 <%
     Customer customer = (Customer) request.getAttribute("Customer");
     Voucher voucher = (Voucher) request.getAttribute("voucher");
-    ArrayList<Product> approveVoucherProduct = (ArrayList<Product>) request.getAttribute("approveVoucherProduct");
     String username = customer.getUsername();
     String email = customer.getEmail();
     String name = customer.getName();
@@ -126,11 +125,11 @@
                                 <div class="checkout">
 
                                     <h2 class="text-start">Thông tin thanh toán</h2>
-
                                     <div class="d-flex flex-column flex-wrap w-100">
                                         <input type="text" name="txtUsername" value="<%= username%>" placeholder="Tên người dùng">
                                         <input type="text" name="txtReceiverName" id="txtReceiverName" value="<%= name%>" placeholder="Tên người nhận">
                                         <input type="text" name="txtEmail" value="<%= email%>" placeholder="Email">
+                                        <input type="hidden" name="txtVoucher" value="<%= voucher == null ? "" : voucher.getCode() %>">
                                         <input class="inputHide" type="text" name="txtPhone" id="txtPhone" class="" value="<%= (phone == null ? "" : phone)%>" placeholder="Số điện thoại"  readonly="true">
                                         <input class="inputHide" type="text" name="txtAddress" id="txtAddress" value="<%= (address == null ? "" : address)%>" placeholder="Địa chỉ" readonly="true">
                                     </div>

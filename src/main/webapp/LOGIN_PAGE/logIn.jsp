@@ -198,6 +198,7 @@
                     rules: {
                         txtUsername: {
                             required: true,
+                            maxlength: 50
                         },
                         txtPassword: {
                             required: true
@@ -205,7 +206,8 @@
                     },
                     messages: {
                         txtUsername: {
-                            required: "Vui lòng nhập tên đăng nhập hoặc email"
+                            required: "Vui lòng nhập tên đăng nhập hoặc email",
+                            maxlength : "Vui lòng nhập không quá 50 kí tự"
                         },
                         txtPassword: {
                             required: "Vui lòng nhập mật khẩu"

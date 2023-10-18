@@ -32,23 +32,23 @@ public class OrderDAO implements IOrderDAO {
         switch (op) {
             default:
                 try {
-                    order.setId(rs.getInt(ORDER_Id));
-                    order.setCustomerId(rs.getInt(CUSTOMER_Id));
-                    order.setVoucherId(rs.getInt(VOUCHER_Id));
-                    order.setReceiverName(rs.getString(ORDER_RECEIVER_NAME));
-                    order.setDeliveryAddress(rs.getString(ORDER_DELIVERY_ADDRESS));
-                    order.setPhoneNumber(rs.getString(ORDER_PHONE_NUMBER));
-                    order.setNote(rs.getString(ORDER_NOTE));
-                    order.setTotal(rs.getInt(ORDER_TOTAL));
-                    order.setDeductedPrice(rs.getInt(ORDER_DEDUCTED_PRICE));
-                    order.setStatus(rs.getString(ORDER_STATUS));
-                    order.setCreatedAt(rs.getDate(ORDER_CREATED_AT));
-                    order.setCheckoutAt(rs.getDate(ORDER_CHECKOUT_AT));
-                    order.setUpdateAt(rs.getDate(ORDER_UPDATE_AT));
-                    order.setUpdateByOrderManager(rs.getInt(ORDER_UPDATE_BY_ORDER_MANAGER));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                order.setId(rs.getInt(ORDER_Id));
+                order.setCustomerId(rs.getInt(CUSTOMER_Id));
+                order.setVoucherId(rs.getInt(VOUCHER_Id));
+                order.setReceiverName(rs.getString(ORDER_RECEIVER_NAME));
+                order.setDeliveryAddress(rs.getString(ORDER_DELIVERY_ADDRESS));
+                order.setPhoneNumber(rs.getString(ORDER_PHONE_NUMBER));
+                order.setNote(rs.getString(ORDER_NOTE));
+                order.setTotal(rs.getInt(ORDER_TOTAL));
+                order.setDeductedPrice(rs.getInt(ORDER_DEDUCTED_PRICE));
+                order.setStatus(rs.getString(ORDER_STATUS));
+                order.setCreatedAt(rs.getDate(ORDER_CREATED_AT));
+                order.setCheckoutAt(rs.getDate(ORDER_CHECKOUT_AT));
+                order.setUpdateAt(rs.getDate(ORDER_UPDATE_AT));
+                order.setUpdateByOrderManager(rs.getInt(ORDER_UPDATE_BY_ORDER_MANAGER));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         return order;
@@ -91,26 +91,65 @@ public class OrderDAO implements IOrderDAO {
             ps.setDate(12, order.getUpdateAt());
             ps.setInt(13, order.getUpdateByOrderManager());
             ps.setInt(14, order.getId());
+        } else if (op == operation.CREATE) {
+            //Not Null
+            ps.setInt(1, order.getCustomerId());
+            ps.setNString(3, order.getReceiverName());
+            ps.setNString(4, order.getDeliveryAddress());
+            ps.setString(5, order.getPhoneNumber());
+            ps.setInt(7, order.getTotal());
+            ps.setString(9, order.getStatus());
+            ps.setDate(10, order.getCreatedAt());
+            //Must null when create
+            ps.setNull(11, java.sql.Types.DATE);
+            ps.setNull(12, java.sql.Types.DATE);
+            ps.setNull(13, java.sql.Types.INTEGER);
+            //Nullable 
+            ps.setNull(2, java.sql.Types.INTEGER);
+            ps.setNull(6, java.sql.Types.NVARCHAR);
+            ps.setInt(8, java.sql.Types.INTEGER);
+
+            if (order.getVoucherId() != 0) {
+                ps.setInt(2, order.getVoucherId());
+                ps.setInt(8, order.getDeductedPrice());
+            }
+
+            if (!order.getNote().equals("")) {
+                ps.setNString(6, order.getNote());
+            }
         }
 
         return ps;
     }
 
     /* ------------------------- CREATE SECTION ---------------------------- */
-    public boolean addOrder(Order order, List<OrderDetail> odList) throws NullPointerException {
+    public boolean addOrder(Order order) throws NullPointerException {
         if (order == null) {
             throw new NullPointerException("Order is null");
         }
-        if (odList == null) {
+        if (order.getOrderDetailList() == null) {
             throw new NullPointerException("OrderDetail list is null");
         }
-        if (odList.isEmpty()) {
+        if (order.getOrderDetailList().isEmpty()) {
             throw new NullPointerException("OrderDetail list is empty");
         }
 
         boolean result = false;
-        String sql = "INSERT INTO [Order] [(Order_ID), (Customer_ID), (Voucher_ID), (Order_Receiver_Name), (Order_Delivery_Address), (Order_Phone_Number), (Order_Note), (Order_Total), (Order_Deducted_Price), (Order_Status), (Order_Created_At), (Order_Checkout_At), (Order_Update_At), (Order_Update_By_Order_Manager)]"
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "	INSERT INTO [Order] (\n"
+                + "    Customer_ID,\n"
+                + "    Voucher_ID,\n"
+                + "    Order_Receiver_Name,\n"
+                + "    Order_Delivery_Address,\n"
+                + "    Order_Phone_Number,\n"
+                + "    Order_Note,\n"
+                + "    Order_Total,\n"
+                + "    Order_Deducted_Price,\n"
+                + "    Order_Status,\n"
+                + "    Order_Created_At,\n"
+                + "    Order_Checkout_At,\n"
+                + "    Order_Update_At,\n"
+                + "    Order_Update_By_Order_Manager)\n"
+                + "    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -120,13 +159,18 @@ public class OrderDAO implements IOrderDAO {
             if (!result) {
                 return false;
             }
+            int orderId = DatabaseUtils.getLastIndentityOf("[Order]");
 
+            for (int i = 0; i < order.getOrderDetailList().size(); i++) {
+                order.getOrderDetailList().get(i).setOrderId(orderId);
+            }
             OrderDetailDao odDAO = new OrderDetailDao();
-            result = odDAO.addOrderDetail(odList);
+            result = odDAO.addOrderDetail(order.getOrderDetailList());
 
             if (!result) {
                 deleteOrder(DatabaseUtils.getLastIndentityOf("Order"));
-                odDAO.deleteOrderDetail(odList);
+                odDAO.deleteOrderDetail(order.getOrderDetailList());
+                deleteOrder(orderId);
             }
         } catch (SQLException ex) {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -136,7 +180,6 @@ public class OrderDAO implements IOrderDAO {
     }
 
     /* --------------------------- READ SECTION --------------------------- */
-
     @Override
     public List<Order> getAll() {
         String sql = "SELECT * FROM [Order]";
