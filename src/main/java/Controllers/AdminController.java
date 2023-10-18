@@ -90,10 +90,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -230,10 +230,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -535,7 +535,8 @@ public class AdminController extends HttpServlet {
 
         List<Order> orderList = oDAO.searchOrder(search);
 
-        if (request.getAttribute("exceptionType") == null && orderList.isEmpty()) {
+        if (orderList.isEmpty()) {
+            System.out.println("Empty order list");
             request.setAttribute("exceptionType", "OrderNotFoundException");
             return State.Fail.value;
         }
@@ -998,7 +999,7 @@ public class AdminController extends HttpServlet {
             String username = userCookie.getValue();
             AdminDAO adDAO = new AdminDAO();
             Admin admin = adDAO.getAdmin(username);
-            
+
             System.out.println("Admin id: " + admin.getAdminId() + "| admin name: " + admin.getName());
             int kq = pDAO.restoreProduct(product, admin);
             if (kq == 0) {
@@ -1275,9 +1276,9 @@ public class AdminController extends HttpServlet {
             String username = userCookie.getValue();
             AdminDAO adDAO = new AdminDAO();
             Admin admin = adDAO.getAdmin(username);
-            
+
             System.out.println("Admin id: " + admin.getAdminId() + "| admin name: " + admin.getName());
-            
+
             int kq = pDAO.disableProduct(product, admin);
             if (kq == 0) {
                 System.out.println("Delete Failed, The Product is not in the database");
