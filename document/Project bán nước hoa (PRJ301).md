@@ -163,13 +163,13 @@ ERD
 	+ *Customer_ID ( int not null (duplicate) )*
 	+ *Voucher_ID (int not null)*
 	+ Order_Receiver_Name (nvarchar(200) not null)
-	+ Order_Delivery_Address (nvarchar(300))
-	+ Order_Phone_Number (varchar(10))
+	+ Order_Delivery_Address (nvarchar(300) not null)
+	+ Order_Phone_Number (varchar(10) not null)
 	+ Order_Note (nvarchar(500))
-	+ Order_Total (int default 0)
+	+ Order_Total (int default 0 not null)
 	+ Order_Deducted_Price (int default 0)
 	+ Order_Status (varchar(20) not null)
-	+ Order_Created_At (Datetime) not null
+	+ Order_Created_At (Datetime not null)
 	+ Order_Checkout_At (Datetime)
 	+ Order_Update_At (Datetime)
 	+ *Order_Update_By_Order_Manager (int not null)*

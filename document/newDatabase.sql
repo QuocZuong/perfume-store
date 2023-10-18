@@ -197,7 +197,7 @@ CREATE TABLE [Order](
     [Order_ID] INT NOT NULL IDENTITY(1, 1),
     [Customer_ID] INT NOT NULL,
     -- Duplicate, Foreign key to Customer
-    [Voucher_ID] INT NOT NULL,
+    [Voucher_ID] INT,
     -- Foreign key to Voucher
     [Order_Receiver_Name] NVARCHAR(200) NOT NULL,
     [Order_Delivery_Address] NVARCHAR(300),
@@ -209,7 +209,7 @@ CREATE TABLE [Order](
     [Order_Created_At] DATETIME NOT NULL,
     [Order_Checkout_At] DATETIME,
     [Order_Update_At] DATETIME,
-    [Order_Update_By_Order_Manager] INT NOT NULL,
+    [Order_Update_By_Order_Manager] INT,
     -- Foreign key to Order_Manager
     PRIMARY KEY ([Order_ID]),
     FOREIGN KEY ([Customer_ID]) REFERENCES [Customer]([Customer_ID]),

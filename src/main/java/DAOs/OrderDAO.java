@@ -136,7 +136,6 @@ public class OrderDAO implements IOrderDAO {
     }
 
     /* --------------------------- READ SECTION --------------------------- */
-
     @Override
     public List<Order> getAll() {
         String sql = "SELECT * FROM [Order]";
@@ -317,32 +316,32 @@ public class OrderDAO implements IOrderDAO {
         List<Order> orderList = new ArrayList<>();
 
         try {
-            String sql = "SELECT o.Order_ID \n"
-                    + "o.Customer_ID, \n"
-                    + "u.User_Name, \n"
-                    + "o.Voucher_ID, \n"
-                    + "o.Order_Receiver_Name, \n"
-                    + "o.Order_Delivery_Address, \n"
-                    + "o.Order_Phone_Number, \n"
-                    + "o.Order_Note, \n"
-                    + "o.Order_Total, \n"
-                    + "o.Order_Deducted_Price, \n"
-                    + "o.Order_Status, \n"
-                    + "o.Order_Created_At, \n"
-                    + "o.Order_Checkout_At, \n"
-                    + "o.Order_Update_At, \n"
-                    + "o.Order_Update_By_Order_Manager \n"
-                    + "FROM [Customer] c \n"
-                    + "JOIN [User] u ON c.User_ID = u.User_ID \n"
-                    + "JOIN [Order] o ON c.Customer_ID = o.Customer_ID \n"
-                    + "WHERE o.Order_Receiver_Name LIKE ? \n"
-                    + "OR o.Order_Created_At LIKE ? \n"
-                    + "OR o.Order_Checkout_At LIKE ? \n"
-                    + "OR o.Order_Update_At LIKE ? \n"
-                    + "OR o.Order_Phone_Number LIKE ? \n"
-                    + "OR o.Order_Delivery_Address LIKE ? \n" // (Only Admin)
-                    + "OR u.User_Name LIKE ? \n" // Customer_Name
-                    + "OR o.Order_Manager_Name LIKE ? \n";
+            String sql = "SELECT o.Order_ID,\n"
+                    + "    o.Customer_ID,\n"
+                    + "    u.User_Name,\n"
+                    + "    o.Voucher_ID,\n"
+                    + "    o.Order_Receiver_Name,\n"
+                    + "    o.Order_Delivery_Address,\n"
+                    + "    o.Order_Phone_Number,\n"
+                    + "    o.Order_Note,\n"
+                    + "    o.Order_Total,\n"
+                    + "    o.Order_Deducted_Price,\n"
+                    + "    o.Order_Status,\n"
+                    + "    o.Order_Created_At,\n"
+                    + "    o.Order_Checkout_At,\n"
+                    + "    o.Order_Update_At,\n"
+                    + "    o.Order_Update_By_Order_Manager\n"
+                    + "FROM [Customer] c\n"
+                    + "    JOIN [User] u ON c.User_ID = u.User_ID\n"
+                    + "    JOIN [Order] o ON c.Customer_ID = o.Customer_ID\n"
+                    + "WHERE o.Order_Receiver_Name LIKE ?\n"
+                    + "    OR o.Order_Created_At LIKE ?\n"
+                    + "    OR o.Order_Checkout_At LIKE ?\n"
+                    + "    OR o.Order_Update_At LIKE ?\n"
+                    + "    OR o.Order_Phone_Number LIKE ?\n"
+                    + "    OR o.Order_Delivery_Address LIKE ?\n"
+                    + "    OR u.User_Name LIKE ?\n"
+                    + "    OR o.Order_Update_By_Order_Manager LIKE ?;";
 
             PreparedStatement ps = conn.prepareStatement(sql);
 
