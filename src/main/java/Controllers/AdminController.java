@@ -63,7 +63,7 @@ public class AdminController extends HttpServlet {
     public static final String ADMIN_CLIENT_ORDER_URI = "/Admin/User/OrderDetail";
 
     //Chart URL
-    public static final String ADMIN_CHART_BEST_SELLING_PRODUCT = "/Admin/Chart/BestSellingProduct";
+    public static final String ADMIN_CHART_BEST_SELLING_PRODUCT_BY_GENDER = "/Admin/Chart/BestSellingProductByGender";
 
     public static final String ADMIN_UPDATE_INFO_URI = "/Admin/Update/Info";
 
@@ -202,9 +202,9 @@ public class AdminController extends HttpServlet {
         // return;
         // }
         // ---------------------------- CHART SECTION ----------------------------
-        if (path.startsWith(ADMIN_CHART_BEST_SELLING_PRODUCT)) {
+        if (path.startsWith(ADMIN_CHART_BEST_SELLING_PRODUCT_BY_GENDER)) {
             bestSellingProduct(request, response);
-            request.getRequestDispatcher("/ADMIN_PAGE/Chart/bestProductSelling.jsp").forward(request, response);
+            request.getRequestDispatcher("/ADMIN_PAGE/Chart/bestProductSellingByGender.jsp").forward(request, response);
             return;
         }
 

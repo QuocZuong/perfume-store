@@ -150,9 +150,9 @@
                                         <div class="modal-body">
 
                                             <div class="mb-3">
-                                                <a href="/Admin/Chart/BestSellingProduct" class="text-decoration-none">
+                                                <a href="/Admin/Chart/BestSellingProductByGender" class="text-decoration-none">
                                                     <button class="btn btn-outline-dark d-flex w-100 h-100 justify-content-center align-items-center rounded-0 fn-btn">
-                                                        <span class="h2">&nbsp;&nbsp;Best Selling Products</span>
+                                                        <span class="h2">&nbsp;&nbsp;Best Selling Products By Gender</span>
                                                     </button>
                                                 </a>
                                             </div>
