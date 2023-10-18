@@ -1,37 +1,48 @@
 package Models;
 
 public class Admin extends Employee {
-    
+
     private int adminId;
     private int employeeId;
-    
+
     public Admin() {
     }
+
     public Admin(Employee emp) {
-        super.setEmployeeId(employeeId);
-        super.setUserId(emp.getUserId());
-        super.setCitizenId(emp.getCitizenId());
-        super.setDateOfBirth(emp.getDateOfBirth());
-        super.setPhoneNumber(emp.getPhoneNumber());
-        super.setAddress(emp.getAddress());
-        super.setRole(emp.getRole());
-        super.setJoinDate(emp.getJoinDate());
-        super.setRetireDate(emp.getRetireDate());
+        //User
+        setUserId(emp.getUserId());
+        setName(emp.getName());
+        setUsername(emp.getUsername());
+        setPassword(emp.getPassword());
+        setEmail(emp.getEmail());
+        setActive(emp.isActive());
+        setType(emp.getType());
+
+        //Employee
+        setEmployeeId(emp.getEmployeeId());
+        setUserId(emp.getUserId());
+        setCitizenId(emp.getCitizenId());
+        setDateOfBirth(emp.getDateOfBirth());
+        setPhoneNumber(emp.getPhoneNumber());
+        setAddress(emp.getAddress());
+        setRole(emp.getRole());
+        setJoinDate(emp.getJoinDate());
+        setRetireDate(emp.getRetireDate());
     }
-    
+
     public int getAdminId() {
         return adminId;
     }
-    
+
     public void setAdminId(int adminId) {
         this.adminId = adminId;
     }
-    
+
     @Override
     public int getEmployeeId() {
         return employeeId;
     }
-    
+
     @Override
     public void setEmployeeId(int employeeId) {
         this.employeeId = employeeId;

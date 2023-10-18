@@ -1,6 +1,7 @@
 package Lib;
 
 import DAOs.ProductDAO;
+import Models.Admin;
 
 public class Test {
 
@@ -13,13 +14,22 @@ public class Test {
             // for (int i = 0; i < BrandData.length; i++) {
             // System.out.println(DataManager.insert("Brand", BrandData[i]));
             // }
-            // int counter = 0;
-            // for (int i = 0; i < data.length; i++) {
-            // counter += (pr.addProduct(data[i]) == 1) ? 1 : 0;
-            // System.out.printf("%.2f%% (%d/%d)\n", ((float) counter / data.length) * 100,
-            // counter, data.length);
-            // }
+<<<<<<< Updated upstream
+//            int counter = 0;
+//            for (int i = 0; i < data.length; i++) {
+//                counter += (pr.addProduct(data[i]) == 1) ? 1 : 0;
+//                System.out.printf("%.2f%% (%d/%d)\n", ((float) counter / data.length) * 100, counter, data.length);
+//            }
+=======
+            int counter = 0;
+            Admin admin = new Admin();
+            admin.setAdminId(3);
+            for (int i = 0; i < data.length; i++) {
+                counter += (pr.addProduct(data[i], admin) == 1) ? 1 : 0;
+                System.out.printf("%.2f%% (%d/%d)\n", ((float) counter / data.length) * 100, counter, data.length);
+            }
 
+>>>>>>> Stashed changes
             // System.out.println(DataManager.select("Product",
             // ""));
             // System.out.println(DataManager.delete("Brand", ""));

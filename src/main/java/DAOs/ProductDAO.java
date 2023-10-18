@@ -125,12 +125,19 @@ public class ProductDAO implements IProductDAO {
             result = ps.executeUpdate();
 
             // Only when backup data
+            int lastID = DatabaseUtils.getLastIndentityOf("Product");
+            pd.setId(lastID);
             if (pd.getStock() != null) {
                 StockDAO stkDAO = new StockDAO();
-                int lastID = DatabaseUtils.getLastIndentityOf("Product");
                 pd.getStock().setProductID(lastID);
                 stkDAO.addStock(pd.getStock());
             }
+            // Track admin
+            if (admin != null) {
+                ProductActivityLogDAO palDAO = new ProductActivityLogDAO();
+                palDAO.addProductActivityLog(ProductActivityLogDAO.Operation.Add, pd, admin, "Add " + pd.getName());
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -410,12 +417,20 @@ public class ProductDAO implements IProductDAO {
             ps.setNString(8, product.getDescription());
             ps.setBoolean(9, product.isActive());
             ps.setInt(10, product.getId());
+
+            String description = detectChange(product);
             result = ps.executeUpdate();
 
             Stock stock = product.getStock();
             if (stock != null) {
                 StockDAO stkDAO = new StockDAO();
                 stkDAO.updateStock(stock);
+            }
+
+            // Track admin when update all filed
+            if (admin != null) {
+                ProductActivityLogDAO palDAO = new ProductActivityLogDAO();
+                palDAO.addProductActivityLog(ProductActivityLogDAO.Operation.Update, product, admin, description);
             }
 
         } catch (Exception e) {
@@ -442,4 +457,66 @@ public class ProductDAO implements IProductDAO {
         product.setActive(false);
         return updateProduct(product, admin);
     }
+
+    public String detectChange(Product updateProduct) {
+        Product oldProduct = getProduct(updateProduct.getId());
+
+        if (oldProduct == null) {
+            return "Product not found.";
+        }
+
+        StringBuilder strBuilder = new StringBuilder("Changes detected:\n");
+
+        if (!oldProduct.getName().equals(updateProduct.getName())) {
+            strBuilder.append("Name : \"").append(oldProduct.getName())
+                    .append("\"=>\"").append(updateProduct.getName()).append("\"\n");
+        }
+
+        if (oldProduct.getBrandId() != updateProduct.getBrandId()) {
+            BrandDAO bDAO = new BrandDAO();
+            String oldBrand = bDAO.getBrand(oldProduct.getBrandId()).getName();
+            String newBrand = bDAO.getBrand(updateProduct.getBrandId()).getName();
+
+            strBuilder.append("Brand Name : \"").append(oldBrand)
+                    .append("\"=>\"").append(newBrand).append("\"\n");
+        }
+
+        if (!oldProduct.getGender().equals(updateProduct.getGender())) {
+            strBuilder.append("Gender : \"").append(oldProduct.getGender())
+                    .append("\"=>\"").append(updateProduct.getGender()).append("\"\n");
+        }
+
+        if (!oldProduct.getSmell().equals(updateProduct.getSmell())) {
+            strBuilder.append("Smell : \"").append(oldProduct.getSmell())
+                    .append("\"=>\"").append(updateProduct.getSmell()).append("\"\n");
+        }
+
+        if (oldProduct.getReleaseYear() != updateProduct.getReleaseYear()) {
+            strBuilder.append("Release Year : \"").append(oldProduct.getReleaseYear())
+                    .append("\"=>\"").append(updateProduct.getReleaseYear()).append("\"\n");
+        }
+
+        if (oldProduct.getVolume() != updateProduct.getVolume()) {
+            strBuilder.append("Volume : \"").append(oldProduct.getVolume())
+                    .append("\"=>\"").append(updateProduct.getVolume()).append("\"\n");
+        }
+
+        if (!oldProduct.getImgURL().equals(updateProduct.getImgURL())) {
+            strBuilder.append("Image URL : \"").append(oldProduct.getImgURL())
+                    .append("\"=>\"").append(updateProduct.getImgURL()).append("\"\n");
+        }
+
+        if (!oldProduct.getDescription().equals(updateProduct.getDescription())) {
+            strBuilder.append("Description : \"").append(oldProduct.getDescription())
+                    .append("\"=>\"").append(updateProduct.getDescription()).append("\"\n");
+        }
+
+        if (oldProduct.isActive() != updateProduct.isActive()) {
+            strBuilder.append("Active status : \"").append(oldProduct.isActive())
+                    .append("\"=>\"").append(updateProduct.isActive()).append("\"\n");
+        }
+
+        return strBuilder.toString();
+    }
+
 }
