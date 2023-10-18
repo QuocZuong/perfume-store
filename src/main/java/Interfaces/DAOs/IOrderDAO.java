@@ -85,7 +85,7 @@ public interface IOrderDAO {
    *         {@code false} otherwise.
    * @throws NullPointerException If {@code order} or {@code odList} is null.
    */
-  public boolean addOrder(Order order, List<OrderDetail> odList) throws NullPointerException;
+  public boolean addOrder(Order order) throws NullPointerException;
 
   /**
    * Get all {@link Order}s in database.

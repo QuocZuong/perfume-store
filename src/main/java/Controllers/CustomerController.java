@@ -48,6 +48,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import Interfaces.DAOs.IOrderDAO;
+import Models.OrderDetail;
 
 public class CustomerController extends HttpServlet {
 
@@ -92,10 +94,10 @@ public class CustomerController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -116,19 +118,7 @@ public class CustomerController extends HttpServlet {
             response.sendRedirect(CUSTOMER_CART_URI);
             return;
         }
-        //
-        // if (path.startsWith(CLIENT_CART_CHECKOUT_URI)) {
-        // System.out.println("Going checkout");
-        // boolean kq = handleCheckout(request, response);
-        // if (kq) {
-        // request.getRequestDispatcher("/CLIENT_PAGE/checkout.jsp").forward(request,
-        // response);
-        // } else {
-        // response.sendRedirect(CLIENT_CART_URI);
-        // }
-        // return;
-        // }
-        //
+
         if (path.startsWith(CUSTOMER_CART_URI)) {
             System.out.println("Going cart");
             int result = getCartProduct(request);
@@ -155,6 +145,7 @@ public class CustomerController extends HttpServlet {
             response.sendRedirect(CUSTOMER_USER_URI);
             return;
         }
+
         //
         // if (path.startsWith(CLIENT_ORDER_DETAIL_URI)) {
         // System.out.println("Going Order Detail");
@@ -171,10 +162,10 @@ public class CustomerController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -261,21 +252,18 @@ public class CustomerController extends HttpServlet {
                 return;
             }
         }
-        // if (path.startsWith(CLIENT_CHECKOUT_URI)) {
-        // if (request.getParameter("btnSubmitCheckOut") != null
-        // && request.getParameter("btnSubmitCheckOut").equals("Submit")) {
-        // System.out.println("Going Checkout");
-        // if (ClientCheckout(request, response)) {
-        // int OrderID = (int) request.getAttribute("OrderID");
-        // String CheckOutSuccess = (String) request.getAttribute("CheckOutSuccess");
-        // response.sendRedirect(CLIENT_ORDER_DETAIL_URI + "/" + OrderID +
-        // CheckOutSuccess);
-        // return;
-        // }
-        // response.sendRedirect(CLIENT_CART_URI);
-        // return;
-        // }
-        // }
+        if (path.startsWith(CUSTOMER_CHECKOUT_URI)) {
+            if (request.getParameter("btnSubmitCheckOut") != null
+                    && request.getParameter("btnSubmitCheckOut").equals("Submit")) {
+                System.out.println("Going Checkout");
+                int result = customerCheckout(request);
+                if (result == State.Success.value) {
+                    response.sendRedirect(CUSTOMER_ORDER_DETAIL_URI + "=" + request.getParameter("OrderID") + request.getParameter("CheckOutSuccess"));
+                } else {
+                    response.sendRedirect(CUSTOMER_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
+                }
+            }
+        }
 
     }
 
@@ -318,65 +306,10 @@ public class CustomerController extends HttpServlet {
         return State.Success.value;
 
     }
-    //
-    // private boolean ClientCheckout(HttpServletRequest request,
-    // HttpServletResponse response) {
-    // UserDAO usDAO = new UserDAO();
-    // CartDAO cDAO = new CartDAO();
-    // ProductDAO pDAO = new ProductDAO();
-    // OrderDAO oDAO = new OrderDAO();
-    //
-    // Cookie currentUserCookie = (Cookie)
-    // request.getSession().getAttribute("userCookie");
-    // String username = currentUserCookie.getValue();
-    // int ClientID = usDAO.getUser(username).getID();
-    // ArrayList<int[]> CartProductQuan = cDAO.getAllCartProductQuantity(ClientID);
-    //
-    // if (CartProductQuan.size() == 0) {
-    // System.out.println("The cart is empty");
-    // return false;
-    // }
-    //
-    // for (int i = 0; i < CartProductQuan.size(); i++) {
-    // int ProductID = CartProductQuan.get(i)[0];
-    // int Quantity = CartProductQuan.get(i)[1];
-    // int StoreQuan = pDAO.getProduct(ProductID).getQuantity();
-    // if (StoreQuan < Quantity) {
-    // System.out.println("Kho khong du so luong san pham co ID:" + ProductID);
-    // return false;
-    // }
-    // }
-    // String newAddress = request.getParameter("txtNewAddress");
-    // String newPhone = request.getParameter("txtNewPhone");
-    // String Address = request.getParameter("txtAddress");
-    // String Phone = request.getParameter("txtPhone");
-    // if (newAddress != null && !newAddress.equals("")) {
-    // Address = newAddress;
-    // }
-    // if (newPhone != null && !newPhone.equals("")) {
-    // Phone = newPhone;
-    // }
-    //
-    // String Note = request.getParameter("txtNote");
-    // int Total = cDAO.getCartTotal(ClientID);
-    // String now = new SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date());
-    // Date nowDate = Date.valueOf(now);
-    // int kq = usDAO.checkout(ClientID, nowDate, Address, Phone, Note, Total);
-    // if (kq == 0) {
-    // System.out.println("Khong thanh toan duoc");
-    // return false;
-    // } else {
-    // System.out.println("Thanh toan thanh cong");
-    // request.setAttribute("OrderID", oDAO.getMaxOrderID());
-    // request.setAttribute("CheckOutSuccess", "?CheckOutSuccess=true");
-    // return true;
-    // }
-    //
-    // }
 
     /**
      * Add a new delivery address to the database
-     * 
+     *
      * @param request The request object
      * @return 1 if the operation is successful, 0 otherwise
      */
@@ -441,7 +374,6 @@ public class CustomerController extends HttpServlet {
     }
 
     // ---------------------------- READ SECTION ----------------------------
-
     private int getCartProduct(HttpServletRequest request) {
         CustomerDAO cusDAO = new CustomerDAO();
         CartItemDAO ciDAO = new CartItemDAO();
@@ -656,8 +588,8 @@ public class CustomerController extends HttpServlet {
 
     /**
      * Update a delivery address
-     * 
-     * @param request  The request object
+     *
+     * @param request The request object
      * @param response The response object
      * @return 1 if the operation is successful, 0 otherwise
      */
@@ -705,8 +637,8 @@ public class CustomerController extends HttpServlet {
             return State.Fail.value;
         }
 
-        final String[] exceptionalAddresses = new String[] {
-                "Tỉnh Bà Rịa - Vũng Tàu"
+        final String[] exceptionalAddresses = new String[]{
+            "Tỉnh Bà Rịa - Vũng Tàu"
         };
 
         boolean isExceptionalAddress = false;
@@ -877,15 +809,13 @@ public class CustomerController extends HttpServlet {
         }
 
         // check xem cac san pham trong kho co du de checkout khong
-        for (int i = 0; i < cartItemList.size(); i++) {
-            int ProductID = cartItemList.get(i).getProductId();
-            int Quantity = cartItemList.get(i).getQuantity();
-            int stockQuantity = pDAO.getProduct(ProductID).getStock().getQuantity();
-            if (stockQuantity < Quantity) {
-                System.out.println("Kho khong du so luong san pham co ID:" + ProductID);
-                request.setAttribute("exceptionType", "NotEnoughProductQuantityException");
-                return State.Fail.value;
+        ArrayList<Product> outOfStockProductToCheckOut = ciDAO.getAllOutOfStockProductFromCart(CustomerID);
+        if (!outOfStockProductToCheckOut.isEmpty()) {
+            for (int i = 0; i < outOfStockProductToCheckOut.size(); i++) {
+                System.out.println("Kho khong du so luong san pham co ID:" + outOfStockProductToCheckOut.get(i).getId());
             }
+            request.setAttribute("exceptionType", "NotEnoughProductQuantityException");
+            return State.Fail.value;
         }
 
         String voucherCode = request.getParameter("VoucherTXT");
@@ -907,7 +837,6 @@ public class CustomerController extends HttpServlet {
                         request.setAttribute("exceptionType", "OperationAddFailedException");
                         return State.Fail.value;
                     }
-                    request.setAttribute("approveVoucherProduct", approveVoucherProduct);
                     request.setAttribute("voucher", v);
                 }
             } catch (VoucherNotFoundException ex) {
@@ -932,9 +861,176 @@ public class CustomerController extends HttpServlet {
         return State.Success.value;
     }
 
+    //
+    private int customerCheckout(HttpServletRequest request) {
+        CartItemDAO ciDAO = new CartItemDAO();
+        ProductDAO pDAO = new ProductDAO();
+        OrderDAO oDAO = new OrderDAO();
+        CustomerDAO cusDAO = new CustomerDAO();
+
+        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+        String username = currentUserCookie.getValue();
+        Customer cus = cusDAO.getCustomer(username);
+
+        if (cus == null) {
+            System.out.println("unknow customer to checkout");
+            request.setAttribute("exceptionType", "AccountNotFoundException");
+            return State.Fail.value;
+        }
+
+        int CustomerID = cus.getCustomerId();
+        ArrayList<CartItem> cartItemList = ciDAO.getAllCartItemOfCustomer(CustomerID);
+
+        if (cartItemList.isEmpty()) {
+            System.out.println("The cart is empty to checkout");
+            request.setAttribute("exceptionType", "OperationAddFailedException");
+            return State.Fail.value;
+        }
+
+        ArrayList<Product> outOfStockToCheckoutProduct = ciDAO.getAllOutOfStockProductFromCart(CustomerID);
+        if (!outOfStockToCheckoutProduct.isEmpty()) {
+            for (int i = 0; i < outOfStockToCheckoutProduct.size(); i++) {
+                System.out.println("Khong du so luong cua san pham:" + outOfStockToCheckoutProduct.get(i).getName());
+            }
+            request.setAttribute("exceptionType", "NotEnoughProductQuantityException");
+            return State.Fail.value;
+        }
+
+        String newAddress = request.getParameter("txtNewAddress");
+        String newPhone = request.getParameter("txtNewPhone");
+        String Address = request.getParameter("txtAddress");
+        String Phone = request.getParameter("txtPhone");
+
+        if (newAddress != null && !newAddress.equals("")) {
+            Address = newAddress;
+        }
+        if (newPhone != null && !newPhone.equals("")) {
+            Phone = newPhone;
+        }
+        String receiverName = request.getParameter("txtReceiverName");
+        if (receiverName == null || receiverName.equals("")) {
+            System.out.println("Receiver name is null");
+            request.setAttribute("exceptionType", "OperationAddFailedException");
+            return State.Fail.value;
+        }
+        String Note = request.getParameter("txtNote");
+        if (Note == null) {
+            Note = "";
+        }
+
+        String voucherCode = request.getParameter("txtVoucher");
+        // Co su dung voucher
+        Voucher v = null;
+        int voucherID = 0;
+        if (voucherCode != null && !voucherCode.equals("")) {
+            VoucherDAO vDAO = new VoucherDAO();
+            v = vDAO.getVoucher(voucherCode);
+            try {
+                // Kiem tra tinh hop le va quang exception
+                if (vDAO.checkValidVoucher(v, cus.getCustomerId())) {
+                    ArrayList<Product> approveVoucherProduct = new ArrayList();
+                    for (int i = 0; i < cartItemList.size(); i++) {
+                        if (v.getApprovedProductId().contains(cartItemList.get(i).getProductId())) {
+                            approveVoucherProduct.add(pDAO.getProduct(cartItemList.get(i).getProductId()));
+                        }
+                    }
+                    if (approveVoucherProduct.isEmpty()) {
+                        System.out.println("Khong co san pham nao ap dung duong voucher nay");
+                        request.setAttribute("exceptionType", "OperationAddFailedException");
+                        return State.Fail.value;
+                    }
+                }
+                voucherID = v.getId();
+            } catch (VoucherNotFoundException ex) {
+                request.setAttribute("exceptionType", "VoucherNotFoundException");
+                Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);
+                return State.Fail.value;
+
+            } catch (InvalidVoucherException ex) {
+                request.setAttribute("exceptionType", "InvalidVoucherException");
+                Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);
+                return State.Fail.value;
+
+            } catch (NotEnoughVoucherQuantityException ex) {
+                request.setAttribute("exceptionType", "NotEnoughVoucherException");
+                Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);
+                return State.Fail.value;
+            }
+        }
+
+        int Total = ciDAO.getCartTotal(cartItemList);
+        int sumDeductPrice = 0;
+
+        if (v != null) {
+            System.out.println("cus id add voucher:" + CustomerID);
+            Product p;
+            for (int i = 0; i < cartItemList.size(); i++) {
+                if (v.getApprovedProductId().contains(cartItemList.get(i).getProductId())) {
+                    p = pDAO.getProduct(cartItemList.get(i).getProductId());
+                    sumDeductPrice += p.getStock().getPrice() * v.getDiscountPercent() / 100;
+                }
+            }
+            sumDeductPrice = (sumDeductPrice < v.getDiscountMax() ? sumDeductPrice : v.getDiscountMax());
+            System.out.println("sumdeducttprice:" + sumDeductPrice);
+        }
+
+        String now = new SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date());
+        Date nowDate = Date.valueOf(now);
+
+        boolean result = checkout(CustomerID, voucherID, receiverName, Address, Phone, Note, Total, sumDeductPrice, nowDate, cartItemList);
+
+        if (result == false) {
+            System.out.println("Khong thanh toan duoc");
+            return State.Fail.value;
+        } else {
+            System.out.println("Thanh toan thanh cong");
+            request.setAttribute("OrderID", oDAO.getOrderByOrderId(DatabaseUtils.getLastIndentityOf("[Order]")));
+            request.setAttribute("CheckOutSuccess", "?CheckOutSuccess=true");
+            ciDAO.deleteAllCartItemOfCustomer(CustomerID);
+            return State.Success.value;
+        }
+
+    }
+
+    public boolean checkout(int customerId, int voucherId, String orderReceiverName, String orderDeliveryAddress,
+            String orderPhoneNumber, String orderNote, int orderTotal, int orderDeductPrice, Date orderCreateAt, ArrayList<CartItem> itemsCheckout) {
+        Order od = new Order();
+        od.setCustomerId(customerId);
+        od.setReceiverName(orderReceiverName);
+        od.setDeliveryAddress(orderDeliveryAddress);
+        od.setPhoneNumber(orderPhoneNumber);
+        od.setTotal(orderTotal);
+        od.setStatus(IOrderDAO.status.PENDING.toString());
+        od.setCreatedAt(orderCreateAt);
+        //nullable
+        od.setNote(orderNote);
+        od.setVoucherId(voucherId);
+        if (voucherId != 0) {
+            od.setVoucherId(voucherId);
+            od.setDeductedPrice(orderDeductPrice);
+        }
+        if (!orderNote.equals("")) {
+            od.setNote(orderNote);
+        }
+
+        ArrayList<OrderDetail> orderDetailList = new ArrayList<>();
+        for (int i = 0; i < itemsCheckout.size(); i++) {
+            OrderDetail item = new OrderDetail();
+            item.setProductId(itemsCheckout.get(i).getProductId());
+            item.setPrice(itemsCheckout.get(i).getPrice());
+            item.setQuantity(itemsCheckout.get(i).getQuantity());
+            item.setTotal(itemsCheckout.get(i).getSum());
+            orderDetailList.add(item);
+        }
+        od.setOrderDetailList(orderDetailList);
+        OrderDAO odDAO = new OrderDAO();
+        boolean result = odDAO.addOrder(od);
+        return result;
+    }
+
     /**
      * Delete a delivery address
-     * 
+     *
      * @param request The request object
      * @return 1 if the operation is successful, 0 otherwise
      */

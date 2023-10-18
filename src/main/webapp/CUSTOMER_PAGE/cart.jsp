@@ -214,7 +214,7 @@
                                             <hr />
                                             <div>
                                                 <h4>Voucher</h4>
-                                                <input type="text" name="VoucherTXT" id="VoucherTXT">
+                                                <input type="text" name="VoucherTXT" id="VoucherTXT" value="<%= v == null ? "" : v.getCode() %>">
                                                 <a id="addVoucher"  href="">+</a>
                                             </div>
                                             <hr />
