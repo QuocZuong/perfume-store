@@ -20,8 +20,6 @@ public interface IProductDAO {
 
     public List<Product> searchProduct(String search);
 
-    public List<Product> pagingProduct(List<Product> productList, int page);
-
     public List<Product> filterProduct(
             List<Product> productList,
             int brandId,
