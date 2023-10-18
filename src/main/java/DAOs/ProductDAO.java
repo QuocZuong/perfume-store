@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 public class ProductDAO implements IProductDAO {
 
     private final Connection conn;
-    public final int ROWS = 20;
 
     public ProductDAO() {
         conn = DB.DBContext.getConnection();
@@ -341,24 +340,6 @@ public class ProductDAO implements IProductDAO {
             Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return productList;
-    }
-
-    @Override
-    public List<Product> pagingProduct(List<Product> productList, int page) {
-        if (productList == null || productList.isEmpty() || page <= 0) {
-            return new ArrayList<>();
-        }
-
-        int offset = ROWS * (page - 1);
-        int toIndex = offset + ROWS;
-        if (toIndex >= productList.size()) {
-            toIndex = productList.size();
-        }
-        if (offset >= productList.size()) {
-            offset = productList.size();
-        }
-        List<Product> subProductList = productList.subList(offset, toIndex);
-        return subProductList;
     }
 
     @Override

@@ -117,15 +117,6 @@ public interface IUserDAO {
     public List<User> searchUser(String search);
 
     /**
-     * Get the filtered list from the {@link User} list, according to its page.
-     *
-     * @param users The {@code User} list to be filtered.
-     * @param page The page number.
-     * @return A {@link List} of {@code User}s that match the page number.
-     */
-    public List<User> pagingUser(List<User> users, int page);
-
-    /**
      * Updates a {@link User}'s information in the database.
      *
      * @param updateUser The {@code User} to be updated.
