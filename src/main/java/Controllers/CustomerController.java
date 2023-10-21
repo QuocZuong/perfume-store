@@ -512,9 +512,8 @@ public class CustomerController extends HttpServlet {
                 isChangedPassword = false;
                 // check if currentPassword is true
             } else {
-                usDAO.getUser(user.getUsername(), currentPassword, IUserDAO.loginType.Username);
+                usDAO.login(user.getUsername(), currentPassword, IUserDAO.loginType.Username);
             }
-
             // Email and username duplication must come first
         } catch (WrongPasswordException e) {
             request.setAttribute("exceptionType", "WrongPasswordException");
@@ -522,10 +521,7 @@ public class CustomerController extends HttpServlet {
         } catch (AccountDeactivatedException e) {
             request.setAttribute("exceptionType", "AccountDeactivatedException");
             return false;
-        } catch (AccountNotFoundException e) {
-            request.setAttribute("exceptionType", "AccountNotFoundException");
-            return false;
-        } catch (EmailDuplicationException e) {
+        }  catch (EmailDuplicationException e) {
             request.setAttribute("exceptionType", "EmailDuplicationException");
             return false;
         } catch (UsernameDuplicationException e) {

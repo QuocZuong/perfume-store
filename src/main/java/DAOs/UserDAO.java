@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.security.auth.login.AccountNotFoundException;
-
 import Exceptions.AccountDeactivatedException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.UsernameDuplicationException;
@@ -165,8 +163,8 @@ public class UserDAO implements IUserDAO {
 
     // loginString is username or email
     @Override
-    public User getUser(String loginString, String password, loginType Type)
-            throws WrongPasswordException, AccountDeactivatedException, AccountNotFoundException {
+    public User login(String loginString, String password, loginType Type)
+            throws WrongPasswordException, AccountDeactivatedException {
         User user = null;
         ResultSet rs;
         String sql = "";
@@ -195,16 +193,12 @@ public class UserDAO implements IUserDAO {
     }
 
     public boolean checkAccount(User user, loginType Type)
-            throws WrongPasswordException, AccountDeactivatedException, AccountNotFoundException {
+            throws WrongPasswordException, AccountDeactivatedException {
         if (user == null) {
             throw new WrongPasswordException();
         }
         if (!user.isActive()) {
             throw new AccountDeactivatedException();
-        }
-        if ((Type == loginType.Email && getUserByEmail(user.getEmail()) == null)
-                || Type == loginType.Username && getUser(user.getUsername()) == null) {
-            throw new AccountNotFoundException();
         }
         return true;
     }
@@ -333,7 +327,7 @@ public class UserDAO implements IUserDAO {
      * Create a new {@link User} object from a {@link ResultSet}.
      *
      * @param queryResult The {@code ResultSet} containing the user's
-     *                    information.
+     * information.
      * @return An {@code User} object containing the user's information.
      * @throws SQLException If an error occurs while retrieving the data.
      */
