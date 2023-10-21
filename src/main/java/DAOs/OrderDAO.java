@@ -245,6 +245,51 @@ public class OrderDAO implements IOrderDAO {
         return order;
     }
 
+    public List<Product> getOrderForChartByOrderIdByGender() {
+        String sql = "SELECT [Product].Product_Name, [Product].Product_Gender FROM [Order]\n"
+                + "INNER JOIN [OrderDetail] ON [Order].Order_ID=[OrderDetail].Order_ID\n"
+                + "INNER JOIN [Product] ON [OrderDetail].Product_ID = [Product].Product_ID";
+        List<Product> products = new ArrayList<>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Product product = new Product();
+                product.setName(rs.getString("Product_Name"));
+                product.setGender(rs.getString("Product_Gender"));
+                products.add(product);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return products;
+    }
+
+    public List<Product> getOrderForChartByOrderIdByPrice() {
+        String sql = "SELECT [Product].Product_Name, [Stock].Price, [Stock].Product_ID, [Stock].Quantity FROM [Order]\n"
+                + "INNER JOIN [OrderDetail] ON [Order].Order_ID=[OrderDetail].Order_ID\n"
+                + "INNER JOIN [Product] ON [OrderDetail].Product_ID = [Product].Product_ID\n"
+                + "INNER JOIN [Stock] ON [Product].Product_ID = [Stock].Product_ID";
+        List<Product> products = new ArrayList<>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Product product = new Product();
+                Stock stock = new Stock();
+                stock.setPrice(rs.getInt("Price"));
+                stock.setProductID(rs.getInt("Product_ID"));
+                stock.setQuantity(rs.getInt("Quantity"));
+                product.setName(rs.getString("Product_Name"));
+                product.setStock(stock);
+                products.add(product);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return products;
+    }
+
     // public List<String[]> getOrderDetailByOrderID(int OrderID) {
     // List<String[]> orders = new ArrayList<>();
     // String sql = "SELECT Product.[Name] as ProductName, Product.ImgURL as
