@@ -8,35 +8,39 @@
     Gson gsonObj = new Gson();
     List<Product> listProduct = (List<Product>) request.getAttribute("listProduct");
 
-    float male = 0;
-    float female = 0;
-    float unisex = 0;
+    float low = 0;
+    float mid = 0;
+    float high = 0;
 
     Map<Object, Object> map = null;
     List<Map<Object, Object>> list = new ArrayList<Map<Object, Object>>();
 
     for (int i = 0; i < listProduct.size(); i++) {
-        if (listProduct.get(i).getGender().equals("Male") || listProduct.get(i).getGender().equals("Nam")) {
-            male++;
-        } else if (listProduct.get(i).getGender().equals("Female") || listProduct.get(i).getGender().equals("Nữ")) {
-            female++;
-        } else if (listProduct.get(i).getGender().equals("Unisex")) {
-            unisex++;
+        System.out.println("price: " + listProduct.get(i).getStock().getPrice());
+        if (listProduct.get(i).getStock().getPrice() < 1500000) {
+            low++;
+        } else if (listProduct.get(i).getStock().getPrice() >= 1500000 && listProduct.get(i).getStock().getPrice() <= 3000000) {
+            mid++;
+        } else if (listProduct.get(i).getStock().getPrice() > 3000000) {
+            high++;
         }
-
     }
 
+    System.out.println("low: " + low);
+    System.out.println("mid " + mid);
+    System.out.println("high " + high);
+
     map = new HashMap<>();
-    map.put("label", "Male");
-    map.put("y", String.valueOf((male / listProduct.size() * 100)));
+    map.put("label", "Under 1,500,000");
+    map.put("y", String.valueOf((low / listProduct.size() * 100)));
     list.add(map);
     map = new HashMap<>();
-    map.put("label", "Female");
-    map.put("y", String.valueOf((female / listProduct.size() * 100)));
+    map.put("label", "From 1,500,000 to 3,000,000");
+    map.put("y", String.valueOf((mid / listProduct.size() * 100)));
     list.add(map);
     map = new HashMap<>();
-    map.put("label", "Unisex");
-    map.put("y", String.valueOf((unisex / listProduct.size() * 100)));
+    map.put("label", "Over 3,000,000");
+    map.put("y", String.valueOf((high / listProduct.size() * 100)));
     list.add(map);
 
     String dataPoints = gsonObj.toJson(list);

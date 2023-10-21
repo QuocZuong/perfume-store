@@ -74,6 +74,7 @@ public class AdminController extends HttpServlet {
 
     //Chart URL
     public static final String ADMIN_CHART_BEST_SELLING_PRODUCT_BY_GENDER = "/Admin/Chart/BestSellingProductByGender";
+    public static final String ADMIN_CHART_BEST_SELLING_PRODUCT_BY_PRICE = "/Admin/Chart/BestSellingProductByPrice";
 
     public static final String ADMIN_UPDATE_INFO_URI = "/Admin/Update/Info";
 
@@ -94,10 +95,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -226,8 +227,14 @@ public class AdminController extends HttpServlet {
         // }
         // ---------------------------- CHART SECTION ----------------------------
         if (path.startsWith(ADMIN_CHART_BEST_SELLING_PRODUCT_BY_GENDER)) {
-            bestSellingProduct(request, response);
+            bestSellingProductByGender(request, response);
             request.getRequestDispatcher("/ADMIN_PAGE/Chart/bestProductSellingByGender.jsp").forward(request, response);
+            return;
+        }
+
+        if (path.startsWith(ADMIN_CHART_BEST_SELLING_PRODUCT_BY_PRICE)) {
+            bestSellingProductByPrice(request, response);
+            request.getRequestDispatcher("/ADMIN_PAGE/Chart/bestProductSellingByPrice.jsp").forward(request, response);
             return;
         }
 
@@ -241,10 +248,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -1351,34 +1358,15 @@ public class AdminController extends HttpServlet {
         System.out.println("Deactivated User with ID: " + userId + " successfully!");
     }
 
-    private void bestSellingProduct(HttpServletRequest request, HttpServletResponse response) {
-        System.out.println("calling bestSellingProduct");
-        List<Product> listProduct = new ArrayList<>();
-        Product pd1 = new Product();
-        pd1.setName("Sauvage");
-        pd1.setGender("Female");
-        Product pd2 = new Product();
-        pd2.setName("Sauvage2");
-        pd2.setGender("Male");
-        Product pd3 = new Product();
-        pd3.setName("Sauvage3");
-        pd3.setGender("Male");
-        Product pd4 = new Product();
-        pd4.setName("Sauvage4");
-        pd4.setGender("Female");
-        Product pd5 = new Product();
-        pd5.setName("Sauvage5");
-        pd5.setGender("Unisex");
-        Product pd6 = new Product();
-        pd6.setName("Sauvage6");
-        pd6.setGender("Unisex");
-        listProduct.add(pd1);
-        listProduct.add(pd2);
-        listProduct.add(pd3);
-        listProduct.add(pd4);
-        listProduct.add(pd5);
-        listProduct.add(pd6);
+    private void bestSellingProductByGender(HttpServletRequest request, HttpServletResponse response) {
+        OrderDAO oDAO = new OrderDAO();
+        List<Product> listProduct = oDAO.getOrderForChartByOrderIdByGender();
+        request.setAttribute("listProduct", listProduct);
+    }
 
+    private void bestSellingProductByPrice(HttpServletRequest request, HttpServletResponse response) {
+        OrderDAO oDAO = new OrderDAO();
+        List<Product> listProduct = oDAO.getOrderForChartByOrderIdByPrice();
         request.setAttribute("listProduct", listProduct);
     }
 

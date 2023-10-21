@@ -158,7 +158,7 @@
                                             </div>
 
                                             <div>
-                                                <a href="/Admin/User/List" class="text-decoration-none">
+                                                <a href="/Admin/Chart/BestSellingProductByPrice" class="text-decoration-none">
                                                     <button class="btn btn-outline-dark d-flex w-100 h-100 justify-content-center align-items-center rounded-0 fn-btn">
                                                         <span class="h2">&nbsp;&nbsp;Best Selling Products By Price</span>
                                                     </button>
