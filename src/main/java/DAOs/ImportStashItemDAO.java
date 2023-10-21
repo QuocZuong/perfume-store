@@ -50,7 +50,7 @@ public class ImportStashItemDAO implements IImportStashItemDAO {
     public int updateImportStashItem(ImportStashItem ipsi) {
         String sql = "UPDATE Import_Stash_Item SET\n"
                 + "Quantity = ?,\n"
-                + "Cost = ?\n"
+                + "Cost = ?,\n"
                 + "SumCost = ?\n"
                 + "WHERE Inventory_Manager_ID = ? AND Product_ID = ?";
         try {

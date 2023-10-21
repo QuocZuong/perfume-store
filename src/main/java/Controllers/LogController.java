@@ -127,6 +127,7 @@ public class LogController extends HttpServlet {
             EmployeeDAO empDAO = new EmployeeDAO();
             Employee emp = empDAO.getEmployeeByUserId(user.getId());
             cookieKey = emp.getRole().getName();
+            cookieKey = cookieKey.replaceAll(" ", "");
         }
         Cookie c = new Cookie(cookieKey, cookieValue);
         if (rememberPw) {

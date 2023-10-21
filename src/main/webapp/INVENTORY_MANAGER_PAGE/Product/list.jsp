@@ -10,12 +10,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib  uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
 
-<%! ProductDAO pDAO = new ProductDAO();%>
 <%! BrandDAO bDAO = new BrandDAO(); %>
-<%! ResultSet rs = null;%>
 <%! List<Product> productList = null; %>
 <%! int currentPage, numberOfPage;%>
-<%! boolean isAdmin;%>
+
 
 
 <%
@@ -110,13 +108,12 @@
                                         <td class="<%= pd.isActive() ? " " : "faded"%>"><%= bDAO.getBrand(pd.getBrandId()).getName()%></td>
                                         <td class="<%= pd.isActive() ? " " : "faded"%>"><img src="<%= pd.getImgURL()%>" alt="<%= pd.getName()%>"/></td>
                                         <td class="<%= pd.isActive() ? " " : "faded"%>">
-                                            <input type="number" name="txtQuantity">
+                                            <input type="number" name="txtQuantity<%=pd.getId()%>" id="txtQuantity<%=pd.getId()%>">
                                         </td>
                                         <td class="<%= pd.isActive() ? " " : "faded"%>">
-                                            <a href="/Admin/Product/Update/ID/<%= pd.getId()%>" class="<%= pd.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0">Add to import cart</a>
+                                            <a id="ImportClick<%= pd.getId()%>" href="/InventoryManager/ProductImport/ProductID/<%= pd.getId()%>" class="<%= pd.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0 import-click">Add to import cart</a>
                                         </td>
                                     </tr>
-
                                 </c:forEach>
                             </c:if>
                         </tbody>
@@ -130,30 +127,42 @@
 
         <nav aria-label="...">
             <ul class="pagination">
-                <li class="page-item"><a class="page-link" href="/Admin/Product/List/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-left" style="color: #000000;"></i></a></li>
-                <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>"><a class="page-link" href="/Admin/Product/List/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></a></li>
+                <li class="page-item"><a class="page-link" href="/InventoryManager/Product/List/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-left" style="color: #000000;"></i></a></li>
+                <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>"><a class="page-link" href="/InventoryManager/Product/List/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></a></li>
                         <c:forEach var="i" begin="${page-2<0?0:page-2}" end="${page+2 +1}">
                             <c:choose>
                                 <c:when test="${i==page}">
-                            <li class="page-item active"><a href="/Admin/Product/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
+                            <li class="page-item active"><a href="/InventoryManager/Product/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
                             </c:when>
                             <c:when test="${i>0 && i<=numberOfPage}"> 
-                            <li class="page-item"><a href="/Admin/Product/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
+                            <li class="page-item"><a href="/InventoryManager/Product/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
                             </c:when>
                             <c:otherwise>
                             </c:otherwise>
                         </c:choose>
                     </c:forEach>
                 <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>"><a class="page-link" href="/Admin/Product/List/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a></li>
-                <li class="page-item"><a class="page-link" href="/Admin/Product/List/page/${numberOfPage}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-right" style="color: #000000;"></i></a></li>
+                <li class="page-item"><a class="page-link" href="/InventoryManager/Product/List/page/${numberOfPage}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-right" style="color: #000000;"></i></a></li>
             </ul>
         </nav>
         <script>
             function changeLink() {
                 let SearchURL = document.getElementById("inputSearch").value;
                 SearchURL = encodeURIComponent(SearchURL);
-                document.getElementById("Search").href = "/Admin/Product/List/page/1?txtSearch=" + SearchURL;
+                document.getElementById("Search").href = "/InventoryManager/Product/List/page/1?txtSearch=" + SearchURL;
             }
+            
+            $(".import-click").on("click", function () {
+                let selectedId = this.id;
+                selectedId = selectedId.replace("ImportClick", "");
+                selectedId = "txtQuantity" + selectedId;
+                let quantity = document.getElementById(selectedId).value;
+                if (quantity === null || quantity === "") {
+                    quantity = 1;
+                }
+                this.href = this.href + "/Quantity/"+quantity+"/";
+                alert(this.href);
+            });
         </script>
         <script
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"

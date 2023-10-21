@@ -104,6 +104,8 @@ public class CustomerController extends HttpServlet {
             throws ServletException, IOException {
         String path = request.getRequestURI();
         System.out.println("Request Path URI " + path);
+        
+         
         //
         if (path.startsWith(CUSTOMER_CART_DELETE_URI)) {
             System.out.println("Going delete");
