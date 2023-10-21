@@ -33,7 +33,6 @@ pageEncoding="UTF-8"%>
             </ul>
 
             <a href="/Admin/User"><img src="/RESOURCES/images/icons/user.png" alt="" /></a>
-            <a href="/Client/Cart"><img src="/RESOURCES/images/icons/cart.png" alt="" /></a>
         </div>
     </body>
 </html>

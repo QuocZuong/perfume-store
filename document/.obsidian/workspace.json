@@ -30,16 +30,6 @@
                 "source": true
               }
             }
-          },
-          {
-            "id": "f3add32f738a89d9",
-            "type": "leaf",
-            "state": {
-              "type": "release-notes",
-              "state": {
-                "currentVersion": "1.4.14"
-              }
-            }
           }
         ],
         "currentTab": 1
@@ -108,7 +98,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Project bán nước hoa (PRJ301).md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -125,7 +114,6 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Project bán nước hoa (PRJ301).md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -157,9 +145,7 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {
-                "file": "Project bán nước hoa (PRJ301).md"
-              }
+              "state": {}
             }
           }
         ]
@@ -180,8 +166,9 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "800bfff03d3170ea",
+  "active": "7194dcf068bae315",
   "lastOpenFiles": [
+    "Project bán nước hoa (PRJ301).md",
     "cfkpfaxj.14c~",
     "244rc1lr.yah~",
     "vuzcpw2d.fiv~",
@@ -192,7 +179,6 @@
     "hhwxelwf.aq0~",
     "y1jq1pju.4cp~",
     "q15sd5tv.sjx~",
-    "jomjbkmr.wta~",
     "SDS/16. Update Employee/Class_Diagram/Update_Employee_Class_Diagram.png",
     "SDS/15. Add Employee/Sequence_Diagram/Add_Employee_Sequence_Diagram.png",
     "SDS/15. Add Employee/Class_Diagram/Add_Employee_Class_Diagram.png",

@@ -105,7 +105,8 @@ public interface IUserDAO {
      * @throws Exceptions.AccountDeactivatedException
      * @throws javax.security.auth.login.AccountNotFoundException
      */
-    public User getUser(String loginString, String password, loginType Type) throws WrongPasswordException, AccountDeactivatedException, AccountNotFoundException;
+    public User login(String loginString, String password, loginType Type)
+            throws WrongPasswordException, AccountDeactivatedException;
 
     /**
      * Search for a list of {@link User}s in the database that match the
@@ -124,7 +125,7 @@ public interface IUserDAO {
      * sucessfully. {@code 1} if user cannot be updated, or {@code 2} if the
      * {@code User} doesn't exist.
      */
-    public int  updateUser(User updateUser);
+    public int updateUser(User updateUser);
 
     /**
      * This function hanlde the checkout process for a customer.
@@ -152,7 +153,7 @@ public interface IUserDAO {
      * @param user The {@code User} to be activated.
      * @return {@code true} if the user is activated, {@code false} otherwise.
      */
-    public int  restoreUser(User user);
+    public int restoreUser(User user);
 
     /**
      * Deactivate a {@link User} in the database.
@@ -160,7 +161,7 @@ public interface IUserDAO {
      * @param user The {@code User} to be deactivated.
      * @return {@code true} if the user is deactivated, {@code false} otherwise.
      */
-    public int  disableUser(User user);
+    public int disableUser(User user);
 
     /**
      * Check all duplication.If Email is duplication throw

@@ -103,10 +103,7 @@ public class LogController extends HttpServlet {
         User user;
         // Try to login first
         try {
-            user = uDAO.getUser(us, pw, us.contains("@") ? IUserDAO.loginType.Email : IUserDAO.loginType.Username);
-        } catch (AccountNotFoundException e) {
-            request.setAttribute("exceptionType", "AccountNotFoundException");
-            return false;
+            user = uDAO.login(us, pw, us.contains("@") ? IUserDAO.loginType.Email : IUserDAO.loginType.Username);
         } catch (AccountDeactivatedException e) {
             request.setAttribute("exceptionType", "AccountDeactivatedException");
             return false;
