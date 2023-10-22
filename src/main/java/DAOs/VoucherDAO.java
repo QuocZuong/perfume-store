@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import Interfaces.DAOs.IVoucherDAO;
@@ -146,9 +147,9 @@ public class VoucherDAO implements IVoucherDAO {
     }
 
     @Override
-    public ArrayList<Voucher> getAllVoucher() {
+    public List<Voucher> getAllVoucher() {
         String sql = "SELECT * FROM [Voucher]";
-        ArrayList<Voucher> arrVoucher = new ArrayList();
+        List<Voucher> arrVoucher = new ArrayList<>();
         Voucher v;
         ResultSet rs;
         try {
@@ -194,10 +195,10 @@ public class VoucherDAO implements IVoucherDAO {
     }
 
     @Override
-    public ArrayList<Voucher> getValidVoucherOfProduct(int productId) {
+    public List<Voucher> getValidVoucherOfProduct(int productId) {
         ResultSet rs;
         Voucher v;
-        ArrayList<Voucher> arrVoucher = new ArrayList();
+        List<Voucher> arrVoucher = new ArrayList();
         Date now = new Date(System.currentTimeMillis());
 
         String sql

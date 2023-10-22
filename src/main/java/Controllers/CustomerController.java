@@ -417,8 +417,8 @@ public class CustomerController extends HttpServlet {
                 if (vDAO.checkValidVoucher(v, CustomerID)) {
                     ProductDAO pDAO = new ProductDAO();
                     System.out.println("cus id add voucher:" + CustomerID);
-                    ArrayList<CartItem> cartItemList = ciDAO.getAllCartItemOfCustomer(CustomerID);
-                    ArrayList<Product> approvedProduct = new ArrayList();
+                    List<CartItem> cartItemList = ciDAO.getAllCartItemOfCustomer(CustomerID);
+                    List<Product> approvedProduct = new ArrayList<>();
                     int sumDeductPrice = 0;
                     Product p;
                     for (int i = 0; i < cartItemList.size(); i++) {
@@ -459,11 +459,32 @@ public class CustomerController extends HttpServlet {
         String path = request.getRequestURI();
         String[] data = path.split("/");
         try {
-            int orderId = Integer.parseInt(data[data.length - 1]);
             OrderDAO oDAO = new OrderDAO();
+            VoucherDAO vDAO = new VoucherDAO();
+            ProductDAO pDAO = new ProductDAO();
+
+            int orderId = Integer.parseInt(data[data.length - 1]);
             Order order = oDAO.getOrderByOrderId(orderId);
+            Voucher v = vDAO.getVoucher(order.getVoucherId());
+
+            List<OrderDetail> orderDetailList = order.getOrderDetailList();
+            List<Product> approvedProductsList = new ArrayList<>();
+
+            // Get the list of all product that is approviate for voucher discount.
+            Product p;
+            for (int i = 0; i < orderDetailList.size(); i++) {
+                if (v.getApprovedProductId().contains(orderDetailList.get(i).getProductId())) {
+                    p = pDAO.getProduct(orderDetailList.get(i).getProductId());
+
+                    approvedProductsList.add(p);
+                }
+            }
+
+            request.setAttribute("approvedProductsList", approvedProductsList);
+
             System.out.println("Get order detail list");
             System.out.println(order.getOrderDetailList());
+
             request.setAttribute("OrderInfor", order);
             return State.Success.value;
         } catch (NumberFormatException e) {
@@ -808,7 +829,7 @@ public class CustomerController extends HttpServlet {
         }
         int CustomerID = cus.getCustomerId();
         System.out.println("cus id checkout cart :" + cus.getCustomerId());
-        ArrayList<CartItem> cartItemList = ciDAO.getAllCartItemOfCustomer(CustomerID);
+        List<CartItem> cartItemList = ciDAO.getAllCartItemOfCustomer(CustomerID);
 
         if (cartItemList.isEmpty()) {
             System.out.println("The cart is empty");
@@ -817,7 +838,7 @@ public class CustomerController extends HttpServlet {
         }
 
         // check xem cac san pham trong kho co du de checkout khong
-        ArrayList<Product> outOfStockProductToCheckOut = ciDAO.getAllOutOfStockProductFromCart(CustomerID);
+        List<Product> outOfStockProductToCheckOut = ciDAO.getAllOutOfStockProductFromCart(CustomerID);
         if (!outOfStockProductToCheckOut.isEmpty()) {
             for (int i = 0; i < outOfStockProductToCheckOut.size(); i++) {
                 System.out
@@ -835,7 +856,7 @@ public class CustomerController extends HttpServlet {
             try {
                 // Kiem tra tinh hop le va quang exception
                 if (vDAO.checkValidVoucher(v, cus.getCustomerId())) {
-                    ArrayList<Product> approveVoucherProduct = new ArrayList();
+                    List<Product> approveVoucherProduct = new ArrayList();
                     for (int i = 0; i < cartItemList.size(); i++) {
                         if (v.getApprovedProductId().contains(cartItemList.get(i).getProductId())) {
                             approveVoucherProduct.add(pDAO.getProduct(cartItemList.get(i).getProductId()));
@@ -888,7 +909,7 @@ public class CustomerController extends HttpServlet {
         }
 
         int CustomerID = cus.getCustomerId();
-        ArrayList<CartItem> cartItemList = ciDAO.getAllCartItemOfCustomer(CustomerID);
+        List<CartItem> cartItemList = ciDAO.getAllCartItemOfCustomer(CustomerID);
 
         if (cartItemList.isEmpty()) {
             System.out.println("The cart is empty to checkout");
@@ -896,7 +917,7 @@ public class CustomerController extends HttpServlet {
             return State.Fail.value;
         }
 
-        ArrayList<Product> outOfStockToCheckoutProduct = ciDAO.getAllOutOfStockProductFromCart(CustomerID);
+        List<Product> outOfStockToCheckoutProduct = ciDAO.getAllOutOfStockProductFromCart(CustomerID);
         if (!outOfStockToCheckoutProduct.isEmpty()) {
             for (int i = 0; i < outOfStockToCheckoutProduct.size(); i++) {
                 System.out.println("Khong du so luong cua san pham:" + outOfStockToCheckoutProduct.get(i).getName());
@@ -937,7 +958,7 @@ public class CustomerController extends HttpServlet {
             try {
                 // Kiem tra tinh hop le va quang exception
                 if (vDAO.checkValidVoucher(v, cus.getCustomerId())) {
-                    ArrayList<Product> approveVoucherProduct = new ArrayList();
+                    List<Product> approveVoucherProduct = new ArrayList();
                     for (int i = 0; i < cartItemList.size(); i++) {
                         if (v.getApprovedProductId().contains(cartItemList.get(i).getProductId())) {
                             approveVoucherProduct.add(pDAO.getProduct(cartItemList.get(i).getProductId()));
@@ -1004,7 +1025,7 @@ public class CustomerController extends HttpServlet {
 
     public boolean checkout(int customerId, int voucherId, String orderReceiverName, String orderDeliveryAddress,
             String orderPhoneNumber, String orderNote, int orderTotal, int orderDeductPrice, Date orderCreateAt,
-            ArrayList<CartItem> itemsCheckout) {
+            List<CartItem> itemsCheckout) {
         Order od = new Order();
         od.setCustomerId(customerId);
         od.setReceiverName(orderReceiverName);

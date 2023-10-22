@@ -5,11 +5,13 @@
 <%@page import="Lib.Converter"%>
 <%@page import="DAOs.OrderDAO"%>
 <%@page import="DAOs.BrandDAO"%>
+<%@page import="DAOs.VoucherDAO"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.util.List"%>
 <%@page import="DAOs.ProductDAO"%>
 <%@page import="Models.Order"%>
 <%@page import="Models.User"%>
+<%@page import="Models.Voucher"%>
 <%@page import="DAOs.UserDAO"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib  uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
@@ -18,6 +20,8 @@
 <%!String fullname, username, email;%>
 <%!Order orderInfor;%>
 <%! String CheckOutSuccess;%>
+<%! VoucherDAO vDAO = new VoucherDAO();%>
+<%! List<Product> approvedProductsList;%>
 
 <%
     Cookie currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
@@ -26,6 +30,11 @@
     orderInfor = (Order) request.getAttribute("OrderInfor");
     List<OrderDetail> orderDetailList = orderInfor.getOrderDetailList();
     CheckOutSuccess = (String) request.getParameter("CheckOutSuccess");
+
+    int voucherId = orderInfor.getVoucherId();
+    Voucher v = vDAO.getVoucher(voucherId);
+
+    approvedProductsList = (List<Product>) request.getAttribute("approvedProductsList");
 %>
 
 <!DOCTYPE html>
@@ -88,14 +97,31 @@
                                         <%
                                             OrderDetail orderDetail = orderDetailList.get((int) pageContext.getAttribute("i"));
                                             Product product = pDAO.getProduct(orderDetail.getProductId());
+
+                                            String productName = product.getName();
+                                            String quantity = orderDetail.getQuantity() + "";
+                                            String total = Converter.covertIntergerToMoney(orderDetail.getTotal());
+
+                                            int sum = orderDetail.getQuantity() * product.getStock().getPrice();
                                         %>
                                         <tr>
                                             <th scope="row"><%=(int) pageContext.getAttribute("i") + 1%></th>
-                                            <td><a src="/Product/Detail/ID/<%= product.getId() %>"> <%= product.getName()%></a> </td>
+                                            <td><a src="/Product/Detail/ID/<%= product.getId() %>"><%= productName%></a></td>
                                             <td><img src="<%= product.getImgURL()%>"></td>
-                                            <td><%= orderDetail.getQuantity()%></td>
-                                            <td><%= Converter.covertIntergerToMoney(orderDetail.getPrice())%></td>
-                                            <td><%= Converter.covertIntergerToMoney(orderDetail.getTotal())%></td>
+                                            <td><%= quantity%></td>
+                                            <td>
+                                                <c:choose>
+                                                            <c:when test="<%= (v != null && approvedProductsList != null && ProductDAO.isContain(product, approvedProductsList))%>">  
+                                                                <span><%= Converter.covertIntergerToMoney(product.getStock().getPrice())%> <span>₫</span></span>
+                                                                <span style="text-decoration: line-through;color: rgba(0,0,0,0.5);">Total:<%= Converter.covertIntergerToMoney(sum)%> <span>₫</span></span>
+                                                                <span>Total: <%= Converter.covertIntergerToMoney(sum - product.getStock().getPrice() * v.getDiscountPercent() / 100)%> <span>₫</span></span>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <span><%= Converter.covertIntergerToMoney(product.getStock().getPrice())%> <span>₫</span></span>
+                                                                <span>Total: <%= Converter.covertIntergerToMoney(sum)%> <span>₫</span></span>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                            </td>
                                         </tr>
                                     </c:forEach>
                                     <tr class="bottom-table">
