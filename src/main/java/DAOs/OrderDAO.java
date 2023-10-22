@@ -1,5 +1,6 @@
 package DAOs;
 
+import Exceptions.OperationEditFailedException;
 import Models.Order;
 import Models.OrderDetail;
 import Models.Product;
@@ -15,7 +16,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import Interfaces.DAOs.IOrderDAO;
+import Lib.Converter;
 import Lib.DatabaseUtils;
+import Lib.Generator;
+import java.sql.Date;
+import java.sql.Timestamp;
 
 public class OrderDAO implements IOrderDAO {
 
@@ -179,6 +184,15 @@ public class OrderDAO implements IOrderDAO {
         return result;
     }
 
+    public boolean addPendingOrder(Order order, int customerId) throws NullPointerException {
+        Date now = Date.valueOf(Generator.generateDateTime());
+        order.setStatus(status.PENDING.toString());
+        order.setCreatedAt(now);
+        order.setCustomerId(customerId);
+
+        return addOrder(order);
+    }
+
     /* --------------------------- READ SECTION --------------------------- */
     @Override
     public List<Order> getAll() {
@@ -290,37 +304,6 @@ public class OrderDAO implements IOrderDAO {
         return products;
     }
 
-    // public List<String[]> getOrderDetailByOrderID(int OrderID) {
-    // List<String[]> orders = new ArrayList<>();
-    // String sql = "SELECT Product.[Name] as ProductName, Product.ImgURL as
-    // ProductImgURL, OrderDetail.Quantity as Quantity, OrderDetail.Price as Price,
-    // [User].[Address] as ClientAddress, OrderDetail.[Sum] as Total \n"
-    // + "FROM Product, [Order], OrderDetail, [User] \n" +
-    // "WHERE \n" +
-    // "\t[Order].ID = ? AND \r\n" +
-    // "\t[Order].ClientID = [User].ID AND \n" +
-    // "\tProduct.ID = OrderDetail.ProductID AND \n" +
-    // "\t[Order].ID = OrderDetail.OrderID";
-    // try {
-    // PreparedStatement ps = conn.prepareStatement(sql);
-    // ps.setInt(1, OrderID);
-    // ResultSet rs = ps.executeQuery();
-    // while (rs.next()) {
-    // String cell[] = new String[6];
-    // cell[0] = rs.getNString("ProductName");
-    // cell[1] = rs.getNString("ProductImgURL");
-    // cell[2] = rs.getInt("Quantity") + ""; // Int
-    // cell[3] = rs.getInt("Price") + ""; // Int
-    // cell[4] = rs.getNString("ClientAddress");
-    // cell[5] = rs.getInt("Total") + ""; // Int
-    // orders.add(cell);
-    // }
-    // } catch (SQLException ex) {
-    // Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
-    // }
-    // return orders;
-    // }
-
     /* --------------------------- UPDATE SECTION --------------------------- */
     @Override
     public boolean updateOrder(Order order) throws NullPointerException {
@@ -373,12 +356,27 @@ public class OrderDAO implements IOrderDAO {
         return result;
     }
 
-    public boolean acceptOrder(Order order) throws NullPointerException {
+    public boolean acceptOrder(Order order, int orderManagerId) throws NullPointerException, OperationEditFailedException {
+        if (order.getStatus().equals(status.PENDING.toString())) {
+            System.out.println("Can not update status of an accepted order");
+            throw new OperationEditFailedException();
+        }
+        Date now = Date.valueOf(Generator.generateDateTime());
+        order.setCheckoutAt(now);
+        order.setUpdateAt(now);
+        order.setUpdateByOrderManager(orderManagerId);
         order.setStatus(status.ACCEPTED.toString());
         return updateOrder(order);
     }
 
-    public boolean rejectOrder(Order order) throws NullPointerException {
+    public boolean rejectOrder(Order order, int orderManagerId) throws NullPointerException, OperationEditFailedException {
+        if (order.getStatus().equals(status.PENDING.toString())) {
+            System.out.println("Can not update status of an rejected order");
+            throw new OperationEditFailedException();
+        }
+        Date now = Date.valueOf(Generator.generateDateTime());
+        order.setUpdateAt(now);
+        order.setUpdateByOrderManager(orderManagerId);
         order.setStatus(status.REJECTED.toString());
         return updateOrder(order);
     }
