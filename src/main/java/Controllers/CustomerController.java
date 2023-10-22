@@ -95,10 +95,10 @@ public class CustomerController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -168,10 +168,10 @@ public class CustomerController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -264,8 +264,8 @@ public class CustomerController extends HttpServlet {
                 System.out.println("Going Checkout");
                 int result = customerCheckout(request);
                 if (result == State.Success.value) {
-                    response.sendRedirect(CUSTOMER_ORDER_DETAIL_URI + "=" + request.getParameter("OrderID")
-                            + request.getParameter("CheckOutSuccess"));
+                    response.sendRedirect(CUSTOMER_ORDER_DETAIL_URI + "/" + (Integer) request.getAttribute("OrderID")
+                            + (String) request.getAttribute("CheckOutSuccess"));
                 } else {
                     response.sendRedirect(CUSTOMER_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
                 }
@@ -300,12 +300,21 @@ public class CustomerController extends HttpServlet {
 
         CartItemDAO ciDAO = new CartItemDAO();
         CartItem ci = new CartItem();
-        ci.setCustomerId(CustomerID);
-        ci.setProductId(pID);
-        ci.setQuantity(pQuan);
-        ci.setPrice(pPrice);
-        ci.setSum(pSum);
-        result = ciDAO.addToCart(ci);
+        List<CartItem> cartItemList = ciDAO.getAllCartItemOfCustomer(CustomerID);
+        if (ciDAO.isContainProductInCartItem(cartItemList, pID, CustomerID)) {
+            ci = ciDAO.getCartItem(CustomerID, pID);
+            ci.setQuantity(ci.getQuantity() + pQuan);
+            ci.setSum(ci.getSum() + pSum);
+            result = ciDAO.updateCartItem(ci);
+        } else {
+            ci.setCustomerId(CustomerID);
+            ci.setProductId(pID);
+            ci.setQuantity(pQuan);
+            ci.setPrice(pPrice);
+            ci.setSum(pSum);
+            result = ciDAO.addToCart(ci);
+        }
+
         if (result == 0) {
             request.setAttribute("exceptionType", "OperationAddFailedException");
             return State.Fail.value;
@@ -471,15 +480,17 @@ public class CustomerController extends HttpServlet {
             // Get the list of all product that is approviate for voucher discount.
             Product p;
             if (v != null) {
+                int sumDeductPrice = 0;
                 System.out.println("Order detail list size:" + orderDetailList.size());
                 System.out.println("Approved product list size:" + v.getApprovedProductId().size());
                 for (int i = 0; i < orderDetailList.size(); i++) {
                     if (v.getApprovedProductId().contains(orderDetailList.get(i).getProductId())) {
                         p = pDAO.getProduct(orderDetailList.get(i).getProductId());
-
                         approvedProductsList.add(p);
+                        sumDeductPrice += p.getStock().getPrice() * v.getDiscountPercent() / 100;
                     }
                 }
+                request.setAttribute("sumDeductPrice", sumDeductPrice);
             }
             request.setAttribute("approvedProductsList", approvedProductsList);
 
@@ -619,7 +630,7 @@ public class CustomerController extends HttpServlet {
     /**
      * Update a delivery address
      *
-     * @param request  The request object
+     * @param request The request object
      * @param response The response object
      * @return 1 if the operation is successful, 0 otherwise
      */
@@ -667,8 +678,8 @@ public class CustomerController extends HttpServlet {
             return State.Fail.value;
         }
 
-        final String[] exceptionalAddresses = new String[] {
-                "Tỉnh Bà Rịa - Vũng Tàu"
+        final String[] exceptionalAddresses = new String[]{
+            "Tỉnh Bà Rịa - Vũng Tàu"
         };
 
         boolean isExceptionalAddress = false;
@@ -1016,9 +1027,12 @@ public class CustomerController extends HttpServlet {
             return State.Fail.value;
         } else {
             System.out.println("Thanh toan thanh cong");
-            request.setAttribute("OrderID", oDAO.getOrderByOrderId(DatabaseUtils.getLastIndentityOf("[Order]")));
+            request.setAttribute("OrderID", oDAO.getOrderByOrderId(DatabaseUtils.getLastIndentityOf("[Order]")).getId());
             request.setAttribute("CheckOutSuccess", "?CheckOutSuccess=true");
             ciDAO.deleteAllCartItemOfCustomer(CustomerID);
+            if (v != null) {
+                v.setQuantity(v.getQuantity() - 1);
+            }
             return State.Success.value;
         }
 
@@ -1036,13 +1050,11 @@ public class CustomerController extends HttpServlet {
         od.setStatus(IOrderDAO.status.PENDING.toString());
         od.setCreatedAt(orderCreateAt);
         // nullable
-        od.setNote(orderNote);
-        od.setVoucherId(voucherId);
         if (voucherId != 0) {
             od.setVoucherId(voucherId);
             od.setDeductedPrice(orderDeductPrice);
         }
-        if (!orderNote.equals("")) {
+        if (orderNote != null && !orderNote.equals("")) {
             od.setNote(orderNote);
         }
 

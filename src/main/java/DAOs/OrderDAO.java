@@ -110,17 +110,18 @@ public class OrderDAO implements IOrderDAO {
             ps.setNull(12, java.sql.Types.DATE);
             ps.setNull(13, java.sql.Types.INTEGER);
             //Nullable 
-            ps.setNull(2, java.sql.Types.INTEGER);
-            ps.setNull(6, java.sql.Types.NVARCHAR);
-            ps.setInt(8, java.sql.Types.INTEGER);
-
             if (order.getVoucherId() != 0) {
                 ps.setInt(2, order.getVoucherId());
                 ps.setInt(8, order.getDeductedPrice());
+            } else {
+                ps.setNull(2, java.sql.Types.INTEGER);
+                ps.setNull(8, java.sql.Types.INTEGER);
             }
 
-            if (!order.getNote().equals("")) {
+            if (order.getNote() != null && !order.getNote().equals("")) {
                 ps.setNString(6, order.getNote());
+            } else {
+                ps.setNull(6, java.sql.Types.NVARCHAR);
             }
         }
 
@@ -242,7 +243,7 @@ public class OrderDAO implements IOrderDAO {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, orderId);
             ResultSet rs = ps.executeQuery();
-            
+
             if (rs.next()) {
                 order = orderFactory(rs, operation.READ);
                 OrderDetailDao odDAO = new OrderDetailDao();
