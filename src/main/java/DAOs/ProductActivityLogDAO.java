@@ -97,11 +97,12 @@ public class ProductActivityLogDAO {
     }
 
     public List<ProductActivityLog> searchProductActivityLog(String search) {
-        String sql = "SELECT [Product_Activity_Log].Product_ID, [Product_Activity_Log].[Action], [Product_Activity_Log].[Description],[Product_Activity_Log].Updated_By_Admin, [Product_Activity_Log].Updated_At FROM Product_Activity_Log\n"
+        String sql = "SELECT [Product_Activity_Log].Product_ID, [Product_Activity_Log].[Action], [Product_Activity_Log].[Description],[Product_Activity_Log].Updated_By_Admin, [Product_Activity_Log].Updated_At, [Product].Product_Name FROM Product_Activity_Log\n"
                 + "JOIN [Admin] ON Product_Activity_Log.Updated_By_Admin = [Admin].[Admin_ID]\n"
                 + "JOIN [Employee] ON [Admin].[Employee_ID] = [Employee].[Employee_ID]\n"
                 + "JOIN [User] ON [Employee].[User_ID] = [User].[User_ID] \n"
-                + "WHERE [User].[User_Name] LIKE 'T%' OR [User].[User_Username] LIKE 'T%' OR [User].[User_Email] LIKE 'T%'";
+                + "JOIN [Product] ON [Product_Activity_Log].Product_ID = [Product].Product_ID\n"
+                + "WHERE [User].[User_Name] LIKE ? OR [User].[User_Username] LIKE ? OR [User].[User_Email] LIKE ? OR [Product].Product_Name LIKE ?";
         List<ProductActivityLog> palList = new ArrayList<>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -109,6 +110,7 @@ public class ProductActivityLogDAO {
             ps.setNString(1, search);
             ps.setNString(2, search);
             ps.setNString(3, search);
+            ps.setNString(4, search);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
