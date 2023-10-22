@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,7 +51,7 @@ public class ImportStashItemDAO implements IImportStashItemDAO {
     public int updateImportStashItem(ImportStashItem ipsi) {
         String sql = "UPDATE Import_Stash_Item SET\n"
                 + "Quantity = ?,\n"
-                + "Cost = ?\n"
+                + "Cost = ?,\n"
                 + "SumCost = ?\n"
                 + "WHERE Inventory_Manager_ID = ? AND Product_ID = ?";
         try {
@@ -76,6 +77,20 @@ public class ImportStashItemDAO implements IImportStashItemDAO {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, ipsi.getInventoryManagerId());
             ps.setInt(2, ipsi.getProductId());
+            return ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ImportStashItemDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
+    public int deleteImportStashItem(int InventoryManagerId, int ProductId) {
+        String sql = "DELETE FROM Import_Stash_Item\n"
+                + "WHERE Inventory_Manager_ID = ? AND Product_ID = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, InventoryManagerId);
+            ps.setInt(2, ProductId);
             return ps.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(ImportStashItemDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -124,9 +139,9 @@ public class ImportStashItemDAO implements IImportStashItemDAO {
     }
 
     @Override
-    public ArrayList<ImportStashItem> getAllImportStashItemOfManager(int managerId) {
+    public List<ImportStashItem> getAllImportStashItemOfManager(int managerId) {
         ResultSet rs;
-        ArrayList<ImportStashItem> arrImportStashItem = new ArrayList();
+        List<ImportStashItem> arrImportStashItem = new ArrayList();
         ImportStashItem ipsi;
         String sql = "SELECT * FROM Import_Stash_Item\n"
                 + "WHERE Inventory_Manager_ID = ?";
@@ -147,6 +162,28 @@ public class ImportStashItemDAO implements IImportStashItemDAO {
             Logger.getLogger(ImportStashItemDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return arrImportStashItem;
+    }
+
+    public int getImportCartTotalCost(List<ImportStashItem> listImportItem) {
+        if (listImportItem == null || listImportItem.isEmpty()) {
+            return 0;
+        }
+        int total = 0;
+        for (int i = 0; i < listImportItem.size(); i++) {
+            total += listImportItem.get(i).getSumCost();
+        }
+        return total;
+    }
+
+    public int getImportCartTotalQuantity(List<ImportStashItem> listImportItem) {
+        if (listImportItem == null || listImportItem.isEmpty()) {
+            return 0;
+        }
+        int total = 0;
+        for (int i = 0; i < listImportItem.size(); i++) {
+            total += listImportItem.get(i).getQuantity();
+        }
+        return total;
     }
 
 }

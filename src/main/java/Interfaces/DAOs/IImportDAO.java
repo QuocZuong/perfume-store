@@ -2,12 +2,13 @@ package Interfaces.DAOs;
 
 import Models.Import;
 import java.util.ArrayList;
+import java.util.List;
 
 public interface IImportDAO {
 
     int addImport(Import ip);
 
-    ArrayList<Import> getAllImport();
+    List<Import> getAllImport();
 
     Import getImport(int importId);
 }

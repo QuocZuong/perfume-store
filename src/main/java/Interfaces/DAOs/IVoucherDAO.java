@@ -5,25 +5,25 @@
 package Interfaces.DAOs;
 
 import Models.Voucher;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author Admin
  */
 public interface IVoucherDAO {
-    
+
     int addVoucher(Voucher v);
 
     int addApprovedProduct(Voucher v);
 
     Voucher getVoucher(int vId);
 
-    ArrayList<Voucher> getAllVoucher();
+    List<Voucher> getAllVoucher();
 
-    ArrayList<Integer> getAllApprovedProductIdByVoucherId(int vId);
-    
-    ArrayList<Voucher> getValidVoucherOfProduct(int productId);
-    
-    ArrayList<Integer>getUsedVoucherOfCustomer(int CustomerId);
+    List<Integer> getAllApprovedProductIdByVoucherId(int vId);
+
+    List<Voucher> getValidVoucherOfProduct(int productId);
+
+    List<Integer> getUsedVoucherOfCustomer(int CustomerId);
 }

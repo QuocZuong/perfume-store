@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,9 +22,9 @@ import java.util.logging.Logger;
  * @author Admin
  */
 public class ImportDAO implements IImportDAO {
-
+    
     private Connection conn;
-
+    
     public ImportDAO() {
         conn = DB.DBContext.getConnection();
     }
@@ -34,7 +35,7 @@ public class ImportDAO implements IImportDAO {
     public int addImport(Import ip) {
         ImportDetailDAO ipdDAO = new ImportDetailDAO();
         int result = 0;
-        String sql = "INSERT INTO [Import] (Import_Total_Quantity, Import_Total_Cost, Supplier_Name, Import_At, Delivered_At) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO [Import] (Import_Total_Quantity, Import_Total_Cost, Supplier_Name, Import_At, Delivered_At, Import_By_Inventory_Manager) VALUES (?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, ip.getTotalQuantity());
@@ -46,10 +47,12 @@ public class ImportDAO implements IImportDAO {
             result = ps.executeUpdate();
             int addImportDetailResult = ipdDAO.addAllImportDetailOfImport(ip.getImportDetail());
             if (addImportDetailResult == 0) {
-                ipdDAO.removeAllImportDetailOfImport(ip.getId());
-                System.out.println("remove all remain import detail of import id:" + ip.getId());
-                removeImportOnly(ip.getId());
-                System.out.println("add import detail fail so delte import id:" + ip.getId());
+                int importId = DatabaseUtils.getLastIndentityOf("[Import]");
+                ipdDAO.removeAllImportDetailOfImport(importId);
+                System.out.println("remove all remain import detail of import id:" + importId);
+                removeImportOnly(importId);
+                System.out.println("add import detail fail so delte import id:" + importId);
+                result = 0;
             }
         } catch (SQLException ex) {
             Logger.getLogger(ImportDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -60,9 +63,9 @@ public class ImportDAO implements IImportDAO {
 
     /* ------------------------- READ SECTION ---------------------------- */
     @Override
-    public ArrayList<Import> getAllImport() {
-        ArrayList<Import> arrImport = new ArrayList();
-        ArrayList<ImportDetail> ipD;
+    public List<Import> getAllImport() {
+        List<Import> arrImport = new ArrayList();
+        List<ImportDetail> ipD;
         Import ip;
         ImportDetailDAO ipdDAO = new ImportDetailDAO();
         ResultSet rs;
@@ -91,10 +94,10 @@ public class ImportDAO implements IImportDAO {
         }
         return arrImport;
     }
-
+    
     @Override
     public Import getImport(int ipId) {
-        ArrayList<ImportDetail> ipD;
+        List<ImportDetail> ipD;
         Import ip = null;
         ImportDetailDAO ipdDAO = new ImportDetailDAO();
         ResultSet rs;
@@ -126,11 +129,12 @@ public class ImportDAO implements IImportDAO {
         int result = 0;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, ipId);
             result = ps.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(VoucherDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
     }
-
+    
 }

@@ -7,9 +7,11 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="Models.Order"%>
 <%@page import="Models.Customer"%>
+<%@page import="Models.OrderManager"%>
 <%@page import="DAOs.BrandDAO"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="DAOs.ProductDAO"%>
+<%@page import="DAOs.OrderManagerDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib  uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
@@ -51,6 +53,7 @@
           rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <script src="https://kit.fontawesome.com/49a22e2b99.js" crossorigin="anonymous"></script>
+    <link rel="icon" href="/RESOURCES/images/icons/icon.webp">
 
     <link rel="stylesheet" href="/RESOURCES/admin/order/public/style/list.css">
     <style>
@@ -109,8 +112,18 @@
               <c:if test='<%= (orderList.size() != 0)%>'>
                 <c:forEach var="i" begin="0" end="<%= orderList.size() - 1%>">
                   <%
+                                        OrderManagerDAO omDAO = new OrderManagerDAO();
                                         Order o = orderList.get((int) pageContext.getAttribute("i"));
                                         Customer c = cDAO.getCustomer(o.getCustomerId());
+                                        
+                                        String orderManagerName = "";
+                                        if (o.getUpdateByOrderManager() > 0) {
+                                          OrderManager om = omDAO.getOrderManager(o.getUpdateByOrderManager());
+                                          orderManagerName = om.getName();
+                                        }
+
+                                        String checkoutAt = o.getCheckoutAt() == null ? "" : o.getCheckoutAt().toString();
+                                        String updateAt = o.getUpdateAt() == null ? "" : o.getUpdateAt().toString();
 
                                         boolean isActive = !o.getStatus().equals("Rejected");
                   %>
@@ -127,10 +140,10 @@
                     <td class="<%= isActive ? " " : "faded"%>"><%= o.getDeductedPrice()%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= o.getStatus()%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= o.getCreatedAt()%></td>                                        
-                    <td class="<%= isActive ? " " : "faded"%>"><%= o.getCheckoutAt()%></td>
-                    <td class="<%= isActive ? " " : "faded"%>"><%= o.getUpdateAt()%></td>
-                    <td class="<%= isActive ? " " : "faded"%>"><%= o.getUpdateByOrderManager()%></td>
-                    
+                    <td class="<%= isActive ? " " : "faded"%>"><%= checkoutAt%></td>
+                    <td class="<%= isActive ? " " : "faded"%>"><%= updateAt%></td>
+                    <td class="<%= isActive ? " " : "faded"%>"><%= orderManagerName%></td>
+
                     <td class="<%= isActive ? " " : "faded"%>">
                       <a href="/Admin/Order/Detail/ID/<%= o.getId()%>" class="<%= isActive ? "" : "disabled"%> btn btn-outline-primary rounded-0">Info</a>
                     </td>
@@ -155,29 +168,29 @@
 
     <nav aria-label="...">
       <ul class="pagination">
-        <li class="page-item"><a class="page-link" href="/Admin/Product/List/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-left" style="color: #000000;"></i></a></li>
-        <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>"><a class="page-link" href="/Admin/Product/List/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></a></li>
+        <li class="page-item"><a class="page-link" href="/Admin/Order/List/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-left" style="color: #000000;"></i></a></li>
+        <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>"><a class="page-link" href="/Admin/Order/List/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></a></li>
             <c:forEach var="i" begin="${page-2<0?0:page-2}" end="${page+2 +1}">
               <c:choose>
                 <c:when test="${i==page}">
-              <li class="page-item active"><a href="/Admin/Product/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
+              <li class="page-item active"><a href="/Admin/Order/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
               </c:when>
               <c:when test="${i>0 && i<=numberOfPage}"> 
-              <li class="page-item"><a href="/Admin/Product/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
+              <li class="page-item"><a href="/Admin/Order/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
               </c:when>
               <c:otherwise>
               </c:otherwise>
             </c:choose>
           </c:forEach>
-        <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>"><a class="page-link" href="/Admin/Product/List/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a></li>
-        <li class="page-item"><a class="page-link" href="/Admin/Product/List/page/${numberOfPage}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-right" style="color: #000000;"></i></a></li>
+        <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>"><a class="page-link" href="/Admin/Order/List/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a></li>
+        <li class="page-item"><a class="page-link" href="/Admin/Order/List/page/${numberOfPage}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-right" style="color: #000000;"></i></a></li>
       </ul>
     </nav>
     <script>
       function changeLink() {
         let SearchURL = document.getElementById("inputSearch").value;
         SearchURL = encodeURIComponent(SearchURL);
-        document.getElementById("Search").href = "/Admin/Product/List/page/1?txtSearch=" + SearchURL;
+        document.getElementById("Search").href = "/Admin/Order/List/page/1?txtSearch=" + SearchURL;
       }
     </script>
     <script

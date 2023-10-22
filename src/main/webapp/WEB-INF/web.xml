@@ -24,10 +24,14 @@
         <servlet-name>AdminController</servlet-name>
         <servlet-class>Controllers.AdminController</servlet-class>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>ImportProduct</servlet-name>
-        <url-pattern>/ImportProduct</url-pattern>
-    </servlet-mapping>
+    <servlet>
+        <servlet-name>InventoryManagerController</servlet-name>
+        <servlet-class>Controllers.InventoryManagerController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>OrderManagerController</servlet-name>
+        <servlet-class>Controllers.OrderManagerController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>shop</servlet-name>
         <url-pattern>/shop</url-pattern>
@@ -125,6 +129,10 @@
         <servlet-name>AdminController</servlet-name>
         <url-pattern>/Admin/*</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>InventoryManagerController</servlet-name>
+        <url-pattern>/InventoryManager/*</url-pattern>
+    </servlet-mapping>
     <!--Error pages mapping-->
     <error-page>
         <error-code>404</error-code>
@@ -134,6 +142,10 @@
         <error-code>403</error-code>
         <location>/ERROR_PAGE/403Page.jsp</location>
     </error-page>
+    <servlet-mapping>
+        <servlet-name>OrderManagerController</servlet-name>
+        <url-pattern>/OrderManager</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30

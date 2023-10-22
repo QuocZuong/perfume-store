@@ -2,6 +2,7 @@ package Interfaces.DAOs;
 
 import Exceptions.AccountDeactivatedException;
 import Exceptions.EmailDuplicationException;
+import Exceptions.InvalidInputException;
 import Exceptions.UsernameDuplicationException;
 import Exceptions.WrongPasswordException;
 import Models.User;
@@ -103,10 +104,10 @@ public interface IUserDAO {
      * login is successful, {@code null} otherwise.
      * @throws Exceptions.WrongPasswordException
      * @throws Exceptions.AccountDeactivatedException
-     * @throws javax.security.auth.login.AccountNotFoundException
+     * @throws Exceptions.InvalidInputException
      */
-    public User login(String loginString, String password, loginType Type)
-            throws WrongPasswordException, AccountDeactivatedException;
+   public User login(String loginString, String password, loginType Type)
+            throws WrongPasswordException, AccountDeactivatedException,InvalidInputException;
 
     /**
      * Search for a list of {@link User}s in the database that match the

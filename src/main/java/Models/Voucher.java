@@ -1,7 +1,7 @@
 package Models;
 
 import java.sql.Date;
-import java.util.ArrayList;
+import java.util.List;
 
 public class Voucher {
   private int Id;
@@ -12,8 +12,7 @@ public class Voucher {
   private Date createdAt;
   private Date expiredAt;
   private int createdByAdmin;
-  private ArrayList<Integer> approvedProductId;
-  
+  private List<Integer> approvedProductId;
 
   public int getId() {
     return Id;
@@ -79,13 +78,12 @@ public class Voucher {
     this.createdByAdmin = createdByAdmin;
   }
 
-    public ArrayList<Integer> getApprovedProductId() {
-        return approvedProductId;
-    }
+  public List<Integer> getApprovedProductId() {
+    return approvedProductId;
+  }
 
-    public void setApprovedProductId(ArrayList<Integer> approvedProductId) {
-        this.approvedProductId = approvedProductId;
-    }
-  
-  
+  public void setApprovedProductId(List<Integer> approvedProductId) {
+    this.approvedProductId = approvedProductId;
+  }
+
 }

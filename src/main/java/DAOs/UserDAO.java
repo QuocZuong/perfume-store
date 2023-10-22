@@ -12,11 +12,14 @@ import java.util.logging.Logger;
 
 import Exceptions.AccountDeactivatedException;
 import Exceptions.EmailDuplicationException;
+import Exceptions.InvalidInputException;
 import Exceptions.UsernameDuplicationException;
 import Exceptions.WrongPasswordException;
 import Interfaces.DAOs.IUserDAO;
 import Lib.Converter;
 import java.util.List;
+
+import java.util.regex.*;
 
 public class UserDAO implements IUserDAO {
 
@@ -32,7 +35,7 @@ public class UserDAO implements IUserDAO {
     /* --------------------- CREATE SECTION --------------------- */
     @Override
     public List<User> getAll() {
-        ArrayList<User> result = new ArrayList<>();
+        List<User> result = new ArrayList<>();
         ResultSet rs;
 
         String sql = String.format("SELECT * FROM [%s]", TABLE_NAME);
@@ -164,7 +167,17 @@ public class UserDAO implements IUserDAO {
     // loginString is username or email
     @Override
     public User login(String loginString, String password, loginType Type)
-            throws WrongPasswordException, AccountDeactivatedException {
+            throws WrongPasswordException, AccountDeactivatedException, InvalidInputException {
+        if (loginString == null || password == null || Type == null) {
+            System.out.println("Parameter is null, Aborting operation login");
+            return null;
+        }
+        if (!((Type == loginType.Email
+                || Type == loginType.Username)
+                && checkRegex(loginString, Type) && checkRegexPassword(password))) {
+            throw new InvalidInputException();
+        }
+
         User user = null;
         ResultSet rs;
         String sql = "";
@@ -203,6 +216,29 @@ public class UserDAO implements IUserDAO {
         return true;
     }
 
+    // Check input 2-side
+    public boolean checkRegex(String loginString, loginType Type) {
+        if (loginString.length() >= 50) {
+            return false;
+        }
+        final Pattern EMAIL_REGEX = Pattern.compile("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", Pattern.CASE_INSENSITIVE);
+        final Pattern USERNAME_REGEX = Pattern.compile("^[a-zA-Z0-9]+$", Pattern.CASE_INSENSITIVE);
+
+        if (Type == loginType.Username) {
+            return USERNAME_REGEX.matcher(loginString).matches();
+        } else if (Type == loginType.Email) {
+            return EMAIL_REGEX.matcher(loginString).matches();
+        }
+
+        return false;
+    }
+    // Check input 2-side
+
+    public boolean checkRegexPassword(String password) {
+        final Pattern PASSWORD_REGEX = Pattern.compile("^[a-zA-Z0-9]{1,}$", Pattern.CASE_INSENSITIVE);
+        return PASSWORD_REGEX.matcher(password).matches();
+    }
+
     @Override
     public List<User> searchUser(String search) {
         ResultSet rs = null;
@@ -221,10 +257,12 @@ public class UserDAO implements IUserDAO {
             while (rs.next()) {
                 User user = userFactory(rs);
                 userList.add(user);
+
             }
 
         } catch (SQLException ex) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UserDAO.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
         return userList;
     }
@@ -252,8 +290,10 @@ public class UserDAO implements IUserDAO {
             ps.setInt(7, updateUser.getId());
 
             kq = ps.executeUpdate();
+
         } catch (SQLException ex) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UserDAO.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
 
         return kq;

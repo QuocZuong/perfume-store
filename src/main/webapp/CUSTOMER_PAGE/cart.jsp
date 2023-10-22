@@ -1,6 +1,6 @@
 <%@page import="Models.Voucher"%>
 <%@page import="Lib.ExceptionUtils"%>
-<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.List"%>
 <%@page import="DAOs.BrandDAO"%>
 <%@page import="DAOs.CartItemDAO"%>
 <%@page import="DAOs.CustomerDAO"%>
@@ -13,7 +13,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
-<%! ArrayList<CartItem> listCartItem = null;%>
+<%! List<CartItem> listCartItem = null;%>
 <%! ProductDAO pDAO = new ProductDAO();%>
 <%! BrandDAO bDAO = new BrandDAO(); %>
 <%! CartItemDAO ciDAO = new CartItemDAO(); %>
@@ -24,11 +24,11 @@
     boolean isError = ExceptionUtils.isWebsiteError(queryString);
     String exceptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
     int CustomerID = (int) request.getAttribute("customerID");
-    listCartItem = (ArrayList<CartItem>) request.getAttribute("listCartItem");
+    listCartItem = (List<CartItem>) request.getAttribute("listCartItem");
     listOutOfStock = (List<Product>) request.getAttribute("listOutOfStock");
     Total = ciDAO.getCartTotal(listCartItem);
     Voucher v = (Voucher) request.getAttribute("voucher");
-    ArrayList<Product> approvedProduct = (ArrayList<Product>) request.getAttribute("approvedProduct");
+    List<Product> approvedProduct = (List<Product>) request.getAttribute("approvedProduct");
     Integer sumDeductPrice = (Integer) request.getAttribute("sumDeductPrice");
 
 %>
@@ -142,7 +142,7 @@
                                                     </td>
                                                     <td>
                                                         <input type="hidden" name="<%= "ProductID" + pageContext.getAttribute("i")%>" value="<%= p.getId()%>" />
-                                                        <span class="ProductMaxQuantity" > <%= p.getStock().getQuantity()%> </span>  
+                                                        <c:if test='<%= false%>'><span class="ProductMaxQuantity" > <%= p.getStock().getQuantity()%> </span></c:if>
                                                         <input type="number" name="<%= "ProductQuan" + pageContext.getAttribute("i")%>" value="<%= CartQuan%>" /> 
                                                         <input type="hidden" name="<%= "ProductPrice" + pageContext.getAttribute("i")%>" value="<%= CartPrice%>" /> 
                                                         <a href="/Customer/Cart/Delete/ProductID/<%= p.getId()%>/CustomerID/<%= CustomerID%>">
