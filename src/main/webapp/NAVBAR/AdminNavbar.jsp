@@ -1,10 +1,19 @@
 <%-- Document : AdminNavbar.jsp Created on : Sep 5, 2023, 8:41:33 PM Author : Acer --%> <%@page contentType="text/html"
-pageEncoding="UTF-8"%>
+                                                                                                pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>JSP Page</title>
+        <style>
+            .nav .account #product-dropdown-btn + ul.drop-down-show {
+                height: 108px !important;
+            }
+            .nav .account #user-dropdown-btn + ul.drop-down-show {
+                margin-top: 30px;
+                height: 180px !important;
+            }
+        </style>
     </head>
     <body>
         <ul>
