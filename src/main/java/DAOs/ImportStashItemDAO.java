@@ -83,6 +83,20 @@ public class ImportStashItemDAO implements IImportStashItemDAO {
         return 0;
     }
 
+    public int deleteImportStashItem(int InventoryManagerId, int ProductId) {
+        String sql = "DELETE FROM Import_Stash_Item\n"
+                + "WHERE Inventory_Manager_ID = ? AND Product_ID = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, InventoryManagerId);
+            ps.setInt(2, ProductId);
+            return ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ImportStashItemDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
     @Override
     public int deleteAllImportStashItemOfManager(int inventoryManagerId) {
         String sql = "DELETE FROM Import_Stash_Item\n"
@@ -147,6 +161,28 @@ public class ImportStashItemDAO implements IImportStashItemDAO {
             Logger.getLogger(ImportStashItemDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return arrImportStashItem;
+    }
+
+    public int getImportCartTotalCost(ArrayList<ImportStashItem> listImportItem) {
+        if (listImportItem == null || listImportItem.isEmpty()) {
+            return 0;
+        }
+        int total = 0;
+        for (int i = 0; i < listImportItem.size(); i++) {
+            total += listImportItem.get(i).getSumCost();
+        }
+        return total;
+    }
+
+    public int getImportCartTotalQuantity(ArrayList<ImportStashItem> listImportItem) {
+        if (listImportItem == null || listImportItem.isEmpty()) {
+            return 0;
+        }
+        int total = 0;
+        for (int i = 0; i < listImportItem.size(); i++) {
+            total += listImportItem.get(i).getQuantity();
+        }
+        return total;
     }
 
 }

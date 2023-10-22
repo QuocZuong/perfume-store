@@ -95,10 +95,10 @@ public class CustomerController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -168,10 +168,10 @@ public class CustomerController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -264,7 +264,8 @@ public class CustomerController extends HttpServlet {
                 System.out.println("Going Checkout");
                 int result = customerCheckout(request);
                 if (result == State.Success.value) {
-                    response.sendRedirect(CUSTOMER_ORDER_DETAIL_URI + "=" + request.getParameter("OrderID") + request.getParameter("CheckOutSuccess"));
+                    response.sendRedirect(CUSTOMER_ORDER_DETAIL_URI + "=" + request.getParameter("OrderID")
+                            + request.getParameter("CheckOutSuccess"));
                 } else {
                     response.sendRedirect(CUSTOMER_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
                 }
@@ -596,7 +597,7 @@ public class CustomerController extends HttpServlet {
     /**
      * Update a delivery address
      *
-     * @param request The request object
+     * @param request  The request object
      * @param response The response object
      * @return 1 if the operation is successful, 0 otherwise
      */
@@ -644,8 +645,8 @@ public class CustomerController extends HttpServlet {
             return State.Fail.value;
         }
 
-        final String[] exceptionalAddresses = new String[]{
-            "Tỉnh Bà Rịa - Vũng Tàu"
+        final String[] exceptionalAddresses = new String[] {
+                "Tỉnh Bà Rịa - Vũng Tàu"
         };
 
         boolean isExceptionalAddress = false;
@@ -819,7 +820,8 @@ public class CustomerController extends HttpServlet {
         ArrayList<Product> outOfStockProductToCheckOut = ciDAO.getAllOutOfStockProductFromCart(CustomerID);
         if (!outOfStockProductToCheckOut.isEmpty()) {
             for (int i = 0; i < outOfStockProductToCheckOut.size(); i++) {
-                System.out.println("Kho khong du so luong san pham co ID:" + outOfStockProductToCheckOut.get(i).getId());
+                System.out
+                        .println("Kho khong du so luong san pham co ID:" + outOfStockProductToCheckOut.get(i).getId());
             }
             request.setAttribute("exceptionType", "NotEnoughProductQuantityException");
             return State.Fail.value;
@@ -984,7 +986,8 @@ public class CustomerController extends HttpServlet {
         String now = new SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date());
         Date nowDate = Date.valueOf(now);
 
-        boolean result = checkout(CustomerID, voucherID, receiverName, Address, Phone, Note, Total, sumDeductPrice, nowDate, cartItemList);
+        boolean result = checkout(CustomerID, voucherID, receiverName, Address, Phone, Note, Total, sumDeductPrice,
+                nowDate, cartItemList);
 
         if (result == false) {
             System.out.println("Khong thanh toan duoc");
@@ -1000,7 +1003,8 @@ public class CustomerController extends HttpServlet {
     }
 
     public boolean checkout(int customerId, int voucherId, String orderReceiverName, String orderDeliveryAddress,
-            String orderPhoneNumber, String orderNote, int orderTotal, int orderDeductPrice, Date orderCreateAt, ArrayList<CartItem> itemsCheckout) {
+            String orderPhoneNumber, String orderNote, int orderTotal, int orderDeductPrice, Date orderCreateAt,
+            ArrayList<CartItem> itemsCheckout) {
         Order od = new Order();
         od.setCustomerId(customerId);
         od.setReceiverName(orderReceiverName);
@@ -1009,7 +1013,7 @@ public class CustomerController extends HttpServlet {
         od.setTotal(orderTotal);
         od.setStatus(IOrderDAO.status.PENDING.toString());
         od.setCreatedAt(orderCreateAt);
-        //nullable
+        // nullable
         od.setNote(orderNote);
         od.setVoucherId(voucherId);
         if (voucherId != 0) {
@@ -1094,31 +1098,4 @@ public class CustomerController extends HttpServlet {
         return null;
 
     }
-    // private boolean handleCheckout(HttpServletRequest request,
-    // HttpServletResponse response) {
-    // UserDAO usDAO = new UserDAO();
-    // CartDAO cDAO = new CartDAO();
-    // ProductDAO pDAO = new ProductDAO();
-    //
-    // Cookie currentUserCookie = (Cookie)
-    // request.getSession().getAttribute("userCookie");
-    // String username = currentUserCookie.getValue();
-    // int ClientID = usDAO.getUser(username).getID();
-    // ArrayList<int[]> CartProductQuan = cDAO.getAllCartProductQuantity(ClientID);
-    //
-    // if (CartProductQuan.size() == 0) {
-    // System.out.println("The cart is empty");
-    // return false;
-    // }
-    // for (int i = 0; i < CartProductQuan.size(); i++) {
-    // int ProductID = CartProductQuan.get(i)[0];
-    // int Quantity = CartProductQuan.get(i)[1];
-    // int StoreQuan = pDAO.getProduct(ProductID).getQuantity();
-    // if (StoreQuan < Quantity) {
-    // System.out.println("Kho khong du so luong san pham co ID:" + ProductID);
-    // return false;
-    // }
-    // }
-    // return true;
-    // }
 }
