@@ -70,18 +70,23 @@
                     exportEnabled: true,
                     animationEnabled: true,
                     title: {
-                        text: "Best Selling Product"
+                        text: "Best Selling Product By Gender"
+                    }, 
+                    legend: {
+                        verticalAlign: "bottom"
                     },
                     data: [{
                             type: "pie",
+                            showInLegend: true,
+                            indexLabel: "{y}%",
+                            indexLabelPlacement: "inside",
+                            legendText: "{label}: {y}%",
                             toolTipContent: "<b>{label}</b>: {y}%",
-                            indexLabelFontSize: 16,
-                            indexLabel: "{label} - {y}%",
                             dataPoints: <%out.print(dataPoints);%>
                         }]
                 });
                 chart.render();
-            }
+            };
         </script>
     </head>
     <body>

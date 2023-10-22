@@ -1,3 +1,4 @@
+<%@page import="java.util.Calendar"%>
 <%@page import="Lib.ExceptionUtils"%>
 <%@page import="DAOs.ProductDAO"%>
 <%@page import="java.sql.ResultSet"%>
@@ -27,6 +28,19 @@
     String queryString = request.getQueryString();
     boolean isError = ExceptionUtils.isWebsiteError(queryString);
     String exceptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
+
+    // Get total order
+    Calendar calendar = Calendar.getInstance();
+
+    int day = calendar.get(Calendar.DAY_OF_MONTH);
+    int month = calendar.get(Calendar.MONTH) + 1;
+    int year = calendar.get(Calendar.YEAR);
+
+    OrderDAO orderDAO = new OrderDAO();
+    int numberOrderOfDay = orderDAO.getNumberOfOrderByDay(day, month, year).size();
+    int numberOrderOfMonth = orderDAO.getNumberOfOrderByMonth(month, year).size();
+    int numberOrderOfYear = orderDAO.getNumberOfOrderByYear(year).size();
+
 %>
 
 <!DOCTYPE html>
@@ -172,19 +186,15 @@
                                                     <tbody>
                                                         <tr>
                                                             <th scope="row">Day</th>
-                                                            <td>10</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="row">Week</th>
-                                                            <td>125</td>
+                                                            <td><%=numberOrderOfDay%></td>
                                                         </tr>
                                                         <tr>
                                                             <th scope="row">Month</th>
-                                                            <td>1223</td>
+                                                            <td><%=numberOrderOfMonth%></td>
                                                         </tr>
                                                         <tr>
                                                             <th scope="row">Year</th>
-                                                            <td>112315</td>
+                                                            <td><%=numberOrderOfYear%></td>
                                                         </tr>
                                                     </tbody>
                                                 </table>

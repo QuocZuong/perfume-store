@@ -16,7 +16,6 @@
     List<Map<Object, Object>> list = new ArrayList<>();
 
     for (int i = 0; i < listProduct.size(); i++) {
-        System.out.println("price: " + listProduct.get(i).getStock().getPrice());
         if (listProduct.get(i).getStock().getPrice() < 1500000) {
             low++;
         } else if (listProduct.get(i).getStock().getPrice() >= 1500000 && listProduct.get(i).getStock().getPrice() <= 3000000) {
@@ -74,18 +73,23 @@
                     exportEnabled: true,
                     animationEnabled: true,
                     title: {
-                        text: "Best Selling Product"
+                        text: "Best Selling Product By Price"
+                    },
+                    legend: {       
+                        verticalAlign: "bottom"
                     },
                     data: [{
                             type: "pie",
+                            showInLegend: true,
+                            indexLabel: "{y}%",
+                            indexLabelPlacement: "inside",
+                            legendText: "{label}: {y}%",
                             toolTipContent: "<b>{label}</b>: {y}%",
-                            indexLabelFontSize: 16,
-                            indexLabel: "{label} - {y}%",
                             dataPoints: <%out.print(dataPoints);%>
                         }]
                 });
                 chart.render();
-            }
+            };
         </script>
     </head>
     <body>
