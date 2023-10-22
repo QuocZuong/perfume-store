@@ -286,7 +286,8 @@ h1 {
   border-radius: 0.6rem;
 }
 
-.main .right .address-page .address-list .scroll-list {
+.main .right .address-page .address-list .scroll-list,
+.order-scroll-list {
   display: flex;
   flex-direction: column;
 
@@ -295,20 +296,27 @@ h1 {
   overflow: hidden auto;
 }
 
+.order-scroll-list {
+  height: 320px;
+}
+
 .main .right .address-page .address-list .scroll-list > .default-address {
   order: -1;
 }
 
-.main .right .address-page .address-list .scroll-list::-webkit-scrollbar {
+.main .right .address-page .address-list .scroll-list::-webkit-scrollbar,
+.order-scroll-list::-webkit-scrollbar {
   width: 10px;
   border-radius: 0.5em;
 }
 
-.main .right .address-page .address-list .scroll-list::-webkit-scrollbar-track {
+.main .right .address-page .address-list .scroll-list::-webkit-scrollbar-track,
+.order-scroll-list::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
 
-.main .right .address-page .address-list .scroll-list::-webkit-scrollbar-thumb {
+.main .right .address-page .address-list .scroll-list::-webkit-scrollbar-thumb,
+.order-scroll-list::-webkit-scrollbar-thumb {
   background: #888;
   border-radius: 0.5em;
 }
@@ -321,7 +329,8 @@ h1 {
   background: #555;
 }
 
-.main .right .address-page .address-list .delivery-address-item {
+.main .right .address-page .address-list .delivery-address-item,
+.order-history-item {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -335,6 +344,9 @@ h1 {
   border-style: ridge;
   border-color: rgba(0, 0, 0, 0.3);
 
+}
+
+.main .right .address-page .address-list .delivery-address-item {
   cursor: pointer;
 }
 
@@ -606,6 +618,11 @@ h1 {
 
 label.error {
   color: red;
+}
+
+#order-history-table {
+  height: 100px;
+  overflow-y: auto;
 }
 
 /* For underlined the anchor tag. Made by Nguyen Le Tai Duc, if you want to modified, contact me*/
