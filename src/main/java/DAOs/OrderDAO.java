@@ -323,14 +323,14 @@ public class OrderDAO implements IOrderDAO {
 
     /* --------------------------- UPDATE SECTION --------------------------- */
     @Override
-    public boolean updateOrder(Order order, List<OrderDetail> odList) throws NullPointerException {
+    public boolean updateOrder(Order order) throws NullPointerException {
         if (order == null) {
             throw new NullPointerException("Order is null");
         }
-        if (odList == null) {
+        if (order.getOrderDetailList() == null) {
             throw new NullPointerException("OrderDetail list is null");
         }
-        if (odList.isEmpty()) {
+        if (order.getOrderDetailList().isEmpty()) {
             throw new NullPointerException("OrderDetail list is empty");
         }
 
@@ -361,7 +361,7 @@ public class OrderDAO implements IOrderDAO {
             }
 
             OrderDetailDao odDAO = new OrderDetailDao();
-            result = odDAO.updateOrderDetail(odList);
+            result = odDAO.updateOrderDetail(order.getOrderDetailList());
 
             if (!result) {
                 deleteOrder(DatabaseUtils.getLastIndentityOf("Order"));
@@ -371,6 +371,16 @@ public class OrderDAO implements IOrderDAO {
         }
 
         return result;
+    }
+
+    public boolean acceptOrder(Order order) throws NullPointerException {
+        order.setStatus(status.ACCEPTED.toString());
+        return updateOrder(order);
+    }
+
+    public boolean rejectOrder(Order order) throws NullPointerException {
+        order.setStatus(status.REJECTED.toString());
+        return updateOrder(order);
     }
 
     /* --------------------------- DELETE SECTION --------------------------- */
