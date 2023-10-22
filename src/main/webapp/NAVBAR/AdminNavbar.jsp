@@ -1,10 +1,19 @@
 <%-- Document : AdminNavbar.jsp Created on : Sep 5, 2023, 8:41:33 PM Author : Acer --%> <%@page contentType="text/html"
-pageEncoding="UTF-8"%>
+                                                                                                pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>JSP Page</title>
+        <style>
+            .nav .account #product-dropdown-btn + ul.drop-down-show {
+                height: 108px !important;
+            }
+            .nav .account #user-dropdown-btn + ul.drop-down-show {
+                margin-top: 30px;
+                height: 180px !important;
+            }
+        </style>
     </head>
     <body>
         <ul>
@@ -28,8 +37,11 @@ pageEncoding="UTF-8"%>
             <button class="droppown-btn bg-transparent border-0" id="user-dropdown-btn">
                 <img src="/RESOURCES/images/icons/group.png" alt="" />
             </button>
-            <ul class="shadow position-absolute align-items-start ps-1 pt-2">
-                <li class="py-3 text-dark"><a href="/Admin/User/List">Danh sách người dùng</a></li>
+            <ul class="shadow position-absolute align-items-start ps-1 pt-5 pb-5">
+                <li class="py-2 text-dark"><a href="/Admin/User/List">Danh sách người dùng</a></li>
+                <li class="py-2 text-dark"><a href="/Admin/EmployeeActivityLog/Admin">Hoạt động admin</a></li>
+                <li class="py-2 text-dark"><a href="/Admin/EmployeeActivityLog/OrderManager">Hoạt động order manager</a></li>
+                <li class="py-2 text-dark"><a href="/Admin/EmployeeActivityLog/InventoryManager">Hoạt động inventory manager</a></li>
             </ul>
 
             <a href="/Admin/User"><img src="/RESOURCES/images/icons/user.png" alt="" /></a>

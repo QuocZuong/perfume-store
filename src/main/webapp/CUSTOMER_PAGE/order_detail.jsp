@@ -33,7 +33,7 @@
 
     int voucherId = orderInfor.getVoucherId();
     Voucher v = vDAO.getVoucher(voucherId);
-
+    Integer sumDeductPrice = (Integer) request.getAttribute("sumDeductPrice");
     approvedProductsList = (List<Product>) request.getAttribute("approvedProductsList");
 %>
 
@@ -106,28 +106,28 @@
                                         %>
                                         <tr>
                                             <th scope="row"><%=(int) pageContext.getAttribute("i") + 1%></th>
-                                            <td><a src="/Product/Detail/ID/<%= product.getId() %>"><%= productName%></a></td>
+                                            <td><a src="/Product/Detail/ID/<%= product.getId()%>"><%= productName%></a></td>
                                             <td><img src="<%= product.getImgURL()%>"></td>
                                             <td><%= quantity%></td>
                                             <td>
                                                 <c:choose>
-                                                            <c:when test="<%= (v != null && approvedProductsList != null && ProductDAO.isContain(product, approvedProductsList))%>">  
-                                                                <span><%= Converter.covertIntergerToMoney(product.getStock().getPrice())%> <span>₫</span></span>
-                                                                <span style="text-decoration: line-through;color: rgba(0,0,0,0.5);">Total:<%= Converter.covertIntergerToMoney(sum)%> <span>₫</span></span>
-                                                                <span>Total: <%= Converter.covertIntergerToMoney(sum - product.getStock().getPrice() * v.getDiscountPercent() / 100)%> <span>₫</span></span>
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                <span><%= Converter.covertIntergerToMoney(product.getStock().getPrice())%> <span>₫</span></span>
-                                                                <span>Total: <%= Converter.covertIntergerToMoney(sum)%> <span>₫</span></span>
-                                                            </c:otherwise>
-                                                        </c:choose>
+                                                    <c:when test="<%= (v != null && approvedProductsList != null && ProductDAO.isContain(product, approvedProductsList))%>">  
+                                                        <span><%= Converter.covertIntergerToMoney(product.getStock().getPrice())%> <span>₫</span></span>
+                                                        <span style="text-decoration: line-through;color: rgba(0,0,0,0.5);">Total:<%= Converter.covertIntergerToMoney(sum)%> <span>₫</span></span>
+                                                        <span>Total: <%= Converter.covertIntergerToMoney(sumDeductPrice < v.getDiscountMax() ? (sum - (product.getStock().getPrice() * v.getDiscountPercent() / 100)) : (sum - (product.getStock().getPrice() * v.getDiscountPercent() / 100) + ((sumDeductPrice - v.getDiscountMax()) / approvedProductsList.size())))%> <span>₫</span></span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span><%= Converter.covertIntergerToMoney(product.getStock().getPrice())%> <span>₫</span></span>
+                                                        <span>Total: <%= Converter.covertIntergerToMoney(sum)%> <span>₫</span></span>
+                                                    </c:otherwise>
+                                                </c:choose>
                                             </td>
                                         </tr>
                                     </c:forEach>
                                     <tr class="bottom-table">
                                         <td colspan="6">
-                                            <p><img src="/RESOURCES/images/icons/smartphone.png" alt="alt"/><span class="info"><%=orderInfor.getPhoneNumber() %></span></p>
-                                            <p><img src="/RESOURCES/images/icons/location-pin.png" alt="alt"/><span class="info"><%=orderInfor.getDeliveryAddress() %></span></p>
+                                            <p><img src="/RESOURCES/images/icons/smartphone.png" alt="alt"/><span class="info"><%=orderInfor.getPhoneNumber()%></span></p>
+                                            <p><img src="/RESOURCES/images/icons/location-pin.png" alt="alt"/><span class="info"><%=orderInfor.getDeliveryAddress()%></span></p>
                                                 <c:if test='<%= (orderInfor.getNote() != null && !orderInfor.getNote().equals(""))%>'>
                                                 <p><img src="/RESOURCES/images/icons/email.png" alt="alt"/><span class="info"><%=orderInfor.getNote()%></span></p>
                                                 </c:if>

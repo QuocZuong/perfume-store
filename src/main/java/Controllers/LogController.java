@@ -35,10 +35,10 @@ public class LogController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -63,10 +63,10 @@ public class LogController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -176,8 +176,8 @@ public class LogController extends HttpServlet {
         for (Cookie c : cookies) {
             if (c.getName().equals("Customer")
                     || c.getName().equals("Admin")
-                    || c.getName().equals("Order_Manager")
-                    || c.getName().equals("Inventory_Manager")) {
+                    || c.getName().equals("OrderManager")
+                    || c.getName().equals("InventoryManager")) {
                 c.setMaxAge(0);
                 c.setPath("/");
                 response.addCookie(c);

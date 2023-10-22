@@ -72,7 +72,7 @@ public class VoucherDAO implements IVoucherDAO {
             try {
                 List<Integer> arrApprovedProductId = v.getApprovedProductId();
                 PreparedStatement ps = conn.prepareStatement(sql);
-                //set value for ?
+                // set value for ?
                 for (int i = 0; i < arrApprovedProductId.size(); i++) {
                     ps.setInt(1, v.getId());
                     ps.setInt(2, arrApprovedProductId.get(i));
@@ -100,6 +100,8 @@ public class VoucherDAO implements IVoucherDAO {
         String sql = "SELECT * FROM [Voucher] WHERE Voucher_ID = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, vId);
+
             rs = ps.executeQuery();
             if (rs.next()) {
                 Voucher v = new Voucher();
@@ -175,7 +177,7 @@ public class VoucherDAO implements IVoucherDAO {
         return arrVoucher;
     }
 
-    //get all productID that approved for a voucher
+    // get all productID that approved for a voucher
     @Override
     public List<Integer> getAllApprovedProductIdByVoucherId(int vId) {
         ResultSet rs;
@@ -201,8 +203,7 @@ public class VoucherDAO implements IVoucherDAO {
         List<Voucher> arrVoucher = new ArrayList();
         Date now = new Date(System.currentTimeMillis());
 
-        String sql
-                = "SELECT \n"
+        String sql = "SELECT \n"
                 + "	Voucher.Voucher_ID, \n"
                 + "	Voucher.Voucher_Code,\n"
                 + "	Voucher.Voucher_Quantity, \n"
@@ -304,7 +305,8 @@ public class VoucherDAO implements IVoucherDAO {
     }
 
     /* ------------------------- EXCEPTION SECTION ---------------------------- */
-    public boolean checkValidVoucher(Voucher v, int cusId) throws VoucherNotFoundException, InvalidVoucherException, NotEnoughVoucherQuantityException {
+    public boolean checkValidVoucher(Voucher v, int cusId)
+            throws VoucherNotFoundException, InvalidVoucherException, NotEnoughVoucherQuantityException {
         Date now = new Date(System.currentTimeMillis());
         if (v == null) {
             System.out.println("voucher not found");

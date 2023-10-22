@@ -173,7 +173,8 @@ h1 {
   height: 108px !important;
 }
 .nav .account #user-dropdown-btn + ul.drop-down-show {
-  height: 61px !important;
+  margin-top: 30px;
+  height: 180px !important;
 }
 
 .main {

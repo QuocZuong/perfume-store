@@ -1,4 +1,3 @@
-
 <%@page import="DAOs.CustomerDAO"%>
 <%@page import="DAOs.OrderDAO"%>
 <%@page import="Lib.ExceptionUtils"%>

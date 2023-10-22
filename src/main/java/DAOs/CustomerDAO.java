@@ -214,7 +214,6 @@ public class CustomerDAO extends UserDAO implements ICustomerDAO {
         customer.setCustomerCreditPoint(queryResult.getInt(CUSTOMER_CREDIT_POINT));
         customer.setDeliveryAddress(daDAO.getAll(customer.getCustomerId()));
 
-        System.out.println("create customer successfully");
         return customer;
     }
 

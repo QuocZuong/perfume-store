@@ -89,7 +89,7 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
 
     public boolean isOrderManager(String username) {
         Employee employee = getEmployee(username);
-        return employee != null && employee.getRole().getName().equals("Order_Manager");
+        return employee != null && employee.getRole().getName().equals("Order Manager");
     }
 
     public boolean isInventoryManager(String username) {
