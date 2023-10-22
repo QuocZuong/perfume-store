@@ -175,6 +175,14 @@
                                                     </button>
                                                 </a>
                                             </div>
+                                            
+                                            <div class="mt-3">
+                                                <a href="/Admin/Chart/BestSellingProductByPrice" class="text-decoration-none">
+                                                    <button class="btn btn-outline-dark d-flex w-100 h-100 justify-content-center align-items-center rounded-0 fn-btn">
+                                                        <span class="h2">&nbsp;&nbsp;Total Order</span>
+                                                    </button>
+                                                </a>
+                                            </div>
 
                                         </div>
                                         <div class="modal-footer">
