@@ -59,60 +59,32 @@ public class OrderManagerController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String path = request.getRequestURI();
 
-        if (path.startsWith(ORDER_MANAGER_USER_URI)) {
-            request.getRequestDispatcher("/ORDER_MANAGER/admin.jsp").forward(request, response);
-            return;
-        }
-
+        // ---------------------------- ORDER SECTION ----------------------------
         if (path.startsWith(ORDER_MANAGER_ORDER_LIST_URI)
                 || path.startsWith(ORDER_MANAGER_ORDER_LIST_URI + "/page")) {
-
+            System.out.println("Going Order List");
             int result = searchOrder(request);
 
             if (result == State.Success.value) {
                 request.getRequestDispatcher("/ORDER_MANAGER/Order/list.jsp").forward(request, response);
             } else if (result == State.Fail.value) {
-                response.sendRedirect(ORDER_MANAGER_ORDER_LIST + ExceptionUtils.generateExceptionQueryString(request));
+                response.sendRedirect(
+                        ORDER_MANAGER_ORDER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
             }
+
             return;
         }
 
-        // ---------------------------- ORDER SECTION ----------------------------
-        // if (path.startsWith(ORDER_MANAGER_ORDER_LIST_URI)
-        //         || path.startsWith(ORDER_MANAGER_ORDER_LIST_URI + "/page")) {
-        //     int result = searchOrder(request);
-        //     if (result == State.Success.value) {
-        //         request.getRequestDispatcher("/ORDER_MANAGER/Order/list.jsp").forward(request, response);
-        //     } else if (result == State.Fail.value) {
-        //         response.sendRedirect(
-        //                 ORDER_MANAGER_ORDER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
-        //     }
-        //     return;
-        // }
-        // ---------------------------- USER SECTION ----------------------------
-        if (path.startsWith(ORDER_MANAGER_ACCEPT_ORDER_URI)
-                || path.startsWith(ORDER_MANAGER_REJECT_ORDER_URI)) {
-            int result = updateOrderStatus(request, response);
-            response.sendRedirect(ORDER_MANAGER_USER_URI);
-            return;
-        }
-
-        // if (path.startsWith(ADMIN_CLIENT_DETAIL_URI)) {
-        // clientDetail(request, response);
-        // request.getRequestDispatcher("/ORDER_MANAGER/User/detail.jsp").forward(request,
-        // response);
-        // return;
-        // }
         if (path.startsWith(ORDER_MANAGER_ORDER_DETAIL_URI)) {
             System.out.println("Going Order Detail");
 
@@ -128,6 +100,19 @@ public class OrderManagerController extends HttpServlet {
             return;
         }
 
+        if (path.startsWith(ORDER_MANAGER_ACCEPT_ORDER_URI)
+                || path.startsWith(ORDER_MANAGER_REJECT_ORDER_URI)) {
+            int result = updateOrderStatus(request, response);
+
+            if (result == State.Success.value) {
+                response.sendRedirect(ORDER_MANAGER_ORDER_LIST);
+            } else {
+                response.sendRedirect(ORDER_MANAGER_ORDER_LIST + ExceptionUtils.generateExceptionQueryString(request));
+            }
+
+            return;
+        }
+
         // ---------------------------- DEFAULT SECTION ----------------------------
         if (path.startsWith(ORDER_MANAGER_USER_URI)) { // Put this at the last
             request.getRequestDispatcher("/ORDER_MANAGER/admin.jsp").forward(request, response);
@@ -138,10 +123,10 @@ public class OrderManagerController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
