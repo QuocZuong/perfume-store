@@ -90,7 +90,7 @@
                                 <td>Product name</td>
                                 <td>Product Image</td>
                                 <td>Action</td>
-                                <td>Description</td>
+                                <td style="max-width: 520px;">Description</td>
                             </tr>
                         </thead>
 
@@ -111,7 +111,7 @@
                                             <img src="<%= product.getImgURL()%>" alt="<%= product.getName()%>"/>
                                         </td>
                                         <td ><%= productActivityLog.getAction()%></td>
-                                        <td ><%= productActivityLog.getDescription()%></td>
+                                        <td style="max-width: 520px;"><%= productActivityLog.getDescription()%></td>
                                     </tr>
                                 </c:forEach>
                             </c:if>
