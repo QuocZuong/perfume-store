@@ -82,6 +82,35 @@ public class UserDAO implements IUserDAO {
         return null;
     }
 
+    public User getUserForAdminActivityLogs(int adminId) {
+        if (adminId < 0) {
+            return null;
+        }
+
+        ResultSet rs;
+        String sql = "SELECT [User].User_ID, [User].[User_Name], [User].User_Username, [User].User_Password, [User].User_Email, [User].User_Active, [User].User_Type FROM Product_Activity_Log\n"
+                + "JOIN [Admin] ON Product_Activity_Log.Updated_By_Admin = [Admin].[Admin_ID]\n"
+                + "JOIN [Employee] ON [Admin].[Employee_ID] = [Employee].[Employee_ID]\n"
+                + "JOIN [User] ON [Employee].[User_ID] = [User].[User_ID]\n"
+                + "WHERE [Admin].Admin_ID = ?";
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, adminId);
+
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                User us = userFactory(rs);
+                return us;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return null;
+    }
+
     @Override
     public User getUser(int ID) {
         String sql = String.format("SELECT * FROM [User] WHERE USER_ID = ?");
@@ -172,11 +201,9 @@ public class UserDAO implements IUserDAO {
             System.out.println("Parameter is null, Aborting operation login");
             return null;
         }
-        if (!(
-                (Type == loginType.Email || Type == loginType.Username)
+        if (!((Type == loginType.Email || Type == loginType.Username)
                 && checkRegex(loginString, Type)
-                && checkRegexPassword(password))
-                ) {
+                && checkRegexPassword(password))) {
             throw new InvalidInputException();
         }
 
