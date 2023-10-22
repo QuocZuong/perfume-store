@@ -222,10 +222,6 @@ CREATE TABLE [OrderDetail](
     -- Duplicate, Foreign key to Order
     [Product_ID] INT NOT NULL,
     -- Duplicate, Foreign key to Product
-    [Order_ID] INT NOT NULL,
-    -- Duplicate, Foreign key to Order
-    [Product_ID] INT NOT NULL,
-    -- Duplicate, Foreign key to Product
     [Quantity] INT DEFAULT 0,
     [Price] INT DEFAULT 0,
     [Total] INT DEFAULT 0,
