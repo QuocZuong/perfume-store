@@ -184,15 +184,6 @@ public class OrderDAO implements IOrderDAO {
         return result;
     }
 
-    public boolean addPendingOrder(Order order, int customerId) throws NullPointerException {
-        Date now = Date.valueOf(Generator.generateDateTime());
-        order.setStatus(status.PENDING.toString());
-        order.setCreatedAt(now);
-        order.setCustomerId(customerId);
-
-        return addOrder(order);
-    }
-
     /* --------------------------- READ SECTION --------------------------- */
     @Override
     public List<Order> getAll() {
@@ -251,6 +242,9 @@ public class OrderDAO implements IOrderDAO {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 order = orderFactory(rs, operation.READ);
+                OrderDetailDao odDAO = new OrderDetailDao();
+                List<OrderDetail> orderDetailList = odDAO.getOrderDetail(orderId);
+                order.setOrderDetailList(orderDetailList);
             }
         } catch (SQLException ex) {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);

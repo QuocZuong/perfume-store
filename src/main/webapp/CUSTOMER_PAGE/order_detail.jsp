@@ -1,5 +1,8 @@
 <%-- Document : newjsp Created on : Jul 5, 2023, 3:27:56 PM Author : Acer --%>
 
+<%@page import="Models.Product"%>
+<%@page import="Models.OrderDetail"%>
+<%@page import="Lib.Converter"%>
 <%@page import="DAOs.OrderDAO"%>
 <%@page import="DAOs.BrandDAO"%>
 <%@page import="java.sql.ResultSet"%>
@@ -13,19 +16,15 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%! UserDAO usDAO = new UserDAO();%>
 <%!String fullname, username, email;%>
-<%! List<String[]> order;%>
-<%!Order OrderInfor;%>
+<%!Order orderInfor;%>
 <%! String CheckOutSuccess;%>
 
 <%
     Cookie currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
     User user = usDAO.getUser(currentUserCookie.getValue());
-    fullname = user.getName();
-    username = user.getUsername();
-    email = user.getEmail();
     ProductDAO pDAO = new ProductDAO();
-    OrderInfor = (Order) request.getAttribute("OrderInfor");
-    order = (List<String[]>) (request.getAttribute("OrderDetail"));
+    orderInfor = (Order) request.getAttribute("OrderInfor");
+    List<OrderDetail> orderDetailList = orderInfor.getOrderDetailList();
     CheckOutSuccess = (String) request.getParameter("CheckOutSuccess");
 %>
 
@@ -76,7 +75,6 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Thông tin</th>
                                     <th scope="col">Sản phẩm</th>
                                     <th scope="col" class="number">Số lượng</th>
                                     <th scope="col">Đơn giá</th>
@@ -84,23 +82,28 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <c:if test='<%=  order.size() > 0%>'>
-                                    <c:forEach var="i" begin="0" end="<%= order.size() - 1%>">
+
+                                <c:if test='<%=  orderDetailList.size() > 0%>'>
+                                    <c:forEach var="i" begin="0" end="<%= orderDetailList.size() - 1%>">
+                                        <%
+                                            OrderDetail orderDetail = orderDetailList.get((int) pageContext.getAttribute("i"));
+                                            Product product = pDAO.getProduct(orderDetail.getProductId());
+                                        %>
                                         <tr>
                                             <th scope="row"><%=(int) pageContext.getAttribute("i") + 1%></th>
-                                            <td><%= order.get((int) pageContext.getAttribute("i"))[0]%></td>
-                                            <td><img src="<%=order.get((int) pageContext.getAttribute("i"))[1]%>"></td>
-                                            <td><%=order.get((int) pageContext.getAttribute("i"))[2]%></td>
-                                            <td><%=  pDAO.IntegerToMoney(Integer.parseInt(order.get((int) pageContext.getAttribute("i"))[3]))%></td>
-                                            <td><%=  pDAO.IntegerToMoney(Integer.parseInt(order.get((int) pageContext.getAttribute("i"))[5]))%></td>
+                                            <td><a src="/Product/Detail/ID/<%= product.getId() %>"> <%= product.getName()%></a> </td>
+                                            <td><img src="<%= product.getImgURL()%>"></td>
+                                            <td><%= orderDetail.getQuantity()%></td>
+                                            <td><%= Converter.covertIntergerToMoney(orderDetail.getPrice())%></td>
+                                            <td><%= Converter.covertIntergerToMoney(orderDetail.getTotal())%></td>
                                         </tr>
                                     </c:forEach>
                                     <tr class="bottom-table">
                                         <td colspan="6">
-                                            <p><img src="/RESOURCES/images/icons/smartphone.png" alt="alt"/><span class="info"><%=OrderInfor.getPhoneNumber()%></span></p>
-                                            <p><img src="/RESOURCES/images/icons/location-pin.png" alt="alt"/><span class="info"><%=OrderInfor.getAddress()%></span></p>
-                                                <c:if test='<%= (OrderInfor.getNote() != null && !OrderInfor.getNote().equals(""))%>'>
-                                                <p><img src="/RESOURCES/images/icons/email.png" alt="alt"/><span class="info"><%=OrderInfor.getNote()%></span></p>
+                                            <p><img src="/RESOURCES/images/icons/smartphone.png" alt="alt"/><span class="info"><%=orderInfor.getPhoneNumber() %></span></p>
+                                            <p><img src="/RESOURCES/images/icons/location-pin.png" alt="alt"/><span class="info"><%=orderInfor.getDeliveryAddress() %></span></p>
+                                                <c:if test='<%= (orderInfor.getNote() != null && !orderInfor.getNote().equals(""))%>'>
+                                                <p><img src="/RESOURCES/images/icons/email.png" alt="alt"/><span class="info"><%=orderInfor.getNote()%></span></p>
                                                 </c:if>
                                         </td>
                                     </tr>

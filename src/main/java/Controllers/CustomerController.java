@@ -105,8 +105,7 @@ public class CustomerController extends HttpServlet {
             throws ServletException, IOException {
         String path = request.getRequestURI();
         System.out.println("Request Path URI " + path);
-        
-         
+
         //
         if (path.startsWith(CUSTOMER_CART_DELETE_URI)) {
             System.out.println("Going delete");
@@ -150,16 +149,20 @@ public class CustomerController extends HttpServlet {
         }
 
         //
-        // if (path.startsWith(CLIENT_ORDER_DETAIL_URI)) {
-        // System.out.println("Going Order Detail");
-        // ClientOrderDetail(request, response);
-        // request.getRequestDispatcher("/CLIENT_PAGE/order_detail.jsp").forward(request,
-        // response);
-        // return;
-        // }
-        //
-        // System.out.println("Going home");
-        // response.sendRedirect("/");
+        if (path.startsWith(CUSTOMER_ORDER_DETAIL_URI)) {
+            System.out.println("Going Order Detail");
+            int result = getCustomerOrderDetail(request);
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/CUSTOMER_PAGE/order_detail.jsp").forward(request,
+                        response);
+            } else {
+                request.getRequestDispatcher(CUSTOMER_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
+
+        System.out.println("Going home");
+        response.sendRedirect("/");
     }
 
     /**
@@ -450,21 +453,23 @@ public class CustomerController extends HttpServlet {
         }
         return State.Success.value;
     }
-    //
-    // private void ClientOrderDetail(HttpServletRequest request,
-    // HttpServletResponse response) {
-    // String path = request.getRequestURI();
-    // String[] data = path.split("/");
-    // int order_id = Integer.parseInt(data[data.length - 1]);
-    // OrderDAO oDAO = new OrderDAO();
-    // List<String[]> orderDetail = oDAO.getOrderDetailByOrderID(order_id);
-    // Order OrderInfor = oDAO.getOrderByOrderId(order_id);
-    // System.out.println(OrderInfor);
-    // request.setAttribute("OrderInfor", OrderInfor);
-    // request.setAttribute("OrderDetail", orderDetail);
-    // }
-    //
-    // // ---------------------------- UPDATE SECTION ----------------------------
+
+    private int getCustomerOrderDetail(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        String[] data = path.split("/");
+        try {
+            int orderId = Integer.parseInt(data[data.length - 1]);
+            OrderDAO oDAO = new OrderDAO();
+            Order order = oDAO.getOrderByOrderId(orderId);
+            System.out.println("Get order detail list");
+            System.out.println(order.getOrderDetailList());
+            request.setAttribute("OrderInfor", order);
+            return State.Success.value;
+        } catch (NumberFormatException e) {
+            return State.Fail.value;
+        }
+    }
+    // ---------------------------- UPDATE SECTION ----------------------------
 
     private boolean updateClientInfomation(HttpServletRequest request, HttpServletResponse response) {
         /*
@@ -524,7 +529,7 @@ public class CustomerController extends HttpServlet {
         } catch (AccountDeactivatedException e) {
             request.setAttribute("exceptionType", "AccountDeactivatedException");
             return false;
-        }  catch (EmailDuplicationException e) {
+        } catch (EmailDuplicationException e) {
             request.setAttribute("exceptionType", "EmailDuplicationException");
             return false;
         } catch (UsernameDuplicationException e) {
