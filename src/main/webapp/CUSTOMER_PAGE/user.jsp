@@ -176,8 +176,8 @@
                 <div class="order-scroll-list">
                   <div class="row ms-1">
                     <div class="col-1">#</div>
-                    <div class="col-3 offset-1">Ngày mua hàng</div>
-                    <div class="col-5 offset-1">Tổng tiền</div>
+                    <div class="col-2 offset-1 text-center">Ngày mua hàng</div>
+                    <div class="col-2 offset-1 text-center">Tổng tiền</div>
                   </div>
                   <c:forEach var="i" begin="0" end="<%=orders.size() - 1%>">
                     <%
@@ -189,8 +189,8 @@
                       <div class="order-history-item">
                         <div class="row w-100">
                           <div class="col-1"><%= orderId%></div>
-                          <div class="col-2 offset-1 ps-5"><%= createAt%></div>
-                          <div class="col-2 offset-2 ps-5"><%= totalMoney%></div>
+                          <div class="col-2 offset-1 ps-1 text-center"><%= createAt%></div>
+                          <div class="col-2 offset-1 ps-5 text-center"><%= totalMoney%></div>
                           <div class="col-3"><a href="/Customer/Order/Detail/ID/<%=orders.get((int) pageContext.getAttribute("i")).getId()%>" target="_blank">Xem chi tiết</a></div>
                         </div>
                       </div>
