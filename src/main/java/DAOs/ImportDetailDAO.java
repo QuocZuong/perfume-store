@@ -5,6 +5,7 @@
 package DAOs;
 
 import Interfaces.DAOs.IImportDetailDAO;
+import Lib.DatabaseUtils;
 import Models.ImportDetail;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -49,6 +50,8 @@ public class ImportDetailDAO implements IImportDetailDAO {
     @Override
     public int addAllImportDetailOfImport(ArrayList<ImportDetail> arrIpd) {
         String sql = "INSERT INTO [Import_Detail] (Import_ID, Product_ID, Quantity, Cost, Status) VALUES (?, ?, ?, ?, ?)";
+        int ImportID = DatabaseUtils.getLastIndentityOf("[Import]");
+        System.out.println("Last id:" + ImportID);
         int result = 0;
         try {
             if (arrIpd != null && !arrIpd.isEmpty()) {
@@ -58,7 +61,7 @@ public class ImportDetailDAO implements IImportDetailDAO {
                     if (arrIpd.get(i) == null) {
                         return 0;
                     }
-                    ps.setInt(1, arrIpd.get(i).getImportId());
+                    ps.setInt(1, ImportID);
                     ps.setInt(2, arrIpd.get(i).getProductId());
                     ps.setInt(3, arrIpd.get(i).getQuantity());
                     ps.setInt(4, arrIpd.get(i).getCost());

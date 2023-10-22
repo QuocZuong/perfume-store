@@ -5,6 +5,11 @@ import java.util.ArrayList;
 
 public interface IImportDetailDAO {
 
+    public enum Status {
+        Wait,
+        Used;
+    }
+
     int addImportDetail(ImportDetail importDetail);
 
     int addAllImportDetailOfImport(ArrayList<ImportDetail> ArrayImportDetail);
@@ -12,7 +17,7 @@ public interface IImportDetailDAO {
     int updateImportDetail(ImportDetail importDetail);
 
     int deleteImportDetail(ImportDetail importDetail);
-    
+
     int deleteImportDetailOfImport(int importId);
 
     ImportDetail getImportDetail(int importId, int productId);
