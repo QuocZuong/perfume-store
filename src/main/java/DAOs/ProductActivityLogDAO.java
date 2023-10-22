@@ -96,4 +96,35 @@ public class ProductActivityLogDAO {
         return result;
     }
 
+    public List<ProductActivityLog> searchProductActivityLog(String search) {
+        String sql = "SELECT [Product_Activity_Log].Product_ID, [Product_Activity_Log].[Action], [Product_Activity_Log].[Description],[Product_Activity_Log].Updated_By_Admin, [Product_Activity_Log].Updated_At FROM Product_Activity_Log\n"
+                + "JOIN [Admin] ON Product_Activity_Log.Updated_By_Admin = [Admin].[Admin_ID]\n"
+                + "JOIN [Employee] ON [Admin].[Employee_ID] = [Employee].[Employee_ID]\n"
+                + "JOIN [User] ON [Employee].[User_ID] = [User].[User_ID] \n"
+                + "WHERE [User].[User_Name] LIKE 'T%' OR [User].[User_Username] LIKE 'T%' OR [User].[User_Email] LIKE 'T%'";
+        List<ProductActivityLog> palList = new ArrayList<>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            search = "%" + search + "%";
+            ps.setNString(1, search);
+            ps.setNString(2, search);
+            ps.setNString(3, search);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                ProductActivityLog pal = new ProductActivityLog();
+                pal.setProductId(rs.getInt("Product_ID"));
+                pal.setAction(rs.getNString("Action"));
+                pal.setDescription(rs.getNString("Description"));
+                pal.setUpdatedByAdmin(rs.getInt("Updated_By_Admin"));
+                pal.setUpdatedAt(rs.getDate("Updated_At"));
+                palList.add(pal);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductActivityLogDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return palList;
+    }
+
 }
