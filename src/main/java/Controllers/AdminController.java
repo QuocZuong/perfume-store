@@ -7,12 +7,14 @@ import DAOs.EmployeeDAO;
 import DAOs.OrderDAO;
 import DAOs.ProductActivityLogDAO;
 import Models.User;
+import Models.Voucher;
 
 import java.util.List;
 
 import Models.Product;
 import DAOs.ProductDAO;
 import DAOs.UserDAO;
+import DAOs.VoucherDAO;
 import Exceptions.CitizenIDDuplicationException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.PhoneNumberDuplicationException;
@@ -28,6 +30,7 @@ import Models.Stock;
 import Models.Customer;
 import Models.Employee;
 import Models.Order;
+import Models.OrderDetail;
 import Models.ProductActivityLog;
 import Models.Role;
 import java.io.InputStream;
@@ -101,10 +104,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -244,12 +247,20 @@ public class AdminController extends HttpServlet {
         // response);
         // return;
         // }
-        // if (path.startsWith(ADMIN_CLIENT_ORDER_URI)) {
-        // OrderDetail(request, response);
-        // request.getRequestDispatcher("/ADMIN_PAGE/User/orderDetail.jsp").forward(request,
-        // response);
-        // return;
-        // }
+        if (path.startsWith(ADMIN_CLIENT_ORDER_URI)) {
+            System.out.println("Going Order Detail");
+
+            int result = getCustomerOrderDetail(request);
+
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/ADMIN_PAGE/Order/orderDetail.jsp").forward(request,
+                        response);
+            } else {
+                request.getRequestDispatcher(
+                        "/ADMIN_PAGE/Order/orderDetail.jsp" + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
         // ---------------------------- CHART SECTION ----------------------------
         if (path.startsWith(ADMIN_CHART_BEST_SELLING_PRODUCT_BY_GENDER)) {
             bestSellingProductByGender(request, response);
@@ -273,10 +284,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -672,6 +683,47 @@ public class AdminController extends HttpServlet {
         System.out.println("userInfo " + user.getName());
         request.setAttribute("UserInfo", user);
 
+    }
+
+    private int getCustomerOrderDetail(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        String[] data = path.split("/");
+        try {
+            OrderDAO oDAO = new OrderDAO();
+            VoucherDAO vDAO = new VoucherDAO();
+            ProductDAO pDAO = new ProductDAO();
+
+            int orderId = Integer.parseInt(data[data.length - 1]);
+            Order order = oDAO.getOrderByOrderId(orderId);
+            Voucher v = vDAO.getVoucher(order.getVoucherId());
+
+            List<OrderDetail> orderDetailList = order.getOrderDetailList();
+            List<Product> approvedProductsList = new ArrayList<>();
+
+            // Get the list of all product that is approviate for voucher discount.
+            Product p;
+            if (v != null) {
+                System.out.println("Order detail list size:" + orderDetailList.size());
+                System.out.println("Approved product list size:" + v.getApprovedProductId().size());
+                for (int i = 0; i < orderDetailList.size(); i++) {
+                    if (v.getApprovedProductId().contains(orderDetailList.get(i).getProductId())) {
+                        p = pDAO.getProduct(orderDetailList.get(i).getProductId());
+
+                        approvedProductsList.add(p);
+                    }
+                }
+            }
+
+            request.setAttribute("approvedProductsList", approvedProductsList);
+
+            System.out.println("Get order detail list");
+            System.out.println(order.getOrderDetailList());
+
+            request.setAttribute("OrderInfor", order);
+            return State.Success.value;
+        } catch (NumberFormatException e) {
+            return State.Fail.value;
+        }
     }
 
     //

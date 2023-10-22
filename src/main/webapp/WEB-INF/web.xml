@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
     <servlet>
         <servlet-name>ImportProduct</servlet-name>
         <servlet-class>ImportProduct</servlet-class>
@@ -36,7 +38,8 @@
         <servlet-name>shop</servlet-name>
         <url-pattern>/shop</url-pattern>
     </servlet-mapping>
-    <!--Filter defintion-->
+    <!--Filter
+    defintion-->
     <filter>
         <filter-name>UserValidation</filter-name>
         <filter-class>Filters.UserValidation</filter-class>
@@ -91,7 +94,8 @@
         <filter-name>UserValidation</filter-name>
         <url-pattern>/USER_PAGE/*</url-pattern>
     </filter-mapping> -->
-    <!--Controller defintion-->
+    <!--Controller
+    defintion-->
     <servlet>
         <servlet-name>HomeController</servlet-name>
         <servlet-class>Controllers.HomeController</servlet-class>
@@ -100,7 +104,8 @@
         <servlet-name>ResourceController</servlet-name>
         <servlet-class>Controllers.ResourceController</servlet-class>
     </servlet>
-    <!--Controller mapping-->
+    <!--Controller
+    mapping-->
     <servlet-mapping>
         <servlet-name>HomeController</servlet-name>
         <url-pattern>/</url-pattern>
@@ -130,10 +135,15 @@
         <url-pattern>/Admin/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>OrderManagerController</servlet-name>
+        <url-pattern>/OrderManager/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>InventoryManagerController</servlet-name>
         <url-pattern>/InventoryManager/*</url-pattern>
     </servlet-mapping>
-    <!--Error pages mapping-->
+    <!--Error
+    pages mapping-->
     <error-page>
         <error-code>404</error-code>
         <location>/ERROR_PAGE/404Page.jsp</location>
@@ -142,10 +152,6 @@
         <error-code>403</error-code>
         <location>/ERROR_PAGE/403Page.jsp</location>
     </error-page>
-    <servlet-mapping>
-        <servlet-name>OrderManagerController</servlet-name>
-        <url-pattern>/OrderManager</url-pattern>
-    </servlet-mapping>
     <session-config>
         <session-timeout>
             30

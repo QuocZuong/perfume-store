@@ -261,4 +261,17 @@ public class CartItemDAO implements ICartItemDAO {
         return total;
     }
 
+    public boolean isContainProductInCartItem(List<CartItem> cartItemList, int productId, int customerId) {
+        if (cartItemList == null || cartItemList.isEmpty()) {
+            return false;
+        }
+
+        for (int i = 0; i < cartItemList.size(); i++) {
+            if (cartItemList.get(i).getProductId() == productId && cartItemList.get(i).getCustomerId() == customerId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
