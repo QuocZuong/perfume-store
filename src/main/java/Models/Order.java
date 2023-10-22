@@ -2,6 +2,7 @@ package Models;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Order {
 
@@ -19,7 +20,7 @@ public class Order {
     private Date checkoutAt;
     private Date updateAt;
     private int updateByOrderManager;
-    private ArrayList<OrderDetail> orderDetailList;
+    private List<OrderDetail> orderDetailList;
 
     /**
      * @return int return the Id
@@ -217,17 +218,11 @@ public class Order {
         this.updateByOrderManager = updateByOrderManager;
     }
 
-    /**
-     * @return ArrayList OrderDetail return the order detail list
-     */
-    public ArrayList<OrderDetail> getOrderDetailList() {
+    public List<OrderDetail> getOrderDetailList() {
         return orderDetailList;
     }
 
-    /**
-     * @param orderDetailList
-     */
-    public void setOrderDetailList(ArrayList<OrderDetail> orderDetailList) {
+    public void setOrderDetailList(List<OrderDetail> orderDetailList) {
         this.orderDetailList = orderDetailList;
     }
 

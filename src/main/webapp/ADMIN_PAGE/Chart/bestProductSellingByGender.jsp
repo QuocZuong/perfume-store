@@ -13,7 +13,7 @@
     float unisex = 0;
 
     Map<Object, Object> map = null;
-    List<Map<Object, Object>> list = new ArrayList<Map<Object, Object>>();
+    List<Map<Object, Object>> list = new ArrayList<>();
 
     for (int i = 0; i < listProduct.size(); i++) {
         if (listProduct.get(i).getGender().equals("Male") || listProduct.get(i).getGender().equals("Nam")) {
@@ -70,18 +70,23 @@
                     exportEnabled: true,
                     animationEnabled: true,
                     title: {
-                        text: "Best Selling Product"
+                        text: "Best Selling Product By Gender"
+                    }, 
+                    legend: {
+                        verticalAlign: "bottom"
                     },
                     data: [{
                             type: "pie",
+                            showInLegend: true,
+                            indexLabel: "{y}%",
+                            indexLabelPlacement: "inside",
+                            legendText: "{label}: {y}%",
                             toolTipContent: "<b>{label}</b>: {y}%",
-                            indexLabelFontSize: 16,
-                            indexLabel: "{label} - {y}%",
                             dataPoints: <%out.print(dataPoints);%>
                         }]
                 });
                 chart.render();
-            }
+            };
         </script>
     </head>
     <body>

@@ -9,6 +9,7 @@ import Exceptions.WrongPasswordException;
 import javax.security.auth.login.AccountNotFoundException;
 
 import DAOs.UserDAO;
+import Exceptions.InvalidInputException;
 import Interfaces.DAOs.IUserDAO;
 import Lib.ExceptionUtils;
 import Lib.Converter;
@@ -23,6 +24,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class LogController extends HttpServlet {
 
@@ -32,10 +35,10 @@ public class LogController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -60,10 +63,10 @@ public class LogController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -110,6 +113,9 @@ public class LogController extends HttpServlet {
         } catch (WrongPasswordException e) {
             request.setAttribute("exceptionType", "WrongPasswordException");
             return false;
+        } catch (InvalidInputException ex) {
+            request.setAttribute("exceptionType", "InvalidInputException");
+            return false;
         }
 
         if (user == null) {
@@ -127,6 +133,7 @@ public class LogController extends HttpServlet {
             EmployeeDAO empDAO = new EmployeeDAO();
             Employee emp = empDAO.getEmployeeByUserId(user.getId());
             cookieKey = emp.getRole().getName();
+            cookieKey = cookieKey.replaceAll(" ", "");
         }
         Cookie c = new Cookie(cookieKey, cookieValue);
         if (rememberPw) {

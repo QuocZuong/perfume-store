@@ -6,6 +6,7 @@ package Models;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -21,7 +22,7 @@ public class Import {
     private Date deliveredAt;
     private int importByInventoryManager;
 
-    private ArrayList<ImportDetail> importDetail;
+    private List<ImportDetail> importDetail;
 
     public Import() {
     }
@@ -82,11 +83,11 @@ public class Import {
         this.importByInventoryManager = importByInventoryManager;
     }
 
-    public ArrayList<ImportDetail> getImportDetail() {
+    public List<ImportDetail> getImportDetail() {
         return importDetail;
     }
 
-    public void setImportDetail(ArrayList<ImportDetail> importDetail) {
+    public void setImportDetail(List<ImportDetail> importDetail) {
         this.importDetail = importDetail;
     }
 

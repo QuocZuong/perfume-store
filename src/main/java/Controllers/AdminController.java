@@ -72,9 +72,10 @@ public class AdminController extends HttpServlet {
     public static final String ADMIN_CLIENT_DETAIL_URI = "/Admin/User/Detail";
     public static final String ADMIN_CLIENT_ORDER_URI = "/Admin/User/OrderDetail";
 
-    //Chart URL
+    // Chart URL
     public static final String ADMIN_CHART_BEST_SELLING_PRODUCT_BY_GENDER = "/Admin/Chart/BestSellingProductByGender";
     public static final String ADMIN_CHART_BEST_SELLING_PRODUCT_BY_PRICE = "/Admin/Chart/BestSellingProductByPrice";
+    public static final String ADMIN_CHART_TOTAL_ORDER = "/Admin/Chart/TotalOrder";
 
     public static final String ADMIN_UPDATE_INFO_URI = "/Admin/Update/Info";
 
@@ -141,6 +142,7 @@ public class AdminController extends HttpServlet {
             }
             return;
         }
+
         if (path.startsWith(ADMIN_PRODUCT_RESTORE_URI)) {
             int result = restoreProduct(request, response);
             if (result == State.Success.value) {

@@ -17,7 +17,7 @@ public class InventoryManagerDAO {
     conn = DB.DBContext.getConnection();
   }
 
-  public InventoryManager getAdmin(String username) {
+  public InventoryManager getInventoryManager(String username) {
     EmployeeDAO empDAO = new EmployeeDAO();
     Employee emp = empDAO.getEmployee(username);
     InventoryManager inventoryManager = new InventoryManager(emp);
@@ -30,7 +30,7 @@ public class InventoryManagerDAO {
       ResultSet rs = ps.executeQuery();
 
       if (rs.next()) {
-        inventoryManager.setId(rs.getInt("Inventory_Manager_ID"));
+        inventoryManager.setInventoryManagerId(rs.getInt("Inventory_Manager_ID"));
       }
     } catch (SQLException ex) {
       Logger.getLogger(AdminDAO.class.getName()).log(Level.SEVERE, null, ex);

@@ -36,11 +36,14 @@ public class ExceptionUtils {
         ProductNotFoundException,
         ProductDeactivatedException,
         NotEnoughProductQuantityException,
+        // Order
+        OrderNotFoundException,
         // Other
         NotEnoughInformationException,
         OperationAddFailedException,
         OperationDeleteFailedException,
         OperationEditFailedException,
+        InvalidInputException,
         // Voucher
         InvalidVoucherException,
         VoucherNotFoundException,
@@ -68,11 +71,14 @@ public class ExceptionUtils {
                 // Product
                 put(ExceptionType.ProductNotFoundException.toString(), new ProductNotFoundException());
                 put(ExceptionType.ProductDeactivatedException.toString(), new ProductDeactivatedException());
+                // Order
+                put(ExceptionType.OrderNotFoundException.toString(), new OrderNotFoundException());
                 // Other
                 put(ExceptionType.NotEnoughInformationException.toString(), new NotEnoughInformationException());
                 put(ExceptionType.OperationAddFailedException.toString(), new OperationAddFailedException());
                 put(ExceptionType.OperationDeleteFailedException.toString(), new OperationDeleteFailedException());
                 put(ExceptionType.OperationEditFailedException.toString(), new OperationEditFailedException());
+                put(ExceptionType.InvalidInputException.toString(), new InvalidInputException());
                 // Voucher
                 put(ExceptionType.InvalidVoucherException.toString(), new InvalidVoucherException());
                 put(ExceptionType.VoucherNotFoundException.toString(), new VoucherNotFoundException());
@@ -244,6 +250,10 @@ public class ExceptionUtils {
     public static boolean isOperationEditFailed(String queryString) {
         return getExceptionNameByQueryString(queryString).equals(ExceptionType.OperationEditFailedException.toString());
     }
+
+    public static boolean isInvalidInput(String queryString) {
+        return getExceptionNameByQueryString(queryString).equals(ExceptionType.InvalidInputException.toString());
+    }
     // Voucher
 
     public static boolean isInvalidVoucher(String queryString) {
@@ -262,5 +272,9 @@ public class ExceptionUtils {
     public static boolean isNotEnoughVoucherQuantityException(String queryString) {
         return getExceptionNameByQueryString(queryString)
                 .equals(ExceptionType.NotEnoughVoucherQuantityException.toString());
+    }
+
+    public static boolean isOrderNotFound(String queryString) {
+        return getExceptionNameByQueryString(queryString).equals(ExceptionType.OrderNotFoundException.toString());
     }
 }

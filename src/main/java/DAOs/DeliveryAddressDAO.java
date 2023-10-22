@@ -71,11 +71,11 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
     }
 
     /* --------------------- READ SECTION --------------------- */
-    public ArrayList<DeliveryAddress> getAll(int customerId) {
+    public List<DeliveryAddress> getAll(int customerId) {
         String sql = "SELECT * FROM DeliveryAddress WHERE Customer_ID = ?";
 
         ResultSet rs;
-        ArrayList<DeliveryAddress> result = new ArrayList<>();
+        List<DeliveryAddress> result = new ArrayList<>();
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);

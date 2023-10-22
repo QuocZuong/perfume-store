@@ -249,10 +249,15 @@ public class OrderDetailDao implements IOrderDetailDAO {
     }
 
     try {
-      if (rs.next()) {
-        OrderDetail orderDetail = orderDetailFactory(rs);
-        return orderDetail;
-      }
+      OrderDetail orderDetail = new OrderDetail();
+
+      orderDetail.setOrderId(rs.getInt("Order_ID"));
+      orderDetail.setProductId(rs.getInt("Product_ID"));
+      orderDetail.setQuantity(rs.getInt("Quantity"));
+      orderDetail.setPrice(rs.getInt("Price"));
+      orderDetail.setTotal(rs.getInt("Total"));
+
+      return orderDetail;
     } catch (Exception ex) {
       Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
     }

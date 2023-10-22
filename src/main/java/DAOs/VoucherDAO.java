@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import Interfaces.DAOs.IVoucherDAO;
@@ -69,7 +70,7 @@ public class VoucherDAO implements IVoucherDAO {
         int result = 0;
         if (v != null && v.getApprovedProductId() != null && !v.getApprovedProductId().isEmpty()) {
             try {
-                ArrayList<Integer> arrApprovedProductId = v.getApprovedProductId();
+                List<Integer> arrApprovedProductId = v.getApprovedProductId();
                 PreparedStatement ps = conn.prepareStatement(sql);
                 //set value for ?
                 for (int i = 0; i < arrApprovedProductId.size(); i++) {
@@ -146,9 +147,9 @@ public class VoucherDAO implements IVoucherDAO {
     }
 
     @Override
-    public ArrayList<Voucher> getAllVoucher() {
+    public List<Voucher> getAllVoucher() {
         String sql = "SELECT * FROM [Voucher]";
-        ArrayList<Voucher> arrVoucher = new ArrayList();
+        List<Voucher> arrVoucher = new ArrayList<>();
         Voucher v;
         ResultSet rs;
         try {
@@ -176,9 +177,9 @@ public class VoucherDAO implements IVoucherDAO {
 
     //get all productID that approved for a voucher
     @Override
-    public ArrayList<Integer> getAllApprovedProductIdByVoucherId(int vId) {
+    public List<Integer> getAllApprovedProductIdByVoucherId(int vId) {
         ResultSet rs;
-        ArrayList<Integer> arrProductId = new ArrayList();
+        List<Integer> arrProductId = new ArrayList();
         String sql = "SELECT Product_ID FROM Voucher_Product WHERE Voucher_ID = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -194,10 +195,10 @@ public class VoucherDAO implements IVoucherDAO {
     }
 
     @Override
-    public ArrayList<Voucher> getValidVoucherOfProduct(int productId) {
+    public List<Voucher> getValidVoucherOfProduct(int productId) {
         ResultSet rs;
         Voucher v;
-        ArrayList<Voucher> arrVoucher = new ArrayList();
+        List<Voucher> arrVoucher = new ArrayList();
         Date now = new Date(System.currentTimeMillis());
 
         String sql
@@ -241,10 +242,10 @@ public class VoucherDAO implements IVoucherDAO {
     }
 
     @Override
-    public ArrayList<Integer> getUsedVoucherOfCustomer(int CustomerId) {
+    public List<Integer> getUsedVoucherOfCustomer(int CustomerId) {
         ResultSet rs;
         int vId;
-        ArrayList<Integer> arrVoucherId = new ArrayList();
+        List<Integer> arrVoucherId = new ArrayList();
         String sql = "SELECT Voucher_ID FROM [Order] WHERE Customer_ID = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);

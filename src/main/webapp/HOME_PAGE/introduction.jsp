@@ -58,18 +58,18 @@
             <div class="row main">
 
                 <div class="col-md-12 content">
-                    <h1>xxiv team</h1>
+                    <h1>XXIV team</h1>
                     <div class="row group">
                         <img src="/RESOURCES/images/icons/brainstorm.png" alt="">
                         <div class="text">
                             <h4>Group 2</h4>
-                            <p>tại xxiv chúng mình luôn đặt chất lượng và lòng tin với khách hàng lên hàng đầu. cũng vì một phần có gia đình và bạn bè đang ở pháp, chính tay lựa chọn từ store nên xxiv tự tin 100% hàng chính hãng. bọn mình sẽ không cam kết bán giá rẻ nhất và cạnh tranh với các bên khác mà chỉ cam kết sẽ bán giá tốt nhất chúng mình có thể. những sản phẩm chúng mình tư vấn và giới thiệu đều là các sản phẩm đã trực tiếp sử dụng và trải nghiệm để đưa ra lời khuyên thực tế giúp các khách hàng hài lòng.</p>
+                            <p>Tại xxiv chúng mình luôn đặt chất lượng và lòng tin với khách hàng lên hàng đầu. cũng vì một phần có gia đình và bạn bè đang ở pháp, chính tay lựa chọn từ store nên xxiv tự tin 100% hàng chính hãng. bọn mình sẽ không cam kết bán giá rẻ nhất và cạnh tranh với các bên khác mà chỉ cam kết sẽ bán giá tốt nhất chúng mình có thể. những sản phẩm chúng mình tư vấn và giới thiệu đều là các sản phẩm đã trực tiếp sử dụng và trải nghiệm để đưa ra lời khuyên thực tế giúp các khách hàng hài lòng.</p>
                         </div>
                     </div>
                     <div class="row story">
                         <div class="text">
-                            <h4>câu chuyện về xxiv store</h4>
-                            <p>tại xxiv chúng mình luôn đặt chất lượng và lòng tin với khách hàng lên hàng đầu. cũng vì một phần có gia đình và bạn bè đang ở pháp, chính tay lựa chọn từ store nên xxiv tự tin 100% hàng chính hãng. bọn mình sẽ không cam kết bán giá rẻ nhất và cạnh tranh với các bên khác mà chỉ cam kết sẽ bán giá tốt nhất chúng mình có thể. những sản phẩm chúng mình tư vấn và giới thiệu đều là các sản phẩm đã trực tiếp sử dụng và trải nghiệm để đưa ra lời khuyên thực tế giúp các khách hàng hài lòng.</p>
+                            <h4>Câu chuyện về xxiv store</h4>
+                            <p>Tại xxiv chúng mình luôn đặt chất lượng và lòng tin với khách hàng lên hàng đầu. cũng vì một phần có gia đình và bạn bè đang ở pháp, chính tay lựa chọn từ store nên xxiv tự tin 100% hàng chính hãng. bọn mình sẽ không cam kết bán giá rẻ nhất và cạnh tranh với các bên khác mà chỉ cam kết sẽ bán giá tốt nhất chúng mình có thể. những sản phẩm chúng mình tư vấn và giới thiệu đều là các sản phẩm đã trực tiếp sử dụng và trải nghiệm để đưa ra lời khuyên thực tế giúp các khách hàng hài lòng.</p>
                         </div>
                         <img src="/RESOURCES/images/icons/introduce.webp" alt="">
 
@@ -77,13 +77,13 @@
                     <div class="row story2">
                         <img src="/RESOURCES/images/icons/introduce2.png" alt="">
                         <div class="text">
-                            <p>tại xxiv chúng mình luôn đặt chất lượng và lòng tin với khách hàng lên hàng đầu. cũng vì một phần có gia đình và bạn bè đang ở pháp, chính tay lựa chọn từ store nên xxiv tự tin 100% hàng chính hãng. bọn mình sẽ không cam kết bán giá rẻ nhất và cạnh tranh với các bên khác mà chỉ cam kết sẽ bán giá tốt nhất chúng mình có thể. những sản phẩm chúng mình tư vấn và giới thiệu đều là các sản phẩm đã trực tiếp sử dụng và trải nghiệm để đưa ra lời khuyên thực tế giúp các khách hàng hài lòng.</p>
+                            <p>Tại xxiv chúng mình luôn đặt chất lượng và lòng tin với khách hàng lên hàng đầu. cũng vì một phần có gia đình và bạn bè đang ở pháp, chính tay lựa chọn từ store nên xxiv tự tin 100% hàng chính hãng. bọn mình sẽ không cam kết bán giá rẻ nhất và cạnh tranh với các bên khác mà chỉ cam kết sẽ bán giá tốt nhất chúng mình có thể. những sản phẩm chúng mình tư vấn và giới thiệu đều là các sản phẩm đã trực tiếp sử dụng và trải nghiệm để đưa ra lời khuyên thực tế giúp các khách hàng hài lòng.</p>
                         </div>
                     </div>
                     <div class="row thanks">
                         <div class="text">
-                            <h1>cảm ơn các bạn rất nhiều vì đã tin tưởng và lựa chọn xxiv.</h1>
-                            <p>các bạn có thể đến với xxiv, tâm sự với chúng mình, cùng chia sẻ cảm nhận của các bạn về các
+                            <h1>Cảm ơn các bạn rất nhiều vì đã tin tưởng và lựa chọn xxiv.</h1>
+                            <p>Các bạn có thể đến với xxiv, tâm sự với chúng mình, cùng chia sẻ cảm nhận của các bạn về các
                                 loại nước hoa bạn thích. với các bạn đang đắn đo hay sử dụng lần đầu cũng đừng ngại nhé,
                                 mình sẽ cố gắng trả lời các bạn nhiều nhất, review sản phẩm tốt nhất để các bạn chọn được
                                 hương thơm ưng ý nhất.
@@ -94,7 +94,7 @@
             </div>
 
 
-            <div class="tableTeam">
+<!--            <div class="tableTeam">
 
                 <h1 class="mb-5">Bảng phân công công việc</h1>
                 <table class="table table-hover" style="font-size: 20px;">
@@ -883,7 +883,7 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div>-->
 
         <div class="row">
             <div class="col-md-12 register">
@@ -906,36 +906,36 @@
         </div>
 
         <div class="row">
-            <div class="col-md-12 footer">
-                <div>
-                    <h2>xxiv store</h2>
-                    <ul>
-                        <li><a href="">ưu đãi thành viên</a></li>
-                        <li><a href="">tài khoản</a></li>
-                        <li><a href="">tuyển dụng</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h2>chính sách bán hàng</h2>
-                    <ul>
-                        <li><a href="">phương thức vận chuyển</a></li>
-                        <li><a href="">câu hỏi thường gặp</a></li>
-                        <li><a href="">điều khoản và điện kiện sử dụng</a></li>
-                        <li><a href="">điều khoản và điều kiện bán hàng</a></li>
-                        <li><a href="">thông báo pháp lý</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h2>thông tin chung</h2>
-                    <ul>
-                        <li><a href="">giới thiệu</a></li>
-                        <li><a href="">blog</a></li>
-                        <li><a href="">liên hệ</a></li>
-                        <li><a href="">sản phẩm</a></li>
-                    </ul>
+                <div class="col-md-12 footer">
+                    <div>
+                        <h2>XXIV store</h2>
+                        <ul>
+                            <li><a href="">Ưu đãi thành viên</a></li>
+                            <li><a href="">Tài khoản</a></li>
+                            <li><a href="">Tuyển dụng</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h2>Chính sách bán hàng</h2>
+                        <ul>
+                            <li><a href="">Phương thức vận chuyển</a></li>
+                            <li><a href="">Câu hỏi thường gặp</a></li>
+                            <li><a href="">Điều khoản và điện kiện sử dụng</a></li>
+                            <li><a href="">Điều khoản và điều kiện bán hàng</a></li>
+                            <li><a href="">Thông báo pháp lý</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h2>Thông tin chung</h2>
+                        <ul>
+                            <li><a href="">Giới thiệu</a></li>
+                            <li><a href="">Blog</a></li>
+                            <li><a href="">Liên hệ</a></li>
+                            <li><a href="">Sản phẩm</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
 
         <div class="row">
             <div class="col-md-12 copyright">

@@ -1,15 +1,15 @@
 package Interfaces.DAOs;
 
 import Models.Brand;
-import java.util.ArrayList;
+import java.util.List;
 
 public interface IBrandDAO {
 
     public int addBrand(Brand brand);
 
-    public ArrayList<Brand> getAll();
+    public List<Brand> getAll();
 
-    public ArrayList<Brand> getBrandNameByAlphabet(char a);
+    public List<Brand> getBrandNameByAlphabet(char a);
 
     public Brand getBrand(int brandID);
 

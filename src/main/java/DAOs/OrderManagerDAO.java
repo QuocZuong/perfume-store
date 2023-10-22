@@ -40,4 +40,26 @@ public class OrderManagerDAO {
 
     return orderManager;
   }
+
+  public OrderManager getOrderManager(int id) {
+    EmployeeDAO empDAO = new EmployeeDAO();
+    Employee emp = empDAO.getEmployee(id);
+    OrderManager orderManager = new OrderManager(emp);
+
+    String sql = "SELECT * FROM [Order_Manager] WHERE Employee_ID = ?;";
+
+    try {
+      PreparedStatement ps = conn.prepareStatement(sql);
+      ps.setInt(1, orderManager.getEmployeeId());
+      ResultSet rs = ps.executeQuery();
+
+      if (rs.next()) {
+        orderManager.setId(rs.getInt("Order_Manager_ID"));
+      }
+    } catch (SQLException ex) {
+      Logger.getLogger(AdminDAO.class.getName()).log(Level.SEVERE, null, ex);
+    }
+
+    return orderManager;
+  }
 }

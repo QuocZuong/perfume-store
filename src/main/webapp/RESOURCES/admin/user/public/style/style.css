@@ -142,7 +142,7 @@ h1 {
 .nav .account #product-dropdown-btn + ul,
 .nav .account #user-dropdown-btn + ul {
   display: flex;
-  flex-flow:column nowrap;
+  flex-flow: column nowrap;
   background-color: white;
   margin-top: 1.6rem;
   top: 30px;
@@ -153,10 +153,10 @@ h1 {
 }
 
 .nav .account #product-dropdown-btn + ul {
-   right: 105px;
+  right: 60px;
 }
-.nav .account #user-dropdown-btn + ul  {
-   right: 58px;
+.nav .account #user-dropdown-btn + ul {
+  right: 8px;
 }
 
 .nav .account button img {
@@ -205,7 +205,6 @@ h1 {
   font-size: 1.5rem;
 }
 
-
 .main .left .list ul li a {
   color: black;
   text-decoration: none;
@@ -213,7 +212,6 @@ h1 {
   transition: border-bottom 0.3s ease-in-out;
   cursor: pointer;
 }
-
 
 .main .left .list ul li a:hover {
   border-bottom: 1px solid black;
@@ -258,7 +256,7 @@ h1 {
   word-break: break-word;
 }
 
-.main .right .order-page table tbody tr td a{
+.main .right .order-page table tbody tr td a {
   text-decoration: none;
 }
 
@@ -300,7 +298,7 @@ h1 {
 .main .right .address-page .default form input[type="text"] {
   height: 40px;
   border: 1px solid rgba(0, 0, 0, 0.3);
-  padding-left: .6rem;
+  padding-left: 0.6rem;
 }
 
 .main .right .address-page form {
@@ -309,7 +307,7 @@ h1 {
 }
 
 .main .right .address-page form button h4 {
-  padding-top: .5rem;
+  padding-top: 0.5rem;
 }
 
 .main .right .address-page form button[type="submit"] {
@@ -415,8 +413,6 @@ h1 {
   /* Add more styles as desired */
 }
 
-
-
 .main .right .info-page {
 }
 
@@ -469,7 +465,7 @@ h1 {
   margin-bottom: 50px;
 }
 
-.social a+a {
+.social a + a {
   margin-left: 7px;
 }
 
@@ -503,13 +499,11 @@ h1 {
 
 .footer ul {
   padding: 0;
-
 }
 
 .footer h2 {
   color: #fff;
   font-size: 3vw;
-
 }
 
 .footer li {
@@ -606,7 +600,7 @@ div.list li a.active {
   letter-spacing: 2px;
   text-align: center;
   position: relative;
-  transition: all .35s;
+  transition: all 0.35s;
 }
 
 .fn-btn span {
@@ -622,7 +616,7 @@ div.list li a.active {
   width: 0;
   height: 100%;
   background: black;
-  transition: all .35s;
+  transition: all 0.35s;
 }
 
 .fn-btn:hover {

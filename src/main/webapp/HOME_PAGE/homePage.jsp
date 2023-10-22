@@ -43,7 +43,7 @@
                     <h1>xxiv store</h1>
                     <h2>You deserve to be happy</h2>
                     <button>FOLLOW ME</button>
-                    <p>chào mừng các bạn đến với XXIII store - một tiệm nước hoa
+                    <p>Chào mừng các bạn đến với XXIII store - một tiệm nước hoa
                         nho nhỏ lấy cảm hứng từ những con người có cảm xúc đặc
                         biệt với hương thơm mê hoặc.</p>
                 </div>
@@ -67,7 +67,7 @@
 
             <div class="row">
                 <div class="col-md-12 brand">
-                    <h1>thương hiệu nổi tiếng</h2>
+                    <h1>Thương hiệu nổi tiếng</h2>
 
                         <div class="logo">
                             <a href="/Product/List/BrandID/22"><img
@@ -111,7 +111,7 @@
                 <div class="product-container">
 
                     <div class="col-md-12 product">
-                        <h1>sản phẩm nổi bật</h1>
+                        <h1>Sản phẩm nổi bật</h1>
                         <div class="classify">
                             <button class="btnMan">nước hoa nam</button>
                             <button class="btnWoman">nước hoa nữ</button>
@@ -451,46 +451,28 @@
                     <div class="listReason">
                         <div class="advantage">
                             <img src="/RESOURCES/images/icons/grommet-icons_shield-security.svg" alt="">
-                            <h4>sản phẩm chính hãng
+                            <h4>Sản phẩm chính hãng
                             </h4>
-                            <p>sản phẩm nước hoa được mua trực tiếp tại các store ở nước ngoài hoặc làm việc trực tiếp với các hãng, cam kết authentic 100%
+                            <p>Sản phẩm nước hoa được mua trực tiếp tại các store ở nước ngoài hoặc làm việc trực tiếp với các hãng, cam kết authentic 100%
                             </p>
                         </div>
                         <div class="advantage">
                             <img src="/RESOURCES/images/icons/free-ship.svg" alt="">
-                            <h4>free ship toàn quốc
+                            <h4>Free ship toàn quốc
                             </h4>
-                            <p>xxiv áp dụng freeship cho tất cả các khách hàng trên toàn quốc. chúng tôi chưa áp dụng hình thức giao hàng quốc tế tại thời điểm này</p>
+                            <p>XXIV áp dụng freeship cho tất cả các khách hàng trên toàn quốc. Chúng tôi chưa áp dụng hình thức giao hàng quốc tế tại thời điểm này</p>
                         </div>
                         <div class="advantage">
                             <img src="/RESOURCES/images/icons/gift.svg" alt="">
-                            <h4>thành viên thân thiết
+                            <h4>Thành viên thân thiết
                             </h4>
-                            <p>thành viên vàng sẽ được giảm 5% / đơn hàng. với thành viên bạc khách được giảm 3% / đơn hàng.</p>
+                            <p>Thành viên vàng sẽ được giảm 5% / đơn hàng. Với thành viên bạc khách được giảm 3% / đơn hàng.</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-12 contact">
-                    <hr>
-                    <h1>xxiv store</h1>
-                    <div>
-                        <img src="/RESOURCES/images/icons/location-pin.png">
-                        <p>Số 25 Ngõ Thái Hà, Đống Đa, Hà Nội | 525/44 Tô Hiến Thành, P14, Q10, TP. Hồ Chí Minh</p>
-                    </div>
-                    <div>
-                        <img src="/RESOURCES/images/icons/smartphone.png">
-                        <p>090 721 9889| 093 194 8668</p>
-                        <img src="/RESOURCES/images/icons/email.png" class="mail-icon">
-                        <p>xxiv.fragrance@gmail.com</p>
-                    </div>
-                    <div>
-                        <p>Giờ mở cửa: Các ngày trong tuần từ 9:00 - 21:00</p>
-                    </div>
-                </div>
-            </div>
+
 
             <div class="row no-gutters">
                 <div class="theme ">
@@ -519,32 +501,54 @@
             </div>
 
             <div class="row">
+                <div class="col-md-12 contact">
+                    <hr>
+                    <h1>xxiv store</h1>
+                    <div>
+                        <img src="/RESOURCES/images/icons/location-pin.png">
+                        <p>Số 25 Ngõ Thái Hà, Đống Đa, Hà Nội | 525/44 Tô Hiến Thành, P14, Q10, TP. Hồ Chí Minh</p>
+                    </div>
+                    <div>
+                        <img src="/RESOURCES/images/icons/smartphone.png">
+                        <p>090 721 9889| 093 194 8668</p>
+                        <img src="/RESOURCES/images/icons/email.png" class="mail-icon">
+                        <p>xxiv.fragrance@gmail.com</p>
+                    </div>
+                    <div>
+                        <p>Giờ mở cửa: Các ngày trong tuần từ 9:00 - 21:00</p>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="row">
                 <div class="col-md-12 footer">
                     <div>
-                        <h2>xxiv store</h2>
+                        <h2>XXIV store</h2>
                         <ul>
-                            <li><a href="">ưu đãi thành viên</a></li>
-                            <li><a href="">tài khoản</a></li>
-                            <li><a href="">tuyển dụng</a></li>
+                            <li><a href="">Ưu đãi thành viên</a></li>
+                            <li><a href="">Tài khoản</a></li>
+                            <li><a href="">Tuyển dụng</a></li>
                         </ul>
                     </div>
                     <div>
-                        <h2>chính sách bán hàng</h2>
+                        <h2>Chính sách bán hàng</h2>
                         <ul>
-                            <li><a href="">phương thức vận chuyển</a></li>
-                            <li><a href="">câu hỏi thường gặp</a></li>
-                            <li><a href="">điều khoản và điện kiện sử dụng</a></li>
-                            <li><a href="">điều khoản và điều kiện bán hàng</a></li>
-                            <li><a href="">thông báo pháp lý</a></li>
+                            <li><a href="">Phương thức vận chuyển</a></li>
+                            <li><a href="">Câu hỏi thường gặp</a></li>
+                            <li><a href="">Điều khoản và điện kiện sử dụng</a></li>
+                            <li><a href="">Điều khoản và điều kiện bán hàng</a></li>
+                            <li><a href="">Thông báo pháp lý</a></li>
                         </ul>
                     </div>
                     <div>
-                        <h2>thông tin chung</h2>
+                        <h2>Thông tin chung</h2>
                         <ul>
-                            <li><a href="">giới thiệu</a></li>
-                            <li><a href="">blog</a></li>
-                            <li><a href="">liên hệ</a></li>
-                            <li><a href="">sản phẩm</a></li>
+                            <li><a href="">Giới thiệu</a></li>
+                            <li><a href="">Blog</a></li>
+                            <li><a href="">Liên hệ</a></li>
+                            <li><a href="">Sản phẩm</a></li>
                         </ul>
                     </div>
                 </div>
@@ -555,7 +559,7 @@
                     <p>&copy; xxiv 2023 | all right reserved</p>
                 </div>
             </div>
-            
+
             <script
                 src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
                 integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
