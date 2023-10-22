@@ -36,6 +36,8 @@ public class ExceptionUtils {
         ProductNotFoundException,
         ProductDeactivatedException,
         NotEnoughProductQuantityException,
+        // Order
+        OrderNotFoundException,
         // Other
         NotEnoughInformationException,
         OperationAddFailedException,
@@ -69,6 +71,8 @@ public class ExceptionUtils {
                 // Product
                 put(ExceptionType.ProductNotFoundException.toString(), new ProductNotFoundException());
                 put(ExceptionType.ProductDeactivatedException.toString(), new ProductDeactivatedException());
+                // Order
+                put(ExceptionType.OrderNotFoundException.toString(), new OrderNotFoundException());
                 // Other
                 put(ExceptionType.NotEnoughInformationException.toString(), new NotEnoughInformationException());
                 put(ExceptionType.OperationAddFailedException.toString(), new OperationAddFailedException());
@@ -268,5 +272,9 @@ public class ExceptionUtils {
     public static boolean isNotEnoughVoucherQuantityException(String queryString) {
         return getExceptionNameByQueryString(queryString)
                 .equals(ExceptionType.NotEnoughVoucherQuantityException.toString());
+    }
+
+    public static boolean isOrderNotFound(String queryString) {
+        return getExceptionNameByQueryString(queryString).equals(ExceptionType.OrderNotFoundException.toString());
     }
 }
