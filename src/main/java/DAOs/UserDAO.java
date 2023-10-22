@@ -172,9 +172,11 @@ public class UserDAO implements IUserDAO {
             System.out.println("Parameter is null, Aborting operation login");
             return null;
         }
-        if (!((Type == loginType.Email
-                || Type == loginType.Username)
-                && checkRegex(loginString, Type) && checkRegexPassword(password))) {
+        if (!(
+                (Type == loginType.Email || Type == loginType.Username)
+                && checkRegex(loginString, Type)
+                && checkRegexPassword(password))
+                ) {
             throw new InvalidInputException();
         }
 
@@ -221,7 +223,7 @@ public class UserDAO implements IUserDAO {
         if (loginString.length() >= 50) {
             return false;
         }
-        final Pattern EMAIL_REGEX = Pattern.compile("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", Pattern.CASE_INSENSITIVE);
+        final Pattern EMAIL_REGEX = Pattern.compile("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$", Pattern.CASE_INSENSITIVE);
         final Pattern USERNAME_REGEX = Pattern.compile("^[a-zA-Z0-9]+$", Pattern.CASE_INSENSITIVE);
 
         if (Type == loginType.Username) {
