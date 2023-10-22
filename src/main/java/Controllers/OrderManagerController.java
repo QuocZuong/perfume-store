@@ -6,12 +6,15 @@ import DAOs.ProductDAO;
 import DAOs.VoucherDAO;
 import Exceptions.OperationEditFailedException;
 import Lib.ExceptionUtils;
+import Lib.Generator;
 import Models.Order;
 import Models.OrderDetail;
 import Models.OrderManager;
 import Models.Product;
 import Models.Voucher;
 import java.io.IOException;
+import java.util.List;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
@@ -50,8 +53,8 @@ public class OrderManagerController extends HttpServlet {
     public static final String ORDER_MANAGER_UPDATE_INFO_URI = "/OrderManager/Update/Info";
 
     public final String ORDER_MANAGER_ORDER_LIST = "/OrderManager/List";
-    public final String ORDER_MANAGER_ACCEPT_ORDER_URI = "/OrderManager/" + Operation.ACCEPT.toString() + "/ID/";
-    public final String ORDER_MANAGER_REJECT_ORDER_URI = "/OrderManager/" + Operation.REJECT.toString() + "/ID/";
+    public final String ORDER_MANAGER_ACCEPT_ORDER_URI = "/OrderManager/ID/" + Operation.ACCEPT.toString();
+    public final String ORDER_MANAGER_REJECT_ORDER_URI = "/OrderManager/ID/" + Operation.REJECT.toString();
 
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -66,10 +69,16 @@ public class OrderManagerController extends HttpServlet {
             throws ServletException, IOException {
         String path = request.getRequestURI();
 
-        if (path.startsWith(ORDER_MANAGER_ORDER_LIST)
-                || path.startsWith(ORDER_MANAGER_ORDER_LIST + "/page")) {
-            System.out.println("vao controller thanh cong");
-            int result = searchProduct(request, response);
+        if (path.startsWith(ORDER_MANAGER_USER_URI)) {
+            request.getRequestDispatcher("/ORDER_MANAGER/admin.jsp").forward(request, response);
+            return;
+        }
+
+        if (path.startsWith(ORDER_MANAGER_ORDER_LIST_URI)
+                || path.startsWith(ORDER_MANAGER_ORDER_LIST_URI + "/page")) {
+
+            int result = searchOrder(request);
+
             if (result == State.Success.value) {
                 request.getRequestDispatcher("/ORDER_MANAGER/Order/list.jsp").forward(request, response);
             } else if (result == State.Fail.value) {
@@ -124,7 +133,6 @@ public class OrderManagerController extends HttpServlet {
             request.getRequestDispatcher("/ORDER_MANAGER/admin.jsp").forward(request, response);
             return;
         }
-
     }
 
     /**
@@ -215,6 +223,39 @@ public class OrderManagerController extends HttpServlet {
             return State.Fail.value;
         }
         return State.Fail.value;
+    }
+
+    private int searchOrder(HttpServletRequest request) {
+        String URI = request.getRequestURI();
+        String data[] = URI.split("/");
+        int page = 1;
+        int rows = 20;
+        String search = request.getParameter("txtSearch");
+        OrderDAO oDAO = new OrderDAO();
+
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("page")) {
+                page = Integer.parseInt(data[i + 1]);
+            }
+        }
+
+        List<Order> orderList = oDAO.searchOrder(search);
+
+        if (orderList.isEmpty()) {
+            System.out.println("Empty order list");
+            request.setAttribute("exceptionType", "OrderNotFoundException");
+            return State.Fail.value;
+        }
+
+        int numberOfPage = (orderList.size() / rows) + (orderList.size() % rows == 0 ? 0 : 1);
+        orderList = Generator.pagingList(orderList, page, rows);
+
+        request.setAttribute("page", page);
+        request.setAttribute("numberOfPage", numberOfPage);
+        request.setAttribute("orderList", orderList);
+        request.setAttribute("search", search);
+
+        return State.Success.value;
     }
 
     private int getCustomerOrderDetail(HttpServletRequest request) {
