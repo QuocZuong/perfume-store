@@ -5,11 +5,14 @@
 package Controllers;
 
 import DAOs.OrderDAO;
+import DAOs.OrderManagerDAO;
 import Exceptions.OperationEditFailedException;
 import Lib.ExceptionUtils;
 import Models.Order;
+import Models.OrderManager;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -120,23 +123,30 @@ public class OrderManagerController extends HttpServlet {
             System.out.println("Invalid order id, aborting operation " + op.toString());
             return State.Fail.value;
         }
+        Cookie cookie = (Cookie) request.getSession().getAttribute("userCookie");
+        String username = cookie.getValue();
+        OrderManagerDAO omDAO = new OrderManagerDAO();
+        OrderManager orderManager = omDAO.getOrderManager(username);
+        if (orderManager == null) {
+            System.out.println("Invalid username, aborting update order status");
+            return State.Fail.value;
+        }
+
         try {
             OrderDAO orDAO = new OrderDAO();
             Order order = orDAO.getOrderByOrderId(orderId);
             if (op == Operation.ACCEPT) {
-                if (orDAO.acceptOrder(order)) {
-                    return State.Success.value;
-                }
-                throw new OperationEditFailedException();
-
-            } else if (op == Operation.REJECT) {
-                if (orDAO.rejectOrder(order)) {
-                    return State.Success.value;
-                }
-                throw new OperationEditFailedException();
+                orDAO.acceptOrder(order, orderManager.getOrderManagerId());
+                return State.Success.value;
+            }
+            
+            if (op == Operation.REJECT) {
+                orDAO.rejectOrder(order, orderManager.getOrderManagerId());
+                return State.Success.value;
             }
         } catch (OperationEditFailedException ex) {
             request.setAttribute("exceptionType", "OperationEditFailedException");
+            return State.Fail.value;
         }
         return State.Fail.value;
     }

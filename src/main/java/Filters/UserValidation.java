@@ -235,7 +235,7 @@ public class UserValidation implements Filter {
         if (cookies != null) {
 
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("Order Manager")) {
+                if (cookie.getName().equals("OrderManager")) {
                     if (!userDAO.isExistUsername((cookie.getValue()))
                             || !employeeDAO.isOrderManager(cookie.getValue())) {
                         cookie.setMaxAge(0);
