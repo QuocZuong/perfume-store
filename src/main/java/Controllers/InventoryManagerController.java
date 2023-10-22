@@ -5,12 +5,18 @@
 package Controllers;
 
 import DAOs.EmployeeDAO;
+import DAOs.ImportDAO;
+import DAOs.ImportDetailDAO;
 import DAOs.ImportStashItemDAO;
 import DAOs.InventoryManagerDAO;
 import DAOs.ProductDAO;
+import Interfaces.DAOs.IImportDetailDAO;
+import Lib.Converter;
 import Lib.ExceptionUtils;
 import Lib.Generator;
 import Models.Employee;
+import Models.Import;
+import Models.ImportDetail;
 import Models.ImportStashItem;
 import Models.InventoryManager;
 import Models.Product;
@@ -21,6 +27,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,9 +42,14 @@ public class InventoryManagerController extends HttpServlet {
 
     public static final String IVTR_MANAGER_PRODUCT_LIST_URI = "/InventoryManager/Product/List";
     public static final String IVTR_MANAGER_PRODUCT_IMPORT_URI = "/InventoryManager/ProductImport";
+
     public static final String IVTR_MANAGER_IMPORT_CART_URI = "/InventoryManager/ImportCart";
     public static final String IVTR_MANAGER_IMPORT_CART_DELETE_URI = "/InventoryManager/ImportCart/Delete";
     public static final String IVTR_MANAGER_IMPORT_CART_UPDATE_URI = "/InventoryManager/ImportCart/Update";
+    public static final String IVTR_MANAGER_IMPORT_CART_CHECKOUT_URI = "/InventoryManager/ImportCart/Checkout";
+
+    public static final String BTN_CHECKOUT_IMPORT_CART = "btnCheckoutImportCart";
+    public static final String SUBMIT_VALUE = "Submit";
 
     public enum State {
         Success(1),
@@ -134,6 +147,23 @@ public class InventoryManagerController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        String path = request.getRequestURI();
+        System.out.println("Request Path URI " + path);
+        if (path.startsWith(IVTR_MANAGER_IMPORT_CART_CHECKOUT_URI)) {
+            if (request.getParameter(BTN_CHECKOUT_IMPORT_CART) != null
+                    && request.getParameter(BTN_CHECKOUT_IMPORT_CART).equals(SUBMIT_VALUE)) {
+                System.out.println("going checkout cart");
+                int result = checkoutImportCart(request);
+                if (result == State.Success.value) {
+                    System.out.println("checkout sussess. Going to /InventoryManager/ImportCart");
+                    response.sendRedirect(IVTR_MANAGER_IMPORT_CART_URI);
+                } else {
+                    System.out.println("checkout import cart invalid. Going to /InventoryManager/ImportCart");
+                    response.sendRedirect(IVTR_MANAGER_IMPORT_CART_URI + ExceptionUtils.generateExceptionQueryString(request));
+                }
+            }
+        }
+
     }
 
     private int searchProduct(HttpServletRequest request, HttpServletResponse response) {
@@ -177,7 +207,6 @@ public class InventoryManagerController extends HttpServlet {
 
         String path = request.getRequestURI();
         String data[] = path.split("/");
-        ProductDAO pDAO = new ProductDAO();
         String pId = null;
         String quan = null;
         for (int i = 0; i < data.length; i++) {
@@ -240,15 +269,142 @@ public class InventoryManagerController extends HttpServlet {
     }
 
     private void deleteImportProduct(HttpServletRequest request, HttpServletResponse response) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        /// /Client/Cart/Delete/ProductID/<%= p.getID()%>/ClientID/<%= ClientID %>
+        ImportStashItemDAO ipsiDAO = new ImportStashItemDAO();
+
+        int InventoryManagerID = -1;
+        int ProductID = -1;
+        String data[] = request.getRequestURI().split("/");
+
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("InventoryManagerID")) {
+                InventoryManagerID = Integer.parseInt(data[i + 1]);
+            } else if (data[i].equals("ProductID")) {
+                ProductID = Integer.parseInt(data[i + 1]);
+            }
+        }
+        ipsiDAO.deleteImportStashItem(InventoryManagerID, ProductID);
     }
 
-    private void updateImportProduct(HttpServletRequest request, HttpServletResponse response) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    private int updateImportProduct(HttpServletRequest request, HttpServletResponse response) {
+        // /Client/Cart/Update?ClientID=1&ProductID0=80&ProductQuan0=5&ProductID1=34&ProductQuan1=9&ListSize=2
+        int result;
+        ImportStashItemDAO ipsiDAO = new ImportStashItemDAO();
+        int listSize = Integer.parseInt(request.getParameter("ListSize"));
+        for (int i = 0; i < listSize; i++) {
+            int InventoryManagerID = Integer.parseInt(request.getParameter("InventoryManagerID"));
+            int ProductID = Integer.parseInt(request.getParameter("ProductID" + i));
+            int ProductQuan = Integer.parseInt(request.getParameter("ProductQuan" + i));
+            int ProductCost = Integer.parseInt(request.getParameter("ProductCost" + i));
+            ImportStashItem ipsi = new ImportStashItem();
+            ipsi.setInventoryManagerId(InventoryManagerID);
+            ipsi.setProductId(ProductID);
+            ipsi.setQuantity(ProductQuan);
+            ipsi.setCost(ProductCost);
+            ipsi.setSumCost(ProductQuan * ProductCost);
+            result = ipsiDAO.updateImportStashItem(ipsi);
+            if (result == 0) {
+                return State.Fail.value;
+            }
+        }
+        return State.Success.value;
     }
 
     private int getImportCart(HttpServletRequest request) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        InventoryManagerDAO ivtrManaDAO = new InventoryManagerDAO();
+        ImportStashItemDAO ipsiDAO = new ImportStashItemDAO();
+
+        Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
+        String username = userCookie.getValue();
+        InventoryManager ivtrMana = ivtrManaDAO.getInventoryManager(username);
+
+        if (ivtrMana == null) {
+            System.out.println("Unknow Username to view inport cart");
+            request.setAttribute("exceptionType", "AccountNotFoundException");
+            return State.Fail.value;
+        }
+        int ivtrManaId = ivtrMana.getInventoryManagerId();
+
+        List<ImportStashItem> listImportItem = ipsiDAO.getAllImportStashItemOfManager(ivtrManaId);
+        // Handling out of stock
+
+        request.setAttribute("ivtrManaId", ivtrManaId);
+        request.setAttribute("listImportItem", listImportItem);
+        request.setAttribute("ivtrManaUsername", username);
+
+        return State.Success.value;
+    }
+
+    private int checkoutImportCart(HttpServletRequest request) {
+        InventoryManagerDAO ivtrManaDAO = new InventoryManagerDAO();
+        ImportStashItemDAO ipsiDAO = new ImportStashItemDAO();
+        ImportDAO ipDAO = new ImportDAO();
+
+        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+        String username = currentUserCookie.getValue();
+        InventoryManager ivtrMana = ivtrManaDAO.getInventoryManager(username);
+
+        if (ivtrMana == null) {
+            System.out.println("Unknow Username to checkout");
+            request.setAttribute("exceptionType", "AccountNotFoundException");
+            return State.Fail.value;
+        }
+        int InventoryManagerID = ivtrMana.getInventoryManagerId();
+        System.out.println("InventoryManagerID checkout import cart :" + InventoryManagerID);
+        ArrayList<ImportStashItem> ipsiList = ipsiDAO.getAllImportStashItemOfManager(InventoryManagerID);
+
+        if (ipsiList.isEmpty()) {
+            System.out.println("The import cart is empty");
+            request.setAttribute("exceptionType", "OperationAddFailedException");
+            return State.Fail.value;
+        }
+
+        String supplierName = request.getParameter("txtSupplier");
+        Date importAt = Converter.convertStringToDate(request.getParameter("txtImportAt"));
+        Date deliveredAt = Converter.convertStringToDate(request.getParameter("txtDeliveredAt"));
+
+        if (supplierName == null || importAt == null || deliveredAt == null) {
+            System.out.println("lack of information");
+            request.setAttribute("exceptionType", "OperationAddFailedException");
+            return State.Fail.value;
+        }
+
+        Import ip = new Import();
+        ip.setImportByInventoryManager(InventoryManagerID);
+        ip.setImportAt(importAt);
+        ip.setDeliveredAt(deliveredAt);
+        ip.setSupplierName(supplierName);
+
+        int totalCost = 0;
+        int totalQuan = 0;
+
+        ArrayList<ImportDetail> ipdList = new ArrayList<>();
+        for (int i = 0; i < ipsiList.size(); i++) {
+            totalCost += ipsiList.get(i).getSumCost();
+            totalQuan += ipsiList.get(i).getQuantity();
+            ImportDetail ipD = new ImportDetail();
+            ipD.setProductId(ipsiList.get(i).getProductId());
+            ipD.setCost(ipsiList.get(i).getCost());
+            ipD.setQuantity(ipsiList.get(i).getQuantity());
+            ipD.setStatus(IImportDetailDAO.Status.Wait.toString());
+            ipdList.add(ipD);
+        }
+
+        ip.setTotalCost(totalCost);
+        ip.setTotalQuantity(totalQuan);
+        ip.setImportDetail(ipdList);
+
+        int result = ipDAO.addImport(ip);
+        if (result == 0) {
+            System.out.println("add import fail");
+            request.setAttribute("exceptionType", "OperationAddFailedException");
+            return State.Fail.value;
+        }
+        System.out.println("import success so delete all import stash item of manager id :" + InventoryManagerID);
+        ipsiDAO.deleteAllImportStashItemOfManager(InventoryManagerID);
+
+        // check xem cac san pham trong kho co du de checkout khong
+        return State.Success.value;
     }
 
     /**

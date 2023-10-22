@@ -1,3 +1,7 @@
+<%@page import="DAOs.InventoryManagerDAO"%>
+<%@page import="Models.InventoryManager"%>
+<%@page import="DAOs.ImportStashItemDAO"%>
+<%@page import="Models.ImportStashItem"%>
 <%@page import="Models.Voucher"%>
 <%@page import="Lib.ExceptionUtils"%>
 <%@page import="java.util.ArrayList"%>
@@ -13,24 +17,21 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
-<%! ArrayList<CartItem> listCartItem = null;%>
+<%! ArrayList<ImportStashItem> listImportItem = null;%>
 <%! ProductDAO pDAO = new ProductDAO();%>
-<%! BrandDAO bDAO = new BrandDAO(); %>
-<%! CartItemDAO ciDAO = new CartItemDAO(); %>
-<%! List<Product> listOutOfStock; %>
-<%! int Total;%>
+<%! ImportStashItemDAO ipsiDAO = new ImportStashItemDAO(); %>
+
+<%! int TotalCost;%>
+<%! int TotalQuan;%>
 <%
     String queryString = request.getQueryString();
     boolean isError = ExceptionUtils.isWebsiteError(queryString);
     String exceptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
-    int CustomerID = (int) request.getAttribute("customerID");
-    listCartItem = (ArrayList<CartItem>) request.getAttribute("listCartItem");
-    listOutOfStock = (List<Product>) request.getAttribute("listOutOfStock");
-    Total = ciDAO.getCartTotal(listCartItem);
-    Voucher v = (Voucher) request.getAttribute("voucher");
-    ArrayList<Product> approvedProduct = (ArrayList<Product>) request.getAttribute("approvedProduct");
-    Integer sumDeductPrice = (Integer) request.getAttribute("sumDeductPrice");
-
+    String ivtrManaUsername = (String) request.getAttribute("ivtrManaUsername");
+    int ivtrManaId = (int) request.getAttribute("ivtrManaId");
+    listImportItem = (ArrayList<ImportStashItem>) request.getAttribute("listImportItem");
+    TotalCost = ipsiDAO.getImportCartTotalCost(listImportItem);
+    TotalQuan = ipsiDAO.getImportCartTotalQuantity(listImportItem);
 %>
 
 <!DOCTYPE html>
@@ -75,47 +76,19 @@
                         <div class="box">
 
                             <div class="left w-100">
-                                <form action="/Customer/Cart/Update" method="GET">
-                                    <input type="hidden" name="CustomerID" value="<%= CustomerID%>" />
-
-                                <!--  Handling Product out of stock still in Client Cart -->
-                                <c:if test='<%= listOutOfStock.size() != 0%>'>
-                                    <%
-                                        int lastBrandID = -1, curBrandID;
-                                    %>
-                                    <c:forEach var="i" begin="0" end="<%= listOutOfStock.size() - 1%>">
-                                        <%
-                                            Product opd = listOutOfStock.get((int) pageContext.getAttribute("i"));
-                                            curBrandID = opd.getBrandId();
-                                        %>  
-
-                                        <c:if test='<%= lastBrandID != curBrandID%>'>
-                                            <% lastBrandID = curBrandID;%>
-
-                                            <c:if test='<%= (int) pageContext.getAttribute("i") != 0%>'>
-                                                <hr>
-                                            </c:if>
-                                            <p>Please choose other product from the same brand by visitting <a href="/Product/List/BrandID/<%= lastBrandID%>" target="_blank"><%= bDAO.getBrand(lastBrandID).getName()%></a></p>
-                                            </c:if>
-                                        <div class="OFS">
-                                            <p>Bạn không thể thêm "<span><%= opd.getName()%></span>" vào giỏ hàng vì sản phẩm này không đủ số lượng hoặc đã hết hàng</p>
-                                        </div>
-
-                                    </c:forEach>
-                                </c:if>
-
+                                <form action="/InventoryManager/ImportCart/Update" method="GET">
+                                    <input type="hidden" name="InventoryManagerID" value="<%= ivtrManaId%>" />
                                 <!--  Showing list of product -->
                                 <h1>Sản phẩm đã chọn</h1>
                                 <table class="w-100">
-
                                     <c:choose>
-                                        <c:when test='<%= listCartItem.size() > 0%>'>
-                                            <c:forEach var="i" begin="0" end="<%= listCartItem.size() - 1%>">
+                                        <c:when test='<%= listImportItem.size() > 0%>'>
+                                            <c:forEach var="i" begin="0" end="<%= listImportItem.size() - 1%>">
                                                 <%
-                                                    Product p = pDAO.getProduct(listCartItem.get((int) pageContext.getAttribute("i")).getProductId());
-                                                    int sum = listCartItem.get((int) pageContext.getAttribute("i")).getSum();
-                                                    int CartQuan = listCartItem.get((int) pageContext.getAttribute("i")).getQuantity();
-                                                    int CartPrice = listCartItem.get((int) pageContext.getAttribute("i")).getPrice();
+                                                    Product p = pDAO.getProduct(listImportItem.get((int) pageContext.getAttribute("i")).getProductId());
+                                                    int sumCost = listImportItem.get((int) pageContext.getAttribute("i")).getSumCost();
+                                                    int CartQuan = listImportItem.get((int) pageContext.getAttribute("i")).getQuantity();
+                                                    int CartCost = listImportItem.get((int) pageContext.getAttribute("i")).getCost();
                                                 %>
                                                 <tr>
                                                     <td>
@@ -127,60 +100,22 @@
                                                         <a href="/Product/Detail/ID/<%= p.getId()%>">
                                                             <%= p.getName()%> - <%= p.getVolume()%>ml
                                                         </a>
-                                                        <c:choose>
-                                                            <c:when test="<%= (v != null && approvedProduct != null && ProductDAO.isContain(p, approvedProduct))%>">  
-                                                                <span><%= Converter.covertIntergerToMoney(p.getStock().getPrice())%> <span>₫</span></span>
-                                                                <span style="text-decoration: line-through;color: rgba(0,0,0,0.5);">Total:<%= Converter.covertIntergerToMoney(sum)%> <span>₫</span></span>
-                                                                <span>Total: <%= Converter.covertIntergerToMoney(sum - p.getStock().getPrice() * v.getDiscountPercent() / 100)%> <span>₫</span></span>
-
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                <span><%= Converter.covertIntergerToMoney(p.getStock().getPrice())%> <span>₫</span></span>
-                                                                <span>Total: <%= Converter.covertIntergerToMoney(sum)%> <span>₫</span></span>
-                                                            </c:otherwise>
-                                                        </c:choose>
+                                                        <span><%= Converter.covertIntergerToMoney(CartCost)%> <span>₫</span></span>
+                                                        <span>Total: <%= Converter.covertIntergerToMoney(sumCost)%> <span>₫</span></span>
                                                     </td>
                                                     <td>
-                                                        <input type="hidden" name="<%= "ProductID" + pageContext.getAttribute("i")%>" value="<%= p.getId()%>" />
-                                                        <span class="ProductMaxQuantity" > <%= p.getStock().getQuantity()%> </span>  
-                                                        <input type="number" name="<%= "ProductQuan" + pageContext.getAttribute("i")%>" value="<%= CartQuan%>" /> 
-                                                        <input type="hidden" name="<%= "ProductPrice" + pageContext.getAttribute("i")%>" value="<%= CartPrice%>" /> 
-                                                        <a href="/Customer/Cart/Delete/ProductID/<%= p.getId()%>/CustomerID/<%= CustomerID%>">
+                                                        <h4>Quantity</h4>
+                                                        <span>
+                                                            <input type="number" name="<%= "ProductQuan" + pageContext.getAttribute("i")%>" value="<%= CartQuan%>" /> 
+                                                        </span>
+                                                        <h4>Cost</h4>
+                                                        <span>
+                                                            <input type="number" name="<%= "ProductCost" + pageContext.getAttribute("i")%>" value="<%= CartCost%>" /> 
+                                                        </span>
+                                                        <a href="/InventoryManager/ImportCart/Delete/ProductID/<%= p.getId()%>/InventoryManagerID/<%=ivtrManaId%>">
                                                             <img src="/RESOURCES/images/icons/close.png" alt="" />
                                                         </a>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <a href="/Product/Detail/ID/<%= p.getId()%>">
-                                                            <img src="<%= p.getImgURL()%>"alt=""/>
-                                                        </a>
-                                                    </td>
-                                                    <td>
-                                                        <a href="/Product/Detail/ID/<%= p.getId()%>">
-                                                            <%= p.getName()%> - <%= p.getVolume()%>ml
-                                                        </a>
-                                                        <c:choose>
-                                                            <c:when test="<%= (v != null && approvedProduct != null && ProductDAO.isContain(p, approvedProduct))%>">  
-                                                                <span><%= Converter.covertIntergerToMoney(p.getStock().getPrice())%> <span>₫</span></span>
-                                                                <span style="text-decoration: line-through;color: rgba(0,0,0,0.5);">Total:<%= Converter.covertIntergerToMoney(sum)%> <span>₫</span></span>
-                                                                <span>Total: <%= Converter.covertIntergerToMoney(sum - p.getStock().getPrice() * v.getDiscountPercent() / 100)%> <span>₫</span></span>
-
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                <span><%= Converter.covertIntergerToMoney(p.getStock().getPrice())%> <span>₫</span></span>
-                                                                <span>Total: <%= Converter.covertIntergerToMoney(sum)%> <span>₫</span></span>
-                                                            </c:otherwise>
-                                                        </c:choose>
-                                                    </td>
-                                                    <td>
                                                         <input type="hidden" name="<%= "ProductID" + pageContext.getAttribute("i")%>" value="<%= p.getId()%>" />
-                                                        <span class="ProductMaxQuantity" > <%= p.getStock().getQuantity()%> </span>  
-                                                        <input type="number" name="<%= "ProductQuan" + pageContext.getAttribute("i")%>" value="<%= CartQuan%>" /> 
-                                                        <input type="hidden" name="<%= "ProductPrice" + pageContext.getAttribute("i")%>" value="<%= CartPrice%>" /> 
-                                                        <a href="/Customer/Cart/Delete/ProductID/<%= p.getId()%>/CustomerID/<%= CustomerID%>">
-                                                            <img src="/RESOURCES/images/icons/close.png" alt="" />
-                                                        </a>
                                                     </td>
                                                 </tr>
                                             </c:forEach>
@@ -197,14 +132,13 @@
                                     </c:choose>
 
                                 </table>
-                                <input type="hidden" name="ListSize" value="<%= listCartItem.size()%>" />
+                                <input type="hidden" name="ListSize" value="<%= listImportItem.size()%>" />
                                 <c:choose>
-                                    <c:when test='<%= listCartItem.size() > 0%>'>
+                                    <c:when test='<%= listImportItem.size() > 0%>'>
                                         <div>
                                             <button type="submit" class="btn-disabled"><span>Cập nhật hoá đơn</span></button>
                                         </div>
                                     </c:when>
-
                                     <c:otherwise>
                                         <a href="/Product/List" class="backToStore">
                                             <div id="come-back-link">
@@ -217,42 +151,42 @@
                         </div>
 
                         <c:choose>
-                            <c:when test='<%= listCartItem.size() > 0%>'>
+                            <c:when test='<%= listImportItem.size() > 0%>'>
                                 <div class="right">
                                     <div class="checkout">
-                                        <form action="/Customer/Cart/Checkout" method="POST">
+                                        <form  id="importCheckout" action="/InventoryManager/ImportCart/Checkout" method="POST">
                                             <h2>Phiếu hoá đơn</h2>
                                             <div class="flex-column align-items-start">
                                                 <h5>Supplier name</h5>
-                                                <input class="w-100" type="text" name="SupplierTxt" >
+                                                <input class="w-100" type="text" name="txtSupplier" >
                                             </div>
                                             <hr/>
                                             <div class="flex-column align-items-start">
                                                 <h5>Import At</h5>
-                                                <input class="w-100" type="date" name="importAtTxt" >
+                                                <input class="w-100" type="date" name="txtImportAt" >
                                             </div>
                                             <div class="flex-column align-items-start">
                                                 <h5>Delivered_At</h5>
-                                                <input class="w-100" type="date" name="deliveredAt" >
+                                                <input class="w-100" type="date" name="txtDeliveredAt" >
                                             </div>
                                             <hr/>
                                             <div class="flex-column align-items-start">
                                                 <h5>Import Total Quantity</h5>
-                                                <input class="w-100" type="number" name="deliveredAt" readonly="true" >
+                                                <input class="w-100" type="number" readonly="true"  value="<%= TotalQuan%>">
                                             </div>
                                             <hr/>
                                             <div class="flex-column align-items-start">
                                                 <h5>Import Total Cost</h5>
-                                                <input class="w-100" type="number" name="deliveredAt" readonly="true">
+                                                <input class="w-100" type="number" readonly="true" value="<%= TotalCost%>">
                                             </div>
                                             <hr/>
                                             <div class="flex-column align-items-start">
                                                 <h5>Import By Inventory Manager</h5>
-                                                <input class="w-100" type="text" name="deliveredAt" readonly="true">
+                                                <input class="w-100" type="text" readonly="true"value="<%= ivtrManaUsername%>">
                                             </div>
                                             <hr/>
                                             <div>
-                                                <button id="btn-checkout" type="submit" class="btn-checkout" name="btnCheckoutCart" value="Submit">Gửi yêu cầu</button>
+                                                <button id="btn-checkout" type="submit" class="btn-checkout" name="btnCheckoutImportCart" value="Submit">Import sản phẩm</button>
                                             </div>
                                         </form>
                                     </div>
@@ -419,6 +353,34 @@
                     }
                     return true;
                 }, "Vui lòng nhập đúng định dạng email");
+
+                $("#importCheckout").validate({
+                    rules: {
+                        "txtSupplier": {
+                            required: true
+                        },
+                        "txtImportAt": {
+                            required: true
+                        },
+                        "txtDeliveredAt": {
+                            requred: true
+                        }
+                    },
+                    messages: {
+                        "txtSupplier": {
+                            required: "Vui lòng nhập tên nhà cung cấp"
+                        },
+                        "txtImportAt": {
+                            required: "Vui lòng nhập ngày import"
+                        },
+                        "txtDeliveredAt": {
+                            required: "Vui lòng nhập ngày vận chuyển đến"
+                        }
+                    }
+
+                    
+
+                });
 
                 $("form[action='/home/subscribe']").validate({
                     rules: {
