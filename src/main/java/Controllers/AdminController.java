@@ -5,6 +5,7 @@ import DAOs.BrandDAO;
 import DAOs.CustomerDAO;
 import DAOs.EmployeeDAO;
 import DAOs.OrderDAO;
+import DAOs.ProductActivityLogDAO;
 import Models.User;
 
 import java.util.List;
@@ -27,6 +28,7 @@ import Models.Stock;
 import Models.Customer;
 import Models.Employee;
 import Models.Order;
+import Models.ProductActivityLog;
 import Models.Role;
 import java.io.InputStream;
 import jakarta.servlet.ServletException;
@@ -631,7 +633,7 @@ public class AdminController extends HttpServlet {
         int page = 1;
         int rows = 20;
         String Search = request.getParameter("txtSearch");
-        UserDAO uDAO = new UserDAO();
+        ProductActivityLogDAO productActivityLogDAO = new ProductActivityLogDAO();
 
         for (int i = 0; i < data.length; i++) {
             if (data[i].equals("page")) {
@@ -643,17 +645,16 @@ public class AdminController extends HttpServlet {
             Search = "%";
         }
 
-        List<User> usersFromSearch = uDAO.searchUser(Search);
-
-        List<User> listUser = Generator.pagingList(usersFromSearch, page, rows);
+        List<ProductActivityLog> adminActivityLogsFromSearch = productActivityLogDAO.searchProductActivityLog(Search);
+        List<ProductActivityLog> listAdminActivityLogs = Generator.pagingList(adminActivityLogsFromSearch, page, rows);
 
         final int ROWS = 20;
-        int NumberOfPage = usersFromSearch.size() / ROWS;
-        NumberOfPage = (usersFromSearch.size() % ROWS == 0 ? NumberOfPage : NumberOfPage + 1);
+        int NumberOfPage = adminActivityLogsFromSearch.size() / ROWS;
+        NumberOfPage = (adminActivityLogsFromSearch.size() % ROWS == 0 ? NumberOfPage : NumberOfPage + 1);
 
         request.setAttribute("page", page);
         request.setAttribute("numberOfPage", NumberOfPage);
-        request.setAttribute("listUser", listUser);
+        request.setAttribute("listActivityLogs", listAdminActivityLogs);
         request.setAttribute("Search", Search);
     }
 
