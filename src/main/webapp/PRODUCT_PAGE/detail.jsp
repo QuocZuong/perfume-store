@@ -116,8 +116,8 @@
                         <div class="content">
                             <div class="description">
                                 <hr>
-                                <h1 id="descriptionTitle">mô tả</h1>
-                                <label for="">tone hương</label>
+                                <h1 id="descriptionTitle">Mô tả</h1>
+                                <label for="">Tone hương</label>
                                 <p id="tone"><%= smell%></p>
                                 <br>
                                 <p id="descriptionDetail">
