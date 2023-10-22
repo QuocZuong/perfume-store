@@ -28,6 +28,10 @@
         <servlet-name>InventoryManagerController</servlet-name>
         <servlet-class>Controllers.InventoryManagerController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>OrderManagerController</servlet-name>
+        <servlet-class>Controllers.OrderManagerController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>shop</servlet-name>
         <url-pattern>/shop</url-pattern>
@@ -138,7 +142,10 @@
         <error-code>403</error-code>
         <location>/ERROR_PAGE/403Page.jsp</location>
     </error-page>
-
+    <servlet-mapping>
+        <servlet-name>OrderManagerController</servlet-name>
+        <url-pattern>/OrderManager</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
