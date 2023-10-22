@@ -160,6 +160,36 @@
                                         </div>
                                         <div class="modal-body">
 
+
+                                            <div class="mb-3">
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Filter</th>
+                                                            <th scope="col">Number of order</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <th scope="row">Day</th>
+                                                            <td>10</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">Week</th>
+                                                            <td>125</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">Month</th>
+                                                            <td>1223</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">Year</th>
+                                                            <td>112315</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
                                             <div class="mb-3">
                                                 <a href="/Admin/Chart/BestSellingProductByGender" class="text-decoration-none">
                                                     <button class="btn btn-outline-dark d-flex w-100 h-100 justify-content-center align-items-center rounded-0 fn-btn">
@@ -175,15 +205,6 @@
                                                     </button>
                                                 </a>
                                             </div>
-                                            
-                                            <div class="mt-3">
-                                                <a href="/Admin/Chart/BestSellingProductByPrice" class="text-decoration-none">
-                                                    <button class="btn btn-outline-dark d-flex w-100 h-100 justify-content-center align-items-center rounded-0 fn-btn">
-                                                        <span class="h2">&nbsp;&nbsp;Total Order</span>
-                                                    </button>
-                                                </a>
-                                            </div>
-
                                         </div>
                                         <div class="modal-footer">
                                         </div>
