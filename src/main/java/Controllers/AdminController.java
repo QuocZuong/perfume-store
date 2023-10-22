@@ -78,6 +78,7 @@ public class AdminController extends HttpServlet {
     // Chart URL
     public static final String ADMIN_CHART_BEST_SELLING_PRODUCT_BY_GENDER = "/Admin/Chart/BestSellingProductByGender";
     public static final String ADMIN_CHART_BEST_SELLING_PRODUCT_BY_PRICE = "/Admin/Chart/BestSellingProductByPrice";
+    public static final String ADMIN_CHART_TOTAL_ORDER = "/Admin/Chart/TotalOrder";
 
     public static final String ADMIN_UPDATE_INFO_URI = "/Admin/Update/Info";
 
@@ -98,10 +99,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -144,6 +145,7 @@ public class AdminController extends HttpServlet {
             }
             return;
         }
+
         if (path.startsWith(ADMIN_PRODUCT_RESTORE_URI)) {
             int result = restoreProduct(request, response);
             if (result == State.Success.value) {
@@ -259,10 +261,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

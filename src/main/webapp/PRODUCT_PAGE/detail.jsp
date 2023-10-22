@@ -116,8 +116,8 @@
                         <div class="content">
                             <div class="description">
                                 <hr>
-                                <h1 id="descriptionTitle">mô tả</h1>
-                                <label for="">tone hương</label>
+                                <h1 id="descriptionTitle">Mô tả</h1>
+                                <label for="">Tone hương</label>
                                 <p id="tone"><%= smell%></p>
                                 <br>
                                 <p id="descriptionDetail">
@@ -138,7 +138,7 @@
                                 String productSuggestPrice = Converter.covertIntergerToMoney(product.getStock().getPrice());
                         %>
                         <a class="product-wrapper" href="/Product/Detail/ID/<%=product.getId()%>">
-                            <div class="product">
+                              <div class="product">
                                 <img src="<%=product.getImgURL()%>" alt="" class="product-img">
                                 <span class="product-brand"><%=productBrandName%></span>
                                 <hr>

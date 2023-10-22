@@ -301,6 +301,60 @@ public class OrderDAO implements IOrderDAO {
         return products;
     }
 
+    public List<Order> getNumberOfOrderByDay(int day, int month, int year) {
+        String sql = "SELECT * FROM [Order] WHERE DAY(Order_Created_At) = ? AND MONTH(Order_Created_At) = ? AND  YEAR(Order_Created_At) = ?";
+        List<Order> orders = new ArrayList<>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, day);
+            ps.setInt(2, month);
+            ps.setInt(3, year);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Order order = new Order();
+                orders.add(order);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return orders;
+    }
+
+    public List<Order> getNumberOfOrderByMonth(int month, int year) {
+        String sql = "SELECT * FROM [Order] WHERE MONTH(Order_Created_At) = ? AND YEAR(Order_Created_At) = ?";
+        List<Order> orders = new ArrayList<>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, month);
+            ps.setInt(2, year);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Order order = new Order();
+                orders.add(order);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return orders;
+    }
+
+    public List<Order> getNumberOfOrderByYear(int year) {
+        String sql = "SELECT * FROM [Order] WHERE YEAR(Order_Created_At) = ?";
+        List<Order> orders = new ArrayList<>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, year);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Order order = new Order();
+                orders.add(order);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return orders;
+    }
+
     /* --------------------------- UPDATE SECTION --------------------------- */
     @Override
     public boolean updateOrder(Order order) throws NullPointerException {
