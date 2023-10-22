@@ -313,6 +313,7 @@ h1 {
 .main .right .address-page .address-list .scroll-list::-webkit-scrollbar-track,
 .order-scroll-list::-webkit-scrollbar-track {
   background: #f1f1f1;
+  border-radius: 0.5em;
 }
 
 .main .right .address-page .address-list .scroll-list::-webkit-scrollbar-thumb,
@@ -343,7 +344,6 @@ h1 {
   border-width: 1px 0px 0px 0px;
   border-style: ridge;
   border-color: rgba(0, 0, 0, 0.3);
-
 }
 
 .main .right .address-page .address-list .delivery-address-item {
