@@ -13,7 +13,7 @@
     float high = 0;
 
     Map<Object, Object> map = null;
-    List<Map<Object, Object>> list = new ArrayList<Map<Object, Object>>();
+    List<Map<Object, Object>> list = new ArrayList<>();
 
     for (int i = 0; i < listProduct.size(); i++) {
         System.out.println("price: " + listProduct.get(i).getStock().getPrice());

@@ -17,7 +17,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
-<%! ArrayList<ImportStashItem> listImportItem = null;%>
+<%! List<ImportStashItem> listImportItem = null;%>
 <%! ProductDAO pDAO = new ProductDAO();%>
 <%! ImportStashItemDAO ipsiDAO = new ImportStashItemDAO(); %>
 
@@ -29,7 +29,7 @@
     String exceptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
     String ivtrManaUsername = (String) request.getAttribute("ivtrManaUsername");
     int ivtrManaId = (int) request.getAttribute("ivtrManaId");
-    listImportItem = (ArrayList<ImportStashItem>) request.getAttribute("listImportItem");
+    listImportItem = (List<ImportStashItem>) request.getAttribute("listImportItem");
     TotalCost = ipsiDAO.getImportCartTotalCost(listImportItem);
     TotalQuan = ipsiDAO.getImportCartTotalQuantity(listImportItem);
 %>

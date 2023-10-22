@@ -13,7 +13,7 @@
     float unisex = 0;
 
     Map<Object, Object> map = null;
-    List<Map<Object, Object>> list = new ArrayList<Map<Object, Object>>();
+    List<Map<Object, Object>> list = new ArrayList<>();
 
     for (int i = 0; i < listProduct.size(); i++) {
         if (listProduct.get(i).getGender().equals("Male") || listProduct.get(i).getGender().equals("Nam")) {

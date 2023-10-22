@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,7 +49,7 @@ public class ImportDetailDAO implements IImportDetailDAO {
 
     //This function add all import detail of an inport
     @Override
-    public int addAllImportDetailOfImport(ArrayList<ImportDetail> arrIpd) {
+    public int addAllImportDetailOfImport(List<ImportDetail> arrIpd) {
         String sql = "INSERT INTO [Import_Detail] (Import_ID, Product_ID, Quantity, Cost, Status) VALUES (?, ?, ?, ?, ?)";
         int ImportID = DatabaseUtils.getLastIndentityOf("[Import]");
         System.out.println("Last id:" + ImportID);
@@ -162,9 +163,9 @@ public class ImportDetailDAO implements IImportDetailDAO {
     }
 
     @Override
-    public ArrayList<ImportDetail> getAllImportDetailOfImport(int ipId) {
+    public List<ImportDetail> getAllImportDetailOfImport(int ipId) {
         ResultSet rs;
-        ArrayList<ImportDetail> arrImportDetail = new ArrayList();
+        List<ImportDetail> arrImportDetail = new ArrayList();
         ImportDetail ipD;
         String sql = "SELECT * FROM Import_Detail\n"
                 + "WHERE Import_ID = ?";
@@ -188,7 +189,7 @@ public class ImportDetailDAO implements IImportDetailDAO {
     }
 
     @Override
-    public int getTotalQuantityImportDetail(ArrayList<ImportDetail> arrIpD) {
+    public int getTotalQuantityImportDetail(List<ImportDetail> arrIpD) {
         int total_quan = 0;
         if (arrIpD != null && !arrIpD.isEmpty()) {
             for (int i = 0; i < arrIpD.size(); i++) {
@@ -199,7 +200,7 @@ public class ImportDetailDAO implements IImportDetailDAO {
     }
 
     @Override
-    public int getTotalCostImportDetail(ArrayList<ImportDetail> arrIpD) {
+    public int getTotalCostImportDetail(List<ImportDetail> arrIpD) {
         int total_cost = 0;
         if (arrIpD != null && !arrIpD.isEmpty()) {
             for (int i = 0; i < arrIpD.size(); i++) {

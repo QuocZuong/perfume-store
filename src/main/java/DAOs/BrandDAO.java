@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,10 +42,10 @@ public class BrandDAO implements IBrandDAO {
 
     //Read
     @Override
-    public ArrayList<Brand> getAll() {
+    public List<Brand> getAll() {
         ResultSet rs;
         String sql = "SELECT * FROM Brand";
-        ArrayList<Brand> brandList = new ArrayList<>();
+        List<Brand> brandList = new ArrayList<>();
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -69,10 +70,10 @@ public class BrandDAO implements IBrandDAO {
     }
 
     @Override
-    public ArrayList<Brand> getBrandNameByAlphabet(char a) {
+    public List<Brand> getBrandNameByAlphabet(char a) {
 
         ResultSet rs = null;
-        ArrayList<Brand> brandList = new ArrayList<>();
+        List<Brand> brandList = new ArrayList<>();
         try {
             String sql = "SELECT * FROM Brand WHERE [Brand_Name] LIKE ?";
             PreparedStatement ps = conn.prepareStatement(sql);
