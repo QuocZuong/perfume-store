@@ -102,7 +102,7 @@ public class ProductActivityLogDAO {
                 + "JOIN [Employee] ON [Admin].[Employee_ID] = [Employee].[Employee_ID]\n"
                 + "JOIN [User] ON [Employee].[User_ID] = [User].[User_ID] \n"
                 + "JOIN [Product] ON [Product_Activity_Log].Product_ID = [Product].Product_ID\n"
-                + "WHERE [User].[User_Name] LIKE ? OR [User].[User_Username] LIKE ? OR [User].[User_Email] LIKE ? OR [Product].Product_Name LIKE ?";
+                + "WHERE [User].[User_Name] LIKE ? OR [User].[User_Username] LIKE ? OR [User].[User_Email] LIKE ? OR [Product].Product_Name LIKE ? ORDER BY [Product_Activity_Log].Updated_At DESC";
         List<ProductActivityLog> palList = new ArrayList<>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
