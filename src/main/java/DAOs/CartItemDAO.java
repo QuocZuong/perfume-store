@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -169,9 +170,9 @@ public class CartItemDAO implements ICartItemDAO {
     }
 
     @Override
-    public ArrayList<CartItem> getAllCartItemOfCustomer(int customerId) {
+    public List<CartItem> getAllCartItemOfCustomer(int customerId) {
         ResultSet rs;
-        ArrayList<CartItem> arrCartItem = new ArrayList();
+        List<CartItem> arrCartItem = new ArrayList();
         CartItem ci;
         String sql = "SELECT * FROM CartItem\n"
                 + "WHERE Customer_ID = ?";
@@ -195,9 +196,9 @@ public class CartItemDAO implements ICartItemDAO {
     }
 
     @Override
-    public ArrayList<Product> getAllOutOfStockProductFromCart(int customerId) {
+    public List<Product> getAllOutOfStockProductFromCart(int customerId) {
         ResultSet rs;
-        ArrayList<Product> arrProduct = new ArrayList<>();
+        List<Product> arrProduct = new ArrayList<>();
         Product pd;
         Stock st;
         try {
@@ -250,7 +251,7 @@ public class CartItemDAO implements ICartItemDAO {
         return arrProduct;
     }
 
-    public int getCartTotal(ArrayList<CartItem> arrCi) {
+    public int getCartTotal(List<CartItem> arrCi) {
         int total = 0;
         if (arrCi != null && !arrCi.isEmpty()) {
             for (int i = 0; i < arrCi.size(); i++) {

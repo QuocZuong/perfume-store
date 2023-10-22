@@ -6,7 +6,7 @@ package Interfaces.DAOs;
 
 import Models.CartItem;
 import Models.Product;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -26,7 +26,7 @@ public interface ICartItemDAO {
 
     CartItem getCartItem(int customerId, int productId);
 
-    ArrayList<CartItem> getAllCartItemOfCustomer(int customerId);
+    List<CartItem> getAllCartItemOfCustomer(int customerId);
 
-    ArrayList<Product> getAllOutOfStockProductFromCart(int customerId);
+    List<Product> getAllOutOfStockProductFromCart(int customerId);
 }
