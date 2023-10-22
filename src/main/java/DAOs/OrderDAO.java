@@ -234,12 +234,15 @@ public class OrderDAO implements IOrderDAO {
         if (orderId <= 0) {
             throw new IllegalArgumentException("Order ID must be greater than 0");
         }
+
         String sql = "SELECT * FROM [Order] where Order_ID = ?";
         Order order = null;
+
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, orderId);
             ResultSet rs = ps.executeQuery();
+            
             if (rs.next()) {
                 order = orderFactory(rs, operation.READ);
                 OrderDetailDao odDAO = new OrderDetailDao();

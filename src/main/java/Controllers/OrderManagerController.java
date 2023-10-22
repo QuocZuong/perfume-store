@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package Controllers;
 
 import DAOs.OrderDAO;
@@ -17,14 +13,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-/**
- *
- * @author Acer
- */
 public class OrderManagerController extends HttpServlet {
 
     private int searchProduct(HttpServletRequest request, HttpServletResponse response) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     enum Operation {
@@ -47,7 +39,6 @@ public class OrderManagerController extends HttpServlet {
     public final String ORDER_MANAGER_ACCEPT_ORDER_URI = "/OrderManager/ID/1/" + Operation.ACCEPT.toString();
     public final String ORDER_MANAGER_REJECT_ORDER_URI = "/OrderManager/ID/1/" + Operation.REJECT.toString();
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *

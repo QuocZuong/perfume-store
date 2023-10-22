@@ -113,8 +113,7 @@ public class OrderDetailDao implements IOrderDetailDAO {
       ResultSet rs = ps.executeQuery();
 
       while (rs.next()) {
-        OrderDetail orderDetail = orderDetailFactory(rs);
-        list.add(orderDetail);
+        list.add(orderDetailFactory(rs));
       }
     } catch (Exception e) {
       e.printStackTrace();

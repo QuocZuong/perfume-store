@@ -150,35 +150,12 @@
               </c:when>
 
               <c:otherwise>
-                <%-- <table id="order-history-table" class="table">
-                  <thead class="thead-dark">
-                    <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">Ngày mua hàng</th>
-                      <th scope="col">Tổng tiền</th>
-                      <th scope="col"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <c:if test='<%=orders.size() != 0%>'>
-                      <c:forEach var="i" begin="0" end="<%=orders.size() - 1%>">
-                        <tr>
-                          <th scope="row"><%= orders.get((int) pageContext.getAttribute("i")).getId()%></th>
-                          <td><%=orders.get((int) pageContext.getAttribute("i")).getCreatedAt()%></td>
-                          <td><%=Converter.covertIntergerToMoney(orders.get((int) pageContext.getAttribute("i")).getTotal())%></td>
-                          <td><a href="/Customer/Order/Detail/ID/<%=orders.get((int) pageContext.getAttribute("i")).getId()%>" target="_blank">Xem chi tiết</a></td>
-                        </tr>
-                      </c:forEach>
-                    </c:if>
-                  </tbody>
-                </table> --%>
-
+                <div class="row ms-1">
+                  <div class="col-1">#</div>
+                  <div class="col-2 offset-1 text-center">Ngày mua hàng</div>
+                  <div class="col-2 offset-1 text-center">Tổng tiền</div>
+                </div>
                 <div class="order-scroll-list">
-                  <div class="row ms-1">
-                    <div class="col-1">#</div>
-                    <div class="col-2 offset-1 text-center">Ngày mua hàng</div>
-                    <div class="col-2 offset-1 text-center">Tổng tiền</div>
-                  </div>
                   <c:forEach var="i" begin="0" end="<%=orders.size() - 1%>">
                     <%
                                                 String orderId = orders.get((int) pageContext.getAttribute("i")).getId() + "";

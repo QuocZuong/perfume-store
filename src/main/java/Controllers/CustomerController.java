@@ -472,11 +472,15 @@ public class CustomerController extends HttpServlet {
 
             // Get the list of all product that is approviate for voucher discount.
             Product p;
-            for (int i = 0; i < orderDetailList.size(); i++) {
-                if (v.getApprovedProductId().contains(orderDetailList.get(i).getProductId())) {
-                    p = pDAO.getProduct(orderDetailList.get(i).getProductId());
+            if (v != null) {
+                System.out.println("Order detail list size:" + orderDetailList.size());
+                System.out.println("Approved product list size:" + v.getApprovedProductId().size());
+                for (int i = 0; i < orderDetailList.size(); i++) {
+                    if (v.getApprovedProductId().contains(orderDetailList.get(i).getProductId())) {
+                        p = pDAO.getProduct(orderDetailList.get(i).getProductId());
 
-                    approvedProductsList.add(p);
+                        approvedProductsList.add(p);
+                    }
                 }
             }
 
