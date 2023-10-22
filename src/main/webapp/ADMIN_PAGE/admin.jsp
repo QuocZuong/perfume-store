@@ -64,7 +64,7 @@
               rel="stylesheet" type="text/css" />
         <title>Tài khoản</title>
         <style>
-            .alert{
+            .alert {
                 z-index:-99 !important;
             }
         </style>
