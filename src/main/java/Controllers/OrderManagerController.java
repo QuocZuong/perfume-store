@@ -35,6 +35,13 @@ public class OrderManagerController extends HttpServlet {
         }
     }
 
+    public static final String ORDER_MANAGER_USER_URI = "/OrderManager";
+
+    public static final String ORDER_MANAGER_ORDER_LIST_URI = "/OrderManager/Order/List";
+    public static final String ORDER_MANAGER_ORDER_DETAIL_URI = "/OrderManager/Order/Detail";
+
+    public static final String ORDER_MANAGER_UPDATE_INFO_URI = "/OrderManager/Update/Info";
+
     public final String ORDER_MANAGER_ORDER_LIST = "/OrderManager/List";
     public final String ORDER_MANAGER_ACCEPT_ORDER_URI = "/OrderManager/ID/1/" + Operation.ACCEPT.toString();
     public final String ORDER_MANAGER_REJECT_ORDER_URI = "/OrderManager/ID/1/" + Operation.REJECT.toString();
@@ -42,10 +49,10 @@ public class OrderManagerController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -57,10 +64,79 @@ public class OrderManagerController extends HttpServlet {
             System.out.println("vao controller thanh cong");
             int result = searchProduct(request, response);
             if (result == State.Success.value) {
-                request.getRequestDispatcher("/ORDER_MANAGER_ORDER_LIST/Order/list.jsp").forward(request, response);
+                request.getRequestDispatcher("/ORDER_MANAGER/Order/list.jsp").forward(request, response);
             } else if (result == State.Fail.value) {
                 response.sendRedirect(ORDER_MANAGER_ORDER_LIST + ExceptionUtils.generateExceptionQueryString(request));
             }
+            return;
+        }
+
+        // ---------------------------- ORDER SECTION ----------------------------
+        // if (path.startsWith(ORDER_MANAGER_ORDER_LIST_URI)
+        //         || path.startsWith(ORDER_MANAGER_ORDER_LIST_URI + "/page")) {
+        //     int result = searchOrder(request);
+
+        //     if (result == State.Success.value) {
+        //         request.getRequestDispatcher("/ORDER_MANAGER/Order/list.jsp").forward(request, response);
+        //     } else if (result == State.Fail.value) {
+        //         response.sendRedirect(
+        //                 ORDER_MANAGER_ORDER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+        //     }
+
+        //     return;
+        // }
+
+        // ---------------------------- USER SECTION ----------------------------
+        if (path.startsWith(ADMIN_USER_DELETE_URI)) {
+            deleteUser(request, response);
+            response.sendRedirect(ADMIN_USER_LIST_URI);
+            return;
+        }
+
+        if (path.startsWith(ADMIN_USER_RESTORE_URI)) {
+            restoreUser(request, response);
+            response.sendRedirect(ADMIN_USER_LIST_URI);
+            return;
+        }
+        //
+        // if (path.startsWith(ADMIN_CLIENT_DETAIL_URI)) {
+        // clientDetail(request, response);
+        // request.getRequestDispatcher("/ORDER_MANAGER/User/detail.jsp").forward(request,
+        // response);
+        // return;
+        // }
+        if (path.startsWith(ADMIN_CLIENT_ORDER_URI)) {
+            System.out.println("Going Order Detail");
+
+            int result = getCustomerOrderDetail(request);
+
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/ORDER_MANAGER/Order/orderDetail.jsp").forward(request,
+                        response);
+            } else {
+                request.getRequestDispatcher(
+                        "/ORDER_MANAGER/Order/orderDetail.jsp" + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
+        // ---------------------------- CHART SECTION ----------------------------
+        if (path.startsWith(ADMIN_CHART_BEST_SELLING_PRODUCT_BY_GENDER)) {
+            bestSellingProductByGender(request, response);
+            request.getRequestDispatcher("/ORDER_MANAGER/Chart/bestProductSellingByGender.jsp").forward(request,
+                    response);
+            return;
+        }
+
+        if (path.startsWith(ADMIN_CHART_BEST_SELLING_PRODUCT_BY_PRICE)) {
+            bestSellingProductByPrice(request, response);
+            request.getRequestDispatcher("/ORDER_MANAGER/Chart/bestProductSellingByPrice.jsp").forward(request,
+                    response);
+            return;
+        }
+
+        // ---------------------------- DEFAULT SECTION ----------------------------
+        if (path.startsWith(ADMIN_USER_URI)) { // Put this at the last
+            request.getRequestDispatcher("/ORDER_MANAGER/admin.jsp").forward(request, response);
             return;
         }
 
@@ -69,15 +145,29 @@ public class OrderManagerController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        //
+        // if (path.startsWith(ADMIN_UPDATE_INFO_URI)) {
+        // if (request.getParameter("btnUpdateInfo") != null
+        // && request.getParameter("btnUpdateInfo").equals("Submit")) {
+        // System.out.println("Going update info");
+        // if (updateAdminInfomation(request, response)) {
+        // response.sendRedirect(ADMIN_USER_URI);
+        // } else {
+        // response.sendRedirect(ADMIN_USER_URI + checkException(request));
+        // }
+        // return;
+        // }
+        // }
         String path = request.getRequestURI();
+
         if (path.startsWith(ORDER_MANAGER_ACCEPT_ORDER_URI)
                 || path.startsWith(ORDER_MANAGER_REJECT_ORDER_URI)) {
             int result = updateOrderStatus(request, response);
@@ -90,7 +180,7 @@ public class OrderManagerController extends HttpServlet {
         }
     }
 
-    //The link will look like this. /OrderManager/ID/1/Accept
+    // The link will look like this. /OrderManager/ID/1/Accept
     public int updateOrderStatus(HttpServletRequest request, HttpServletResponse response) {
         String URI = request.getRequestURI();
         String parameters[] = URI.split("/");
@@ -130,7 +220,7 @@ public class OrderManagerController extends HttpServlet {
                 orDAO.acceptOrder(order, orderManager.getOrderManagerId());
                 return State.Success.value;
             }
-            
+
             if (op == Operation.REJECT) {
                 orDAO.rejectOrder(order, orderManager.getOrderManagerId());
                 return State.Success.value;
