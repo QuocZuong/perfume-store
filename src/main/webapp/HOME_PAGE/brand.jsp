@@ -55,7 +55,7 @@
             </div>
 
             <div class="main">
-                <h1>thương hiệu</h1>
+                <h1>Thương hiệu</h1>
                 <div id="searchBox" class="search-box">
                     <a href="" class="character">ALL BRANDS</a>
                     <c:forEach var="i" begin="65" end="90" >
