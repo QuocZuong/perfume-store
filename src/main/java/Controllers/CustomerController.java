@@ -95,10 +95,10 @@ public class CustomerController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -168,10 +168,10 @@ public class CustomerController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -493,6 +493,7 @@ public class CustomerController extends HttpServlet {
                 request.setAttribute("sumDeductPrice", sumDeductPrice);
             }
             request.setAttribute("approvedProductsList", approvedProductsList);
+            // Get the list of all product that is approviate for voucher discount.
 
             System.out.println("Get order detail list");
             System.out.println(order.getOrderDetailList());
@@ -514,6 +515,7 @@ public class CustomerController extends HttpServlet {
          * pwdNew
          * pwdConfirmNew
          * btnUpdateInfo (value = Submit)
+         * <<<<<<< HEAD
          */
 
         String fullname = request.getParameter("txtFullname");
@@ -630,7 +632,7 @@ public class CustomerController extends HttpServlet {
     /**
      * Update a delivery address
      *
-     * @param request The request object
+     * @param request  The request object
      * @param response The response object
      * @return 1 if the operation is successful, 0 otherwise
      */
@@ -678,8 +680,8 @@ public class CustomerController extends HttpServlet {
             return State.Fail.value;
         }
 
-        final String[] exceptionalAddresses = new String[]{
-            "Tỉnh Bà Rịa - Vũng Tàu"
+        final String[] exceptionalAddresses = new String[] {
+                "Tỉnh Bà Rịa - Vũng Tàu"
         };
 
         boolean isExceptionalAddress = false;
@@ -1027,7 +1029,8 @@ public class CustomerController extends HttpServlet {
             return State.Fail.value;
         } else {
             System.out.println("Thanh toan thanh cong");
-            request.setAttribute("OrderID", oDAO.getOrderByOrderId(DatabaseUtils.getLastIndentityOf("[Order]")).getId());
+            request.setAttribute("OrderID",
+                    oDAO.getOrderByOrderId(DatabaseUtils.getLastIndentityOf("[Order]")).getId());
             request.setAttribute("CheckOutSuccess", "?CheckOutSuccess=true");
             ciDAO.deleteAllCartItemOfCustomer(CustomerID);
             if (v != null) {
