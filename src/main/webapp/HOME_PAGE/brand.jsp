@@ -1,3 +1,5 @@
+<%@page import="Models.Brand"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="DAOs.BrandDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -69,22 +71,19 @@
                     <c:forEach var="i" begin="65" end="90">
                         <%
                             char c = (char) ((Integer) (pageContext.getAttribute("i"))).intValue();
-                            ResultSet rs = bDAO.getBrandNameByAlphabet(c);
-                            boolean hasRow = rs.isBeforeFirst();
-                            pageContext.setAttribute("hasRow", hasRow);
+                            ArrayList<Brand> brands = bDAO.getBrandNameByAlphabet(c);
                         %>
-                        <c:if test='${hasRow}'>
+                        <c:if test="<%=brands.size() != 0%>">
                             <div class="brands">
                                 <h3><%= c%></h3>
                                 <%
-                                    while (rs != null && rs.next()) {
+                                    for (int i = 0; i < brands.size(); i++) {
                                 %>
-                                <a href="/Product/List/BrandID/<%=rs.getInt("ID")%>" class="brand"><%= rs.getNString("Name")%></a>
+                                <a href="/Product/List/BrandID/<%=brands.get(i).getId()%>" class="brand"><%= brands.get(i).getName()%></a>
                                 <%
                                     }
                                 %>
                             </div>
-
                         </c:if>
                     </c:forEach> 
                 </div>
@@ -159,47 +158,47 @@
         crossorigin="anonymous"></script>
         <script src="/RESOURCES/brand/public/js/main.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
-                    integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
-            crossorigin="anonymous"></script>
+                integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
 
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 
-            <script src="/RESOURCES/admin/product/public/js/main.js"></script>
-            <!--Jquery Validation-->
-            <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
-            <script>
-                $(document).ready(function () {
-                    $.validator.addMethod("emailCustom", function (value, element, toggler) {
-                        if (toggler) {
-                            let regex = /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/;
-                            let result = regex.test(value);
-                            return result;
+        <script src="/RESOURCES/admin/product/public/js/main.js"></script>
+        <!--Jquery Validation-->
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+        <script>
+            $(document).ready(function () {
+                $.validator.addMethod("emailCustom", function (value, element, toggler) {
+                    if (toggler) {
+                        let regex = /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$/;
+                        let result = regex.test(value);
+                        return result;
+                    }
+                    return true;
+                }, "Vui lòng nhập đúng định dạng email");
+
+                $("form[action='/home/subscribe']").validate({
+                    rules: {
+                        txtEmailSubscribe: {
+                            required: true,
+                            email: true
                         }
-                        return true;
-                    }, "Vui lòng nhập đúng định dạng email");
-
-                    $("form[action='/home/subscribe']").validate({
-                        rules: {
-                            txtEmailSubscribe: {
-                                required: true,
-                                email:true
-                            }
-                        },
-                        messages: {
-                            txtEmailSubscribe: {
-                                required: "Vui lòng nhập email",
-                                email: "Vui lòng nhập đúng định dạng email"
-                            }
-                        },
-
-                        errorPlacement: function (error, element) {
-                            error.addClass("text-danger d-block mt-3");
-                            error.insertAfter(element.next());
+                    },
+                    messages: {
+                        txtEmailSubscribe: {
+                            required: "Vui lòng nhập email",
+                            email: "Vui lòng nhập đúng định dạng email"
                         }
+                    },
 
-                    });
+                    errorPlacement: function (error, element) {
+                        error.addClass("text-danger d-block mt-3");
+                        error.insertAfter(element.next());
+                    }
+
                 });
-            </script>
+            });
+        </script>
     </body>
 </html>
