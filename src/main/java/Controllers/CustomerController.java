@@ -20,6 +20,7 @@ import DAOs.UserDAO;
 import DAOs.VoucherDAO;
 import Exceptions.AccountDeactivatedException;
 import Exceptions.EmailDuplicationException;
+import Exceptions.InvalidInputException;
 import Exceptions.InvalidVoucherException;
 import Exceptions.NotEnoughInformationException;
 import Exceptions.NotEnoughVoucherQuantityException;
@@ -528,6 +529,9 @@ public class CustomerController extends HttpServlet {
             return false;
         } catch (UsernameDuplicationException e) {
             request.setAttribute("exceptionType", "UsernameDuplicationException");
+            return false;
+        } catch (InvalidInputException ex) {
+            request.setAttribute("exceptionType", "InvalidInputException");
             return false;
         }
         if (isChangedPassword

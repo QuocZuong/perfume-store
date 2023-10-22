@@ -41,6 +41,7 @@ public class ExceptionUtils {
         OperationAddFailedException,
         OperationDeleteFailedException,
         OperationEditFailedException,
+        InvalidInputException,
         // Voucher
         InvalidVoucherException,
         VoucherNotFoundException,
@@ -73,6 +74,7 @@ public class ExceptionUtils {
                 put(ExceptionType.OperationAddFailedException.toString(), new OperationAddFailedException());
                 put(ExceptionType.OperationDeleteFailedException.toString(), new OperationDeleteFailedException());
                 put(ExceptionType.OperationEditFailedException.toString(), new OperationEditFailedException());
+                put(ExceptionType.InvalidInputException.toString(), new InvalidInputException());
                 // Voucher
                 put(ExceptionType.InvalidVoucherException.toString(), new InvalidVoucherException());
                 put(ExceptionType.VoucherNotFoundException.toString(), new VoucherNotFoundException());
@@ -243,6 +245,10 @@ public class ExceptionUtils {
 
     public static boolean isOperationEditFailed(String queryString) {
         return getExceptionNameByQueryString(queryString).equals(ExceptionType.OperationEditFailedException.toString());
+    }
+
+    public static boolean isInvalidInput(String queryString) {
+        return getExceptionNameByQueryString(queryString).equals(ExceptionType.InvalidInputException.toString());
     }
     // Voucher
 
