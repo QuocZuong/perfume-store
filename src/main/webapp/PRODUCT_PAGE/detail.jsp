@@ -138,7 +138,7 @@
                                 String productSuggestPrice = Converter.covertIntergerToMoney(product.getStock().getPrice());
                         %>
                         <a class="product-wrapper" href="/Product/Detail/ID/<%=product.getId()%>">
-                            <div class="product">
+                              <div class="product">
                                 <img src="<%=product.getImgURL()%>" alt="" class="product-img">
                                 <span class="product-brand"><%=productBrandName%></span>
                                 <hr>
