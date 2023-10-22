@@ -71,6 +71,9 @@ public class AdminController extends HttpServlet {
     public static final String ADMIN_USER_RESTORE_URI = "/Admin/User/Restore";
     public static final String ADMIN_CLIENT_DETAIL_URI = "/Admin/User/Detail";
     public static final String ADMIN_CLIENT_ORDER_URI = "/Admin/User/OrderDetail";
+    public static final String ADMIN_ADMIN_ACTIVITY_LOG_URI = "/Admin/EmployeeActivityLog/Admin";
+    public static final String ADMIN_ORDER_MANAGER_ACTIVITY_LOG_URI = "/Admin/EmployeeActivityLog/OrderManager";
+    public static final String ADMIN_INVENTORY_MANAGER_ACTIVITY_LOG_URI = "/Admin/EmployeeActivityLog/InventoryManager";
 
     // Chart URL
     public static final String ADMIN_CHART_BEST_SELLING_PRODUCT_BY_GENDER = "/Admin/Chart/BestSellingProductByGender";
@@ -177,6 +180,24 @@ public class AdminController extends HttpServlet {
         if (path.startsWith(ADMIN_USER_LIST_URI) || path.startsWith(ADMIN_USER_LIST_URI + "/page")) {
             searchUser(request, response);
             request.getRequestDispatcher("/ADMIN_PAGE/User/list.jsp").forward(request, response);
+            return;
+        }
+
+        if (path.startsWith(ADMIN_ADMIN_ACTIVITY_LOG_URI)) {
+            adminActivityLog(request, response);
+            request.getRequestDispatcher("/ADMIN_PAGE/User/adminActivityLog.jsp").forward(request, response);
+            return;
+        }
+
+        if (path.startsWith(ADMIN_ORDER_MANAGER_ACTIVITY_LOG_URI)) {
+            adminActivityLog(request, response);
+            request.getRequestDispatcher("/ADMIN_PAGE/User/orderManagerActivityLog.jsp").forward(request, response);
+            return;
+        }
+
+        if (path.startsWith(ADMIN_INVENTORY_MANAGER_ACTIVITY_LOG_URI)) {
+            adminActivityLog(request, response);
+            request.getRequestDispatcher("/ADMIN_PAGE/User/inventoryManagerActivityLog.jsp").forward(request, response);
             return;
         }
 
@@ -573,6 +594,38 @@ public class AdminController extends HttpServlet {
     }
 
     private void searchUser(HttpServletRequest request, HttpServletResponse response) {
+        String URI = request.getRequestURI();
+        String data[] = URI.split("/");
+        int page = 1;
+        int rows = 20;
+        String Search = request.getParameter("txtSearch");
+        UserDAO uDAO = new UserDAO();
+
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("page")) {
+                page = Integer.parseInt(data[i + 1]);
+            }
+        }
+
+        if (Search == null || Search.equals("")) {
+            Search = "%";
+        }
+
+        List<User> usersFromSearch = uDAO.searchUser(Search);
+
+        List<User> listUser = Generator.pagingList(usersFromSearch, page, rows);
+
+        final int ROWS = 20;
+        int NumberOfPage = usersFromSearch.size() / ROWS;
+        NumberOfPage = (usersFromSearch.size() % ROWS == 0 ? NumberOfPage : NumberOfPage + 1);
+
+        request.setAttribute("page", page);
+        request.setAttribute("numberOfPage", NumberOfPage);
+        request.setAttribute("listUser", listUser);
+        request.setAttribute("Search", Search);
+    }
+
+    private void adminActivityLog(HttpServletRequest request, HttpServletResponse response) {
         String URI = request.getRequestURI();
         String data[] = URI.split("/");
         int page = 1;
