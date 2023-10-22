@@ -351,7 +351,7 @@ public class InventoryManagerController extends HttpServlet {
         }
         int InventoryManagerID = ivtrMana.getInventoryManagerId();
         System.out.println("InventoryManagerID checkout import cart :" + InventoryManagerID);
-        ArrayList<ImportStashItem> ipsiList = ipsiDAO.getAllImportStashItemOfManager(InventoryManagerID);
+        List<ImportStashItem> ipsiList = ipsiDAO.getAllImportStashItemOfManager(InventoryManagerID);
 
         if (ipsiList.isEmpty()) {
             System.out.println("The import cart is empty");
@@ -378,7 +378,7 @@ public class InventoryManagerController extends HttpServlet {
         int totalCost = 0;
         int totalQuan = 0;
 
-        ArrayList<ImportDetail> ipdList = new ArrayList<>();
+        List<ImportDetail> ipdList = new ArrayList<>();
         for (int i = 0; i < ipsiList.size(); i++) {
             totalCost += ipsiList.get(i).getSumCost();
             totalQuan += ipsiList.get(i).getQuantity();

@@ -1045,7 +1045,7 @@ public class CustomerController extends HttpServlet {
             od.setNote(orderNote);
         }
 
-        ArrayList<OrderDetail> orderDetailList = new ArrayList<>();
+        List<OrderDetail> orderDetailList = new ArrayList<>();
         for (int i = 0; i < itemsCheckout.size(); i++) {
             OrderDetail item = new OrderDetail();
             item.setProductId(itemsCheckout.get(i).getProductId());

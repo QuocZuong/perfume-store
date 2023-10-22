@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -62,9 +63,9 @@ public class ImportDAO implements IImportDAO {
 
     /* ------------------------- READ SECTION ---------------------------- */
     @Override
-    public ArrayList<Import> getAllImport() {
-        ArrayList<Import> arrImport = new ArrayList();
-        ArrayList<ImportDetail> ipD;
+    public List<Import> getAllImport() {
+        List<Import> arrImport = new ArrayList();
+        List<ImportDetail> ipD;
         Import ip;
         ImportDetailDAO ipdDAO = new ImportDetailDAO();
         ResultSet rs;
@@ -96,7 +97,7 @@ public class ImportDAO implements IImportDAO {
     
     @Override
     public Import getImport(int ipId) {
-        ArrayList<ImportDetail> ipD;
+        List<ImportDetail> ipD;
         Import ip = null;
         ImportDetailDAO ipdDAO = new ImportDetailDAO();
         ResultSet rs;

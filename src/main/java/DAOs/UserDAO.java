@@ -35,7 +35,7 @@ public class UserDAO implements IUserDAO {
     /* --------------------- CREATE SECTION --------------------- */
     @Override
     public List<User> getAll() {
-        ArrayList<User> result = new ArrayList<>();
+        List<User> result = new ArrayList<>();
         ResultSet rs;
 
         String sql = String.format("SELECT * FROM [%s]", TABLE_NAME);

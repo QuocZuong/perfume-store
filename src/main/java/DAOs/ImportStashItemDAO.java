@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -138,9 +139,9 @@ public class ImportStashItemDAO implements IImportStashItemDAO {
     }
 
     @Override
-    public ArrayList<ImportStashItem> getAllImportStashItemOfManager(int managerId) {
+    public List<ImportStashItem> getAllImportStashItemOfManager(int managerId) {
         ResultSet rs;
-        ArrayList<ImportStashItem> arrImportStashItem = new ArrayList();
+        List<ImportStashItem> arrImportStashItem = new ArrayList();
         ImportStashItem ipsi;
         String sql = "SELECT * FROM Import_Stash_Item\n"
                 + "WHERE Inventory_Manager_ID = ?";
@@ -163,7 +164,7 @@ public class ImportStashItemDAO implements IImportStashItemDAO {
         return arrImportStashItem;
     }
 
-    public int getImportCartTotalCost(ArrayList<ImportStashItem> listImportItem) {
+    public int getImportCartTotalCost(List<ImportStashItem> listImportItem) {
         if (listImportItem == null || listImportItem.isEmpty()) {
             return 0;
         }
@@ -174,7 +175,7 @@ public class ImportStashItemDAO implements IImportStashItemDAO {
         return total;
     }
 
-    public int getImportCartTotalQuantity(ArrayList<ImportStashItem> listImportItem) {
+    public int getImportCartTotalQuantity(List<ImportStashItem> listImportItem) {
         if (listImportItem == null || listImportItem.isEmpty()) {
             return 0;
         }

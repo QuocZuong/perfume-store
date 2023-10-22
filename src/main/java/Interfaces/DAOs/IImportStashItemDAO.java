@@ -6,6 +6,7 @@ package Interfaces.DAOs;
 
 import Models.ImportStashItem;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -23,5 +24,5 @@ public interface IImportStashItemDAO {
 
     ImportStashItem getImportStashItem(int managerId, int productId);
 
-    ArrayList<ImportStashItem> getAllImportStashItemOfManager(int managerId);
+    List<ImportStashItem> getAllImportStashItemOfManager(int managerId);
 }
