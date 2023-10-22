@@ -428,7 +428,6 @@ public class CustomerController extends HttpServlet {
                             sumDeductPrice += p.getStock().getPrice() * v.getDiscountPercent() / 100;
                         }
                     }
-                    sumDeductPrice = (sumDeductPrice < v.getDiscountMax() ? sumDeductPrice : v.getDiscountMax());
 
                     request.setAttribute("sumDeductPrice", sumDeductPrice);
                     request.setAttribute("approvedProduct", approvedProduct);
@@ -450,7 +449,6 @@ public class CustomerController extends HttpServlet {
                 return State.Fail.value;
 
             }
-
         }
         return State.Success.value;
     }
@@ -483,7 +481,6 @@ public class CustomerController extends HttpServlet {
                     }
                 }
             }
-
             request.setAttribute("approvedProductsList", approvedProductsList);
 
             System.out.println("Get order detail list");
