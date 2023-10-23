@@ -409,11 +409,11 @@ public class OrderDAO implements IOrderDAO {
     }
 
     public boolean acceptOrder(Order order, int orderManagerId) throws NullPointerException, OperationEditFailedException {
-        if (order.getStatus().equals(status.PENDING.toString())) {
+        if (!order.getStatus().equals(status.PENDING.toString())) {
             System.out.println("Can not update status of an accepted order");
             throw new OperationEditFailedException();
         }
-        Date now = Date.valueOf(Generator.generateDateTime());
+        Date now = Date.valueOf(Generator.generateDateCustomPattern(Generator.DatePattern.DateDashPattern));
         order.setCheckoutAt(now);
         order.setUpdateAt(now);
         order.setUpdateByOrderManager(orderManagerId);
@@ -422,11 +422,12 @@ public class OrderDAO implements IOrderDAO {
     }
 
     public boolean rejectOrder(Order order, int orderManagerId) throws NullPointerException, OperationEditFailedException {
-        if (order.getStatus().equals(status.PENDING.toString())) {
+        if (!order.getStatus().equals(status.PENDING.toString())) {
             System.out.println("Can not update status of an rejected order");
             throw new OperationEditFailedException();
         }
-        Date now = Date.valueOf(Generator.generateDateTime());
+        
+        Date now = Date.valueOf(Generator.generateDateCustomPattern(Generator.DatePattern.DateDashPattern));
         order.setUpdateAt(now);
         order.setUpdateByOrderManager(orderManagerId);
         order.setStatus(status.REJECTED.toString());

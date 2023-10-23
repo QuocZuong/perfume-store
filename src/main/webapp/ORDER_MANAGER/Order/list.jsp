@@ -140,25 +140,25 @@
                     <td class="<%= isActive ? " " : "faded"%>"><%= orderManagerName%></td>
 
                     <td class="<%= isActive ? " " : "faded"%>">
-                      <a href="/OrderManager/User/OrderDetail/ID/<%= o.getId()%>" class="<%= isActive ? "" : "disabled"%> btn btn-outline-primary rounded-0">🤔</a>
+                      <a href="/OrderManager/Order/Detail/ID/<%= o.getId()%>" class="<%= isActive ? "" : "disabled"%> btn btn-outline-primary rounded-0">🤔</a>
                     </td>
                     <c:choose>
                       <c:when test='<%= isAccepted%>'>
                         <td class="buttonStatus faded" colspan=2>
-                          <a href="/OrderManager/Order/ID/<%= o.getId()%>/Accept" class="btn btn-outline-success rounded-0">✅</a>
+                          <a href="/OrderManager/ACCEPT/Order/ID/<%= o.getId()%>" class="btn btn-outline-success rounded-0">✅</a>
                         </td>
                       </c:when>
                       <c:when test='<%= isRejected%>'>
                         <td class="buttonStatus faded" colspan=2>
-                        <a href="/OrderManager/Order/ID/<%= o.getId()%>/Reject" class="btn btn-outline-danger rounded-0">❌</a>
+                        <a href="/OrderManager/REJECT/Order/ID/<%= o.getId()%>" class="btn btn-outline-danger rounded-0">❌</a>
                       </td>
                       </c:when>
                       <c:otherwise>
                       <td class="buttonStatus">
-                          <a href="/OrderManager/Order/ID/<%= o.getId()%>/Accept" class="btn btn-outline-success rounded-0">✅</a>
+                          <a href="/OrderManager/ACCEPT/Order/ID/<%= o.getId()%>" class="btn btn-outline-success rounded-0">✅</a>
                         </td>
                       <td class="buttonStatus">
-                        <a href="/OrderManager/Order/ID/<%= o.getId()%>/Reject" class="btn btn-outline-danger rounded-0">❌</a>
+                        <a href="/OrderManager/REJECT/Order/ID/<%= o.getId()%>" class="btn btn-outline-danger rounded-0">❌</a>
                       </td>
                       </c:otherwise>
                     </c:choose>

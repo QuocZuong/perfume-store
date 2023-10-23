@@ -60,16 +60,16 @@ public class OrderManagerController extends HttpServlet {
     public static final String ORDER_MANAGER_UPDATE_INFO_URI = "/OrderManager/Update/Info";
 
     public final String ORDER_MANAGER_ORDER_LIST = "/OrderManager/List";
-    public final String ORDER_MANAGER_ACCEPT_ORDER_URI = "/OrderManager/ID/" + Operation.ACCEPT.toString();
-    public final String ORDER_MANAGER_REJECT_ORDER_URI = "/OrderManager/ID/" + Operation.REJECT.toString();
+    public final String ORDER_MANAGER_ACCEPT_ORDER_URI = "/OrderManager/" + Operation.ACCEPT.toString() + "/Order/ID/";
+    public final String ORDER_MANAGER_REJECT_ORDER_URI = "/OrderManager" + Operation.REJECT.toString() + "/Order/ID/";
 
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -109,6 +109,7 @@ public class OrderManagerController extends HttpServlet {
 
         if (path.startsWith(ORDER_MANAGER_ACCEPT_ORDER_URI)
                 || path.startsWith(ORDER_MANAGER_REJECT_ORDER_URI)) {
+            System.out.println("Update order status");
             int result = updateOrderStatus(request, response);
 
             if (result == State.Success.value) {
@@ -122,6 +123,7 @@ public class OrderManagerController extends HttpServlet {
 
         // ---------------------------- DEFAULT SECTION ----------------------------
         if (path.startsWith(ORDER_MANAGER_USER_URI)) { // Put this at the last
+            System.out.println("Going default");
             request.getRequestDispatcher("/ORDER_MANAGER/admin.jsp").forward(request, response);
             return;
         }
@@ -130,10 +132,10 @@ public class OrderManagerController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -362,8 +364,8 @@ public class OrderManagerController extends HttpServlet {
 
         System.out.println("change password is " + isChangedPassword);
         System.out.println("New password is before if: " + request.getParameter("pwdNew"));
-        if (isChangedPassword && request.getParameter("pwdNew") != null &&
-                !request.getParameter("pwdNew").equals("")) {
+        if (isChangedPassword && request.getParameter("pwdNew") != null
+                && !request.getParameter("pwdNew").equals("")) {
             newPassword = request.getParameter("pwdNew");
             System.out.println("New password is before MD5: " + newPassword);
             newPassword = Converter.convertToMD5Hash(newPassword);
