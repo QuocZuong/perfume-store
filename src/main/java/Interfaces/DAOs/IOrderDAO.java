@@ -26,15 +26,15 @@ public interface IOrderDAO {
     /**
      * The column name of the order's Id.
      */
-    String ORDER_Id = "Order_Id";
+    String ORDER_Id = "Order_ID";
     /**
      * The column name of the order's {@link Customer} Id.
      */
-    String CUSTOMER_Id = "Customer_Id";
+    String CUSTOMER_Id = "Customer_ID";
     /**
      * The column name of the order's {@link Voucher} Id.
      */
-    String VOUCHER_Id = "Voucher_Id";
+    String VOUCHER_Id = "Voucher_ID";
     /**
      * The column name of the order's receiver name.
      */
