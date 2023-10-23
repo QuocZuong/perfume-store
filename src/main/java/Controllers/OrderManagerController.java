@@ -55,7 +55,7 @@ public class OrderManagerController extends HttpServlet {
     public static final String ORDER_MANAGER_USER_URI = "/OrderManager";
 
     public static final String ORDER_MANAGER_ORDER_LIST_URI = "/OrderManager/Order/List";
-    public static final String ORDER_MANAGER_ORDER_DETAIL_URI = "/OrderManager/Order/Detail";
+    public static final String ORDER_MANAGER_ORDER_DETAIL_URI = "/OrderManager/User/Order/Detail/ID";
 
     public static final String ORDER_MANAGER_UPDATE_INFO_URI = "/OrderManager/Update/Info";
 
