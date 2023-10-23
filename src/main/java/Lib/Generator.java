@@ -19,6 +19,21 @@ public class Generator {
     private static final String ALL_ALLOWED_CHARS = CHAR_LOWER + CHAR_UPPER + NUMBER + SPECIAL_CHARS;
     private static final Random random = new SecureRandom();
 
+    public enum DatePattern {
+
+        DateForwardSlashPattern("yy/MM/dd"),
+        DateDashPattern("yy-MM-dd"),
+        DateTimeForwardSlashPattern("yy/MM/dd HH:mm:ss.SSS"),
+        DateTimeDashPattern("yy-MM-dd HH:mm:ss.SSS");
+
+        public String pattern;
+
+        private DatePattern(String pattern) {
+            this.pattern = pattern;
+        }
+
+    };
+
     public static String generatePassword(int length) {
         StringBuilder sb = new StringBuilder(length);
 
@@ -70,11 +85,25 @@ public class Generator {
         return dtf.format(now);
     }
 
+    public static String generateDate() {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        LocalDateTime now = LocalDateTime.now();
+
+        return dtf.format(now);
+    }
+
+    public static String generateDateCustomPattern(DatePattern pattern) {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(pattern.pattern);
+        LocalDateTime now = LocalDateTime.now();
+
+        return dtf.format(now);
+    }
+
     /**
-     * Get the filtered list from the original list, according to its page and num
-     * of row.
-     * 
-     * @param <T>  The type of the list.
+     * Get the filtered list from the original list, according to its page and
+     * num of row.
+     *
+     * @param <T> The type of the list.
      * @param list The original list.
      * @param page The page number.
      * @param rows The number of rows per page.

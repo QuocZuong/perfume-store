@@ -1,6 +1,7 @@
 package Interfaces.DAOs;
 
 import Exceptions.AccountDeactivatedException;
+import Exceptions.AccountNotFoundException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.InvalidInputException;
 import Exceptions.UsernameDuplicationException;
@@ -8,7 +9,6 @@ import Exceptions.WrongPasswordException;
 import Models.User;
 import java.sql.Date;
 import java.util.List;
-import javax.security.auth.login.AccountNotFoundException;
 
 public interface IUserDAO {
 
@@ -53,6 +53,7 @@ public interface IUserDAO {
         Email,
         Username
     }
+
     public final int ROWS = 20;
 
     /**
@@ -106,8 +107,8 @@ public interface IUserDAO {
      * @throws Exceptions.AccountDeactivatedException
      * @throws Exceptions.InvalidInputException
      */
-   public User login(String loginString, String password, loginType Type)
-            throws WrongPasswordException, AccountDeactivatedException,InvalidInputException;
+    public User login(String loginString, String password, loginType Type)
+            throws WrongPasswordException, AccountDeactivatedException, InvalidInputException;
 
     /**
      * Search for a list of {@link User}s in the database that match the

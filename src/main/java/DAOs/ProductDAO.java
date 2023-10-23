@@ -515,6 +515,16 @@ public class ProductDAO implements IProductDAO {
             strBuilder.append("Active status : \"").append(oldProduct.isActive())
                     .append("\"=>\"").append(updateProduct.isActive()).append("\"\n");
         }
+        
+        if (oldProduct.getStock().getPrice() != updateProduct.getStock().getPrice()) {
+            strBuilder.append("Price : \"").append(oldProduct.getStock().getPrice())
+                    .append("\"=>\"").append(updateProduct.getStock().getPrice()).append("\"\n");
+        }
+        
+        if (oldProduct.getStock().getQuantity()!= updateProduct.getStock().getQuantity()) {
+            strBuilder.append("Price : \"").append(oldProduct.getStock().getQuantity())
+                    .append("\"=>\"").append(updateProduct.getStock().getQuantity()).append("\"\n");
+        }
 
         return strBuilder.toString();
     }

@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import Exceptions.AccountDeactivatedException;
+import Exceptions.AccountNotFoundException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.InvalidInputException;
 import Exceptions.UsernameDuplicationException;
@@ -219,17 +220,21 @@ public class UserDAO implements IUserDAO {
                     + "WHERE User_Username = ?\n"
                     + "AND User_Password = ?";
         }
+
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, loginString);
             ps.setString(2, Converter.convertToMD5Hash(password));
             rs = ps.executeQuery();
+
             if (rs.next()) {
                 user = userFactory(rs);
             }
+
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         checkAccount(user, Type);
         return user;
     }
@@ -250,7 +255,9 @@ public class UserDAO implements IUserDAO {
         if (loginString.length() >= 50) {
             return false;
         }
-        final Pattern EMAIL_REGEX = Pattern.compile("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$", Pattern.CASE_INSENSITIVE);
+        final Pattern EMAIL_REGEX = Pattern.compile(
+                "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$",
+                Pattern.CASE_INSENSITIVE);
         final Pattern USERNAME_REGEX = Pattern.compile("^[a-zA-Z0-9]+$", Pattern.CASE_INSENSITIVE);
 
         if (Type == loginType.Username) {
@@ -396,7 +403,7 @@ public class UserDAO implements IUserDAO {
      * Create a new {@link User} object from a {@link ResultSet}.
      *
      * @param queryResult The {@code ResultSet} containing the user's
-     * information.
+     *                    information.
      * @return An {@code User} object containing the user's information.
      * @throws SQLException If an error occurs while retrieving the data.
      */
