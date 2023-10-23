@@ -343,9 +343,6 @@ public class OrderManagerController extends HttpServlet {
                 throw new WrongPasswordException();
             }
 
-        } catch (AccountNotFoundException e) {
-            request.setAttribute("exceptionType", "AccountNotFoundException");
-            return State.Fail.value;
         } catch (AccountDeactivatedException e) {
             request.setAttribute("exceptionType", "AccountDeactivatedException");
             return State.Fail.value;

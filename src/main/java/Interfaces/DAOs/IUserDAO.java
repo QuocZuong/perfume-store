@@ -1,6 +1,7 @@
 package Interfaces.DAOs;
 
 import Exceptions.AccountDeactivatedException;
+import Exceptions.AccountNotFoundException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.InvalidInputException;
 import Exceptions.UsernameDuplicationException;
@@ -66,9 +67,9 @@ public interface IUserDAO {
      * Gets an {@link User} from the database.
      *
      * @param username A {@code String} that represents the username of the
-     *                 {@code User} to be retrieved.
+     * {@code User} to be retrieved.
      * @return A {@code User} object containing the user's information, or
-     *         {@code null} if an error occurs.
+     * {@code null} if an error occurs.
      */
     public User getUser(String username);
 
@@ -77,7 +78,7 @@ public interface IUserDAO {
      *
      * @param Id The Id of the user to be retrieved.
      * @return A {@code User} object containing the user's information.
-     *         {@code null} if an error occurs or the user is not found.
+     * {@code null} if an error occurs or the user is not found.
      */
     public User getUser(int Id);
 
@@ -85,9 +86,9 @@ public interface IUserDAO {
      * Gets a {@link User} from the database.
      *
      * @param email A {@code String} that represents the email of the
-     *              {@code User} to be retrieved.
+     * {@code User} to be retrieved.
      * @return A {@code User} object containing the user's information.
-     *         {@code null} if an error occurs or the user is not found.
+     * {@code null} if an error occurs or the user is not found.
      */
     public User getUserByEmail(String email);
 
@@ -95,19 +96,19 @@ public interface IUserDAO {
      * Gets a {@link User} from the database.
      *
      * @param loginString A {@code String} that represents the {@code User}'s
-     *                    username or email.
-     * @param password    A {@code String} that represents the password of the
-     *                    {@code User} to be retrieved.
-     * @param Type        A {@code loginType} that represents the login type, as
-     *                    defined in {@link loginType}.
+     * username or email.
+     * @param password A {@code String} that represents the password of the
+     * {@code User} to be retrieved.
+     * @param Type A {@code loginType} that represents the login type, as
+     * defined in {@link loginType}.
      * @return A {@code User} object containing the user's information if the
-     *         login is successful, {@code null} otherwise.
+     * login is successful, {@code null} otherwise.
      * @throws Exceptions.WrongPasswordException
      * @throws Exceptions.AccountDeactivatedException
      * @throws Exceptions.InvalidInputException
      */
     public User login(String loginString, String password, loginType Type)
-            throws WrongPasswordException, AccountDeactivatedException, InvalidInputException, InvalidInputException;
+            throws WrongPasswordException, AccountDeactivatedException, InvalidInputException;
 
     /**
      * Search for a list of {@link User}s in the database that match the
@@ -123,29 +124,27 @@ public interface IUserDAO {
      *
      * @param updateUser The {@code User} to be updated.
      * @return {@code 0} if the {@code User}'s information is updated
-     *         sucessfully. {@code 1} if user cannot be updated, or {@code 2} if the
-     *         {@code User} doesn't exist.
+     * sucessfully. {@code 1} if user cannot be updated, or {@code 2} if the
+     * {@code User} doesn't exist.
      */
     public int updateUser(User updateUser);
 
     /**
      * This function hanlde the checkout process for a customer.
      *
-     * @param customerId  An {@code integer} representing the unique Identifier
-     *                    of the customer.
-     * @param Date        The {@link Date} parameter is used to specify the date of
-     *                    the
-     *                    checkout.
-     * @param address     A {@code String} that represents the customer's address.
+     * @param customerId An {@code integer} representing the unique Identifier
+     * of the customer.
+     * @param Date The {@link Date} parameter is used to specify the date of the
+     * checkout.
+     * @param address A {@code String} that represents the customer's address.
      * @param PhoneNumber A {@code String} that represents the customer's
-     *                    PhoneNumber number.
-     * @param note        A {@code String} that can be used to add any additional
-     *                    information or special instructions related to the
-     *                    checkout process.
-     * @param total       An {@code integer} represents the total amount of the
-     *                    checkout.
+     * PhoneNumber number.
+     * @param note A {@code String} that can be used to add any additional
+     * information or special instructions related to the checkout process.
+     * @param total An {@code integer} represents the total amount of the
+     * checkout.
      * @return {@code true} if the checkout process is successful, {@code fasle}
-     *         otherwise.
+     * otherwise.
      */
     public boolean checkout(Integer customerId, Date Date, String address, String PhoneNumber, String note,
             Integer total);

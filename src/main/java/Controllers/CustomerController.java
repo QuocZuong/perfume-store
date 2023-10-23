@@ -95,10 +95,10 @@ public class CustomerController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -168,10 +168,10 @@ public class CustomerController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -472,29 +472,31 @@ public class CustomerController extends HttpServlet {
 
             int orderId = Integer.parseInt(data[data.length - 1]);
             Order order = oDAO.getOrderByOrderId(orderId);
-            Voucher v = vDAO.getVoucher(order.getVoucherId());
 
-            List<OrderDetail> orderDetailList = order.getOrderDetailList();
-            List<Product> approvedProductsList = new ArrayList<>();
+            if (order.getVoucherId() != 0) {
+                Voucher v = vDAO.getVoucher(order.getVoucherId());
 
-            // Get the list of all product that is approviate for voucher discount.
-            Product p;
-            if (v != null) {
-                int sumDeductPrice = 0;
-                System.out.println("Order detail list size:" + orderDetailList.size());
-                System.out.println("Approved product list size:" + v.getApprovedProductId().size());
-                for (int i = 0; i < orderDetailList.size(); i++) {
-                    if (v.getApprovedProductId().contains(orderDetailList.get(i).getProductId())) {
-                        p = pDAO.getProduct(orderDetailList.get(i).getProductId());
-                        approvedProductsList.add(p);
-                        sumDeductPrice += p.getStock().getPrice() * v.getDiscountPercent() / 100;
+                List<OrderDetail> orderDetailList = order.getOrderDetailList();
+                List<Product> approvedProductsList = new ArrayList<>();
+
+                // Get the list of all product that is approviate for voucher discount.
+                Product p;
+                if (v != null) {
+                    int sumDeductPrice = 0;
+                    System.out.println("Order detail list size:" + orderDetailList.size());
+                    System.out.println("Approved product list size:" + v.getApprovedProductId().size());
+                    for (int i = 0; i < orderDetailList.size(); i++) {
+                        if (v.getApprovedProductId().contains(orderDetailList.get(i).getProductId())) {
+                            p = pDAO.getProduct(orderDetailList.get(i).getProductId());
+                            approvedProductsList.add(p);
+                            sumDeductPrice += p.getStock().getPrice() * v.getDiscountPercent() / 100;
+                        }
                     }
+                    request.setAttribute("sumDeductPrice", sumDeductPrice);
                 }
-                request.setAttribute("sumDeductPrice", sumDeductPrice);
+                request.setAttribute("approvedProductsList", approvedProductsList);
+                // Get the list of all product that is approviate for voucher discount.
             }
-            request.setAttribute("approvedProductsList", approvedProductsList);
-            // Get the list of all product that is approviate for voucher discount.
-
             System.out.println("Get order detail list");
             System.out.println(order.getOrderDetailList());
 
@@ -632,7 +634,7 @@ public class CustomerController extends HttpServlet {
     /**
      * Update a delivery address
      *
-     * @param request  The request object
+     * @param request The request object
      * @param response The response object
      * @return 1 if the operation is successful, 0 otherwise
      */
@@ -680,8 +682,8 @@ public class CustomerController extends HttpServlet {
             return State.Fail.value;
         }
 
-        final String[] exceptionalAddresses = new String[] {
-                "Tỉnh Bà Rịa - Vũng Tàu"
+        final String[] exceptionalAddresses = new String[]{
+            "Tỉnh Bà Rịa - Vũng Tàu"
         };
 
         boolean isExceptionalAddress = false;

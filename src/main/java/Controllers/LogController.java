@@ -6,13 +6,13 @@ import DAOs.EmployeeDAO;
 import Exceptions.AccountDeactivatedException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.WrongPasswordException;
-import javax.security.auth.login.AccountNotFoundException;
+import Exceptions.AccountNotFoundException;
+
 
 import DAOs.UserDAO;
 import Exceptions.InvalidInputException;
 import Interfaces.DAOs.IUserDAO;
 import Lib.ExceptionUtils;
-import Lib.Converter;
 import Models.Employee;
 import Models.User;
 
@@ -24,8 +24,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class LogController extends HttpServlet {
 
@@ -116,7 +114,7 @@ public class LogController extends HttpServlet {
         } catch (InvalidInputException ex) {
             request.setAttribute("exceptionType", "InvalidInputException");
             return false;
-        }
+        } 
 
         if (user == null) {
             return false;
