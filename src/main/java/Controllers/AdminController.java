@@ -515,10 +515,10 @@ public class AdminController extends HttpServlet {
         employeeToAdd.setEmail(uEmail);
         employeeToAdd.setType("Employee");
         employeeToAdd.setCitizenId(eCitizenId);
-        employeeToAdd.setDateOfBirth(Converter.convertStringToDate(eDateOfBirth));
+        employeeToAdd.setDateOfBirth(Converter.convertStringToEpochMilli(eDateOfBirth));
         employeeToAdd.setPhoneNumber(ePhoneNumber);
         employeeToAdd.setAddress(eAddress);
-        employeeToAdd.setJoinDate(Converter.convertStringToDate(eJoinDate));
+        employeeToAdd.setJoinDate(Converter.convertStringToEpochMilli(eJoinDate));
         employeeToAdd.setRetireDate(null);
         employeeToAdd.setRole(eRole);
 
@@ -1052,10 +1052,10 @@ public class AdminController extends HttpServlet {
 
         // Start to update
         userForUpdate.setName(uName);
-        employeeForUpdate.setDateOfBirth(Converter.convertStringToDate(eDateOfBirth));
+        employeeForUpdate.setDateOfBirth(Converter.convertStringToEpochMilli(eDateOfBirth));
         employeeForUpdate.setAddress(eAddress);
-        employeeForUpdate.setJoinDate(Converter.convertStringToDate(eJoinDate));
-        employeeForUpdate.setRetireDate(Converter.convertStringToDate(eRetireDate));
+        employeeForUpdate.setJoinDate(Converter.convertStringToEpochMilli(eJoinDate));
+        employeeForUpdate.setRetireDate(Converter.convertStringToEpochMilli(eRetireDate));
 
         int result;
 
