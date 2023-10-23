@@ -1,4 +1,5 @@
 
+<%@page import="Lib.Generator"%>
 <%@page import="DAOs.CustomerDAO"%>
 <%@page import="DAOs.OrderDAO"%>
 <%@page import="Lib.ExceptionUtils"%>
@@ -121,7 +122,7 @@
                                             orderManagerName = om.getName();
                                         }
 
-                                        String checkoutAt = o.getCheckoutAt() == null ? "" : o.getCheckoutAt(Generator.DatePattern.);
+                                        String checkoutAt = o.getCheckoutAt() == null ? "" : o.getCheckoutAt(Generator.DatePattern.DateDashPattern);
                                         String updateAt = o.getUpdateAt() == null ? "" : o.getUpdateAt().toString();
 
                                         boolean isActive = !o.getStatus().equals("Rejected");

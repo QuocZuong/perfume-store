@@ -54,13 +54,12 @@ public class OrderManagerController extends HttpServlet {
     public static final String ORDER_MANAGER_USER_URI = "/OrderManager";
 
     public static final String ORDER_MANAGER_ORDER_LIST_URI = "/OrderManager/Order/List";
-    public static final String ORDER_MANAGER_ORDER_DETAIL_URI = "/OrderManager/User/Order/Detail/ID";
+    public static final String ORDER_MANAGER_ORDER_DETAIL_URI = "/OrderManager/Order/Detail/ID";
 
     public static final String ORDER_MANAGER_UPDATE_INFO_URI = "/OrderManager/Update/Info";
 
-    public final String ORDER_MANAGER_ORDER_LIST = "/OrderManager/List";
     public final String ORDER_MANAGER_ACCEPT_ORDER_URI = "/OrderManager/" + Operation.ACCEPT.toString() + "/Order/ID/";
-    public final String ORDER_MANAGER_REJECT_ORDER_URI = "/OrderManager" + Operation.REJECT.toString() + "/Order/ID/";
+    public final String ORDER_MANAGER_REJECT_ORDER_URI = "/OrderManager/" + Operation.REJECT.toString() + "/Order/ID/";
 
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -87,7 +86,6 @@ public class OrderManagerController extends HttpServlet {
                 response.sendRedirect(
                         ORDER_MANAGER_ORDER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
             }
-
             return;
         }
 
@@ -105,18 +103,16 @@ public class OrderManagerController extends HttpServlet {
             }
             return;
         }
-
         if (path.startsWith(ORDER_MANAGER_ACCEPT_ORDER_URI)
                 || path.startsWith(ORDER_MANAGER_REJECT_ORDER_URI)) {
             System.out.println("Update order status");
             int result = updateOrderStatus(request, response);
 
             if (result == State.Success.value) {
-                response.sendRedirect(ORDER_MANAGER_ORDER_LIST);
+                response.sendRedirect(ORDER_MANAGER_ORDER_LIST_URI);
             } else {
-                response.sendRedirect(ORDER_MANAGER_ORDER_LIST + ExceptionUtils.generateExceptionQueryString(request));
+                response.sendRedirect(ORDER_MANAGER_ORDER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
             }
-
             return;
         }
 
@@ -139,31 +135,8 @@ public class OrderManagerController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //
-        // if (path.startsWith(ADMIN_UPDATE_INFO_URI)) {
-        // if (request.getParameter("btnUpdateInfo") != null
-        // && request.getParameter("btnUpdateInfo").equals("Submit")) {
-        // System.out.println("Going update info");
-        // if (updateAdminInfomation(request, response)) {
-        // response.sendRedirect(ADMIN_USER_URI);
-        // } else {
-        // response.sendRedirect(ADMIN_USER_URI + checkException(request));
-        // }
-        // return;
-        // }
-        // }
-        String path = request.getRequestURI();
 
-        if (path.startsWith(ORDER_MANAGER_ACCEPT_ORDER_URI)
-                || path.startsWith(ORDER_MANAGER_REJECT_ORDER_URI)) {
-            int result = updateOrderStatus(request, response);
-            if (result == State.Success.value) {
-                response.sendRedirect(ORDER_MANAGER_ORDER_LIST);
-            } else {
-                response.sendRedirect(ORDER_MANAGER_ORDER_LIST + ExceptionUtils.generateExceptionQueryString(request));
-            }
-            return;
-        }
+        String path = request.getRequestURI();
 
         if (path.startsWith(ORDER_MANAGER_UPDATE_INFO_URI)) {
             int result = updateAdminInfomation(request, response);
@@ -212,6 +185,7 @@ public class OrderManagerController extends HttpServlet {
         try {
             OrderDAO orDAO = new OrderDAO();
             Order order = orDAO.getOrderByOrderId(orderId);
+            System.out.println("\n" + orderManager.getOrderManagerId() + " | " + orderManager.getName() + "\n");
             if (op == Operation.ACCEPT) {
                 orDAO.acceptOrder(order, orderManager.getOrderManagerId());
                 return State.Success.value;

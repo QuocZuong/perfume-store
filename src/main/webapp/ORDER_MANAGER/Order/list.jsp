@@ -120,7 +120,7 @@
                                             OrderManager om = omDAO.getOrderManager(o.getUpdateByOrderManager());
                                             orderManagerName = om.getName();
                                         }
-                                        
+
                                         String createAt = o.getCreatedAt(Generator.DatePattern.DateSqlPattern);
                                         String checkoutAt = o.getCheckoutAt() == null ? "" : o.getCheckoutAt(Generator.DatePattern.DateSqlPattern);
                                         String updateAt = o.getUpdateAt() == null ? "" : o.getUpdateAt(Generator.DatePattern.DateSqlPattern);
@@ -136,7 +136,7 @@
                                         <td class="<%= isActive ? " " : "faded"%>"><%= o.getTotal()%></td>
                                         <td class="<%= isActive ? " " : "faded"%>"><%= o.getDeductedPrice()%></td>
                                         <td class="<%= isActive ? " " : "faded"%>"><%= o.getStatus()%></td>
-                                        <td class="<%= isActive ? " " : "faded"%>"><%= createAt %></td>              
+                                        <td class="<%= isActive ? " " : "faded"%>"><%= createAt%></td>              
                                         <td class="<%= isActive ? " " : "faded"%>"><%= checkoutAt%></td>
                                         <td class="<%= isActive ? " " : "faded"%>"><%= updateAt%></td>
                                         <td class="<%= isActive ? " " : "faded"%>"><%= orderManagerName%></td>

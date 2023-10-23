@@ -226,14 +226,17 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
     public Employee getEmployee(int EmployeeId) {
         ResultSet rs;
 
-        String sql = "SELECT * FROM Employee WHERE [Employee_ID] = ?";
+        String sql = "SELECT * FROM Employee emp\n"
+                + "            JOIN [User] ON emp.[User_ID] = [User].[User_ID]\n"
+                + "              JOIN [Employee_Role] empR ON emp.Employee_Role = empR.Role_ID\n"
+                + "              WHERE emp.Employee_ID = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, EmployeeId);
             rs = ps.executeQuery();
             Employee employee = null;
             if (rs.next()) {
-                employee = generateEmployeeByResultSet(rs);
+                employee = generateFullyEmployeeByResultSet(rs);
             }
             return employee;
         } catch (SQLException ex) {
