@@ -352,8 +352,8 @@ public class InventoryManagerController extends HttpServlet {
         }
 
         String supplierName = request.getParameter("txtSupplier");
-        Date importAt = Converter.convertStringToDate(request.getParameter("txtImportAt"));
-        Date deliveredAt = Converter.convertStringToDate(request.getParameter("txtDeliveredAt"));
+        Long importAt = Converter.convertStringToEpochMilli(request.getParameter("txtImportAt"));
+        Long deliveredAt = Converter.convertStringToEpochMilli(request.getParameter("txtDeliveredAt"));
 
         if (supplierName == null || importAt == null || deliveredAt == null) {
             System.out.println("lack of information");

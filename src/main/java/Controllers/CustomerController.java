@@ -95,10 +95,10 @@ public class CustomerController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -168,10 +168,10 @@ public class CustomerController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -369,7 +369,7 @@ public class CustomerController extends HttpServlet {
         da.setPhoneNumber(phoneNumber);
         da.setStatus(status);
         da.setReceiverName(receiverName);
-        da.setCreateAt(Generator.generateDateTime());
+        da.setCreateAt(Generator.getCurrentTimeFromEpochMilli());
         da.setModifiedAt(da.getCreateAt());
 
         // If the address is set to default, set all other addresses to non-default
@@ -634,7 +634,7 @@ public class CustomerController extends HttpServlet {
     /**
      * Update a delivery address
      *
-     * @param request The request object
+     * @param request  The request object
      * @param response The response object
      * @return 1 if the operation is successful, 0 otherwise
      */
@@ -682,8 +682,8 @@ public class CustomerController extends HttpServlet {
             return State.Fail.value;
         }
 
-        final String[] exceptionalAddresses = new String[]{
-            "Tỉnh Bà Rịa - Vũng Tàu"
+        final String[] exceptionalAddresses = new String[] {
+                "Tỉnh Bà Rịa - Vũng Tàu"
         };
 
         boolean isExceptionalAddress = false;
@@ -721,12 +721,12 @@ public class CustomerController extends HttpServlet {
             da.setAddress(address);
             da.setStatus(status);
             da.setReceiverName(receiverName);
-            da.setModifiedAt(Generator.generateDateTime());
+            da.setModifiedAt(Generator.getCurrentTimeFromEpochMilli());
 
             if (existingDa != null) { // Doesn't update the create at, since it already existed
                 da.setCreateAt(existingDa.getCreateAt());
             } else { // Also update the new create at
-                da.setCreateAt(Generator.generateDateTime());
+                da.setCreateAt(Generator.getCurrentTimeFromEpochMilli());
             }
 
         } catch (Exception e) {
@@ -1020,8 +1020,7 @@ public class CustomerController extends HttpServlet {
             System.out.println("sumdeducttprice:" + sumDeductPrice);
         }
 
-        String now = new SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date());
-        Date nowDate = Date.valueOf(now);
+        long nowDate = Generator.getCurrentTimeFromEpochMilli();
 
         boolean result = checkout(CustomerID, voucherID, receiverName, Address, Phone, Note, Total, sumDeductPrice,
                 nowDate, cartItemList);
@@ -1044,8 +1043,9 @@ public class CustomerController extends HttpServlet {
     }
 
     public boolean checkout(int customerId, int voucherId, String orderReceiverName, String orderDeliveryAddress,
-            String orderPhoneNumber, String orderNote, int orderTotal, int orderDeductPrice, Date orderCreateAt,
+            String orderPhoneNumber, String orderNote, int orderTotal, int orderDeductPrice, long orderCreateAt,
             List<CartItem> itemsCheckout) {
+
         Order od = new Order();
         od.setCustomerId(customerId);
         od.setReceiverName(orderReceiverName);
@@ -1054,6 +1054,7 @@ public class CustomerController extends HttpServlet {
         od.setTotal(orderTotal);
         od.setStatus(IOrderDAO.status.PENDING.toString());
         od.setCreatedAt(orderCreateAt);
+
         // nullable
         if (voucherId != 0) {
             od.setVoucherId(voucherId);
@@ -1064,6 +1065,7 @@ public class CustomerController extends HttpServlet {
         }
 
         List<OrderDetail> orderDetailList = new ArrayList<>();
+
         for (int i = 0; i < itemsCheckout.size(); i++) {
             OrderDetail item = new OrderDetail();
             item.setProductId(itemsCheckout.get(i).getProductId());
@@ -1072,6 +1074,7 @@ public class CustomerController extends HttpServlet {
             item.setTotal(itemsCheckout.get(i).getSum());
             orderDetailList.add(item);
         }
+
         od.setOrderDetailList(orderDetailList);
         OrderDAO odDAO = new OrderDAO();
         boolean result = odDAO.addOrder(od);
