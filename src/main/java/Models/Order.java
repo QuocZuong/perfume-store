@@ -1,8 +1,9 @@
 package Models;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
+
+import Lib.Generator;
 
 public class Order {
 
@@ -16,9 +17,9 @@ public class Order {
     private int total;
     private int deductedPrice;
     private String status;
-    private Date createdAt;
-    private Date checkoutAt;
-    private Date updateAt;
+    private long createdAt;
+    private long checkoutAt;
+    private long updateAt;
     private int updateByOrderManager;
     private List<OrderDetail> orderDetailList;
 
@@ -162,45 +163,39 @@ public class Order {
         this.status = status;
     }
 
-    /**
-     * @return Date return the createdAt
-     */
-    public Date getCreatedAt() {
+    public String getCreatedAt(Generator.DatePattern pattern) {
+        return Generator.getDateTime(createdAt, pattern);
+    }
+
+    public long getCreatedAt() {
         return createdAt;
     }
 
-    /**
-     * @param createdAt the createdAt to set
-     */
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(long createdAt) {
         this.createdAt = createdAt;
     }
 
-    /**
-     * @return Date return the checkoutAt
-     */
-    public Date getCheckoutAt() {
+    public String getCheckoutAt(Generator.DatePattern pattern) {
+        return Generator.getDateTime(checkoutAt, pattern);
+    }
+
+    public long getCheckoutAt() {
         return checkoutAt;
     }
 
-    /**
-     * @param checkoutAt the checkoutAt to set
-     */
-    public void setCheckoutAt(Date checkoutAt) {
+    public void setCheckoutAt(long checkoutAt) {
         this.checkoutAt = checkoutAt;
     }
 
-    /**
-     * @return Date return the updateAt
-     */
-    public Date getUpdateAt() {
+    public String getUpdateAt(Generator.DatePattern pattern) {
+        return Generator.getDateTime(updateAt, pattern);
+    }
+
+    public long getUpdateAt() {
         return updateAt;
     }
 
-    /**
-     * @param updateAt the updateAt to set
-     */
-    public void setUpdateAt(Date updateAt) {
+    public void setUpdateAt(long updateAt) {
         this.updateAt = updateAt;
     }
 

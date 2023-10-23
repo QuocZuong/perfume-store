@@ -1,6 +1,7 @@
 package Models;
 
 public class Brand {
+    
     private int Id;
     private String name;
     private String logo;

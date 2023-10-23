@@ -1,25 +1,18 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Models;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author Admin
- */
+import Lib.Generator;
+
 public class Import {
 
     private int Id;
     private int totalQuantity;
     private int totalCost;
     private String supplierName;
-    private Date importAt;
-    private Date deliveredAt;
+    private long importAt;
+    private long deliveredAt;
     private int importByInventoryManager;
 
     private List<ImportDetail> importDetail;
@@ -59,19 +52,27 @@ public class Import {
         this.supplierName = supplierName;
     }
 
-    public Date getImportAt() {
+    public String getImportAt(Generator.DatePattern pattern) {
+        return Generator.getDateTime(importAt, pattern);
+    }
+
+    public long getImportAt() {
         return importAt;
     }
 
-    public void setImportAt(Date importAt) {
+    public void setImportAt(long importAt) {
         this.importAt = importAt;
     }
 
-    public Date getDeliveredAt() {
+    public String getDeliveredAt(Generator.DatePattern pattern) {
+        return Generator.getDateTime(deliveredAt, pattern);
+    }
+
+    public long getDeliveredAt() {
         return deliveredAt;
     }
 
-    public void setDeliveredAt(Date deliveredAt) {
+    public void setDeliveredAt(long deliveredAt) {
         this.deliveredAt = deliveredAt;
     }
 

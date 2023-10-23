@@ -21,7 +21,7 @@ public class Customer extends User {
         super(user);
         customerId = 0;
         customerCreditPoint = 0;
-        deliveryAddress = new ArrayList();
+        deliveryAddress = new ArrayList<>();
     }
 
     public int getCustomerId() {

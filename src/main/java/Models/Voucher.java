@@ -1,16 +1,18 @@
 package Models;
 
-import java.sql.Date;
 import java.util.List;
 
+import Lib.Generator;
+
 public class Voucher {
+
   private int Id;
   private String code;
   private int quantity;
   private int discountPercent;
   private int discountMax;
-  private Date createdAt;
-  private Date expiredAt;
+  private long createdAt;
+  private long expiredAt;
   private int createdByAdmin;
   private List<Integer> approvedProductId;
 
@@ -54,19 +56,27 @@ public class Voucher {
     this.discountMax = discountMax;
   }
 
-  public Date getCreatedAt() {
+  public String getCreatedAt(Generator.DatePattern pattern) {
+    return Generator.getDateTime(createdAt, pattern);
+  }
+
+  public long getCreatedAt() {
     return createdAt;
   }
 
-  public void setCreatedAt(Date createdAt) {
+  public void setCreatedAt(long createdAt) {
     this.createdAt = createdAt;
   }
 
-  public Date getExpiredAt() {
+  public String getExpiredAt(Generator.DatePattern pattern) {
+    return Generator.getDateTime(expiredAt, pattern);
+  }
+
+  public long getExpiredAt() {
     return expiredAt;
   }
 
-  public void setExpiredAt(Date expiredAt) {
+  public void setExpiredAt(long expiredAt) {
     this.expiredAt = expiredAt;
   }
 

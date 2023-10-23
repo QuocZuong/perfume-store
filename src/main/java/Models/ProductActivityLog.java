@@ -1,6 +1,6 @@
 package Models;
 
-import java.sql.Date;
+import Lib.Generator;
 
 public class ProductActivityLog {
 
@@ -8,7 +8,7 @@ public class ProductActivityLog {
     private String action;
     private String description;
     private int updatedByAdmin;
-    private Date updatedAt;
+    private long updatedAt;
 
     public int getProductId() {
         return productId;
@@ -42,11 +42,15 @@ public class ProductActivityLog {
         this.updatedByAdmin = updatedByAdmin;
     }
 
-    public Date getUpdatedAt() {
+    public String getUpdatedAt(Generator.DatePattern pattern) {
+        return Generator.getDateTime(updatedAt, pattern);
+    }
+
+    public long getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(long updatedAt) {
         this.updatedAt = updatedAt;
     }
 }

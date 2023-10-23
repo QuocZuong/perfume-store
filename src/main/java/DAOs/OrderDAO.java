@@ -37,23 +37,23 @@ public class OrderDAO implements IOrderDAO {
         switch (op) {
             default:
                 try {
-                order.setId(rs.getInt(ORDER_Id));
-                order.setCustomerId(rs.getInt(CUSTOMER_Id));
-                order.setVoucherId(rs.getInt(VOUCHER_Id));
-                order.setReceiverName(rs.getString(ORDER_RECEIVER_NAME));
-                order.setDeliveryAddress(rs.getString(ORDER_DELIVERY_ADDRESS));
-                order.setPhoneNumber(rs.getString(ORDER_PHONE_NUMBER));
-                order.setNote(rs.getString(ORDER_NOTE));
-                order.setTotal(rs.getInt(ORDER_TOTAL));
-                order.setDeductedPrice(rs.getInt(ORDER_DEDUCTED_PRICE));
-                order.setStatus(rs.getString(ORDER_STATUS));
-                order.setCreatedAt(rs.getDate(ORDER_CREATED_AT));
-                order.setCheckoutAt(rs.getDate(ORDER_CHECKOUT_AT));
-                order.setUpdateAt(rs.getDate(ORDER_UPDATE_AT));
-                order.setUpdateByOrderManager(rs.getInt(ORDER_UPDATE_BY_ORDER_MANAGER));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                    order.setId(rs.getInt(ORDER_Id));
+                    order.setCustomerId(rs.getInt(CUSTOMER_Id));
+                    order.setVoucherId(rs.getInt(VOUCHER_Id));
+                    order.setReceiverName(rs.getString(ORDER_RECEIVER_NAME));
+                    order.setDeliveryAddress(rs.getString(ORDER_DELIVERY_ADDRESS));
+                    order.setPhoneNumber(rs.getString(ORDER_PHONE_NUMBER));
+                    order.setNote(rs.getString(ORDER_NOTE));
+                    order.setTotal(rs.getInt(ORDER_TOTAL));
+                    order.setDeductedPrice(rs.getInt(ORDER_DEDUCTED_PRICE));
+                    order.setStatus(rs.getString(ORDER_STATUS));
+                    order.setCreatedAt(rs.getLong(ORDER_CREATED_AT));
+                    order.setCheckoutAt(rs.getLong(ORDER_CHECKOUT_AT));
+                    order.setUpdateAt(rs.getLong(ORDER_UPDATE_AT));
+                    order.setUpdateByOrderManager(rs.getInt(ORDER_UPDATE_BY_ORDER_MANAGER));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
         }
 
         return order;
@@ -77,9 +77,9 @@ public class OrderDAO implements IOrderDAO {
             ps.setInt(8, order.getTotal());
             ps.setInt(9, order.getDeductedPrice());
             ps.setString(10, order.getStatus());
-            ps.setDate(11, order.getCreatedAt());
-            ps.setDate(12, order.getCheckoutAt());
-            ps.setDate(13, order.getUpdateAt());
+            ps.setLong(11, order.getCreatedAt());
+            ps.setLong(12, order.getCheckoutAt());
+            ps.setLong(13, order.getUpdateAt());
             ps.setInt(14, order.getUpdateByOrderManager());
         } else if (op == operation.UPDATE) {
             ps.setInt(1, order.getCustomerId());
@@ -91,25 +91,25 @@ public class OrderDAO implements IOrderDAO {
             ps.setInt(7, order.getTotal());
             ps.setInt(8, order.getDeductedPrice());
             ps.setString(9, order.getStatus());
-            ps.setDate(10, order.getCreatedAt());
-            ps.setDate(11, order.getCheckoutAt());
-            ps.setDate(12, order.getUpdateAt());
+            ps.setLong(10, order.getCreatedAt());
+            ps.setLong(11, order.getCheckoutAt());
+            ps.setLong(12, order.getUpdateAt());
             ps.setInt(13, order.getUpdateByOrderManager());
             ps.setInt(14, order.getId());
         } else if (op == operation.CREATE) {
-            //Not Null
+            // Not Null
             ps.setInt(1, order.getCustomerId());
             ps.setNString(3, order.getReceiverName());
             ps.setNString(4, order.getDeliveryAddress());
             ps.setString(5, order.getPhoneNumber());
             ps.setInt(7, order.getTotal());
             ps.setString(9, order.getStatus());
-            ps.setDate(10, order.getCreatedAt());
-            //Must null when create
-            ps.setNull(11, java.sql.Types.DATE);
-            ps.setNull(12, java.sql.Types.DATE);
+            ps.setLong(10, order.getCreatedAt());
+            // Must null when create
+            ps.setNull(11, java.sql.Types.BIGINT);
+            ps.setNull(12, java.sql.Types.BIGINT);
             ps.setNull(13, java.sql.Types.INTEGER);
-            //Nullable 
+            // Nullable
             if (order.getVoucherId() != 0) {
                 ps.setInt(2, order.getVoucherId());
                 ps.setInt(8, order.getDeductedPrice());
@@ -408,26 +408,32 @@ public class OrderDAO implements IOrderDAO {
         return result;
     }
 
-    public boolean acceptOrder(Order order, int orderManagerId) throws NullPointerException, OperationEditFailedException {
+    public boolean acceptOrder(Order order, int orderManagerId)
+            throws NullPointerException, OperationEditFailedException {
         if (!order.getStatus().equals(status.PENDING.toString())) {
             System.out.println("Can not update status of an accepted order");
             throw new OperationEditFailedException();
         }
-        Date now = Date.valueOf(Generator.generateDateCustomPattern(Generator.DatePattern.DateDashPattern));
+
+        long now = Generator.getCurrentTimeFromEpochMilli();
+
         order.setCheckoutAt(now);
         order.setUpdateAt(now);
         order.setUpdateByOrderManager(orderManagerId);
         order.setStatus(status.ACCEPTED.toString());
+
         return updateOrder(order);
     }
 
-    public boolean rejectOrder(Order order, int orderManagerId) throws NullPointerException, OperationEditFailedException {
+    public boolean rejectOrder(Order order, int orderManagerId)
+            throws NullPointerException, OperationEditFailedException {
         if (!order.getStatus().equals(status.PENDING.toString())) {
             System.out.println("Can not update status of an rejected order");
             throw new OperationEditFailedException();
         }
-        
-        Date now = Date.valueOf(Generator.generateDateCustomPattern(Generator.DatePattern.DateDashPattern));
+
+        long now = Generator.getCurrentTimeFromEpochMilli();
+
         order.setUpdateAt(now);
         order.setUpdateByOrderManager(orderManagerId);
         order.setStatus(status.REJECTED.toString());
