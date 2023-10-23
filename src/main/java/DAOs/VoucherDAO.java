@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import Interfaces.DAOs.IVoucherDAO;
 import Lib.DatabaseUtils;
+import Lib.Generator;
 import Models.Customer;
 import java.sql.Date;
 
@@ -46,8 +47,8 @@ public class VoucherDAO implements IVoucherDAO {
             ps.setInt(2, v.getQuantity());
             ps.setInt(3, v.getDiscountPercent());
             ps.setInt(4, v.getDiscountMax());
-            ps.setDate(5, v.getCreatedAt());
-            ps.setDate(6, v.getExpiredAt());
+            ps.setLong(5, v.getCreatedAt());
+            ps.setLong(6, v.getExpiredAt());
             ps.setInt(7, v.getCreatedByAdmin());
             result = ps.executeUpdate();
             if (result != 0) {
@@ -110,8 +111,8 @@ public class VoucherDAO implements IVoucherDAO {
                 v.setQuantity(rs.getInt("Voucher_Quantity"));
                 v.setDiscountPercent(rs.getInt("Voucher_Discount_Percent"));
                 v.setDiscountMax(rs.getInt("Voucher_Discount_Max"));
-                v.setCreatedAt(rs.getDate("Voucher_Created_At"));
-                v.setExpiredAt(rs.getDate("Voucher_Expired_At"));
+                v.setCreatedAt(rs.getLong("Voucher_Created_At"));
+                v.setExpiredAt(rs.getLong("Voucher_Expired_At"));
                 v.setCreatedByAdmin(rs.getInt("Voucher_Created_By_Admin"));
                 v.setApprovedProductId(getAllApprovedProductIdByVoucherId(vId));
                 return v;
@@ -136,8 +137,8 @@ public class VoucherDAO implements IVoucherDAO {
                 v.setQuantity(rs.getInt("Voucher_Quantity"));
                 v.setDiscountPercent(rs.getInt("Voucher_Discount_Percent"));
                 v.setDiscountMax(rs.getInt("Voucher_Discount_Max"));
-                v.setCreatedAt(rs.getDate("Voucher_Created_At"));
-                v.setExpiredAt(rs.getDate("Voucher_Expired_At"));
+                v.setCreatedAt(rs.getLong("Voucher_Created_At"));
+                v.setExpiredAt(rs.getLong("Voucher_Expired_At"));
                 v.setCreatedByAdmin(rs.getInt("Voucher_Created_By_Admin"));
                 v.setApprovedProductId(getAllApprovedProductIdByVoucherId(v.getId()));
                 return v;
@@ -165,8 +166,8 @@ public class VoucherDAO implements IVoucherDAO {
                 v.setQuantity(rs.getInt("Voucher_Quantity"));
                 v.setDiscountPercent(rs.getInt("Voucher_Discount_Percent"));
                 v.setDiscountMax(rs.getInt("Voucher_Discount_Max"));
-                v.setCreatedAt(rs.getDate("Voucher_Created_At"));
-                v.setExpiredAt(rs.getDate("Voucher_Expired_At"));
+                v.setCreatedAt(rs.getLong("Voucher_Created_At"));
+                v.setExpiredAt(rs.getLong("Voucher_Expired_At"));
                 v.setCreatedByAdmin(rs.getInt("Voucher_Created_By_Admin"));
                 v.setApprovedProductId(getAllApprovedProductIdByVoucherId(vId));
                 arrVoucher.add(v);
@@ -200,8 +201,8 @@ public class VoucherDAO implements IVoucherDAO {
     public List<Voucher> getValidVoucherOfProduct(int productId) {
         ResultSet rs;
         Voucher v;
-        List<Voucher> arrVoucher = new ArrayList();
-        Date now = new Date(System.currentTimeMillis());
+        List<Voucher> arrVoucher = new ArrayList<>();
+        long now = Generator.getCurrentTimeFromEpochMilli();
 
         String sql = "SELECT \n"
                 + "	Voucher.Voucher_ID, \n"
@@ -222,7 +223,7 @@ public class VoucherDAO implements IVoucherDAO {
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, productId);
-            ps.setDate(2, now);
+            ps.setLong(2, now);
             rs = ps.executeQuery();
             while (rs.next()) {
                 v = new Voucher();
@@ -231,8 +232,8 @@ public class VoucherDAO implements IVoucherDAO {
                 v.setQuantity(rs.getInt("Voucher_Quantity"));
                 v.setDiscountPercent(rs.getInt("Voucher_Discount_Percent"));
                 v.setDiscountMax(rs.getInt("Voucher_Discount_Max"));
-                v.setCreatedAt(rs.getDate("Voucher_Created_At"));
-                v.setExpiredAt(rs.getDate("Voucher_Expired_At"));
+                v.setCreatedAt(rs.getLong("Voucher_Created_At"));
+                v.setExpiredAt(rs.getLong("Voucher_Expired_At"));
                 v.setCreatedByAdmin(rs.getInt("Voucher_Created_By_Admin"));
                 arrVoucher.add(v);
             }
@@ -246,7 +247,7 @@ public class VoucherDAO implements IVoucherDAO {
     public List<Integer> getUsedVoucherOfCustomer(int CustomerId) {
         ResultSet rs;
         int vId;
-        List<Integer> arrVoucherId = new ArrayList();
+        List<Integer> arrVoucherId = new ArrayList<>();
         String sql = "SELECT Voucher_ID FROM [Order] WHERE Customer_ID = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -307,12 +308,14 @@ public class VoucherDAO implements IVoucherDAO {
     /* ------------------------- EXCEPTION SECTION ---------------------------- */
     public boolean checkValidVoucher(Voucher v, int cusId)
             throws VoucherNotFoundException, InvalidVoucherException, NotEnoughVoucherQuantityException {
-        Date now = new Date(System.currentTimeMillis());
+
+        long now = Generator.getCurrentTimeFromEpochMilli();
+
         if (v == null) {
             System.out.println("voucher not found");
             throw new VoucherNotFoundException();
         }
-        if (now.after(v.getExpiredAt()) || now.before(v.getCreatedAt())) {
+        if (now > v.getExpiredAt() || now < v.getCreatedAt()) {
             System.out.println("invalid voucher");
             throw new InvalidVoucherException();
         }

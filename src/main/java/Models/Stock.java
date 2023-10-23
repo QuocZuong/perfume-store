@@ -1,9 +1,4 @@
 package Models;
-
-/**
- *
- * @author Acer
- */
 public class Stock {
 
     private int ProductID;
