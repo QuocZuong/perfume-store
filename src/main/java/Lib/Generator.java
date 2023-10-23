@@ -27,6 +27,7 @@ public class Generator {
 
         DateForwardSlashPattern("dd/MM/yyyy"),
         DateDashPattern("dd-MM-yyyy"),
+        DateSqlPattern("yyyy-MM-dd"),
         DateTimeForwardSlashPattern("dd/MM/yyyy HH:mm:ss.SSS"),
         DateTimeDashPattern("dd-MM-yyyy HH:mm:ss.SSS");
 
