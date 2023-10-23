@@ -9,12 +9,12 @@ public class Employee extends User {
     private int employeeId;
     private int UserId;
     private String citizenId;
-    private long dateOfBirth;
+    private Long dateOfBirth;
     private String phoneNumber;
     private String address;
     private Role role;
-    private long joinDate;
-    private long retireDate;
+    private Long joinDate;
+    private Long retireDate;
 
     public Employee() {
 
@@ -58,7 +58,7 @@ public class Employee extends User {
         return Generator.getDateTime(dateOfBirth, pattern);
     }
 
-    public long getDateOfBirth() {
+    public Long getDateOfBirth() {
         return dateOfBirth;
     }
 
@@ -94,7 +94,7 @@ public class Employee extends User {
         return Generator.getDateTime(joinDate, pattern);
     }
 
-    public long getJoinDate() {
+    public Long getJoinDate() {
         return joinDate;
     }
 
@@ -106,7 +106,7 @@ public class Employee extends User {
         return Generator.getDateTime(retireDate, pattern);
     }
 
-    public long getRetireDate() {
+    public Long getRetireDate() {
         return retireDate;
     }
 

@@ -8,7 +8,7 @@ public class ProductActivityLog {
     private String action;
     private String description;
     private int updatedByAdmin;
-    private long updatedAt;
+    private Long updatedAt;
 
     public int getProductId() {
         return productId;
@@ -46,11 +46,11 @@ public class ProductActivityLog {
         return Generator.getDateTime(updatedAt, pattern);
     }
 
-    public long getUpdatedAt() {
+    public Long getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(long updatedAt) {
+    public void setUpdatedAt(Long updatedAt) {
         this.updatedAt = updatedAt;
     }
 }

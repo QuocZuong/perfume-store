@@ -11,8 +11,8 @@ public class Import {
     private int totalQuantity;
     private int totalCost;
     private String supplierName;
-    private long importAt;
-    private long deliveredAt;
+    private Long importAt;
+    private Long deliveredAt;
     private int importByInventoryManager;
 
     private List<ImportDetail> importDetail;
@@ -56,11 +56,11 @@ public class Import {
         return Generator.getDateTime(importAt, pattern);
     }
 
-    public long getImportAt() {
+    public Long getImportAt() {
         return importAt;
     }
 
-    public void setImportAt(long importAt) {
+    public void setImportAt(Long importAt) {
         this.importAt = importAt;
     }
 
@@ -68,11 +68,11 @@ public class Import {
         return Generator.getDateTime(deliveredAt, pattern);
     }
 
-    public long getDeliveredAt() {
+    public Long getDeliveredAt() {
         return deliveredAt;
     }
 
-    public void setDeliveredAt(long deliveredAt) {
+    public void setDeliveredAt(Long deliveredAt) {
         this.deliveredAt = deliveredAt;
     }
 
