@@ -117,6 +117,7 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
      * @param rs get a ResultSet.
      * @return return the employee that contain user information and employee
      *         information.
+     *         information.
      * @throws SQLException return error when execute SQL occur.
      */
     private Employee generateEmployeeByResultSet(ResultSet rs) throws SQLException {
@@ -368,6 +369,11 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
             ps.setString(7, employee.getPhoneNumber());
             ps.setNString(8, employee.getAddress());
             ps.setLong(9, employee.getJoinDate());
+            if (employee.getRetireDate() == null) {
+                ps.setNull(10, java.sql.Types.BIGINT);
+            } else {
+                ps.setLong(10, employee.getRetireDate());
+            }
             if (employee.getRetireDate() == null) {
                 ps.setNull(10, java.sql.Types.BIGINT);
             } else {
