@@ -4,16 +4,31 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title>JSP Page</title>
         <style>
+            .nav .account #product-dropdown-btn + ul{
+                visibility: hidden;
+            }
+
+            .nav .account #user-dropdown-btn + ul{
+                visibility: hidden;
+            }
+
+            .drop-down-show{
+                visibility: visible !important;
+            }
+
+            .drop-down-show {
+                opacity: 0.95 !important;
+            }
+
             .nav .account #product-dropdown-btn + ul.drop-down-show {
-                height: 108px !important;
+                height: auto;
             }
             .nav .account #user-dropdown-btn + ul.drop-down-show {
-                margin-top: 30px;
-                height: 180px !important;
+                height: 220px !important;
             }
         </style>
+        <title>JSP Page</title>
     </head>
     <body>
         <ul>
@@ -37,7 +52,7 @@
             <button class="droppown-btn bg-transparent border-0" id="user-dropdown-btn">
                 <img src="/RESOURCES/images/icons/group.png" alt="" />
             </button>
-            <ul class="shadow position-absolute align-items-start ps-1 pt-5 pb-5">
+            <ul class="shadow position-absolute align-items-start ps-1 pt-2 pb-2" >
                 <li class="py-2 text-dark"><a href="/Admin/User/List">Danh sách người dùng</a></li>
                 <li class="py-2 text-dark"><a href="/Admin/EmployeeActivityLog/Admin">Hoạt động admin</a></li>
                 <li class="py-2 text-dark"><a href="/Admin/EmployeeActivityLog/OrderManager">Hoạt động order manager</a></li>

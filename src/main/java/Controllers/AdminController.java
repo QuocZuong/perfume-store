@@ -453,7 +453,6 @@ public class AdminController extends HttpServlet {
         String eAddress = request.getParameter("txtAddress");
         String eJoinDate = request.getParameter("txtJoinDate");
         Role eRole = eDAO.getRole(Integer.parseInt(request.getParameter("txtRole")));
-        System.out.println("Vao add employee");
         Employee employeeToAdd = new Employee();
 
         // For checking duplicate

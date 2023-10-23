@@ -356,30 +356,27 @@
 
                 $("#importCheckout").validate({
                     rules: {
-                        "txtSupplier": {
+                        txtSupplier: {
                             required: true
                         },
-                        "txtImportAt": {
+                        txtImportAt: {
                             required: true
                         },
-                        "txtDeliveredAt": {
+                        txtDeliveredAt: {
                             requred: true
                         }
                     },
                     messages: {
-                        "txtSupplier": {
+                        txtSupplier: {
                             required: "Vui lòng nhập tên nhà cung cấp"
                         },
-                        "txtImportAt": {
+                        txtImportAt: {
                             required: "Vui lòng nhập ngày import"
                         },
-                        "txtDeliveredAt": {
+                        txtDeliveredAt: {
                             required: "Vui lòng nhập ngày vận chuyển đến"
                         }
                     }
-
-                    
-
                 });
 
                 $("form[action='/home/subscribe']").validate({
