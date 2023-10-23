@@ -1,10 +1,6 @@
 package Interfaces.DAOs;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
-
-import javax.ejb.DuplicateKeyException;
 
 import Exceptions.CitizenIDDuplicationException;
 import Exceptions.EmailDuplicationException;

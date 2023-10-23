@@ -1,7 +1,5 @@
 package Models;
 
-import java.sql.Date;
-
 import Lib.Generator;
 
 public class Employee extends User {

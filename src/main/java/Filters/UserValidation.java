@@ -8,7 +8,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import DAOs.UserDAO;
-import Models.Employee;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
@@ -60,7 +59,6 @@ public class UserValidation implements Filter {
         revalidateUserRoleSession(req, res);
 
         final String URI = req.getRequestURI();
-        final String URL = req.getRequestURL().toString();
 
         res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
         res.setHeader("Pragma", "no-cache"); // HTTP 1.0.

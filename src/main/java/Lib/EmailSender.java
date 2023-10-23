@@ -562,8 +562,8 @@ public class EmailSender {
     }
 
     public String changePhoneNotification() {
-        String username = EmailTo.substring(0, EmailTo.indexOf("@"));
-        String ShopURL = "http://localhost:8080";
+        // String username = EmailTo.substring(0, EmailTo.indexOf("@"));
+        // String ShopURL = "http://localhost:8080";
         String html = "";
 
         return html;
