@@ -140,7 +140,7 @@
                     <td class="<%= isActive ? " " : "faded"%>"><%= orderManagerName%></td>
 
                     <td class="<%= isActive ? " " : "faded"%>">
-                      <a href="/OrderManager/User/OrderDetail/ID/<%= o.getId()%>" class="<%= isActive ? "" : "disabled"%> btn btn-outline-primary rounded-0">🤔</a>
+                      <a href="/OrderManager/User/Order/Detail/ID/<%= o.getId()%>" class="<%= isActive ? "" : "disabled"%> btn btn-outline-primary rounded-0">🤔</a>
                     </td>
                     <c:choose>
                       <c:when test='<%= isAccepted%>'>
