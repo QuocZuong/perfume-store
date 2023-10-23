@@ -157,7 +157,7 @@ public class ImportDetailDAO implements IImportDetailDAO {
     @Override
     public List<ImportDetail> getAllImportDetailOfImport(int ipId) {
         ResultSet rs;
-        List<ImportDetail> arrImportDetail = new ArrayList();
+        List<ImportDetail> arrImportDetail = new ArrayList<>();
         ImportDetail ipD;
         String sql = "SELECT * FROM Import_Detail\n"
                 + "WHERE Import_ID = ?";

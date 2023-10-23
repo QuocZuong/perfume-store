@@ -13,10 +13,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import Interfaces.DAOs.IVoucherDAO;
-import Lib.DatabaseUtils;
 import Lib.Generator;
-import Models.Customer;
-import java.sql.Date;
 
 public class VoucherDAO implements IVoucherDAO {
 
@@ -182,7 +179,7 @@ public class VoucherDAO implements IVoucherDAO {
     @Override
     public List<Integer> getAllApprovedProductIdByVoucherId(int vId) {
         ResultSet rs;
-        List<Integer> arrProductId = new ArrayList();
+        List<Integer> arrProductId = new ArrayList<>();
         String sql = "SELECT Product_ID FROM Voucher_Product WHERE Voucher_ID = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);

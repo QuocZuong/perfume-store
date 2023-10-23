@@ -10,8 +10,8 @@ public class DeliveryAddress {
     private String phoneNumber;
     private String address;
     private String status;
-    private long createAt;
-    private long modifiedAt;
+    private Long createAt;
+    private Long modifiedAt;
 
     /**
      * @return int return the id
@@ -101,11 +101,11 @@ public class DeliveryAddress {
         return Generator.getDateTime(createAt, pattern);
     }
 
-    public long getCreateAt() {
+    public Long getCreateAt() {
         return createAt;
     }
 
-    public void setCreateAt(long createAt) {
+    public void setCreateAt(Long createAt) {
         this.createAt = createAt;
     }
 
@@ -113,11 +113,11 @@ public class DeliveryAddress {
         return Generator.getDateTime(modifiedAt, pattern);
     }
 
-    public long getModifiedAt() {
+    public Long getModifiedAt() {
         return modifiedAt;
     }
 
-    public void setModifiedAt(long modifiedAt) {
+    public void setModifiedAt(Long modifiedAt) {
         this.modifiedAt = modifiedAt;
     }
 }

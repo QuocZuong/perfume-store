@@ -19,14 +19,9 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author Admin
- */
 public class InventoryManagerController extends HttpServlet {
 
     public static final String IVTR_MANAGER_USER_URI = "/InventoryManager";

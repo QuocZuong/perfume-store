@@ -16,11 +16,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import Interfaces.DAOs.IOrderDAO;
-import Lib.Converter;
 import Lib.DatabaseUtils;
 import Lib.Generator;
-import java.sql.Date;
-import java.sql.Timestamp;
 
 public class OrderDAO implements IOrderDAO {
 
@@ -37,23 +34,23 @@ public class OrderDAO implements IOrderDAO {
         switch (op) {
             default:
                 try {
-                    order.setId(rs.getInt(ORDER_Id));
-                    order.setCustomerId(rs.getInt(CUSTOMER_Id));
-                    order.setVoucherId(rs.getInt(VOUCHER_Id));
-                    order.setReceiverName(rs.getString(ORDER_RECEIVER_NAME));
-                    order.setDeliveryAddress(rs.getString(ORDER_DELIVERY_ADDRESS));
-                    order.setPhoneNumber(rs.getString(ORDER_PHONE_NUMBER));
-                    order.setNote(rs.getString(ORDER_NOTE));
-                    order.setTotal(rs.getInt(ORDER_TOTAL));
-                    order.setDeductedPrice(rs.getInt(ORDER_DEDUCTED_PRICE));
-                    order.setStatus(rs.getString(ORDER_STATUS));
-                    order.setCreatedAt(rs.getLong(ORDER_CREATED_AT));
-                    order.setCheckoutAt(rs.getLong(ORDER_CHECKOUT_AT));
-                    order.setUpdateAt(rs.getLong(ORDER_UPDATE_AT));
-                    order.setUpdateByOrderManager(rs.getInt(ORDER_UPDATE_BY_ORDER_MANAGER));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                order.setId(rs.getInt(ORDER_Id));
+                order.setCustomerId(rs.getInt(CUSTOMER_Id));
+                order.setVoucherId(rs.getInt(VOUCHER_Id));
+                order.setReceiverName(rs.getString(ORDER_RECEIVER_NAME));
+                order.setDeliveryAddress(rs.getString(ORDER_DELIVERY_ADDRESS));
+                order.setPhoneNumber(rs.getString(ORDER_PHONE_NUMBER));
+                order.setNote(rs.getString(ORDER_NOTE));
+                order.setTotal(rs.getInt(ORDER_TOTAL));
+                order.setDeductedPrice(rs.getInt(ORDER_DEDUCTED_PRICE));
+                order.setStatus(rs.getString(ORDER_STATUS));
+                order.setCreatedAt(rs.getLong(ORDER_CREATED_AT));
+                order.setCheckoutAt(rs.getLong(ORDER_CHECKOUT_AT));
+                order.setUpdateAt(rs.getLong(ORDER_UPDATE_AT));
+                order.setUpdateByOrderManager(rs.getInt(ORDER_UPDATE_BY_ORDER_MANAGER));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         return order;
@@ -83,19 +80,31 @@ public class OrderDAO implements IOrderDAO {
             ps.setInt(14, order.getUpdateByOrderManager());
         } else if (op == operation.UPDATE) {
             ps.setInt(1, order.getCustomerId());
-            ps.setInt(2, order.getVoucherId());
             ps.setNString(3, order.getReceiverName());
             ps.setNString(4, order.getDeliveryAddress());
             ps.setString(5, order.getPhoneNumber());
-            ps.setNString(6, order.getNote());
             ps.setInt(7, order.getTotal());
-            ps.setInt(8, order.getDeductedPrice());
             ps.setString(9, order.getStatus());
             ps.setLong(10, order.getCreatedAt());
             ps.setLong(11, order.getCheckoutAt());
             ps.setLong(12, order.getUpdateAt());
             ps.setInt(13, order.getUpdateByOrderManager());
             ps.setInt(14, order.getId());
+            
+            // Nullable
+            if (order.getVoucherId() != 0) {
+                ps.setInt(2, order.getVoucherId());
+                ps.setInt(8, order.getDeductedPrice());
+            } else {
+                ps.setNull(2, java.sql.Types.INTEGER);
+                ps.setNull(8, java.sql.Types.INTEGER);
+            }
+
+            if (order.getNote() != null && !order.getNote().equals("")) {
+                ps.setNString(6, order.getNote());
+            } else {
+                ps.setNull(6, java.sql.Types.NVARCHAR);
+            }
         } else if (op == operation.CREATE) {
             // Not Null
             ps.setInt(1, order.getCustomerId());
@@ -371,20 +380,20 @@ public class OrderDAO implements IOrderDAO {
 
         boolean result = false;
         String sql = "UPDATE [Order]\n"
-                + "SET [Customer_ID] = ?,\n"
-                + "[Voucher_ID] = ?,\n"
-                + "[Order_Receiver_Name] = ?,\n"
-                + "[Order_Delivery_Address] = ?,\n"
-                + "[Order_Phone_Number] = ?,\n"
-                + "[Order_Note] = ?,\n"
-                + "[Order_Total] = ?,\n"
-                + "[Order_Deducted_Price] = ?,\n"
-                + "[Order_Status] = ?,\n"
-                + "[Order_Created_At] = ?,\n"
-                + "[Order_Checkout_At] = ?,\n"
-                + "[Order_Update_At] = ?,\n"
-                + "[Order_Update_By_Order_Manager] = ?\n"
-                + "WHERE [Order_ID] = ?";
+                + "SET [Customer_ID] = ?,\n" //1
+                + "[Voucher_ID] = ?,\n" //2
+                + "[Order_Receiver_Name] = ?,\n" //3
+                + "[Order_Delivery_Address] = ?,\n" //4
+                + "[Order_Phone_Number] = ?,\n" //5
+                + "[Order_Note] = ?,\n" //6
+                + "[Order_Total] = ?,\n" //7
+                + "[Order_Deducted_Price] = ?,\n" //8
+                + "[Order_Status] = ?,\n" //9
+                + "[Order_Created_At] = ?,\n" //10
+                + "[Order_Checkout_At] = ?,\n" //11
+                + "[Order_Update_At] = ?,\n" //12
+                + "[Order_Update_By_Order_Manager] = ?\n" //13
+                + "WHERE [Order_ID] = ?"; //14
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);

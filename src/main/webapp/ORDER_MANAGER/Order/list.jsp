@@ -1,3 +1,4 @@
+<%@page import="Lib.Generator"%>
 <%@page import="DAOs.CustomerDAO"%>
 <%@page import="DAOs.OrderDAO"%>
 <%@page import="Lib.ExceptionUtils"%>
@@ -120,8 +121,9 @@
                                             orderManagerName = om.getName();
                                         }
 
-                                        String checkoutAt = o.getCheckoutAt() == null ? "" : o.getCheckoutAt().toString();
-                                        String updateAt = o.getUpdateAt() == null ? "" : o.getUpdateAt().toString();
+                                        String createAt = o.getCreatedAt(Generator.DatePattern.DateSqlPattern);
+                                        String checkoutAt = o.getCheckoutAt() == null ? "" : o.getCheckoutAt(Generator.DatePattern.DateSqlPattern);
+                                        String updateAt = o.getUpdateAt() == null ? "" : o.getUpdateAt(Generator.DatePattern.DateSqlPattern);
 
                                         boolean isActive = !o.getStatus().equals("Rejected");
                                         String status = o.getStatus();
@@ -134,7 +136,7 @@
                                         <td class="<%= isActive ? " " : "faded"%>"><%= o.getTotal()%></td>
                                         <td class="<%= isActive ? " " : "faded"%>"><%= o.getDeductedPrice()%></td>
                                         <td class="<%= isActive ? " " : "faded"%>"><%= o.getStatus()%></td>
-                                        <td class="<%= isActive ? " " : "faded"%>"><%= o.getCreatedAt()%></td>                                        
+                                        <td class="<%= isActive ? " " : "faded"%>"><%= createAt%></td>              
                                         <td class="<%= isActive ? " " : "faded"%>"><%= checkoutAt%></td>
                                         <td class="<%= isActive ? " " : "faded"%>"><%= updateAt%></td>
                                         <td class="<%= isActive ? " " : "faded"%>"><%= orderManagerName%></td>

@@ -56,7 +56,7 @@ public class ImportDAO implements IImportDAO {
     /* ------------------------- READ SECTION ---------------------------- */
     @Override
     public List<Import> getAllImport() {
-        List<Import> arrImport = new ArrayList();
+        List<Import> arrImport = new ArrayList<>();
         List<ImportDetail> ipD;
         Import ip;
         ImportDetailDAO ipdDAO = new ImportDetailDAO();

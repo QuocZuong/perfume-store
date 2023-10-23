@@ -9,13 +9,10 @@ import Models.Admin;
 import Models.Product;
 import Models.ProductActivityLog;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -87,8 +84,7 @@ public class ProductActivityLogDAO {
             ps.setNString(2, op.toString());
             ps.setNString(3, description);
             ps.setInt(4, admin.getAdminId());
-            // Fix later
-            ps.setString(5, Generator.generateDateTime());
+            ps.setLong(5, Generator.getCurrentTimeFromEpochMilli());
             result = ps.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(ProductActivityLogDAO.class.getName()).log(Level.SEVERE, null, ex);

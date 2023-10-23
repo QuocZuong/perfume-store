@@ -103,10 +103,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -283,10 +283,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -521,9 +521,6 @@ public class AdminController extends HttpServlet {
         employeeToAdd.setRetireDate(null);
         employeeToAdd.setRole(eRole);
 
-        System.out.println("employee join date: " + employeeToAdd.getJoinDate());
-        System.out.println("employee DOB date: " + employeeToAdd.getDateOfBirth());
-        System.out.println("Da build");
         int result = 0;
 
         result = eDAO.addEmployee(employeeToAdd);
@@ -830,7 +827,6 @@ public class AdminController extends HttpServlet {
 
     private boolean updateCustomer(HttpServletRequest request, HttpServletResponse response) {
         UserDAO uDAO = new UserDAO();
-        EmployeeDAO eDAO = new EmployeeDAO();
         int result = 0;
 
         // [User] Update Section
