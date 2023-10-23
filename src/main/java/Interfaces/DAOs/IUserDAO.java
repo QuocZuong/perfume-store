@@ -1,7 +1,6 @@
 package Interfaces.DAOs;
 
 import Exceptions.AccountDeactivatedException;
-import Exceptions.AccountNotFoundException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.InvalidInputException;
 import Exceptions.UsernameDuplicationException;

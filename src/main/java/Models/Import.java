@@ -1,6 +1,5 @@
 package Models;
 
-import java.sql.Date;
 import java.util.List;
 
 import Lib.Generator;

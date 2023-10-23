@@ -7,10 +7,8 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import Models.Admin;
 import Models.Employee;
 import Models.OrderManager;
-import java.util.List;
 
 public class OrderManagerDAO {
 

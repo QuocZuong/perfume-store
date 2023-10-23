@@ -6,12 +6,6 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import Lib.Generator.DatePattern;
-
-/**
- *
- * @author Acer
- */
 public class Converter {
 
     public static String convertToStringData(

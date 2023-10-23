@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package DAOs;
 
 import Interfaces.DAOs.ICartItemDAO;
@@ -172,7 +168,7 @@ public class CartItemDAO implements ICartItemDAO {
     @Override
     public List<CartItem> getAllCartItemOfCustomer(int customerId) {
         ResultSet rs;
-        List<CartItem> arrCartItem = new ArrayList();
+        List<CartItem> arrCartItem = new ArrayList<>();
         CartItem ci;
         String sql = "SELECT * FROM CartItem\n"
                 + "WHERE Customer_ID = ?";
