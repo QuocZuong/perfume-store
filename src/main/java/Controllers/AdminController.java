@@ -518,7 +518,7 @@ public class AdminController extends HttpServlet {
         employeeToAdd.setPhoneNumber(ePhoneNumber);
         employeeToAdd.setAddress(eAddress);
         employeeToAdd.setJoinDate(Converter.convertStringToEpochMilli(eJoinDate));
-        employeeToAdd.setRetireDate(Long.valueOf(0));
+        employeeToAdd.setRetireDate(null);
         employeeToAdd.setRole(eRole);
 
         int result = 0;

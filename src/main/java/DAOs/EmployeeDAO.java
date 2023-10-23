@@ -132,8 +132,11 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
         role.setName(rs.getString("Role_Name"));
         employee.setRole(role);
         employee.setJoinDate(rs.getLong("Employee_Join_Date"));
-        employee.setRetireDate(rs.getLong("Employee_Retire_Date"));
-
+        if (rs.getLong("Employee_Retire_Date") == 0) {
+            employee.setRetireDate(null);
+        } else {
+            employee.setRetireDate(rs.getLong("Employee_Retire_Date"));
+        }
         return employee;
     }
 
@@ -168,7 +171,11 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
         role.setName(rs.getString("Role_Name"));
         employee.setRole(role);
         employee.setJoinDate(rs.getLong("Employee_Join_Date"));
-        employee.setRetireDate(rs.getLong("Employee_Retire_Date"));
+        if (rs.getLong("Employee_Retire_Date") == 0) {
+            employee.setRetireDate(null);
+        } else {
+            employee.setRetireDate(rs.getLong("Employee_Retire_Date"));
+        }
 
         return employee;
     }
@@ -352,10 +359,6 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
 
-            System.out.println("dob: " + employee.getDateOfBirth());
-            System.out.println("getJoinDate: " + employee.getJoinDate());
-            System.out.println("getRetireDate: " + employee.getRetireDate());
-
             ps.setNString(1, employee.getName());
             ps.setString(2, employee.getUsername());
             ps.setString(3, Converter.convertToMD5Hash(employee.getPassword()));
@@ -393,7 +396,11 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
             ps.setString(3, employee.getPhoneNumber());
             ps.setString(4, employee.getAddress());
             ps.setLong(5, employee.getJoinDate());
-            ps.setLong(6, employee.getRetireDate());
+            if (employee.getRetireDate() == null) {
+                ps.setNull(6, java.sql.Types.BIGINT);
+            } else {
+                ps.setLong(6, employee.getRetireDate());
+            }
             ps.setInt(7, employee.getEmployeeId());
 
             result = ps.executeUpdate();

@@ -1,3 +1,6 @@
+<%@page import="Lib.Generator.DatePattern"%>
+<%@page import="Lib.Generator"%>
+<%@page import="Lib.Generator"%>
 <%@page import="Models.ProductActivityLog"%>
 <%@page import="Models.Employee"%>
 <%@page import="DAOs.EmployeeDAO"%>
@@ -103,7 +106,7 @@
                                         User user = uDAO.getUserForAdminActivityLogs(productActivityLog.getUpdatedByAdmin());
                                     %>
                                     <tr class="rowTable">
-                                        <td style="min-width: 120px;"><%= productActivityLog.getUpdatedAt()%></td>
+                                        <td style="min-width: 120px;"><%=Generator.getDateTime(productActivityLog.getUpdatedAt(), DatePattern.DateTimeActivityLog) %></td>
                                         <td ><%= user.getName() == null ? "" : user.getName()%></td>
                                         <td><%= user.getUsername() == null ? "" : user.getUsername()%></td>
                                         <td ><%= product.getName()%></td>

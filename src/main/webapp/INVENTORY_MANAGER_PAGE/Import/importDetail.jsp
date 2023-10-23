@@ -1,0 +1,1 @@
+<jsp:include page="../../CUSTOMER_PAGE/order_detail.jsp"></jsp:include>
