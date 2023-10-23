@@ -84,8 +84,7 @@ public class ProductActivityLogDAO {
             ps.setNString(2, op.toString());
             ps.setNString(3, description);
             ps.setInt(4, admin.getAdminId());
-            // Fix later
-            ps.setString(5, Generator.generateDateTime());
+            ps.setLong(5, Generator.getCurrentTimeFromEpochMilli());
             result = ps.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(ProductActivityLogDAO.class.getName()).log(Level.SEVERE, null, ex);
