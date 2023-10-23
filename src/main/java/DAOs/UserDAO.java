@@ -111,6 +111,35 @@ public class UserDAO implements IUserDAO {
         return null;
     }
 
+    public User getUserForOrderActivityLogs(int orderManagerId) {
+        if (orderManagerId < 0) {
+            return null;
+        }
+
+        ResultSet rs;
+        String sql = "SELECT * FROM [Order]\n"
+                + "JOIN [Order_Manager] ON [Order].Order_Update_By_Order_Manager = [Order_Manager].[Order_Manager_ID]\n"
+                + "JOIN [Employee] ON [Order_Manager].[Employee_ID] = [Employee].Employee_ID\n"
+                + "JOIN [User] ON [Employee].[User_ID] = [User].[User_ID]\n"
+                + "WHERE [Order_Manager].[Order_Manager_ID] = ?";
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, orderManagerId);
+
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                User us = userFactory(rs);
+                return us;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return null;
+    }
+
     @Override
     public User getUser(int ID) {
         String sql = String.format("SELECT * FROM [User] WHERE USER_ID = ?");
@@ -402,7 +431,7 @@ public class UserDAO implements IUserDAO {
      * Create a new {@link User} object from a {@link ResultSet}.
      *
      * @param queryResult The {@code ResultSet} containing the user's
-     *                    information.
+     * information.
      * @return An {@code User} object containing the user's information.
      * @throws SQLException If an error occurs while retrieving the data.
      */
