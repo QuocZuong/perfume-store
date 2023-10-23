@@ -21,12 +21,12 @@ public class Generator {
     private static final String ALL_ALLOWED_CHARS = CHAR_LOWER + CHAR_UPPER + NUMBER + SPECIAL_CHARS;
     private static final Random random = new SecureRandom();
 
-    public enum DatePattern {
+    public static enum DatePattern {
 
-        DateForwardSlashPattern("yy/MM/dd"),
-        DateDashPattern("yy-MM-dd"),
-        DateTimeForwardSlashPattern("yyyy/MM/dd HH:mm:ss.SSS"),
-        DateTimeDashPattern("yyyy-MM-dd HH:mm:ss.SSS");
+        DateForwardSlashPattern("dd/MM/yyyy"),
+        DateDashPattern("dd-MM-yyyy"),
+        DateTimeForwardSlashPattern("dd/MM/yyyy HH:mm:ss.SSS"),
+        DateTimeDashPattern("dd-MM-yyyy HH:mm:ss.SSS");
 
         public String pattern;
 
@@ -145,12 +145,12 @@ public class Generator {
      * Get the time string in a specific format.
      * 
      * @param epochMilli The time in milliseconds from the epoch (1970-01-01).
-     * @param format     The format of the time string, as defined in
+     * @param pattern     The format of the time string, as defined in
      *                   {@link Generator#DatePattern}.
      * @return The time string in the specified format.
      */
-    public static String getDateTime(long epochMilli, DatePattern format) {
-        SimpleDateFormat sdf = new SimpleDateFormat(format.pattern);
+    public static String getDateTime(long epochMilli, DatePattern pattern) {
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern.pattern);
         return sdf.format(new Date(epochMilli));
     }
 }
