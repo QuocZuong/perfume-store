@@ -14,6 +14,8 @@ public class Import {
     private long importAt;
     private long deliveredAt;
     private int importByInventoryManager;
+    private long modifiedAt;
+    private int modifiedByAdmin;
 
     private List<ImportDetail> importDetail;
 
@@ -90,6 +92,26 @@ public class Import {
 
     public void setImportDetail(List<ImportDetail> importDetail) {
         this.importDetail = importDetail;
+    }
+
+    public String getModifiedAt(Generator.DatePattern pattern) {
+        return Generator.getDateTime(modifiedAt, pattern);
+    }
+
+    public long getModifiedAt() {
+        return modifiedAt;
+    }
+
+    public void setModifiedAt(long modifiedAt) {
+        this.modifiedAt = modifiedAt;
+    }
+
+    public int getModifiedByAdmin() {
+        return modifiedByAdmin;
+    }
+
+    public void setModifiedByAdmin(int modifiedByAdmin) {
+        this.modifiedByAdmin = modifiedByAdmin;
     }
 
 }

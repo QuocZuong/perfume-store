@@ -14,9 +14,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ImportDAO implements IImportDAO {
-    
+
     private Connection conn;
-    
+
     public ImportDAO() {
         conn = DB.DBContext.getConnection();
     }
@@ -86,7 +86,7 @@ public class ImportDAO implements IImportDAO {
         }
         return arrImport;
     }
-    
+
     @Override
     public Import getImport(int ipId) {
         List<ImportDetail> ipD;
@@ -128,5 +128,5 @@ public class ImportDAO implements IImportDAO {
         }
         return result;
     }
-    
+
 }
