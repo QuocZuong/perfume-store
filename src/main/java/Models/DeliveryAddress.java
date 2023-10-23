@@ -1,5 +1,7 @@
 package Models;
 
+import Lib.Generator;
+
 public class DeliveryAddress {
 
     private int id;
@@ -8,8 +10,8 @@ public class DeliveryAddress {
     private String phoneNumber;
     private String address;
     private String status;
-    private String createAt;
-    private String modifiedAt;
+    private long createAt;
+    private long modifiedAt;
 
     /**
      * @return int return the id
@@ -95,20 +97,27 @@ public class DeliveryAddress {
         this.status = status;
     }
 
-    public String getCreateAt() {
+    public String getCreateAt(Generator.DatePattern pattern) {
+        return Generator.getDateTime(createAt, pattern);
+    }
+
+    public long getCreateAt() {
         return createAt;
     }
 
-    public void setCreateAt(String createAt) {
+    public void setCreateAt(long createAt) {
         this.createAt = createAt;
     }
 
-    public String getModifiedAt() {
+    public String getModifiedAt(Generator.DatePattern pattern) {
+        return Generator.getDateTime(modifiedAt, pattern);
+    }
+
+    public long getModifiedAt() {
         return modifiedAt;
     }
 
-    public void setModifiedAt(String modifiedAt) {
+    public void setModifiedAt(long modifiedAt) {
         this.modifiedAt = modifiedAt;
     }
-
 }

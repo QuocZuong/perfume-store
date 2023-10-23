@@ -2,17 +2,19 @@ package Models;
 
 import java.sql.Date;
 
+import Lib.Generator;
+
 public class Employee extends User {
 
     private int employeeId;
     private int UserId;
     private String citizenId;
-    private Date dateOfBirth;
+    private long dateOfBirth;
     private String phoneNumber;
     private String address;
     private Role role;
-    private Date joinDate;
-    private Date retireDate;
+    private long joinDate;
+    private long retireDate;
 
     public Employee() {
 
@@ -52,11 +54,15 @@ public class Employee extends User {
         this.citizenId = citizenId;
     }
 
-    public Date getDateOfBirth() {
+    public String getDateOfBirth(Generator.DatePattern pattern) {
+        return Generator.getDateTime(dateOfBirth, pattern);
+    }
+
+    public long getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(Long dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -84,20 +90,27 @@ public class Employee extends User {
         this.role = role;
     }
 
-    public Date getJoinDate() {
+    public String getJoinDate(Generator.DatePattern pattern) {
+        return Generator.getDateTime(joinDate, pattern);
+    }
+
+    public long getJoinDate() {
         return joinDate;
     }
 
-    public void setJoinDate(Date joinDate) {
+    public void setJoinDate(Long joinDate) {
         this.joinDate = joinDate;
     }
 
-    public Date getRetireDate() {
+    public String getRetireDate(Generator.DatePattern pattern) {
+        return Generator.getDateTime(retireDate, pattern);
+    }
+
+    public long getRetireDate() {
         return retireDate;
     }
 
-    public void setRetireDate(Date retireDate) {
+    public void setRetireDate(Long retireDate) {
         this.retireDate = retireDate;
     }
-
 }
