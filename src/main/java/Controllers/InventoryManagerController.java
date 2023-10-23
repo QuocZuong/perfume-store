@@ -194,8 +194,8 @@ public class InventoryManagerController extends HttpServlet {
                 page = Integer.parseInt(data[i + 1]);
             }
         }
-        List<Import> importList = ipDAO.searchImport(search);
-        importList = ipDAO.fillterImport(importList, ivtrManager.getInventoryManagerId());
+        List<Import> importList = new ArrayList<>();
+        //importList = ipDAO.fillterImport(importList, ivtrManager.getInventoryManagerId());
         if (importList.isEmpty()) {
             System.out.println("Empty import list");
             request.setAttribute("exceptionType", "ImportNotFoundException");
