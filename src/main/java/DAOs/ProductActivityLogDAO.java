@@ -75,7 +75,7 @@ public class ProductActivityLogDAO {
         // Action (nvarchar(10) not null)
         // Description (nvarchar(max) default null)
         // Updated_By_Admin (int not null)
-        // Updated_At (Datetime)
+        // Updated_At (Long)
         int result = 0;
 
         try {
@@ -85,7 +85,7 @@ public class ProductActivityLogDAO {
             ps.setNString(3, description);
             ps.setInt(4, admin.getAdminId());
             // Fix later
-            ps.setString(5, Generator.generateDateTime());
+            ps.setLong(5, Generator.getCurrentTimeFromEpochMilli());
             result = ps.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(ProductActivityLogDAO.class.getName()).log(Level.SEVERE, null, ex);

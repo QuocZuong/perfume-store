@@ -4,6 +4,7 @@
 <%@page import="DAOs.OrderDAO"%>
 <%@page import="Lib.ExceptionUtils"%>
 <%@page import="Lib.Converter"%>
+<%@page import="Lib.Generator"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="Models.Order"%>
@@ -122,8 +123,8 @@
                                             orderManagerName = om.getName();
                                         }
 
-                                        String checkoutAt = o.getCheckoutAt() == null ? "" : o.getCheckoutAt(Generator.DatePattern.DateDashPattern);
-                                        String updateAt = o.getUpdateAt() == null ? "" : o.getUpdateAt().toString();
+                                        String checkoutAt = o.getCheckoutAt() == null ? "" : o.getCheckoutAt(Generator.DatePattern.DateSqlPattern);
+                                        String updateAt = o.getUpdateAt() == null ? "" : o.getUpdateAt(Generator.DatePattern.DateSqlPattern);
 
                                         boolean isActive = !o.getStatus().equals("Rejected");
                                         String status = o.getStatus();
@@ -136,7 +137,7 @@
                     <td class="<%= isActive ? " " : "faded"%>"><%= o.getTotal()%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= o.getDeductedPrice()%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= o.getStatus()%></td>
-                    <td class="<%= isActive ? " " : "faded"%>"><%= o.getCreatedAt()%></td>                                        
+                    <td class="<%= isActive ? " " : "faded"%>"><%= o.getCreatedAt(Generator.DatePattern.DateSqlPattern)%></td>                                        
                     <td class="<%= isActive ? " " : "faded"%>"><%= checkoutAt%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= updateAt%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= orderManagerName%></td>
