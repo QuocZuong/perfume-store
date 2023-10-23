@@ -128,11 +128,10 @@
                                                             <%= p.getName()%> - <%= p.getVolume()%>ml
                                                         </a>
                                                         <c:choose>
-                                                            <c:when test="<%= (v != null && approvedProduct != null && ProductDAO.isContain(p, approvedProduct))%>">  
+                                                            <c:when test="<%= (v != null && approvedProduct != null && ProductDAO.isContain(p, approvedProduct))%>">
                                                                 <span><%= Converter.covertIntergerToMoney(p.getStock().getPrice())%> <span>₫</span></span>
                                                                 <span style="text-decoration: line-through;color: rgba(0,0,0,0.5);">Total:<%= Converter.covertIntergerToMoney(sum)%> <span>₫</span></span>
-                                                                <span>Total: <%= Converter.covertIntergerToMoney(sum - p.getStock().getPrice() * v.getDiscountPercent() / 100)%> <span>₫</span></span>
-
+                                                                <span>Total: <%= Converter.covertIntergerToMoney(sumDeductPrice < v.getDiscountMax() ? (sum - (p.getStock().getPrice() * v.getDiscountPercent() / 100)) : (sum - (p.getStock().getPrice() * v.getDiscountPercent() / 100) + ((sumDeductPrice - v.getDiscountMax()) / approvedProduct.size())))%> <span>₫</span></span>
                                                             </c:when>
                                                             <c:otherwise>
                                                                 <span><%= Converter.covertIntergerToMoney(p.getStock().getPrice())%> <span>₫</span></span>
@@ -197,11 +196,16 @@
                                             <c:choose>   
                                                 <c:when test="<%= (sumDeductPrice != null)%>">
                                                     <div>
+                                                        <h4>Tối đa</h4>
+                                                        <span><%= Converter.covertIntergerToMoney(v.getDiscountMax())%><span>₫</span></span>
+                                                    </div>
+                                                    <hr>
+                                                    <div>
                                                         <h4>Tổng</h4>
                                                         <span style="text-decoration: line-through; color: rgba(0,0,0,0.5);"><%= Converter.covertIntergerToMoney(Total)%><span>₫</span></span>
                                                     </div>
-                                                    <div style="justify-content: flex-end;">
-                                                        <span><%= Converter.covertIntergerToMoney(Total - sumDeductPrice)%><span>₫</span></span>
+                                                    <div style="justify-content: flex-end">
+                                                        <span><%= Converter.covertIntergerToMoney(Total - (sumDeductPrice < v.getDiscountMax() ? sumDeductPrice : v.getDiscountMax()))%><span>₫</span></span>
                                                     </div>
                                                 </c:when>
                                                 <c:otherwise>
@@ -214,7 +218,7 @@
                                             <hr />
                                             <div>
                                                 <h4>Voucher</h4>
-                                                <input type="text" name="VoucherTXT" id="VoucherTXT" value="<%= v == null ? "" : v.getCode() %>">
+                                                <input type="text" name="VoucherTXT" id="VoucherTXT" value="<%= v == null ? "" : v.getCode()%>">
                                                 <a id="addVoucher"  href="">+</a>
                                             </div>
                                             <hr />
