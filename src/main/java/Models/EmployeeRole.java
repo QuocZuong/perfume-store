@@ -1,6 +1,7 @@
 package Models;
 
 public class EmployeeRole {
+    
     private int roleId;
     private String roleName;
 
