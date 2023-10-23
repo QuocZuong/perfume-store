@@ -4,87 +4,7 @@
 ERD
 ![](https://lh3.googleusercontent.com/nW0ksWTJjKRoQdp-CXCN2FixbfuxYRwPEXctqXNRqJJ4024T4mnveSdbJvLCq52FitFTLkoFPCVk3GQj5toaz42CQ52gJjidcUznA2HGBbdMxaSPnRGnI25x5o82xYsWcklGi-NhStV3LaUYNcsAK9s)
 
-# Java Models
-## class Product
-+ *Variable*:
-	+ id  (int)
-	+ tên (string)
-	+ hãng (string)
-	+ giá (double, float)
-	+ gender (string)
-	+ năm sx (string) 2003
-	+ nhóm hương (string\[ ])
-	+ mô tả (string)
-	+ hình (string)
-	+ dung tích (int) (ml)
-+ *Function*:
 
-## class Customer
-+ *Variable*:
-	+ sdt (string)
-	+ username (string)
-	+ password (string)
-	+ họ và tên (string)
-	+ email (string)
-	+ address (string)
-	+ cart (Cart)
-+ *Function*:
-
-## class Cart
-+ *Variable*:
-	+ Products (arrayList\<product>)
-	+ Total (int)
-+  *Function*:
-	+ addProduct
-	+ removeProduct
-
-
-# Controllers
-## Class HomeController
-+ *Function*:
-	+ Access to homepage ✅
-	+ Access to introduction ✅
-	+ Acesss to login/register
-	+ Access to brand ✅
-## Class ProductController
-+ *Function*:
-	+ List ✅
-		+ Brand ✅
-		+ Gender ✅
-		+ Price ✅
-		+ Paging ✅
-	+ Detail ✅
-
-## Class ClientController
-+ Filter required ✅
-+ *Function*:
-	+ Able to Update Infomation ✅
-		+ Update email, username, password and fullname ✅ chua validate
-		+ Update PhoneNumber, Address ✅ chua validate
-	+ Access to the cart ✅
-		+ Add ✅
-		+ Update ✅
-		+ Delete ✅
-	+ Able to watch order history ✅
-	+ Able to Signout ✅
-	+ Block unwanted URL with prefix "/Client"
-	+ Pay ✅
-## Class AdminController
-+ Filter required
-+ *Function*:
-	+ Update Product:
-		+ List ✅
-		+ Add ✅
-		+ Update ✅
-		+ Delete ✅
-		+ Search With Paging
-		+ Use Imgur API to update API ✅
-	+ Update Information:
-		+ User's Info ✅
-		+ User's Order
-	 + Able to send mail to user
-#
----
 
 # DB Diagram
 
@@ -138,8 +58,8 @@ ERD
 	+ Voucher_Quantity (int not null)
 	+ Voucher_Discount_Percent (int not null)
 	+ Voucher_Discount_Max (int not null)
-	+ Voucher_Created_At (Datetime not null)
-	+ Voucher_Expired_At (Datetime)
+	+ Voucher_Created_At (BIGINT not null)
+	+ Voucher_Expired_At (BIGINT)
 	+ *Voucher_Created_By_Admin (int not null)*
 
 ## Table Voucher_Product
@@ -169,9 +89,9 @@ ERD
 	+ Order_Total (int default 0 not null)
 	+ Order_Deducted_Price (int default 0)
 	+ Order_Status (varchar(20) not null)
-	+ Order_Created_At (Datetime not null)
-	+ Order_Checkout_At (Datetime)
-	+ Order_Update_At (Datetime)
+	+ Order_Created_At (BIGINT not null)
+	+ Order_Checkout_At (BIGINT)
+	+ Order_Update_At (BIGINT)
 	+ *Order_Update_By_Order_Manager (int not null)*
 
 
@@ -190,8 +110,8 @@ ERD
 	+ Phone_Number (varchar(10) not null)
 	+ Address (nvarchar(max) not null)
 	+ Status (nvarchar(200) not null)
-	+ Create_At (Datetime not null)
-	+ Modified_At (Datetime)
+	+ Create_At (BIGINT not null)
+	+ Modified_At (BIGINT)
 
 
 ## Table User
@@ -217,12 +137,12 @@ ERD
 	+ **Employee_ID (int not null Indentity(1,1))**
 	+ *User_ID (int not null)*
 	+ Employee_Citizen_ID (nvarchar(20) not null)
-	+ Employee_DoB (Datetime not null)
+	+ Employee_DoB (BIGINT not null)
 	+ Employee_Phone_Number (varchar(10) not null)
 	+ Employee_Address (nvarchar(max))
 	+ *Employee_Role (int not null)*
-	+ Employee_Join_Date (Datetime not null)
-	+ Employee_Retire_Date (Datetime)
+	+ Employee_Join_Date (BIGINT not null)
+	+ Employee_Retire_Date (BIGINT)
 
 ## Table Inventory_Manager
 #### Inherited table Employee
@@ -245,10 +165,10 @@ ERD
 	+ Import_Total_Quantity (int not null)
 	+ Import_Total_Cost (int not null)
 	+ Supplier_Name (nvarchar(max))
-	+ Import_At (Datetime not null)
-	+ Delivered_At (Datetime)
+	+ Import_At (BIGINT not null)
+	+ Delivered_At (BIGINT)
 	+ *Import_By_Inventory_Manager (int not null)*
-	+ Modified_At (Datetime)
+	+ Modified_At (BIGINT)
 	+ *Modified_By_Admin (int)*
 
 
@@ -276,7 +196,7 @@ ERD
 	+ Action (nvarchar(10) not null)
 	+ Description (nvarchar(max) default null)
 	+ Updated_By_Admin (int not null)
-	+ Updated_At (Datetime)
+	+ Updated_At (BIGINT)
 
 ## Table Employee_Role
 + *Attribute*:
@@ -337,12 +257,12 @@ CREATE TABLE [Employee](
     [Employee_ID] INT NOT NULL IDENTITY(1,1),
     [User_ID] INT NOT NULL,
     [Employee_Citizen_ID] NVARCHAR(20) NOT NULL,
-    [Employee_DoB] DATETIME NOT NULL,
+    [Employee_DoB] BIGINT NOT NULL,
     [Employee_Phone_Number] VARCHAR(10) NOT NULL,
     [Employee_Address] NVARCHAR(MAX),
     [Employee_Role] INT NOT NULL, -- Foreign key to Employee_Role
-    [Employee_Join_Date] DATETIME NOT NULL,
-    [Employee_Retire_Date] DATETIME,
+    [Employee_Join_Date] BIGINT NOT NULL,
+    [Employee_Retire_Date] BIGINT,
     PRIMARY KEY ([Employee_ID]),
     FOREIGN KEY ([User_ID]) REFERENCES [User]([User_ID]),
     FOREIGN KEY ([Employee_Role]) REFERENCES [Employee_Role]([Role_ID])
@@ -408,8 +328,8 @@ CREATE TABLE [Voucher](
     [Voucher_Quantity] INT NOT NULL,
     [Voucher_Discount_Percent] INT NOT NULL,
     [Voucher_Discount_Max] INT NOT NULL,
-    [Voucher_Created_At] DATETIME NOT NULL,
-    [Voucher_Expired_At] DATETIME,
+    [Voucher_Created_At] BIGINT NOT NULL,
+    [Voucher_Expired_At] BIGINT,
     [Voucher_Created_By_Admin] INT NOT NULL, -- Foreign key to Admin
     PRIMARY KEY ([Voucher_ID]),
     FOREIGN KEY ([Voucher_Created_By_Admin]) REFERENCES [Admin]([Admin_ID])
@@ -442,8 +362,8 @@ CREATE TABLE [DeliveryAddress](
     [Phone_Number] VARCHAR(10) NOT NULL,
     [Address] NVARCHAR(MAX) NOT NULL,
     [Status] NVARCHAR(200) NOT NULL,
-    [Create_At] DATETIME NOT NULL,
-    [Modified_At] DATETIME,
+    [Create_At] BIGINT NOT NULL,
+    [Modified_At] BIGINT,
     FOREIGN KEY ([Customer_ID]) REFERENCES [Customer]([Customer_ID])
 );
 
@@ -453,10 +373,10 @@ CREATE TABLE [Import](
     [Import_Total_Quantity] INT NOT NULL,
     [Import_Total_Cost] INT NOT NULL,
     [Supplier_Name] NVARCHAR(MAX),
-    [Import_At] DATETIME NOT NULL,
-    [Delivered_At] DATETIME,
+    [Import_At] BIGINT NOT NULL,
+    [Delivered_At] BIGINT,
     [Import_By_Inventory_Manager] INT NOT NULL, -- Foreign key to Inventory_Manager
-    [Modified_At] DATETIME,
+    [Modified_At] BIGINT,
     [Modified_By_Admin] INT,
     PRIMARY KEY ([Import_ID]),
     FOREIGN KEY ([Import_By_Inventory_Manager]) REFERENCES [Inventory_Manager]([Inventory_Manager_ID]),
@@ -506,9 +426,9 @@ CREATE TABLE [Order](
     [Order_Total] INT DEFAULT 0,
     [Order_Deducted_Price] INT DEFAULT 0,
     [Order_Status] VARCHAR(20) NOT NULL,
-    [Order_Created_At] DATETIME NOT NULL,
-    [Order_Checkout_At] DATETIME,
-    [Order_Update_At] DATETIME,
+    [Order_Created_At] BIGINT NOT NULL,
+    [Order_Checkout_At] BIGINT,
+    [Order_Update_At] BIGINT,
     [Order_Update_By_Order_Manager] INT NOT NULL, -- Foreign key to Order_Manager
     PRIMARY KEY ([Order_ID]),
     FOREIGN KEY ([Customer_ID]) REFERENCES [Customer]([Customer_ID]),
@@ -533,7 +453,7 @@ CREATE TABLE [Product_Activity_Log](
     [Action] NVARCHAR(10) NOT NULL,
     [Description] NVARCHAR(MAX),
     [Updated_By_Admin] INT NOT NULL, -- Foreign key to Admin
-    [Updated_At] DATETIME,
+    [Updated_At] BIGINT,
     FOREIGN KEY ([Product_ID]) REFERENCES [Product]([Product_ID]),
     FOREIGN KEY ([Updated_By_Admin]) REFERENCES [Admin]([Admin_ID])
 );
