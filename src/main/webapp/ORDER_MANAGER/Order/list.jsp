@@ -140,25 +140,25 @@
                     <td class="<%= isActive ? " " : "faded"%>"><%= orderManagerName%></td>
 
                     <td class="<%= isActive ? " " : "faded"%>">
-                      <a href="/Admin/User/OrderDetail/ID/<%= o.getId()%>" class="<%= isActive ? "" : "disabled"%> btn btn-outline-primary rounded-0">🤔</a>
+                      <a href="/OrderManager/User/OrderDetail/ID/<%= o.getId()%>" class="<%= isActive ? "" : "disabled"%> btn btn-outline-primary rounded-0">🤔</a>
                     </td>
                     <c:choose>
                       <c:when test='<%= isAccepted%>'>
                         <td class="buttonStatus faded" colspan=2>
-                          <a href="/Admin/Order/ID/<%= o.getId()%>/Accept" class="btn btn-outline-success rounded-0">✅</a>
+                          <a href="/OrderManager/Order/ID/<%= o.getId()%>/Accept" class="btn btn-outline-success rounded-0">✅</a>
                         </td>
                       </c:when>
                       <c:when test='<%= isRejected%>'>
                         <td class="buttonStatus faded" colspan=2>
-                        <a href="/Admin/Order/ID/<%= o.getId()%>/Reject" class="btn btn-outline-danger rounded-0">❌</a>
+                        <a href="/OrderManager/Order/ID/<%= o.getId()%>/Reject" class="btn btn-outline-danger rounded-0">❌</a>
                       </td>
                       </c:when>
                       <c:otherwise>
                       <td class="buttonStatus">
-                          <a href="/Admin/Order/ID/<%= o.getId()%>/Accept" class="btn btn-outline-success rounded-0">✅</a>
+                          <a href="/OrderManager/Order/ID/<%= o.getId()%>/Accept" class="btn btn-outline-success rounded-0">✅</a>
                         </td>
                       <td class="buttonStatus">
-                        <a href="/Admin/Order/ID/<%= o.getId()%>/Reject" class="btn btn-outline-danger rounded-0">❌</a>
+                        <a href="/OrderManager/Order/ID/<%= o.getId()%>/Reject" class="btn btn-outline-danger rounded-0">❌</a>
                       </td>
                       </c:otherwise>
                     </c:choose>
@@ -177,29 +177,29 @@
 
     <nav aria-label="...">
       <ul class="pagination">
-        <li class="page-item"><a class="page-link" href="/Admin/Order/List/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-left" style="color: #000000;"></i></a></li>
-        <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>"><a class="page-link" href="/Admin/Order/List/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></a></li>
+        <li class="page-item"><a class="page-link" href="/OrderManager/Order/List/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-left" style="color: #000000;"></i></a></li>
+        <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>"><a class="page-link" href="/OrderManager/Order/List/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></a></li>
             <c:forEach var="i" begin="${page-2<0?0:page-2}" end="${page+2 +1}">
               <c:choose>
                 <c:when test="${i==page}">
-              <li class="page-item active"><a href="/Admin/Order/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
+              <li class="page-item active"><a href="/OrderManager/Order/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
               </c:when>
               <c:when test="${i>0 && i<=numberOfPage}"> 
-              <li class="page-item"><a href="/Admin/Order/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
+              <li class="page-item"><a href="/OrderManager/Order/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
               </c:when>
               <c:otherwise>
               </c:otherwise>
             </c:choose>
           </c:forEach>
-        <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>"><a class="page-link" href="/Admin/Order/List/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a></li>
-        <li class="page-item"><a class="page-link" href="/Admin/Order/List/page/${numberOfPage}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-right" style="color: #000000;"></i></a></li>
+        <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>"><a class="page-link" href="/OrderManager/Order/List/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a></li>
+        <li class="page-item"><a class="page-link" href="/OrderManager/Order/List/page/${numberOfPage}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-right" style="color: #000000;"></i></a></li>
       </ul>
     </nav>
     <script>
       function changeLink() {
         let SearchURL = document.getElementById("inputSearch").value;
         SearchURL = encodeURIComponent(SearchURL);
-        document.getElementById("Search").href = "/Admin/Order/List/page/1?txtSearch=" + SearchURL;
+        document.getElementById("Search").href = "/OrderManager/Order/List/page/1?txtSearch=" + SearchURL;
       }
     </script>
     <script
