@@ -133,7 +133,7 @@ public class ImportStashItemDAO implements IImportStashItemDAO {
     @Override
     public List<ImportStashItem> getAllImportStashItemOfManager(int managerId) {
         ResultSet rs;
-        List<ImportStashItem> arrImportStashItem = new ArrayList();
+        List<ImportStashItem> arrImportStashItem = new ArrayList<>();
         ImportStashItem ipsi;
         String sql = "SELECT * FROM Import_Stash_Item\n"
                 + "WHERE Inventory_Manager_ID = ?";

@@ -827,7 +827,6 @@ public class AdminController extends HttpServlet {
 
     private boolean updateCustomer(HttpServletRequest request, HttpServletResponse response) {
         UserDAO uDAO = new UserDAO();
-        EmployeeDAO eDAO = new EmployeeDAO();
         int result = 0;
 
         // [User] Update Section

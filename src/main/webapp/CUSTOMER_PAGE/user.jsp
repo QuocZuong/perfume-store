@@ -1,3 +1,4 @@
+<%@page import="Lib.Generator"%>
 <%@page import="Models.DeliveryAddress"%>
 <%@page import="Lib.ExceptionUtils"%>
 <%@page import="Lib.Converter"%>
@@ -159,7 +160,7 @@
                                     <c:forEach var="i" begin="0" end="<%=orders.size() - 1%>">
                                         <%
                                             String orderId = orders.get((int) pageContext.getAttribute("i")).getId() + "";
-                                            String createAt = orders.get((int) pageContext.getAttribute("i")).getCreatedAt().toString();
+                                            String createAt = Generator.getDateTime(orders.get((int) pageContext.getAttribute("i")).getCreatedAt(), Generator.DatePattern.DateSqlPattern);
                                             String totalMoney = Converter.covertIntergerToMoney(orders.get((int) pageContext.getAttribute("i")).getTotal() - orders.get((int) pageContext.getAttribute("i")).getDeductedPrice());
                                         %>
                                         <div>

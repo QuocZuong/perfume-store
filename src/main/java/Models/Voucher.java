@@ -11,8 +11,8 @@ public class Voucher {
   private int quantity;
   private int discountPercent;
   private int discountMax;
-  private long createdAt;
-  private long expiredAt;
+  private Long createdAt;
+  private Long expiredAt;
   private int createdByAdmin;
   private List<Integer> approvedProductId;
 
@@ -60,11 +60,11 @@ public class Voucher {
     return Generator.getDateTime(createdAt, pattern);
   }
 
-  public long getCreatedAt() {
+  public Long getCreatedAt() {
     return createdAt;
   }
 
-  public void setCreatedAt(long createdAt) {
+  public void setCreatedAt(Long createdAt) {
     this.createdAt = createdAt;
   }
 
@@ -72,11 +72,11 @@ public class Voucher {
     return Generator.getDateTime(expiredAt, pattern);
   }
 
-  public long getExpiredAt() {
+  public Long getExpiredAt() {
     return expiredAt;
   }
 
-  public void setExpiredAt(long expiredAt) {
+  public void setExpiredAt(Long expiredAt) {
     this.expiredAt = expiredAt;
   }
 

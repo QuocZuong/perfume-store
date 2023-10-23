@@ -3,10 +3,8 @@ package Lib;
 import DAOs.UserDAO;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
-import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -27,6 +25,7 @@ public class Generator {
 
         DateForwardSlashPattern("dd/MM/yyyy"),
         DateDashPattern("dd-MM-yyyy"),
+        DateSqlPattern("yyyy-MM-dd"),
         DateTimeForwardSlashPattern("dd/MM/yyyy HH:mm:ss.SSS"),
         DateTimeDashPattern("dd-MM-yyyy HH:mm:ss.SSS");
 

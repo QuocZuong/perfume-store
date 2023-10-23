@@ -20,11 +20,6 @@ import Interfaces.DAOs.IEmployeeDAO;
 import Lib.Converter;
 import Lib.Generator;
 import Models.Role;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.TimeZone;
 
 public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
 

@@ -6,13 +6,8 @@ import DAOs.DeliveryAddressDAO;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.security.auth.login.AccountNotFoundException;
 
 import DAOs.OrderDAO;
 import DAOs.ProductDAO;
@@ -24,8 +19,6 @@ import Exceptions.InvalidInputException;
 import Exceptions.InvalidVoucherException;
 import Exceptions.NotEnoughInformationException;
 import Exceptions.NotEnoughVoucherQuantityException;
-import Exceptions.OperationAddFailedException;
-import Exceptions.PhoneNumberDuplicationException;
 import Exceptions.UsernameDuplicationException;
 import Exceptions.VoucherNotFoundException;
 import Exceptions.WrongPasswordException;
@@ -872,7 +865,7 @@ public class CustomerController extends HttpServlet {
             try {
                 // Kiem tra tinh hop le va quang exception
                 if (vDAO.checkValidVoucher(v, cus.getCustomerId())) {
-                    List<Product> approveVoucherProduct = new ArrayList();
+                    List<Product> approveVoucherProduct = new ArrayList<>();
                     for (int i = 0; i < cartItemList.size(); i++) {
                         if (v.getApprovedProductId().contains(cartItemList.get(i).getProductId())) {
                             approveVoucherProduct.add(pDAO.getProduct(cartItemList.get(i).getProductId()));
@@ -974,7 +967,7 @@ public class CustomerController extends HttpServlet {
             try {
                 // Kiem tra tinh hop le va quang exception
                 if (vDAO.checkValidVoucher(v, cus.getCustomerId())) {
-                    List<Product> approveVoucherProduct = new ArrayList();
+                    List<Product> approveVoucherProduct = new ArrayList<>();
                     for (int i = 0; i < cartItemList.size(); i++) {
                         if (v.getApprovedProductId().contains(cartItemList.get(i).getProductId())) {
                             approveVoucherProduct.add(pDAO.getProduct(cartItemList.get(i).getProductId()));

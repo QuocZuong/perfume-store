@@ -1,6 +1,5 @@
 package Models;
 
-import java.sql.Date;
 import java.util.List;
 
 import Lib.Generator;
@@ -17,9 +16,9 @@ public class Order {
     private int total;
     private int deductedPrice;
     private String status;
-    private long createdAt;
-    private long checkoutAt;
-    private long updateAt;
+    private Long createdAt;
+    private Long checkoutAt;
+    private Long updateAt;
     private int updateByOrderManager;
     private List<OrderDetail> orderDetailList;
 
@@ -167,11 +166,11 @@ public class Order {
         return Generator.getDateTime(createdAt, pattern);
     }
 
-    public long getCreatedAt() {
+    public Long getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(long createdAt) {
+    public void setCreatedAt(Long createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -179,11 +178,11 @@ public class Order {
         return Generator.getDateTime(checkoutAt, pattern);
     }
 
-    public long getCheckoutAt() {
+    public Long getCheckoutAt() {
         return checkoutAt;
     }
 
-    public void setCheckoutAt(long checkoutAt) {
+    public void setCheckoutAt(Long checkoutAt) {
         this.checkoutAt = checkoutAt;
     }
 
@@ -191,11 +190,11 @@ public class Order {
         return Generator.getDateTime(updateAt, pattern);
     }
 
-    public long getUpdateAt() {
+    public Long getUpdateAt() {
         return updateAt;
     }
 
-    public void setUpdateAt(long updateAt) {
+    public void setUpdateAt(Long updateAt) {
         this.updateAt = updateAt;
     }
 
