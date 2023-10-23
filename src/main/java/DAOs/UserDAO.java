@@ -197,7 +197,7 @@ public class UserDAO implements IUserDAO {
     // loginString is username or email
     @Override
     public User login(String loginString, String password, loginType Type)
-            throws WrongPasswordException, AccountDeactivatedException, AccountNotFoundException, InvalidInputException {
+            throws WrongPasswordException, AccountDeactivatedException, InvalidInputException {
         if (loginString == null || password == null || Type == null) {
             System.out.println("Parameter is null, Aborting operation login");
             return null;
@@ -229,8 +229,6 @@ public class UserDAO implements IUserDAO {
 
             if (rs.next()) {
                 user = userFactory(rs);
-            } else {
-                throw new AccountNotFoundException();
             }
 
         } catch (SQLException ex) {
