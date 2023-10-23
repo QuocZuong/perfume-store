@@ -1,12 +1,14 @@
 package Lib;
 
 import DAOs.UserDAO;
-import Models.User;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.security.SecureRandom;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -23,8 +25,8 @@ public class Generator {
 
         DateForwardSlashPattern("yy/MM/dd"),
         DateDashPattern("yy-MM-dd"),
-        DateTimeForwardSlashPattern("yy/MM/dd HH:mm:ss.SSS"),
-        DateTimeDashPattern("yy-MM-dd HH:mm:ss.SSS");
+        DateTimeForwardSlashPattern("yyyy/MM/dd HH:mm:ss.SSS"),
+        DateTimeDashPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
         public String pattern;
 
@@ -103,7 +105,7 @@ public class Generator {
      * Get the filtered list from the original list, according to its page and
      * num of row.
      *
-     * @param <T> The type of the list.
+     * @param <T>  The type of the list.
      * @param list The original list.
      * @param page The page number.
      * @param rows The number of rows per page.
@@ -129,4 +131,26 @@ public class Generator {
         return subList;
     }
 
+    /**
+     * Get the current time in milliseconds.
+     * 
+     * @return a long number that represents the current time in milliseconds from
+     *         the epoch (1970-01-01).
+     */
+    public static long getCurrentTimeFromEpochMilli() {
+        return Instant.now().toEpochMilli();
+    }
+
+    /**
+     * Get the time string in a specific format.
+     * 
+     * @param epochMilli The time in milliseconds from the epoch (1970-01-01).
+     * @param format     The format of the time string, as defined in
+     *                   {@link Generator#DatePattern}.
+     * @return The time string in the specified format.
+     */
+    public static String getDateTime(long epochMilli, DatePattern format) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format.pattern);
+        return sdf.format(new Date(epochMilli));
+    }
 }
