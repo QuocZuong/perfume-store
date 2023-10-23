@@ -9,13 +9,10 @@ import Models.Admin;
 import Models.Product;
 import Models.ProductActivityLog;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,11 +45,12 @@ public class ProductActivityLogDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 ProductActivityLog pal = new ProductActivityLog();
+
                 pal.setProductId(rs.getInt("Product_ID"));
                 pal.setAction(rs.getNString("Action"));
                 pal.setDescription(rs.getNString("Description"));
                 pal.setUpdatedByAdmin(rs.getInt("Updated_By_Admin"));
-                pal.setUpdatedAt(rs.getDate("Updated_At"));
+                pal.setUpdatedAt(rs.getLong("Updated_At"));
 
                 palList.add(pal);
             }
@@ -73,11 +71,11 @@ public class ProductActivityLogDAO {
     public int addProductActivityLog(Operation op, Product product, Admin admin, String description) {
         String sql = "INSERT INTO Product_Activity_Log\n"
                 + "VALUES(?,?,?,?,?);";
-        //        Product_ID (int not null) (duplicate)
-        //Action (nvarchar(10) not null)
-        //Description (nvarchar(max) default null)
-        //Updated_By_Admin (int not null)
-        //Updated_At (Datetime)
+        // Product_ID (int not null) (duplicate)
+        // Action (nvarchar(10) not null)
+        // Description (nvarchar(max) default null)
+        // Updated_By_Admin (int not null)
+        // Updated_At (Long)
         int result = 0;
 
         try {
@@ -86,8 +84,7 @@ public class ProductActivityLogDAO {
             ps.setNString(2, op.toString());
             ps.setNString(3, description);
             ps.setInt(4, admin.getAdminId());
-            // Fix later
-            ps.setString(5, Generator.generateDateTime());
+            ps.setLong(5, Generator.getCurrentTimeFromEpochMilli());
             result = ps.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(ProductActivityLogDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -119,7 +116,7 @@ public class ProductActivityLogDAO {
                 pal.setAction(rs.getNString("Action"));
                 pal.setDescription(rs.getNString("Description"));
                 pal.setUpdatedByAdmin(rs.getInt("Updated_By_Admin"));
-                pal.setUpdatedAt(rs.getDate("Updated_At"));
+                pal.setUpdatedAt(rs.getLong("Updated_At"));
                 palList.add(pal);
             }
 

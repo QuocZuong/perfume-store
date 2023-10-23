@@ -6,10 +6,6 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-/**
- *
- * @author Acer
- */
 public class Converter {
 
     public static String convertToStringData(
@@ -111,10 +107,26 @@ public class Converter {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             java.util.Date utilDate = sdf.parse(str);
+
+            System.out.println("Time:" + utilDate.getTime());
+
             return new Date(utilDate.getTime());
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        return null;
+    }
+
+    public static Long convertStringToEpochMilli(String str) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            java.util.Date utilDate = sdf.parse(str);
+
+            return utilDate.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         return null;
     }
 }

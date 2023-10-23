@@ -1,6 +1,7 @@
 package Models;
 
 public class InventoryManager extends Employee {
+    
     private int inventoryManagerId;
     private int employeeId;
 

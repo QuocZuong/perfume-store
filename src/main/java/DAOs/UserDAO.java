@@ -111,6 +111,35 @@ public class UserDAO implements IUserDAO {
         return null;
     }
 
+    public User getUserForOrderActivityLogs(int orderManagerId) {
+        if (orderManagerId < 0) {
+            return null;
+        }
+
+        ResultSet rs;
+        String sql = "SELECT * FROM [Order]\n"
+                + "JOIN [Order_Manager] ON [Order].Order_Update_By_Order_Manager = [Order_Manager].[Order_Manager_ID]\n"
+                + "JOIN [Employee] ON [Order_Manager].[Employee_ID] = [Employee].Employee_ID\n"
+                + "JOIN [User] ON [Employee].[User_ID] = [User].[User_ID]\n"
+                + "WHERE [Order_Manager].[Order_Manager_ID] = ?";
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, orderManagerId);
+
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                User us = userFactory(rs);
+                return us;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return null;
+    }
+
     @Override
     public User getUser(int ID) {
         String sql = String.format("SELECT * FROM [User] WHERE USER_ID = ?");
@@ -219,17 +248,21 @@ public class UserDAO implements IUserDAO {
                     + "WHERE User_Username = ?\n"
                     + "AND User_Password = ?";
         }
+
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, loginString);
             ps.setString(2, Converter.convertToMD5Hash(password));
             rs = ps.executeQuery();
+
             if (rs.next()) {
                 user = userFactory(rs);
             }
+
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         checkAccount(user, Type);
         return user;
     }
@@ -250,7 +283,9 @@ public class UserDAO implements IUserDAO {
         if (loginString.length() >= 50) {
             return false;
         }
-        final Pattern EMAIL_REGEX = Pattern.compile("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$", Pattern.CASE_INSENSITIVE);
+        final Pattern EMAIL_REGEX = Pattern.compile(
+                "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$",
+                Pattern.CASE_INSENSITIVE);
         final Pattern USERNAME_REGEX = Pattern.compile("^[a-zA-Z0-9]+$", Pattern.CASE_INSENSITIVE);
 
         if (Type == loginType.Username) {
@@ -409,7 +444,7 @@ public class UserDAO implements IUserDAO {
         user.setEmail(queryResult.getString(USER_EMAIL));
         user.setActive(queryResult.getBoolean(USER_ACTIVE));
         user.setType(queryResult.getString(USER_TYPE));
+
         return user;
     }
-
 }

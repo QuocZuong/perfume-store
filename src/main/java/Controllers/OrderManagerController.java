@@ -3,16 +3,27 @@ package Controllers;
 import DAOs.OrderDAO;
 import DAOs.OrderManagerDAO;
 import DAOs.ProductDAO;
+import DAOs.UserDAO;
 import DAOs.VoucherDAO;
+import Exceptions.AccountDeactivatedException;
+import Exceptions.EmailDuplicationException;
+import Exceptions.InvalidInputException;
 import Exceptions.OperationEditFailedException;
+import Exceptions.UsernameDuplicationException;
+import Exceptions.WrongPasswordException;
+import Interfaces.DAOs.IUserDAO.loginType;
 import Lib.ExceptionUtils;
 import Lib.Generator;
+import Lib.Converter;
+import Lib.EmailSender;
 import Models.Order;
 import Models.OrderDetail;
 import Models.OrderManager;
 import Models.Product;
+import Models.User;
 import Models.Voucher;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import jakarta.servlet.ServletException;
@@ -21,13 +32,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
-import java.util.List;
 
 public class OrderManagerController extends HttpServlet {
-
-    private int searchProduct(HttpServletRequest request, HttpServletResponse response) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
     enum Operation {
         ACCEPT,
@@ -48,13 +54,15 @@ public class OrderManagerController extends HttpServlet {
     public static final String ORDER_MANAGER_USER_URI = "/OrderManager";
 
     public static final String ORDER_MANAGER_ORDER_LIST_URI = "/OrderManager/Order/List";
-    public static final String ORDER_MANAGER_ORDER_DETAIL_URI = "/OrderManager/Order/Detail";
+    public static final String ORDER_MANAGER_ORDER_LIST_PENDING_URI = "/OrderManager/Order/List/Pending";
+    public static final String ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_URI = "/OrderManager/Order/List/HistoryWork";
+
+    public static final String ORDER_MANAGER_ORDER_DETAIL_URI = "/OrderManager/Order/Detail/ID";
 
     public static final String ORDER_MANAGER_UPDATE_INFO_URI = "/OrderManager/Update/Info";
 
-    public final String ORDER_MANAGER_ORDER_LIST = "/OrderManager/List";
-    public final String ORDER_MANAGER_ACCEPT_ORDER_URI = "/OrderManager/ID/" + Operation.ACCEPT.toString();
-    public final String ORDER_MANAGER_REJECT_ORDER_URI = "/OrderManager/ID/" + Operation.REJECT.toString();
+    public final String ORDER_MANAGER_ACCEPT_ORDER_URI = "/OrderManager/" + Operation.ACCEPT.toString() + "/Order/ID/";
+    public final String ORDER_MANAGER_REJECT_ORDER_URI = "/OrderManager/" + Operation.REJECT.toString() + "/Order/ID/";
 
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -70,6 +78,35 @@ public class OrderManagerController extends HttpServlet {
         String path = request.getRequestURI();
 
         // ---------------------------- ORDER SECTION ----------------------------
+        if (path.startsWith(ORDER_MANAGER_ORDER_LIST_PENDING_URI)
+                || path.startsWith(ORDER_MANAGER_ORDER_LIST_PENDING_URI + "/page")) {
+            System.out.println("Going Order List: Pending");
+            int result = searchOrder(request);
+
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/ORDER_MANAGER/Order/pendingList.jsp").forward(request, response);
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(
+                        ORDER_MANAGER_ORDER_LIST_PENDING_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
+
+        if (path.startsWith(ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_URI)
+                || path.startsWith(ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_URI + "/page")) {
+            System.out.println("Going Order List: History Work");
+            int result = searchOrder(request);
+
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/ORDER_MANAGER/Order/workingHistoryList.jsp").forward(request, response);
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(
+                        ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_URI
+                                + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
+
         if (path.startsWith(ORDER_MANAGER_ORDER_LIST_URI)
                 || path.startsWith(ORDER_MANAGER_ORDER_LIST_URI + "/page")) {
             System.out.println("Going Order List");
@@ -81,7 +118,6 @@ public class OrderManagerController extends HttpServlet {
                 response.sendRedirect(
                         ORDER_MANAGER_ORDER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
             }
-
             return;
         }
 
@@ -99,22 +135,23 @@ public class OrderManagerController extends HttpServlet {
             }
             return;
         }
-
         if (path.startsWith(ORDER_MANAGER_ACCEPT_ORDER_URI)
                 || path.startsWith(ORDER_MANAGER_REJECT_ORDER_URI)) {
+            System.out.println("Update order status");
             int result = updateOrderStatus(request, response);
 
             if (result == State.Success.value) {
-                response.sendRedirect(ORDER_MANAGER_ORDER_LIST);
+                response.sendRedirect(ORDER_MANAGER_ORDER_LIST_URI);
             } else {
-                response.sendRedirect(ORDER_MANAGER_ORDER_LIST + ExceptionUtils.generateExceptionQueryString(request));
+                response.sendRedirect(
+                        ORDER_MANAGER_ORDER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
             }
-
             return;
         }
 
         // ---------------------------- DEFAULT SECTION ----------------------------
         if (path.startsWith(ORDER_MANAGER_USER_URI)) { // Put this at the last
+            System.out.println("Going default");
             request.getRequestDispatcher("/ORDER_MANAGER/admin.jsp").forward(request, response);
             return;
         }
@@ -131,30 +168,17 @@ public class OrderManagerController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //
-        // if (path.startsWith(ADMIN_UPDATE_INFO_URI)) {
-        // if (request.getParameter("btnUpdateInfo") != null
-        // && request.getParameter("btnUpdateInfo").equals("Submit")) {
-        // System.out.println("Going update info");
-        // if (updateAdminInfomation(request, response)) {
-        // response.sendRedirect(ADMIN_USER_URI);
-        // } else {
-        // response.sendRedirect(ADMIN_USER_URI + checkException(request));
-        // }
-        // return;
-        // }
-        // }
+
         String path = request.getRequestURI();
 
-        if (path.startsWith(ORDER_MANAGER_ACCEPT_ORDER_URI)
-                || path.startsWith(ORDER_MANAGER_REJECT_ORDER_URI)) {
-            int result = updateOrderStatus(request, response);
+        if (path.startsWith(ORDER_MANAGER_UPDATE_INFO_URI)) {
+            int result = updateAdminInfomation(request, response);
+
             if (result == State.Success.value) {
-                response.sendRedirect(ORDER_MANAGER_ORDER_LIST);
+                response.sendRedirect(ORDER_MANAGER_USER_URI);
             } else {
-                response.sendRedirect(ORDER_MANAGER_ORDER_LIST + ExceptionUtils.generateExceptionQueryString(request));
+                response.sendRedirect(ORDER_MANAGER_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
             }
-            return;
         }
     }
 
@@ -194,6 +218,7 @@ public class OrderManagerController extends HttpServlet {
         try {
             OrderDAO orDAO = new OrderDAO();
             Order order = orDAO.getOrderByOrderId(orderId);
+            System.out.println("\n" + orderManager.getOrderManagerId() + " | " + orderManager.getName() + "\n");
             if (op == Operation.ACCEPT) {
                 orDAO.acceptOrder(order, orderManager.getOrderManagerId());
                 return State.Success.value;
@@ -282,6 +307,132 @@ public class OrderManagerController extends HttpServlet {
         } catch (NumberFormatException e) {
             return State.Fail.value;
         }
+    }
+
+    private int updateAdminInfomation(HttpServletRequest request,
+            HttpServletResponse response) {
+
+        String fullname = request.getParameter("txtFullname");
+        String username = request.getParameter("txtUserName");
+        String email = request.getParameter("txtEmail");
+        String currentPassword = request.getParameter("pwdCurrent");
+        String newPassword = "";
+        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+
+        UserDAO usDAO = new UserDAO();
+        User user = usDAO.getUser(currentUserCookie.getValue());
+
+        boolean isChangedEmail = true;
+        boolean isChangedPassword = true;
+        boolean isChangedUsername = true;
+        // Username, email, phone number is unique
+        try {
+            if (!email.equals(user.getEmail())) {
+                if (usDAO.isExistEmail(email)) {
+                    throw new EmailDuplicationException();
+                }
+            } else {
+                isChangedEmail = false;
+            }
+
+            if (!username.equals(user.getUsername())) {
+                if (usDAO.isExistUsername(username)) {
+                    throw new UsernameDuplicationException();
+                }
+            } else {
+                isChangedUsername = false;
+            }
+
+            if (currentPassword == null || currentPassword.equals("")) {
+                currentPassword = user.getPassword();
+                isChangedPassword = false;
+                // check if currentPassword is true
+            } else if (usDAO.login(user.getUsername(), currentPassword, loginType.Username) == null) {
+                throw new WrongPasswordException();
+            }
+
+        } catch (AccountDeactivatedException e) {
+            request.setAttribute("exceptionType", "AccountDeactivatedException");
+            return State.Fail.value;
+        } catch (InvalidInputException iie) {
+            request.setAttribute("exceptionType", "InvalidInputException");
+            return State.Fail.value;
+        } catch (UsernameDuplicationException e) {
+            request.setAttribute("exceptionType", "UsernameDuplicationException");
+            return State.Fail.value;
+        } catch (EmailDuplicationException e) {
+            request.setAttribute("exceptionType", "EmailDuplicationException");
+            return State.Fail.value;
+        } catch (WrongPasswordException e) {
+            request.setAttribute("exceptionType", "WrongPasswordException");
+            return State.Fail.value;
+        }
+
+        System.out.println("change password is " + isChangedPassword);
+        System.out.println("New password is before if: " + request.getParameter("pwdNew"));
+        if (isChangedPassword && request.getParameter("pwdNew") != null
+                && !request.getParameter("pwdNew").equals("")) {
+            newPassword = request.getParameter("pwdNew");
+            System.out.println("New password is before MD5: " + newPassword);
+            newPassword = Converter.convertToMD5Hash(newPassword);
+        } else {
+            newPassword = user.getPassword();
+        }
+
+        User updateUser = new User(user);
+
+        // Applying new information
+        updateUser.setName(fullname);
+        updateUser.setUsername(username);
+        updateUser.setPassword(newPassword);
+        updateUser.setEmail(email);
+
+        int result = usDAO.updateUser(updateUser);
+
+        // Update cookie
+        Cookie c = ((Cookie) request.getSession().getAttribute("userCookie"));
+        c.setValue(username);
+        c.setPath("/");
+        response.addCookie(c);
+
+        // Sending mail
+        boolean sendMail = false;
+        if (sendMail) {
+            try {
+                EmailSender es = new EmailSender();
+                if (isChangedPassword) {
+                    System.out.println("Detect password change");
+                    System.out.println("sending mail changing password");
+                    es.setEmailTo(email);
+                    es.sendToEmail(es.CHANGE_PASSWORD_NOTFICATION,
+                            es.changePasswordNotifcation());
+                }
+                if (isChangedEmail) {
+                    System.out.println("Detect email change");
+                    System.out.println("sending mail changing email");
+                    es.setEmailTo(user.getEmail());
+                    es.sendToEmail(es.CHANGE_EMAIL_NOTFICATION,
+                            es.changeEmailNotification(email));
+                }
+                if (isChangedUsername) {
+                    System.out.println("Detect username change");
+                    System.out.println("sending mail changing username");
+                    es.setEmailTo(email);
+                    es.sendToEmail(es.CHANGE_USERNAME_NOTFICATION,
+                            es.changeUsernameNotification(username));
+                }
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (result < 1) {
+            System.out.println("update account with ID " + user.getId() + "failed");
+            return State.Fail.value;
+        }
+
+        System.out.println("update account with ID " + user.getId() + "successfully");
+        return State.Success.value;
     }
 
     /**

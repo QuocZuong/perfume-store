@@ -18,12 +18,8 @@ import Exceptions.PhoneNumberDuplicationException;
 import Exceptions.UsernameDuplicationException;
 import Interfaces.DAOs.IEmployeeDAO;
 import Lib.Converter;
+import Lib.Generator;
 import Models.Role;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.TimeZone;
 
 public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
 
@@ -128,16 +124,19 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
 
         employee.setId(rs.getInt("Employee_ID"));
         employee.setCitizenId(rs.getNString("Employee_Citizen_ID"));
-        employee.setDateOfBirth(rs.getDate("Employee_DoB"));
+        employee.setDateOfBirth(rs.getLong("Employee_DoB"));
         employee.setPhoneNumber(rs.getString("Employee_Phone_Number"));
         employee.setAddress(rs.getNString("Employee_Address"));
         Role role = new Role();
         role.setId(rs.getInt("Role_ID"));
         role.setName(rs.getString("Role_Name"));
         employee.setRole(role);
-        employee.setJoinDate(rs.getDate("Employee_Join_Date"));
-        employee.setRetireDate(rs.getDate("Employee_Retire_Date"));
-
+        employee.setJoinDate(rs.getLong("Employee_Join_Date"));
+        if (rs.getLong("Employee_Retire_Date") == 0) {
+            employee.setRetireDate(null);
+        } else {
+            employee.setRetireDate(rs.getLong("Employee_Retire_Date"));
+        }
         return employee;
     }
 
@@ -164,15 +163,19 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
 
         employee.setEmployeeId(rs.getInt("Employee_ID"));
         employee.setCitizenId(rs.getNString("Employee_Citizen_ID"));
-        employee.setDateOfBirth(rs.getDate("Employee_DoB"));
+        employee.setDateOfBirth(rs.getLong("Employee_DoB"));
         employee.setPhoneNumber(rs.getString("Employee_Phone_Number"));
         employee.setAddress(rs.getNString("Employee_Address"));
         Role role = new Role();
         role.setId(rs.getInt("Role_ID"));
         role.setName(rs.getString("Role_Name"));
         employee.setRole(role);
-        employee.setJoinDate(rs.getDate("Employee_Join_Date"));
-        employee.setRetireDate(rs.getDate("Employee_Retire_Date"));
+        employee.setJoinDate(rs.getLong("Employee_Join_Date"));
+        if (rs.getLong("Employee_Retire_Date") == 0) {
+            employee.setRetireDate(null);
+        } else {
+            employee.setRetireDate(rs.getLong("Employee_Retire_Date"));
+        }
 
         return employee;
     }
@@ -224,14 +227,17 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
     public Employee getEmployee(int EmployeeId) {
         ResultSet rs;
 
-        String sql = "SELECT * FROM Employee WHERE [Employee_ID] = ?";
+        String sql = "SELECT * FROM Employee emp\n"
+                + "            JOIN [User] ON emp.[User_ID] = [User].[User_ID]\n"
+                + "              JOIN [Employee_Role] empR ON emp.Employee_Role = empR.Role_ID\n"
+                + "              WHERE emp.Employee_ID = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, EmployeeId);
             rs = ps.executeQuery();
             Employee employee = null;
             if (rs.next()) {
-                employee = generateEmployeeByResultSet(rs);
+                employee = generateFullyEmployeeByResultSet(rs);
             }
             return employee;
         } catch (SQLException ex) {
@@ -352,18 +358,25 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
                 + "	?"; // 11. Role name
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
+
             ps.setNString(1, employee.getName());
             ps.setString(2, employee.getUsername());
             ps.setString(3, Converter.convertToMD5Hash(employee.getPassword()));
             ps.setString(4, employee.getEmail());
             ps.setString(5, employee.getCitizenId());
-            ps.setDate(6, employee.getDateOfBirth());
+            ps.setLong(6, employee.getDateOfBirth());
             ps.setString(7, employee.getPhoneNumber());
             ps.setNString(8, employee.getAddress());
-            ps.setDate(9, employee.getJoinDate());
-            ps.setDate(10, employee.getRetireDate());
+            ps.setLong(9, employee.getJoinDate());
+            if (employee.getRetireDate() == null) {
+                ps.setNull(10, java.sql.Types.BIGINT);
+            } else {
+                ps.setLong(10, employee.getRetireDate());
+            }
             ps.setString(11, employee.getRole().getName());
+
             result = ps.executeUpdate();
+
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -379,11 +392,15 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, employee.getCitizenId());
-            ps.setDate(2, employee.getDateOfBirth());
+            ps.setLong(2, employee.getDateOfBirth());
             ps.setString(3, employee.getPhoneNumber());
             ps.setString(4, employee.getAddress());
-            ps.setDate(5, employee.getJoinDate());
-            ps.setDate(6, employee.getRetireDate());
+            ps.setLong(5, employee.getJoinDate());
+            if (employee.getRetireDate() == null) {
+                ps.setNull(6, java.sql.Types.BIGINT);
+            } else {
+                ps.setLong(6, employee.getRetireDate());
+            }
             ps.setInt(7, employee.getEmployeeId());
 
             result = ps.executeUpdate();
@@ -394,7 +411,7 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
         return result;
     }
 
-    public int updateEmployeeRetireDate(int employeeId, Date retireDate) {
+    public int updateEmployeeRetireDate(int employeeId, long retireDate) {
         int result = -1;
 
         String sql = "UPDATE Employee SET Employee_Retire_Date = ? WHERE Employee_ID = ?";
@@ -402,7 +419,7 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
             PreparedStatement ps = conn.prepareStatement(sql);
             System.out.println("employeeId: " + employeeId);
             System.out.println("retireDate: " + retireDate);
-            ps.setDate(1, retireDate);
+            ps.setLong(1, retireDate);
             ps.setInt(2, employeeId);
             result = ps.executeUpdate();
             System.out.println("result of updateEmployeeRetireDate: " + result);
@@ -416,8 +433,7 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
     /*--------------------- DELETE SECTION ---------------------  */
     public boolean disableEmployee(Employee employee) {
         try {
-            java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
-            employee.setRetireDate(currentDate);
+            employee.setRetireDate(Generator.getCurrentTimeFromEpochMilli());
             updateEmployeeRetireDate(employee.getEmployeeId(), employee.getRetireDate());
             return true;
         } catch (Exception e) {
@@ -429,7 +445,7 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
     /*--------------------- RESTORE SECTION ---------------------  */
     public boolean restoreEmployee(Employee employee) {
         try {
-            employee.setRetireDate(null);
+            employee.setRetireDate(Long.valueOf(0));
             updateEmployeeRetireDate(employee.getEmployeeId(), employee.getRetireDate());
             return true;
         } catch (Exception e) {

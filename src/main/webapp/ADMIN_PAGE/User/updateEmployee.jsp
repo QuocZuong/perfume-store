@@ -1,3 +1,5 @@
+<%@page import="Lib.Generator.DatePattern"%>
+<%@page import="Lib.Generator"%>
 <%@page import="Lib.ExceptionUtils"%>
 <%@page import="Models.Employee"%>
 <%@page import="DAOs.ProductDAO"%>
@@ -128,7 +130,7 @@
                         </div>
                         <div class="dateOfBirth">
                             <label>Date of birth *</label>
-                            <input type="date" name="txtDOB" value="<%= employee.getDateOfBirth()%>" />
+                            <input type="date" name="txtDOB" value="<%= Generator.getDateTime(employee.getDateOfBirth(), DatePattern.DateSqlPattern)%>" />
                         </div>
                         <div class="phone">
                             <label>Phone Number *</label>
@@ -159,11 +161,11 @@
                         </div>
                         <div class="joinDate">
                             <label>Join date *</label>
-                            <input type="date" name="txtJoinDate" value="<%= employee.getJoinDate()%>" />
+                            <input type="date" name="txtJoinDate" value="<%= Generator.getDateTime(employee.getJoinDate(), DatePattern.DateSqlPattern)%>" />
                         </div>
                         <div class="retireDate">
-                            <label>Retire date*</label>
-                            <input type="date" name="txtRetireDate" value="<%= employee.getRetireDate()%>"/>
+                            <label>Retire date *</label>
+                            <input type="date" name="txtRetireDate" value="<%= employee.getRetireDate() == null ? "" : Generator.getDateTime(employee.getRetireDate(), DatePattern.DateSqlPattern)%>"/>
                         </div>
                         <button type="submit" name="btnUpdateEmployee" value="Submit" class="btnUpdateEmployee mb-3">
                             Update Employee

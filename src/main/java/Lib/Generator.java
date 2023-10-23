@@ -1,12 +1,14 @@
 package Lib;
 
 import DAOs.UserDAO;
-import Models.User;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.security.SecureRandom;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -18,6 +20,23 @@ public class Generator {
     private static final String SPECIAL_CHARS = "!@#$%^&*()_+~`|}{[]:;?><,./-=";
     private static final String ALL_ALLOWED_CHARS = CHAR_LOWER + CHAR_UPPER + NUMBER + SPECIAL_CHARS;
     private static final Random random = new SecureRandom();
+
+    public static enum DatePattern {
+
+        DateForwardSlashPattern("dd/MM/yyyy"),
+        DateDashPattern("dd-MM-yyyy"),
+        DateSqlPattern("yyyy-MM-dd"),
+        DateTimeForwardSlashPattern("dd/MM/yyyy HH:mm:ss.SSS"),
+        DateTimeDashPattern("dd-MM-yyyy HH:mm:ss.SSS"),
+        DateTimeActivityLog("yyyy-MM-dd HH:mm:ss");
+
+        public String pattern;
+
+        private DatePattern(String pattern) {
+            this.pattern = pattern;
+        }
+
+    };
 
     public static String generatePassword(int length) {
         StringBuilder sb = new StringBuilder(length);
@@ -70,11 +89,25 @@ public class Generator {
         return dtf.format(now);
     }
 
+    public static String generateDate() {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        LocalDateTime now = LocalDateTime.now();
+
+        return dtf.format(now);
+    }
+
+    public static String generateDateCustomPattern(DatePattern pattern) {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(pattern.pattern);
+        LocalDateTime now = LocalDateTime.now();
+
+        return dtf.format(now);
+    }
+
     /**
-     * Get the filtered list from the original list, according to its page and num
-     * of row.
-     * 
-     * @param <T>  The type of the list.
+     * Get the filtered list from the original list, according to its page and
+     * num of row.
+     *
+     * @param <T> The type of the list.
      * @param list The original list.
      * @param page The page number.
      * @param rows The number of rows per page.
@@ -100,4 +133,26 @@ public class Generator {
         return subList;
     }
 
+    /**
+     * Get the current time in milliseconds.
+     *
+     * @return a long number that represents the current time in milliseconds
+     * from the epoch (1970-01-01).
+     */
+    public static long getCurrentTimeFromEpochMilli() {
+        return Instant.now().toEpochMilli();
+    }
+
+    /**
+     * Get the time string in a specific format.
+     *
+     * @param epochMilli The time in milliseconds from the epoch (1970-01-01).
+     * @param pattern The format of the time string, as defined in
+     * {@link Generator#DatePattern}.
+     * @return The time string in the specified format.
+     */
+    public static String getDateTime(long epochMilli, DatePattern pattern) {
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern.pattern);
+        return sdf.format(new Date(epochMilli));
+    }
 }

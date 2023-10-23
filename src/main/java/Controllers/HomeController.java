@@ -1,7 +1,6 @@
 
 package Controllers;
 
-import static Controllers.CustomerController.CUSTOMER_CART_URI;
 import Lib.EmailSender;
 import java.io.IOException;
 

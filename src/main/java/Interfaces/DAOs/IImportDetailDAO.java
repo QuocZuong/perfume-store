@@ -1,7 +1,6 @@
 package Interfaces.DAOs;
 
 import Models.ImportDetail;
-import java.util.ArrayList;
 import java.util.List;
 
 public interface IImportDetailDAO {

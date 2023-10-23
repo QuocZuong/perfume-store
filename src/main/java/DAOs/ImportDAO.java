@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package DAOs;
 
 import Interfaces.DAOs.IImportDAO;
@@ -17,14 +13,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Admin
- */
 public class ImportDAO implements IImportDAO {
-    
+
     private Connection conn;
-    
+
     public ImportDAO() {
         conn = DB.DBContext.getConnection();
     }
@@ -41,8 +33,8 @@ public class ImportDAO implements IImportDAO {
             ps.setInt(1, ip.getTotalQuantity());
             ps.setInt(2, ip.getTotalCost());
             ps.setString(3, ip.getSupplierName());
-            ps.setDate(4, ip.getImportAt());
-            ps.setDate(5, ip.getDeliveredAt());
+            ps.setLong(4, ip.getImportAt());
+            ps.setLong(5, ip.getDeliveredAt());
             ps.setInt(6, ip.getImportByInventoryManager());
             result = ps.executeUpdate();
             int addImportDetailResult = ipdDAO.addAllImportDetailOfImport(ip.getImportDetail());
@@ -64,7 +56,7 @@ public class ImportDAO implements IImportDAO {
     /* ------------------------- READ SECTION ---------------------------- */
     @Override
     public List<Import> getAllImport() {
-        List<Import> arrImport = new ArrayList();
+        List<Import> arrImport = new ArrayList<>();
         List<ImportDetail> ipD;
         Import ip;
         ImportDetailDAO ipdDAO = new ImportDetailDAO();
@@ -83,8 +75,8 @@ public class ImportDAO implements IImportDAO {
                 ip.setTotalQuantity(total_quan);
                 ip.setTotalCost(total_cost);
                 ip.setSupplierName(rs.getNString("Supplier_Name"));
-                ip.setImportAt(rs.getDate("Import_At"));
-                ip.setDeliveredAt(rs.getDate("Delivered_At"));
+                ip.setImportAt(rs.getLong("Import_At"));
+                ip.setDeliveredAt(rs.getLong("Delivered_At"));
                 ip.setImportByInventoryManager(rs.getInt("Import_By_Inventory_Manager"));
                 ip.setImportDetail(ipD);
                 arrImport.add(ip);
@@ -94,7 +86,7 @@ public class ImportDAO implements IImportDAO {
         }
         return arrImport;
     }
-    
+
     @Override
     public Import getImport(int ipId) {
         List<ImportDetail> ipD;
@@ -112,8 +104,8 @@ public class ImportDAO implements IImportDAO {
                 ip.setTotalQuantity(ipdDAO.getTotalQuantityImportDetail(ipD));
                 ip.setTotalCost(ipdDAO.getTotalCostImportDetail(ipD));
                 ip.setSupplierName(rs.getNString("Supplier_Name"));
-                ip.setImportAt(rs.getDate("Import_At"));
-                ip.setDeliveredAt(rs.getDate("Delivered_At"));
+                ip.setImportAt(rs.getLong("Import_At"));
+                ip.setDeliveredAt(rs.getLong("Delivered_At"));
                 ip.setImportByInventoryManager(rs.getInt("Import_By_Inventory_Manager"));
                 ip.setImportDetail(ipD);
             }
@@ -136,5 +128,5 @@ public class ImportDAO implements IImportDAO {
         }
         return result;
     }
-    
+
 }

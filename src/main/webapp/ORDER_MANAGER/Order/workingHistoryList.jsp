@@ -1,16 +1,18 @@
-
+<%@page import="DAOs.EmployeeDAO"%>
 <%@page import="Lib.Generator"%>
 <%@page import="DAOs.CustomerDAO"%>
 <%@page import="DAOs.OrderDAO"%>
 <%@page import="Lib.ExceptionUtils"%>
 <%@page import="Lib.Converter"%>
-<%@page import="Lib.Generator"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="Models.Order"%>
+<%@page import="Models.User"%>
+<%@page import="Models.Employee"%>
 <%@page import="Models.Customer"%>
 <%@page import="Models.OrderManager"%>
 <%@page import="DAOs.BrandDAO"%>
+<%@page import="DAOs.UserDAO"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="DAOs.ProductDAO"%>
 <%@page import="DAOs.OrderManagerDAO"%>
@@ -20,10 +22,13 @@
 
 <%! OrderDAO oAO = new OrderDAO();%>
 <%! CustomerDAO cDAO = new CustomerDAO();%>
+<%! UserDAO usDAO = new UserDAO();%>
+<%! OrderManagerDAO omDAO = new OrderManagerDAO();%>
 <%! ResultSet rs = null;%>
 <%! List<Order> orderList = null; %>
 <%! int currentPage, numberOfPage;%>
 <%! boolean isAdmin, isOrderManager;%>
+<%!String username;%>
 
 <%
     orderList = (List<Order>) request.getAttribute("orderList");
@@ -33,6 +38,30 @@
     String queryString = request.getQueryString();
     boolean isError = ExceptionUtils.isWebsiteError(queryString);
     String exceptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
+
+    Cookie currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
+    User user = usDAO.getUser(currentUserCookie.getValue());
+    username = user.getUsername();
+    OrderManager currentManager = omDAO.getOrderManager(username);
+
+    if (orderList != null && orderList.size() > 0) {
+        for (int i = 0; i < orderList.size(); i++) {
+
+            boolean isCurrentManagerWork = orderList.get(i).getUpdateByOrderManager() == currentManager.getOrderManagerId();
+            System.out.println("Comparing current manager id: " + currentManager.getId() + " with order manager id: " + orderList.get(i).getUpdateByOrderManager() + " result: " + isCurrentManagerWork);
+            
+            if (!isCurrentManagerWork) {
+                orderList.remove(i);
+                i--;
+            }
+
+        }
+
+        // Sort the order list by id
+        orderList.sort((Order o1, Order o2) -> {
+            return o2.getId() - o1.getId();
+        });
+    }
 %>
 <!DOCTYPE html>
 <html>
@@ -73,7 +102,7 @@
       <!--Navbar section-->
       <div class="row">
         <div class="col-md-12 nav">
-          <jsp:include page="/NAVBAR/AdminNavbar.jsp"></jsp:include>
+          <jsp:include page="/NAVBAR/OrderManagerNavbar.jsp"></jsp:include>
           </div>
         </div>
 
@@ -123,6 +152,7 @@
                                             orderManagerName = om.getName();
                                         }
 
+                                        String createAt = o.getCreatedAt(Generator.DatePattern.DateSqlPattern);
                                         String checkoutAt = o.getCheckoutAt() == null ? "" : o.getCheckoutAt(Generator.DatePattern.DateSqlPattern);
                                         String updateAt = o.getUpdateAt() == null ? "" : o.getUpdateAt(Generator.DatePattern.DateSqlPattern);
 
@@ -137,32 +167,32 @@
                     <td class="<%= isActive ? " " : "faded"%>"><%= o.getTotal()%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= o.getDeductedPrice()%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= o.getStatus()%></td>
-                    <td class="<%= isActive ? " " : "faded"%>"><%= o.getCreatedAt(Generator.DatePattern.DateSqlPattern)%></td>                                        
+                    <td class="<%= isActive ? " " : "faded"%>"><%= createAt%></td>              
                     <td class="<%= isActive ? " " : "faded"%>"><%= checkoutAt%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= updateAt%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= orderManagerName%></td>
 
                     <td class="<%= isActive ? " " : "faded"%>">
-                      <a href="/Admin/User/OrderDetail/ID/<%= o.getId()%>" class="<%= isActive ? "" : "disabled"%> btn btn-outline-primary rounded-0">🤔</a>
+                      <a href="/OrderManager/Order/Detail/ID/<%= o.getId()%>" class="<%= isActive ? "" : "disabled"%> btn btn-outline-primary rounded-0">🤔</a>
                     </td>
                     <c:choose>
                       <c:when test='<%= isAccepted%>'>
                         <td class="buttonStatus faded" colspan=2>
-                          <a href="/Admin/Order/ID/<%= o.getId()%>/Accept" class="btn btn-outline-success rounded-0">✅</a>
+                          <a href="/OrderManager/ACCEPT/Order/ID/<%= o.getId()%>" class="btn btn-outline-success rounded-0">✅</a>
                         </td>
                       </c:when>
                       <c:when test='<%= isRejected%>'>
                         <td class="buttonStatus faded" colspan=2>
-                        <a href="/Admin/Order/ID/<%= o.getId()%>/Reject" class="btn btn-outline-danger rounded-0">❌</a>
-                      </td>
+                          <a href="/OrderManager/REJECT/Order/ID/<%= o.getId()%>" class="btn btn-outline-danger rounded-0">❌</a>
+                        </td>
                       </c:when>
                       <c:otherwise>
-                      <td class="buttonStatus">
-                          <a href="/Admin/Order/ID/<%= o.getId()%>/Accept" class="btn btn-outline-success rounded-0">✅</a>
+                        <td class="buttonStatus">
+                          <a href="/OrderManager/ACCEPT/Order/ID/<%= o.getId()%>" class="btn btn-outline-success rounded-0">✅</a>
                         </td>
-                      <td class="buttonStatus">
-                        <a href="/Admin/Order/ID/<%= o.getId()%>/Reject" class="btn btn-outline-danger rounded-0">❌</a>
-                      </td>
+                        <td class="buttonStatus">
+                          <a href="/OrderManager/REJECT/Order/ID/<%= o.getId()%>" class="btn btn-outline-danger rounded-0">❌</a>
+                        </td>
                       </c:otherwise>
                     </c:choose>
                   </tr>
@@ -180,29 +210,29 @@
 
     <nav aria-label="...">
       <ul class="pagination">
-        <li class="page-item"><a class="page-link" href="/Admin/Order/List/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-left" style="color: #000000;"></i></a></li>
-        <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>"><a class="page-link" href="/Admin/Order/List/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></a></li>
+        <li class="page-item"><a class="page-link" href="/OrderManager/Order/List/HistoryWork/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-left" style="color: #000000;"></i></a></li>
+        <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>"><a class="page-link" href="/OrderManager/Order/List/HistoryWork/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></a></li>
             <c:forEach var="i" begin="${page-2<0?0:page-2}" end="${page+2 +1}">
               <c:choose>
                 <c:when test="${i==page}">
-              <li class="page-item active"><a href="/Admin/Order/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
+              <li class="page-item active"><a href="/OrderManager/Order/List/HistoryWork/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
               </c:when>
               <c:when test="${i>0 && i<=numberOfPage}"> 
-              <li class="page-item"><a href="/Admin/Order/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
+              <li class="page-item"><a href="/OrderManager/Order/List/HistoryWork/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
               </c:when>
               <c:otherwise>
               </c:otherwise>
             </c:choose>
           </c:forEach>
-        <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>"><a class="page-link" href="/Admin/Order/List/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a></li>
-        <li class="page-item"><a class="page-link" href="/Admin/Order/List/page/${numberOfPage}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-right" style="color: #000000;"></i></a></li>
+        <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>"><a class="page-link" href="/OrderManager/Order/List/HistoryWork/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a></li>
+        <li class="page-item"><a class="page-link" href="/OrderManager/Order/List/HistoryWork/page/${numberOfPage}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-right" style="color: #000000;"></i></a></li>
       </ul>
     </nav>
     <script>
       function changeLink() {
         let SearchURL = document.getElementById("inputSearch").value;
         SearchURL = encodeURIComponent(SearchURL);
-        document.getElementById("Search").href = "/Admin/Order/List/page/1?txtSearch=" + SearchURL;
+        document.getElementById("Search").href = "/OrderManager/Order/List/HistoryWork/page/1?txtSearch=" + SearchURL;
       }
     </script>
     <script

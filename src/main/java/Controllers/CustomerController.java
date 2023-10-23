@@ -6,13 +6,8 @@ import DAOs.DeliveryAddressDAO;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.security.auth.login.AccountNotFoundException;
 
 import DAOs.OrderDAO;
 import DAOs.ProductDAO;
@@ -24,8 +19,6 @@ import Exceptions.InvalidInputException;
 import Exceptions.InvalidVoucherException;
 import Exceptions.NotEnoughInformationException;
 import Exceptions.NotEnoughVoucherQuantityException;
-import Exceptions.OperationAddFailedException;
-import Exceptions.PhoneNumberDuplicationException;
 import Exceptions.UsernameDuplicationException;
 import Exceptions.VoucherNotFoundException;
 import Exceptions.WrongPasswordException;
@@ -369,7 +362,7 @@ public class CustomerController extends HttpServlet {
         da.setPhoneNumber(phoneNumber);
         da.setStatus(status);
         da.setReceiverName(receiverName);
-        da.setCreateAt(Generator.generateDateTime());
+        da.setCreateAt(Generator.getCurrentTimeFromEpochMilli());
         da.setModifiedAt(da.getCreateAt());
 
         // If the address is set to default, set all other addresses to non-default
@@ -472,29 +465,31 @@ public class CustomerController extends HttpServlet {
 
             int orderId = Integer.parseInt(data[data.length - 1]);
             Order order = oDAO.getOrderByOrderId(orderId);
-            Voucher v = vDAO.getVoucher(order.getVoucherId());
 
-            List<OrderDetail> orderDetailList = order.getOrderDetailList();
-            List<Product> approvedProductsList = new ArrayList<>();
+            if (order.getVoucherId() != 0) {
+                Voucher v = vDAO.getVoucher(order.getVoucherId());
 
-            // Get the list of all product that is approviate for voucher discount.
-            Product p;
-            if (v != null) {
-                int sumDeductPrice = 0;
-                System.out.println("Order detail list size:" + orderDetailList.size());
-                System.out.println("Approved product list size:" + v.getApprovedProductId().size());
-                for (int i = 0; i < orderDetailList.size(); i++) {
-                    if (v.getApprovedProductId().contains(orderDetailList.get(i).getProductId())) {
-                        p = pDAO.getProduct(orderDetailList.get(i).getProductId());
-                        approvedProductsList.add(p);
-                        sumDeductPrice += p.getStock().getPrice() * v.getDiscountPercent() / 100;
+                List<OrderDetail> orderDetailList = order.getOrderDetailList();
+                List<Product> approvedProductsList = new ArrayList<>();
+
+                // Get the list of all product that is approviate for voucher discount.
+                Product p;
+                if (v != null) {
+                    int sumDeductPrice = 0;
+                    System.out.println("Order detail list size:" + orderDetailList.size());
+                    System.out.println("Approved product list size:" + v.getApprovedProductId().size());
+                    for (int i = 0; i < orderDetailList.size(); i++) {
+                        if (v.getApprovedProductId().contains(orderDetailList.get(i).getProductId())) {
+                            p = pDAO.getProduct(orderDetailList.get(i).getProductId());
+                            approvedProductsList.add(p);
+                            sumDeductPrice += p.getStock().getPrice() * v.getDiscountPercent() / 100;
+                        }
                     }
+                    request.setAttribute("sumDeductPrice", sumDeductPrice);
                 }
-                request.setAttribute("sumDeductPrice", sumDeductPrice);
+                request.setAttribute("approvedProductsList", approvedProductsList);
+                // Get the list of all product that is approviate for voucher discount.
             }
-            request.setAttribute("approvedProductsList", approvedProductsList);
-            // Get the list of all product that is approviate for voucher discount.
-
             System.out.println("Get order detail list");
             System.out.println(order.getOrderDetailList());
 
@@ -719,12 +714,12 @@ public class CustomerController extends HttpServlet {
             da.setAddress(address);
             da.setStatus(status);
             da.setReceiverName(receiverName);
-            da.setModifiedAt(Generator.generateDateTime());
+            da.setModifiedAt(Generator.getCurrentTimeFromEpochMilli());
 
             if (existingDa != null) { // Doesn't update the create at, since it already existed
                 da.setCreateAt(existingDa.getCreateAt());
             } else { // Also update the new create at
-                da.setCreateAt(Generator.generateDateTime());
+                da.setCreateAt(Generator.getCurrentTimeFromEpochMilli());
             }
 
         } catch (Exception e) {
@@ -870,7 +865,7 @@ public class CustomerController extends HttpServlet {
             try {
                 // Kiem tra tinh hop le va quang exception
                 if (vDAO.checkValidVoucher(v, cus.getCustomerId())) {
-                    List<Product> approveVoucherProduct = new ArrayList();
+                    List<Product> approveVoucherProduct = new ArrayList<>();
                     for (int i = 0; i < cartItemList.size(); i++) {
                         if (v.getApprovedProductId().contains(cartItemList.get(i).getProductId())) {
                             approveVoucherProduct.add(pDAO.getProduct(cartItemList.get(i).getProductId()));
@@ -972,7 +967,7 @@ public class CustomerController extends HttpServlet {
             try {
                 // Kiem tra tinh hop le va quang exception
                 if (vDAO.checkValidVoucher(v, cus.getCustomerId())) {
-                    List<Product> approveVoucherProduct = new ArrayList();
+                    List<Product> approveVoucherProduct = new ArrayList<>();
                     for (int i = 0; i < cartItemList.size(); i++) {
                         if (v.getApprovedProductId().contains(cartItemList.get(i).getProductId())) {
                             approveVoucherProduct.add(pDAO.getProduct(cartItemList.get(i).getProductId()));
@@ -1018,8 +1013,7 @@ public class CustomerController extends HttpServlet {
             System.out.println("sumdeducttprice:" + sumDeductPrice);
         }
 
-        String now = new SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date());
-        Date nowDate = Date.valueOf(now);
+        long nowDate = Generator.getCurrentTimeFromEpochMilli();
 
         boolean result = checkout(CustomerID, voucherID, receiverName, Address, Phone, Note, Total, sumDeductPrice,
                 nowDate, cartItemList);
@@ -1042,8 +1036,9 @@ public class CustomerController extends HttpServlet {
     }
 
     public boolean checkout(int customerId, int voucherId, String orderReceiverName, String orderDeliveryAddress,
-            String orderPhoneNumber, String orderNote, int orderTotal, int orderDeductPrice, Date orderCreateAt,
+            String orderPhoneNumber, String orderNote, int orderTotal, int orderDeductPrice, long orderCreateAt,
             List<CartItem> itemsCheckout) {
+
         Order od = new Order();
         od.setCustomerId(customerId);
         od.setReceiverName(orderReceiverName);
@@ -1052,6 +1047,7 @@ public class CustomerController extends HttpServlet {
         od.setTotal(orderTotal);
         od.setStatus(IOrderDAO.status.PENDING.toString());
         od.setCreatedAt(orderCreateAt);
+
         // nullable
         if (voucherId != 0) {
             od.setVoucherId(voucherId);
@@ -1062,6 +1058,7 @@ public class CustomerController extends HttpServlet {
         }
 
         List<OrderDetail> orderDetailList = new ArrayList<>();
+
         for (int i = 0; i < itemsCheckout.size(); i++) {
             OrderDetail item = new OrderDetail();
             item.setProductId(itemsCheckout.get(i).getProductId());
@@ -1070,6 +1067,7 @@ public class CustomerController extends HttpServlet {
             item.setTotal(itemsCheckout.get(i).getSum());
             orderDetailList.add(item);
         }
+
         od.setOrderDetailList(orderDetailList);
         OrderDAO odDAO = new OrderDAO();
         boolean result = odDAO.addOrder(od);

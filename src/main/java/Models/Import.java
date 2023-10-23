@@ -1,26 +1,20 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Models;
 
-import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author Admin
- */
+import Lib.Generator;
+
 public class Import {
 
     private int Id;
     private int totalQuantity;
     private int totalCost;
     private String supplierName;
-    private Date importAt;
-    private Date deliveredAt;
+    private Long importAt;
+    private Long deliveredAt;
     private int importByInventoryManager;
+    private long modifiedAt;
+    private int modifiedByAdmin;
 
     private List<ImportDetail> importDetail;
 
@@ -59,19 +53,27 @@ public class Import {
         this.supplierName = supplierName;
     }
 
-    public Date getImportAt() {
+    public String getImportAt(Generator.DatePattern pattern) {
+        return Generator.getDateTime(importAt, pattern);
+    }
+
+    public Long getImportAt() {
         return importAt;
     }
 
-    public void setImportAt(Date importAt) {
+    public void setImportAt(Long importAt) {
         this.importAt = importAt;
     }
 
-    public Date getDeliveredAt() {
+    public String getDeliveredAt(Generator.DatePattern pattern) {
+        return Generator.getDateTime(deliveredAt, pattern);
+    }
+
+    public Long getDeliveredAt() {
         return deliveredAt;
     }
 
-    public void setDeliveredAt(Date deliveredAt) {
+    public void setDeliveredAt(Long deliveredAt) {
         this.deliveredAt = deliveredAt;
     }
 
@@ -89,6 +91,26 @@ public class Import {
 
     public void setImportDetail(List<ImportDetail> importDetail) {
         this.importDetail = importDetail;
+    }
+
+    public String getModifiedAt(Generator.DatePattern pattern) {
+        return Generator.getDateTime(modifiedAt, pattern);
+    }
+
+    public long getModifiedAt() {
+        return modifiedAt;
+    }
+
+    public void setModifiedAt(long modifiedAt) {
+        this.modifiedAt = modifiedAt;
+    }
+
+    public int getModifiedByAdmin() {
+        return modifiedByAdmin;
+    }
+
+    public void setModifiedByAdmin(int modifiedByAdmin) {
+        this.modifiedByAdmin = modifiedByAdmin;
     }
 
 }

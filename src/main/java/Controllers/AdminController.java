@@ -103,10 +103,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -194,7 +194,7 @@ public class AdminController extends HttpServlet {
         }
 
         if (path.startsWith(ADMIN_ORDER_MANAGER_ACTIVITY_LOG_URI)) {
-            adminActivityLog(request, response);
+            orderManagerActivityLog(request, response);
             request.getRequestDispatcher("/ADMIN_PAGE/User/orderManagerActivityLog.jsp").forward(request, response);
             return;
         }
@@ -283,10 +283,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -453,7 +453,6 @@ public class AdminController extends HttpServlet {
         String eAddress = request.getParameter("txtAddress");
         String eJoinDate = request.getParameter("txtJoinDate");
         Role eRole = eDAO.getRole(Integer.parseInt(request.getParameter("txtRole")));
-        System.out.println("Vao add employee");
         Employee employeeToAdd = new Employee();
 
         // For checking duplicate
@@ -515,16 +514,13 @@ public class AdminController extends HttpServlet {
         employeeToAdd.setEmail(uEmail);
         employeeToAdd.setType("Employee");
         employeeToAdd.setCitizenId(eCitizenId);
-        employeeToAdd.setDateOfBirth(Converter.convertStringToDate(eDateOfBirth));
+        employeeToAdd.setDateOfBirth(Converter.convertStringToEpochMilli(eDateOfBirth));
         employeeToAdd.setPhoneNumber(ePhoneNumber);
         employeeToAdd.setAddress(eAddress);
-        employeeToAdd.setJoinDate(Converter.convertStringToDate(eJoinDate));
+        employeeToAdd.setJoinDate(Converter.convertStringToEpochMilli(eJoinDate));
         employeeToAdd.setRetireDate(null);
         employeeToAdd.setRole(eRole);
 
-        System.out.println("employee join date: " + employeeToAdd.getJoinDate());
-        System.out.println("employee DOB date: " + employeeToAdd.getDateOfBirth());
-        System.out.println("Da build");
         int result = 0;
 
         result = eDAO.addEmployee(employeeToAdd);
@@ -665,6 +661,36 @@ public class AdminController extends HttpServlet {
         request.setAttribute("page", page);
         request.setAttribute("numberOfPage", NumberOfPage);
         request.setAttribute("listActivityLogs", listAdminActivityLogs);
+        request.setAttribute("Search", Search);
+    }
+
+    private void orderManagerActivityLog(HttpServletRequest request, HttpServletResponse response) {
+        String URI = request.getRequestURI();
+        String data[] = URI.split("/");
+        int page = 1;
+        int rows = 20;
+        String Search = request.getParameter("txtSearch");
+        OrderDAO orderDAO = new OrderDAO();
+
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("page")) {
+                page = Integer.parseInt(data[i + 1]);
+            }
+        }
+
+        if (Search == null || Search.equals("")) {
+            Search = "%";
+        }
+
+        List<Order> adminActivityLogsFromSearch = orderDAO.searchOrderActivityLog(Search);
+        List<Order> listOrderActivityLogs = Generator.pagingList(adminActivityLogsFromSearch, page, rows);
+
+        final int ROWS = 20;
+        int NumberOfPage = adminActivityLogsFromSearch.size() / ROWS;
+        NumberOfPage = (adminActivityLogsFromSearch.size() % ROWS == 0 ? NumberOfPage : NumberOfPage + 1);
+        request.setAttribute("page", page);
+        request.setAttribute("numberOfPage", NumberOfPage);
+        request.setAttribute("listActivityLogs", listOrderActivityLogs);
         request.setAttribute("Search", Search);
     }
 
@@ -831,7 +857,6 @@ public class AdminController extends HttpServlet {
 
     private boolean updateCustomer(HttpServletRequest request, HttpServletResponse response) {
         UserDAO uDAO = new UserDAO();
-        EmployeeDAO eDAO = new EmployeeDAO();
         int result = 0;
 
         // [User] Update Section
@@ -1052,10 +1077,10 @@ public class AdminController extends HttpServlet {
 
         // Start to update
         userForUpdate.setName(uName);
-        employeeForUpdate.setDateOfBirth(Converter.convertStringToDate(eDateOfBirth));
+        employeeForUpdate.setDateOfBirth(Converter.convertStringToEpochMilli(eDateOfBirth));
         employeeForUpdate.setAddress(eAddress);
-        employeeForUpdate.setJoinDate(Converter.convertStringToDate(eJoinDate));
-        employeeForUpdate.setRetireDate(Converter.convertStringToDate(eRetireDate));
+        employeeForUpdate.setJoinDate(Converter.convertStringToEpochMilli(eJoinDate));
+        employeeForUpdate.setRetireDate(Converter.convertStringToEpochMilli(eRetireDate));
 
         int result;
 

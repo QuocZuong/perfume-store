@@ -1,12 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package Controllers;
 
-import DAOs.EmployeeDAO;
 import DAOs.ImportDAO;
-import DAOs.ImportDetailDAO;
 import DAOs.ImportStashItemDAO;
 import DAOs.InventoryManagerDAO;
 import DAOs.ProductDAO;
@@ -14,27 +8,20 @@ import Interfaces.DAOs.IImportDetailDAO;
 import Lib.Converter;
 import Lib.ExceptionUtils;
 import Lib.Generator;
-import Models.Employee;
 import Models.Import;
 import Models.ImportDetail;
 import Models.ImportStashItem;
 import Models.InventoryManager;
 import Models.Product;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author Admin
- */
 public class InventoryManagerController extends HttpServlet {
 
     public static final String IVTR_MANAGER_USER_URI = "/InventoryManager";
@@ -42,6 +29,9 @@ public class InventoryManagerController extends HttpServlet {
 
     public static final String IVTR_MANAGER_PRODUCT_LIST_URI = "/InventoryManager/Product/List";
     public static final String IVTR_MANAGER_PRODUCT_IMPORT_URI = "/InventoryManager/ProductImport";
+
+    public static final String IVTR_MANAGER_IMPORT_LIST_URI = "/InventoryManager/Import/List";
+    public static final String IVTR_MANAGER_IMPORT_DETAIL_URI = "/InventoryManager/Import/Detail";
 
     public static final String IVTR_MANAGER_IMPORT_CART_URI = "/InventoryManager/ImportCart";
     public static final String IVTR_MANAGER_IMPORT_CART_DELETE_URI = "/InventoryManager/ImportCart/Delete";
@@ -125,6 +115,22 @@ public class InventoryManagerController extends HttpServlet {
             return;
         }
 
+        if (path.startsWith(IVTR_MANAGER_IMPORT_LIST_URI)
+                || path.startsWith(IVTR_MANAGER_IMPORT_LIST_URI + "/page")) {
+            System.out.println("Going Import List");
+            int result = searchImport(request);
+            if (path.endsWith("")) {
+            }
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/INVENTORY_MANAGER_PAGE/Import/list.jsp").forward(request, response);
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(
+                        IVTR_MANAGER_IMPORT_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+
+            return;
+        }
+
         if (path.startsWith(IVTR_MANAGER_USER_URI)) {
             response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
             response.setHeader("Pragma", "no-cache");
@@ -166,6 +172,44 @@ public class InventoryManagerController extends HttpServlet {
 
     }
 
+    private int searchImport(HttpServletRequest request) {
+        InventoryManagerDAO ivtrManaDAO = new InventoryManagerDAO();
+        ImportDAO ipDAO = new ImportDAO();
+        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+        String username = currentUserCookie.getValue();
+        InventoryManager ivtrManager = ivtrManaDAO.getInventoryManager(username);
+
+        if (ivtrManager == null) {
+            System.out.println("Unknow Username to import product");
+            request.setAttribute("exceptionType", "AccountNotFoundException");
+            return State.Fail.value;
+        }
+        String URI = request.getRequestURI();
+        String data[] = URI.split("/");
+        int page = 1;
+        int rows = 20;
+        String search = request.getParameter("txtSearch");
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("page")) {
+                page = Integer.parseInt(data[i + 1]);
+            }
+        }
+        List<Import> importList = new ArrayList<>();
+        //importList = ipDAO.fillterImport(importList, ivtrManager.getInventoryManagerId());
+        if (importList.isEmpty()) {
+            System.out.println("Empty import list");
+            request.setAttribute("exceptionType", "ImportNotFoundException");
+            return State.Fail.value;
+        }
+        int numberOfPage = (importList.size() / rows) + (importList.size() % rows == 0 ? 0 : 1);
+        importList = Generator.pagingList(importList, page, rows);
+        request.setAttribute("page", page);
+        request.setAttribute("numberOfPage", numberOfPage);
+        request.setAttribute("importList", importList);
+        request.setAttribute("search", search);
+        return State.Success.value;
+    }
+
     private int searchProduct(HttpServletRequest request, HttpServletResponse response) {
         String URI = request.getRequestURI();
         String data[] = URI.split("/");
@@ -187,7 +231,7 @@ public class InventoryManagerController extends HttpServlet {
         List<Product> productList = pDAO.searchProduct(search);
         if (productList.isEmpty()) {
             request.setAttribute("exceptionType", "ProductNotFoundException");
-            return InventoryManagerController.State.Fail.value;
+            return State.Fail.value;
         }
         int numberOfPage = (productList.size() / rows) + (productList.size() % rows == 0 ? 0 : 1);
         productList = Generator.pagingList(productList, page, rows);
@@ -197,7 +241,7 @@ public class InventoryManagerController extends HttpServlet {
         request.setAttribute("productList", productList);
         request.setAttribute("search", search);
 
-        return InventoryManagerController.State.Success.value;
+        return State.Success.value;
     }
 
     private int importProduct(HttpServletRequest request, HttpServletResponse response) {
@@ -360,8 +404,8 @@ public class InventoryManagerController extends HttpServlet {
         }
 
         String supplierName = request.getParameter("txtSupplier");
-        Date importAt = Converter.convertStringToDate(request.getParameter("txtImportAt"));
-        Date deliveredAt = Converter.convertStringToDate(request.getParameter("txtDeliveredAt"));
+        Long importAt = Converter.convertStringToEpochMilli(request.getParameter("txtImportAt"));
+        Long deliveredAt = Converter.convertStringToEpochMilli(request.getParameter("txtDeliveredAt"));
 
         if (supplierName == null || importAt == null || deliveredAt == null) {
             System.out.println("lack of information");

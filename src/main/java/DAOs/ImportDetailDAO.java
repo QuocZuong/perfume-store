@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package DAOs;
 
 import Interfaces.DAOs.IImportDetailDAO;
@@ -16,10 +12,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Admin
- */
 public class ImportDetailDAO implements IImportDetailDAO {
 
     private Connection conn;
@@ -165,7 +157,7 @@ public class ImportDetailDAO implements IImportDetailDAO {
     @Override
     public List<ImportDetail> getAllImportDetailOfImport(int ipId) {
         ResultSet rs;
-        List<ImportDetail> arrImportDetail = new ArrayList();
+        List<ImportDetail> arrImportDetail = new ArrayList<>();
         ImportDetail ipD;
         String sql = "SELECT * FROM Import_Detail\n"
                 + "WHERE Import_ID = ?";

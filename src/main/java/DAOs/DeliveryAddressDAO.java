@@ -41,8 +41,8 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
         deliveryAddress.setPhoneNumber(rs.getString("Phone_Number"));
         deliveryAddress.setAddress(rs.getNString("Address"));
         deliveryAddress.setStatus(rs.getNString("Status"));
-        deliveryAddress.setCreateAt(rs.getString("Create_At"));
-        deliveryAddress.setModifiedAt(rs.getString("Modified_At"));
+        deliveryAddress.setCreateAt(rs.getLong("Create_At"));
+        deliveryAddress.setModifiedAt(rs.getLong("Modified_At"));
 
         return deliveryAddress;
     }
@@ -59,8 +59,8 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
             ps.setNString(3, deliveryAddress.getPhoneNumber());
             ps.setNString(4, deliveryAddress.getAddress());
             ps.setNString(5, deliveryAddress.getStatus());
-            ps.setString(6, deliveryAddress.getCreateAt());
-            ps.setString(7, deliveryAddress.getModifiedAt());
+            ps.setLong(6, deliveryAddress.getCreateAt());
+            ps.setLong(7, deliveryAddress.getModifiedAt());
 
             return ps.executeUpdate();
         } catch (Exception e) {
@@ -133,8 +133,8 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
             ps.setString(3, deliveryAddress.getPhoneNumber());
             ps.setNString(4, deliveryAddress.getAddress());
             ps.setNString(5, deliveryAddress.getStatus());
-            ps.setString(6, deliveryAddress.getCreateAt());
-            ps.setString(7, deliveryAddress.getModifiedAt());
+            ps.setLong(6, deliveryAddress.getCreateAt());
+            ps.setLong(7, deliveryAddress.getModifiedAt());
             ps.setInt(8, deliveryAddress.getId());
 
             return ps.executeUpdate() > 0;
@@ -174,8 +174,8 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
                 ps.setString(2, deliveryAddress.getPhoneNumber());
                 ps.setNString(3, deliveryAddress.getAddress());
                 ps.setNString(4, deliveryAddress.getStatus());
-                ps.setString(5, deliveryAddress.getCreateAt());
-                ps.setString(6, deliveryAddress.getModifiedAt());
+                ps.setLong(5, deliveryAddress.getCreateAt());
+                ps.setLong(6, deliveryAddress.getModifiedAt());
                 ps.setInt(7, deliveryAddress.getId());
 
                 ps.addBatch();
