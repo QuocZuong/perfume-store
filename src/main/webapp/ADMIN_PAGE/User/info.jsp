@@ -131,7 +131,7 @@
                                     </div>
                                     <div class="employeeRetireDate">
                                         <label>Employee Retire Date: </label>
-                                        <p><%=employee.getRetireDate() == 0? "Not retired" : Generator.getDateTime(employee.getRetireDate(), DatePattern.DateForwardSlashPattern)%></p>
+                                        <p><%=employee.getRetireDate() == null? "Not retired" : Generator.getDateTime(employee.getRetireDate(), DatePattern.DateForwardSlashPattern)%></p>
                                     </div>  
                                  </c:when>
                                  
