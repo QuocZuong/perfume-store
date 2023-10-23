@@ -1,3 +1,4 @@
+<%@page import="DAOs.EmployeeDAO"%>
 <%@page import="Lib.Generator"%>
 <%@page import="DAOs.CustomerDAO"%>
 <%@page import="DAOs.OrderDAO"%>
@@ -6,9 +7,12 @@
 <%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="Models.Order"%>
+<%@page import="Models.User"%>
+<%@page import="Models.Employee"%>
 <%@page import="Models.Customer"%>
 <%@page import="Models.OrderManager"%>
 <%@page import="DAOs.BrandDAO"%>
+<%@page import="DAOs.UserDAO"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="DAOs.ProductDAO"%>
 <%@page import="DAOs.OrderManagerDAO"%>
@@ -18,10 +22,13 @@
 
 <%! OrderDAO oAO = new OrderDAO();%>
 <%! CustomerDAO cDAO = new CustomerDAO();%>
+<%! UserDAO usDAO = new UserDAO();%>
+<%! OrderManagerDAO omDAO = new OrderManagerDAO();%>
 <%! ResultSet rs = null;%>
 <%! List<Order> orderList = null; %>
 <%! int currentPage, numberOfPage;%>
 <%! boolean isAdmin, isOrderManager;%>
+<%!String username;%>
 
 <%
     orderList = (List<Order>) request.getAttribute("orderList");
@@ -32,8 +39,25 @@
     boolean isError = ExceptionUtils.isWebsiteError(queryString);
     String exceptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
 
-    // Sort the order list by id
+    Cookie currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
+    User user = usDAO.getUser(currentUserCookie.getValue());
+    username = user.getUsername();
+    OrderManager currentManager = omDAO.getOrderManager(username);
+
     if (orderList != null && orderList.size() > 0) {
+        for (int i = 0; i < orderList.size(); i++) {
+
+            boolean isCurrentManagerWork = orderList.get(i).getUpdateByOrderManager() == currentManager.getOrderManagerId();
+            System.out.println("Comparing current manager id: " + currentManager.getId() + " with order manager id: " + orderList.get(i).getUpdateByOrderManager() + " result: " + isCurrentManagerWork);
+            
+            if (!isCurrentManagerWork) {
+                orderList.remove(i);
+                i--;
+            }
+
+        }
+
+        // Sort the order list by id
         orderList.sort((Order o1, Order o2) -> {
             return o2.getId() - o1.getId();
         });
@@ -186,29 +210,29 @@
 
     <nav aria-label="...">
       <ul class="pagination">
-        <li class="page-item"><a class="page-link" href="/OrderManager/Order/List/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-left" style="color: #000000;"></i></a></li>
-        <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>"><a class="page-link" href="/OrderManager/Order/List/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></a></li>
+        <li class="page-item"><a class="page-link" href="/OrderManager/Order/List/HistoryWork/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-left" style="color: #000000;"></i></a></li>
+        <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>"><a class="page-link" href="/OrderManager/Order/List/HistoryWork/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></a></li>
             <c:forEach var="i" begin="${page-2<0?0:page-2}" end="${page+2 +1}">
               <c:choose>
                 <c:when test="${i==page}">
-              <li class="page-item active"><a href="/OrderManager/Order/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
+              <li class="page-item active"><a href="/OrderManager/Order/List/HistoryWork/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
               </c:when>
               <c:when test="${i>0 && i<=numberOfPage}"> 
-              <li class="page-item"><a href="/OrderManager/Order/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
+              <li class="page-item"><a href="/OrderManager/Order/List/HistoryWork/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
               </c:when>
               <c:otherwise>
               </c:otherwise>
             </c:choose>
           </c:forEach>
-        <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>"><a class="page-link" href="/OrderManager/Order/List/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a></li>
-        <li class="page-item"><a class="page-link" href="/OrderManager/Order/List/page/${numberOfPage}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-right" style="color: #000000;"></i></a></li>
+        <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>"><a class="page-link" href="/OrderManager/Order/List/HistoryWork/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a></li>
+        <li class="page-item"><a class="page-link" href="/OrderManager/Order/List/HistoryWork/page/${numberOfPage}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-right" style="color: #000000;"></i></a></li>
       </ul>
     </nav>
     <script>
       function changeLink() {
         let SearchURL = document.getElementById("inputSearch").value;
         SearchURL = encodeURIComponent(SearchURL);
-        document.getElementById("Search").href = "/OrderManager/Order/List/page/1?txtSearch=" + SearchURL;
+        document.getElementById("Search").href = "/OrderManager/Order/List/HistoryWork/page/1?txtSearch=" + SearchURL;
       }
     </script>
     <script

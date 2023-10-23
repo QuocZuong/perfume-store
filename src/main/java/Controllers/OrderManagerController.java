@@ -54,6 +54,9 @@ public class OrderManagerController extends HttpServlet {
     public static final String ORDER_MANAGER_USER_URI = "/OrderManager";
 
     public static final String ORDER_MANAGER_ORDER_LIST_URI = "/OrderManager/Order/List";
+    public static final String ORDER_MANAGER_ORDER_LIST_PENDING_URI = "/OrderManager/Order/List/Pending";
+    public static final String ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_URI = "/OrderManager/Order/List/HistoryWork";
+
     public static final String ORDER_MANAGER_ORDER_DETAIL_URI = "/OrderManager/Order/Detail/ID";
 
     public static final String ORDER_MANAGER_UPDATE_INFO_URI = "/OrderManager/Update/Info";
@@ -64,10 +67,10 @@ public class OrderManagerController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -75,6 +78,35 @@ public class OrderManagerController extends HttpServlet {
         String path = request.getRequestURI();
 
         // ---------------------------- ORDER SECTION ----------------------------
+        if (path.startsWith(ORDER_MANAGER_ORDER_LIST_PENDING_URI)
+                || path.startsWith(ORDER_MANAGER_ORDER_LIST_PENDING_URI + "/page")) {
+            System.out.println("Going Order List: Pending");
+            int result = searchOrder(request);
+
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/ORDER_MANAGER/Order/pendingList.jsp").forward(request, response);
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(
+                        ORDER_MANAGER_ORDER_LIST_PENDING_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
+
+        if (path.startsWith(ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_URI)
+                || path.startsWith(ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_URI + "/page")) {
+            System.out.println("Going Order List: History Work");
+            int result = searchOrder(request);
+
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/ORDER_MANAGER/Order/workingHistoryList.jsp").forward(request, response);
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(
+                        ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_URI
+                                + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
+
         if (path.startsWith(ORDER_MANAGER_ORDER_LIST_URI)
                 || path.startsWith(ORDER_MANAGER_ORDER_LIST_URI + "/page")) {
             System.out.println("Going Order List");
@@ -111,7 +143,8 @@ public class OrderManagerController extends HttpServlet {
             if (result == State.Success.value) {
                 response.sendRedirect(ORDER_MANAGER_ORDER_LIST_URI);
             } else {
-                response.sendRedirect(ORDER_MANAGER_ORDER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+                response.sendRedirect(
+                        ORDER_MANAGER_ORDER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
             }
             return;
         }
@@ -127,10 +160,10 @@ public class OrderManagerController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
