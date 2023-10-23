@@ -1,5 +1,5 @@
 <%-- Document : AdminNavbar.jsp Created on : Sep 5, 2023, 8:41:33 PM Author : Acer --%> <%@page contentType="text/html"
-pageEncoding="UTF-8"%>
+                                                                                                pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -21,9 +21,10 @@ pageEncoding="UTF-8"%>
                 <img src="/RESOURCES/images/icons/shopping-bag-alone.png" alt="" />
             </button>
             <ul class="shadow position-absolute align-items-start ps-1 pt-2">
-                <li class="py-3 text-dark"><a href="/Admin/Product/Add">Nhập hàng</a></li>
+                <li class="py-3 text-dark"><a href="/InventoryManager/Product/List">Nhập hàng</a></li>
+                <li class="py-3 text-dark"><a href="/InventoryManager/ImportCart"><img src="/RESOURCES/images/icons/cart.png" alt=""></a></li>
             </ul>
-            <a href="/Admin/User"><img src="/RESOURCES/images/icons/user.png" alt="" /></a>
+            <a href="/InventoryManager/User"><img src="/RESOURCES/images/icons/user.png" alt="" /></a>
         </div>
     </body>
 </html>
