@@ -1,5 +1,7 @@
+    
 
-
+<%@page import="Lib.Generator.DatePattern"%>
+<%@page import="Lib.Generator"%>
 <%@page import="Models.Employee"%>
 <%@page import="DAOs.EmployeeDAO"%>
 <%@page import="DAOs.CustomerDAO"%>
@@ -25,8 +27,6 @@
         employee = employeeDAO.getEmployeeByUserId(us.getId());
     }
     
-    System.out.println("customer info " + customer);
-    System.out.println("employee info " + employee);
 %>
 
 <!DOCTYPE html>
@@ -111,7 +111,7 @@
                                     </div>
                                     <div class="employeeDoB">
                                         <label>Employee DoB: </label>
-                                        <p><%= employee.getDateOfBirth()%></p>
+                                        <p><%= Generator.getDateTime(employee.getDateOfBirth(), DatePattern.DateForwardSlashPattern)%></p>
                                     </div>
                                     <div class="employeePhoneNumber">
                                         <label>Employee Phone Number: </label>
@@ -127,12 +127,12 @@
                                     </div>
                                     <div class="employeeJoinDate">
                                         <label>Employee Join Date: </label>
-                                        <p><%= employee.getJoinDate()%></p>
+                                        <p><%= Generator.getDateTime(employee.getJoinDate(), DatePattern.DateForwardSlashPattern)%></p>
                                     </div>
                                     <div class="employeeRetireDate">
                                         <label>Employee Retire Date: </label>
-                                        <p><%= employee.getRetireDate() == null ? "Not Retired":employee.getRetireDate()%></p>
-                                    </div>
+                                        <p><%=employee.getRetireDate() == 0? "Not retired" : Generator.getDateTime(employee.getRetireDate(), DatePattern.DateForwardSlashPattern)%></p>
+                                    </div>  
                                  </c:when>
                                  
                                  <c:when test='<%= (us.getType().equals("Customer"))%>'>

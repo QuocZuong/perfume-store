@@ -352,6 +352,11 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
                 + "	?"; // 11. Role name
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
+
+            System.out.println("dob: " + employee.getDateOfBirth());
+            System.out.println("getJoinDate: " + employee.getJoinDate());
+            System.out.println("getRetireDate: " + employee.getRetireDate());
+
             ps.setNString(1, employee.getName());
             ps.setString(2, employee.getUsername());
             ps.setString(3, Converter.convertToMD5Hash(employee.getPassword()));
@@ -428,7 +433,7 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
     /*--------------------- RESTORE SECTION ---------------------  */
     public boolean restoreEmployee(Employee employee) {
         try {
-            employee.setRetireDate(null);
+            employee.setRetireDate(Long.valueOf(0));
             updateEmployeeRetireDate(employee.getEmployeeId(), employee.getRetireDate());
             return true;
         } catch (Exception e) {
