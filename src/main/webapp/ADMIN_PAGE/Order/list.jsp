@@ -121,7 +121,7 @@
                                             orderManagerName = om.getName();
                                         }
 
-                                        String checkoutAt = o.getCheckoutAt() == null ? "" : o.getCheckoutAt().toString();
+                                        String checkoutAt = o.getCheckoutAt() == null ? "" : o.getCheckoutAt(Generator.DatePattern.);
                                         String updateAt = o.getUpdateAt() == null ? "" : o.getUpdateAt().toString();
 
                                         boolean isActive = !o.getStatus().equals("Rejected");
