@@ -6,6 +6,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -416,7 +417,7 @@ public class UserDAO implements IUserDAO {
         user.setEmail(queryResult.getString(USER_EMAIL));
         user.setActive(queryResult.getBoolean(USER_ACTIVE));
         user.setType(queryResult.getString(USER_TYPE));
+
         return user;
     }
-
 }
