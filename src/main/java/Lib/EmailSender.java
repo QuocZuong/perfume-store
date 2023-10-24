@@ -13,10 +13,11 @@ public class EmailSender {
 
     private final String ACCOUNT = "quoczuong2003@gmail.com";
     private final String PASSWORD = "qvcqfobbvbqbkwxm";
-    /* account back-up 
-       quoczuong@gmail.com
-       blwdycwxviquhbhn
-    */
+    /*
+     * account back-up
+     * quoczuong@gmail.com
+     * blwdycwxviquhbhn
+     */
     // public final String GENERATE_PASSWORD_SUBJECT = "Your account at XXVI Store
     // has been created!";
     public final String GENERATE_PASSWORD_SUBJECT = "Tài khoản của bạn đã được tạo tại trang web XXVI Store";
@@ -180,7 +181,7 @@ public class EmailSender {
                 + "										<td id=\"header_wrapper\" style=\"padding: 36px 48px; display: block;\">\n"
                 + "											<h1\n"
                 + "												style='font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; font-size: 30px; font-weight: 300; line-height: 150%; margin: 0; text-align: left; text-shadow: 0 1px 0 #5691ab; color: #ffffff; background-color: inherit;'>\n"
-                + "												MẬT KHẨU CỦA BẠN ĐÃ BỊ THAY ĐỔI 😜</h1>\n"
+                + "												MẬT KHẨU CỦA BẠN ĐÃ BỊ THAY ĐỔI</h1>\n"
                 + "										</td>\n"
                 + "									</tr>\n"
                 + "								</table>\n"
@@ -288,7 +289,7 @@ public class EmailSender {
                 + "                                            <td id=\"header_wrapper\" style=\"padding: 36px 48px; display: block;\">\n"
                 + "                                                <h1\n"
                 + "                                                    style='font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; font-size: 30px; font-weight: 300; line-height: 150%; margin: 0; text-align: left; text-shadow: 0 1px 0 #5691ab; color: #ffffff; background-color: inherit;'>\n"
-                + "                                                    ĐỊA CHỈ EMAIL ĐÃ BỊ THAY ĐỔI 😾</h1>\n"
+                + "                                                    ĐỊA CHỈ EMAIL ĐÃ BỊ THAY ĐỔI</h1>\n"
                 + "                                            </td>\n"
                 + "                                        </tr>\n"
                 + "                                    </table>\n"
@@ -308,13 +309,17 @@ public class EmailSender {
                 + "                                                            <div id=\"body_content_inner\"\n"
                 + "                                                                 style='color: #636363; font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; font-size: 14px; line-height: 150%; text-align: left;'>\n"
                 + "\n"
-                + "                                                                <p style=\"margin: 0 0 16px;\">Xin chào "+username+",</p>\n"
-                + "                                                                <p style=\"margin: 0 0 16px;\">Thông báo này xác nhận rằng email của bạn trên XXIV STORE đã được thay đổi thành <strong><a href=\"mailto:"+newEmail+"\">"+newEmail+"</a></strong>.\n"
+                + "                                                                <p style=\"margin: 0 0 16px;\">Xin chào "
+                + username + ",</p>\n"
+                + "                                                                <p style=\"margin: 0 0 16px;\">Thông báo này xác nhận rằng email của bạn trên XXIV STORE đã được thay đổi thành <strong><a href=\"mailto:"
+                + newEmail + "\">" + newEmail + "</a></strong>.\n"
                 + "                                                                </p>\n"
-                + "                                                                <p style=\"margin: 0 0 16px;\">Nếu bạn không thay đổi email, vui lòng liên hệ Quản trị trang web tại <a href=\"mailto:"+ACCOUNT+"\">"+ACCOUNT+"</a></strong>.</p>\n"
+                + "                                                                <p style=\"margin: 0 0 16px;\">Nếu bạn không thay đổi email, vui lòng liên hệ Quản trị trang web tại <a href=\"mailto:"
+                + ACCOUNT + "\">" + ACCOUNT + "</a></strong>.</p>\n"
                 + "                                                                <p style=\"margin: 0 0 16px;\">Thân ái,\n"
                 + "                                                                    <br>XXVI STORE\n"
-                + "                                                                    <br><a href=\""+ShopURL+"\">"+ShopURL+"</a>\n"
+                + "                                                                    <br><a href=\"" + ShopURL + "\">"
+                + ShopURL + "</a>\n"
                 + "                                                                </p>\n"
                 + "                                                            </div>\n"
                 + "                                                        </td>\n"
@@ -389,7 +394,7 @@ public class EmailSender {
                 + "                                            <td id=\"header_wrapper\" style=\"padding: 36px 48px; display: block;\">\n"
                 + "                                                <h1\n"
                 + "                                                    style='font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; font-size: 30px; font-weight: 300; line-height: 150%; margin: 0; text-align: left; text-shadow: 0 1px 0 #5691ab; color: #ffffff; background-color: inherit;'>\n"
-                + "                                                   USERNAME ĐÃ BỊ THAY ĐỔI 😾</h1>\n"
+                + "                                                   USERNAME ĐÃ BỊ THAY ĐỔI</h1>\n"
                 + "                                            </td>\n"
                 + "                                        </tr>\n"
                 + "                                    </table>\n"
@@ -409,13 +414,17 @@ public class EmailSender {
                 + "                                                            <div id=\"body_content_inner\"\n"
                 + "                                                                 style='color: #636363; font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; font-size: 14px; line-height: 150%; text-align: left;'>\n"
                 + "\n"
-                + "                                                                <p style=\"margin: 0 0 16px;\">Xin chào "+username+",</p>\n"
-                + "                                                                <p style=\"margin: 0 0 16px;\">Thông báo này xác nhận rằng username của bạn trên XXIV STORE đã được thay đổi thành <strong>"+newUsername+"</strong>.\n"
+                + "                                                                <p style=\"margin: 0 0 16px;\">Xin chào "
+                + username + ",</p>\n"
+                + "                                                                <p style=\"margin: 0 0 16px;\">Thông báo này xác nhận rằng username của bạn trên XXIV STORE đã được thay đổi thành <strong>"
+                + newUsername + "</strong>.\n"
                 + "                                                                </p>\n"
-                + "                                                                <p style=\"margin: 0 0 16px;\">Nếu bạn không thay đổi username, vui lòng liên hệ Quản trị trang web tại <a href=\"mailto:"+ACCOUNT+"\">"+ACCOUNT+"</a></strong>.</p>\n"
+                + "                                                                <p style=\"margin: 0 0 16px;\">Nếu bạn không thay đổi username, vui lòng liên hệ Quản trị trang web tại <a href=\"mailto:"
+                + ACCOUNT + "\">" + ACCOUNT + "</a></strong>.</p>\n"
                 + "                                                                <p style=\"margin: 0 0 16px;\">Thân ái,\n"
                 + "                                                                    <br>XXVI STORE\n"
-                + "                                                                    <br><a href=\""+ShopURL+"\">"+ShopURL+"</a>\n"
+                + "                                                                    <br><a href=\"" + ShopURL + "\">"
+                + ShopURL + "</a>\n"
                 + "                                                                </p>\n"
                 + "                                                            </div>\n"
                 + "                                                        </td>\n"
@@ -459,7 +468,7 @@ public class EmailSender {
 
         return html;
     }
-    
+
     public String getEmailSubscribe() {
         String username = EmailTo.substring(0, EmailTo.indexOf("@"));
         String ShopURL = "http://localhost:8080";
@@ -510,13 +519,15 @@ public class EmailSender {
                 + "                                                            <div id=\"body_content_inner\"\n"
                 + "                                                                 style='color: #636363; font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; font-size: 14px; line-height: 150%; text-align: left;'>\n"
                 + "\n"
-                + "                                                                <p style=\"margin: 0 0 16px;\">Xin chào "+username+",</p>\n"
+                + "                                                                <p style=\"margin: 0 0 16px;\">Xin chào "
+                + username + ",</p>\n"
                 + "                                                                <p style=\"margin: 0 0 16px;\">Thông báo này xác nhận rằng bạn đã thành công nhận tin từ XXIV STORE\n"
                 + "                                                                </p>\n"
                 + "                                                                <p style=\"margin: 0 0 16px;\">Mọi tin tức và khuyến mãi sẽ được chúng mình gửi đến bạn sớm nhất có thể.</p>\n"
                 + "                                                                <p style=\"margin: 0 0 16px;\">Thân ái,\n"
                 + "                                                                    <br>XXVI STORE\n"
-                + "                                                                    <br><a href=\""+ShopURL+"\">"+ShopURL+"</a>\n"
+                + "                                                                    <br><a href=\"" + ShopURL + "\">"
+                + ShopURL + "</a>\n"
                 + "                                                                </p>\n"
                 + "                                                            </div>\n"
                 + "                                                        </td>\n"
