@@ -118,19 +118,35 @@ public class InventoryManagerController extends HttpServlet {
         if (path.startsWith(IVTR_MANAGER_IMPORT_LIST_URI)
                 || path.startsWith(IVTR_MANAGER_IMPORT_LIST_URI + "/page")) {
             System.out.println("Going Import List");
-            int result = searchImport(request);
-            if (path.endsWith("")) {
+            int result = -1;
+            if (!path.endsWith("?errAccNF=true") && !path.endsWith("?errImpNF")) {
+                result = searchImport(request);
             }
             if (result == State.Success.value) {
                 request.getRequestDispatcher("/INVENTORY_MANAGER_PAGE/Import/list.jsp").forward(request, response);
             } else if (result == State.Fail.value) {
                 response.sendRedirect(
                         IVTR_MANAGER_IMPORT_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+            } else if (result == -1) {
+                response.sendRedirect("IVTR_MANAGER_IMPORT_LIST_URI");
             }
 
             return;
         }
+        //
+        if (path.startsWith(IVTR_MANAGER_IMPORT_DETAIL_URI)) {
+            System.out.println("Going Order Detail");
+            int result = getImportDetail(request);
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/INVENTORY_MANAGER_PAGE/Import/importDetail.jsp").forward(request,
+                        response);
+            } else if (result == State.Fail.value) {
+                request.getRequestDispatcher(IVTR_MANAGER_IMPORT_DETAIL_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
 
+        //
         if (path.startsWith(IVTR_MANAGER_USER_URI)) {
             response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
             response.setHeader("Pragma", "no-cache");
@@ -172,6 +188,52 @@ public class InventoryManagerController extends HttpServlet {
 
     }
 
+    private int getImportDetail(HttpServletRequest request) {
+        ImportDAO ipDAO = new ImportDAO();
+        InventoryManagerDAO ivtrManaDAO = new InventoryManagerDAO();
+
+        String data[] = request.getRequestURI().split("/");
+
+        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+        String username = currentUserCookie.getValue();
+        InventoryManager ivtrManager = ivtrManaDAO.getInventoryManager(username);
+
+        if (ivtrManager == null) {
+            System.out.println("Unknow Username to view import detail");
+            request.setAttribute("exceptionType", "AccountNotFoundException");
+            return State.Fail.value;
+        }
+
+        try {
+            Import ip = null;
+            for (int i = 0; i < data.length; i++) {
+                if (data[i].equals("ID")) {
+                    int importId = Integer.parseInt(data[i + 1]);
+                    ip = ipDAO.getImport(importId);
+                }
+            }
+            if (ip == null) {
+                System.out.println("not found import detail");
+                request.setAttribute("exceptionType", "ImportNotFoundException");
+                return State.Fail.value;
+            }
+            if (ip.getImportDetail() == null || ip.getImportDetail().isEmpty()) {
+                System.out.println("import has no import detail");
+                request.setAttribute("exceptionType", "ImportNotFoundException");
+                return State.Fail.value;
+            }
+            if (ip.getImportByInventoryManager() != ivtrManager.getInventoryManagerId()) {
+                System.out.println("has no authorization to view import detail");
+                request.setAttribute("exceptionType", "NotEnoughInformationException");
+            }
+            request.setAttribute("importInfo", ip);
+            return State.Success.value;
+        } catch (NumberFormatException e) {
+            request.setAttribute("exceptionType", "ImportNotFoundException");
+            return State.Fail.value;
+        }
+    }
+
     private int searchImport(HttpServletRequest request) {
         InventoryManagerDAO ivtrManaDAO = new InventoryManagerDAO();
         ImportDAO ipDAO = new ImportDAO();
@@ -194,8 +256,8 @@ public class InventoryManagerController extends HttpServlet {
                 page = Integer.parseInt(data[i + 1]);
             }
         }
-        List<Import> importList = new ArrayList<>();
-        //importList = ipDAO.fillterImport(importList, ivtrManager.getInventoryManagerId());
+        List<Import> importList = ipDAO.searchImport(search);
+        importList = ipDAO.fillterImport(importList, ivtrManager.getInventoryManagerId());
         if (importList.isEmpty()) {
             System.out.println("Empty import list");
             request.setAttribute("exceptionType", "ImportNotFoundException");

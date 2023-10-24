@@ -48,7 +48,10 @@ public class ExceptionUtils {
         // Voucher
         InvalidVoucherException,
         VoucherNotFoundException,
-        NotEnoughVoucherQuantityException
+        NotEnoughVoucherQuantityException,
+        //Import
+        ImportNotFoundException
+
     }
 
     static {
@@ -88,7 +91,7 @@ public class ExceptionUtils {
                         new NotEnoughProductQuantityException());
                 put(ExceptionType.NotEnoughVoucherQuantityException.toString(),
                         new NotEnoughProductQuantityException());
-
+                put(ExceptionType.ImportNotFoundException.toString(), new ImportNotFoundException());
             }
         };
 
@@ -278,5 +281,9 @@ public class ExceptionUtils {
 
     public static boolean isOrderNotFound(String queryString) {
         return getExceptionNameByQueryString(queryString).equals(ExceptionType.OrderNotFoundException.toString());
+    }
+
+    public static boolean isImportNotFound(String queryString) {
+        return getExceptionNameByQueryString(queryString).equals(ExceptionType.ImportNotFoundException.toString());
     }
 }

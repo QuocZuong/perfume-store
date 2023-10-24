@@ -171,7 +171,7 @@ public class ImportDetailDAO implements IImportDetailDAO {
                 ipD.setProductId(rs.getInt("Product_ID"));
                 ipD.setQuantity(rs.getInt("Quantity"));
                 ipD.setCost(rs.getInt("Cost"));
-                ipD.setStatus(rs.getNString("Status"));
+                ipD.setStatus(rs.getString("Status"));
                 arrImportDetail.add(ipD);
             }
         } catch (SQLException ex) {
