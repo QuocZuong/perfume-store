@@ -940,12 +940,14 @@ public class AdminController extends HttpServlet {
         String uUsername = request.getParameter("txtUsername");
         String uPassword = request.getParameter("txtPassword");
         String uEmail = request.getParameter("txtEmail");
+
         // For sending email
         boolean isChangedUsername = false;
         boolean isChangedEmail = false;
         boolean isChangedPassword = false;
 
         User userForUpdate = uDAO.getUser(uID);
+        String oldEmail = userForUpdate.getEmail();
 
         if (!uUsername.equals(userForUpdate.getUsername())) {
             isChangedUsername = true;
@@ -1001,6 +1003,7 @@ public class AdminController extends HttpServlet {
         userForUpdate.setName(uName);
         userForUpdate.setActive(true);
         userForUpdate.setType("Customer");
+
         result = uDAO.updateUser(userForUpdate);
 
         if (result < 1) {
@@ -1020,8 +1023,8 @@ public class AdminController extends HttpServlet {
             }
             if (isChangedEmail) {
                 System.out.println("Detect email change");
-                System.out.println("sending mail changing email");
-                es.setEmailTo(uDAO.getUser(uID).getEmail());
+
+                es.setEmailTo(oldEmail);
                 es.sendEmailByThread(es.CHANGE_EMAIL_NOTFICATION,
                         es.changeEmailNotification(uEmail));
             }
@@ -1059,6 +1062,7 @@ public class AdminController extends HttpServlet {
         String eRetireDate = request.getParameter("txtRetireDate");
 
         Employee employeeForUpdate = eDAO.getEmployeeByUserId(uID);
+        String oldEmail = employeeForUpdate.getEmail();
 
         // For sending email
         boolean isChangedUsername = false;
@@ -1183,7 +1187,7 @@ public class AdminController extends HttpServlet {
             if (isChangedEmail) {
                 System.out.println("Detect email change");
                 System.out.println("sending mail changing email");
-                es.setEmailTo(uDAO.getUser(uID).getEmail());
+                es.setEmailTo(oldEmail);
                 es.sendEmailByThread(es.CHANGE_EMAIL_NOTFICATION,
                         es.changeEmailNotification(uEmail));
             }
@@ -1388,6 +1392,7 @@ public class AdminController extends HttpServlet {
         AdminDAO adDAO = new AdminDAO();
         UserDAO usDAO = new UserDAO();
         Admin admin = adDAO.getAdmin(currentUserCookie.getValue());
+        String oldEmail = admin.getEmail();
 
         boolean isChangedEmail = true;
         boolean isChangedPassword = true;
@@ -1470,7 +1475,7 @@ public class AdminController extends HttpServlet {
             if (isChangedEmail) {
                 System.out.println("Detect email change");
                 System.out.println("sending mail changing email");
-                es.setEmailTo(admin.getEmail());
+                es.setEmailTo(oldEmail);
                 es.sendEmailByThread(es.CHANGE_EMAIL_NOTFICATION, es.changeEmailNotification(email));
             }
             if (isChangedUsername) {
