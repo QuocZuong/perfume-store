@@ -222,7 +222,7 @@ public class LogController extends HttpServlet {
                 //send mail
                 EmailSender eSender = new EmailSender();
                 eSender.setEmailTo(email);
-                eSender.sendToEmail(eSender.FORGOT_PASSWORD_NOTFICATION, eSender.forgotPasswordEmailHTML(randomPassword));
+                eSender.sendEmailByThread(eSender.FORGOT_PASSWORD_NOTFICATION, eSender.forgotPasswordEmailHTML(randomPassword));
                 return true;
             } else {
                 throw new EmailDoesntExist();

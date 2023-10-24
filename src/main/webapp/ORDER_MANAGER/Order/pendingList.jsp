@@ -89,39 +89,29 @@
                     </div>
                 </div>
 
-                <div class="col-md-10 offset-1 d-flex justify-content-center align-items-center flex-column">
-                    <table class="table" id="table">
-                        <thead>
-                            <tr>
-                                <td>ID</td>
-                                <td>Tên khách hàng</td>
-                                <td>Tổng tiền</td>
-                                <td>Giảm giá</td>
-                                <td>Trạng thái</td>
-                                <td>Ngày tạo</td>
-                                <td>Ngày thanh toán</td>
-                                <td>Ngày cập nhật</td>
-                                <td>Người cập nhật</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <c:if test='<%= (orderList.size() != 0)%>'>
-                                <c:forEach var="i" begin="0" end="<%= orderList.size() - 1%>">
-                                    <%
+        <div class="col-md-10 offset-1 d-flex justify-content-center align-items-center flex-column">
+          <table class="table" id="table">
+            <thead>
+              <tr>
+                <td>ID</td>
+                <td>Tên khách hàng</td>
+                <td>Tổng tiền</td>
+                <td>Giảm giá</td>
+                <td>Ngày tạo</td>
+                <td>Ngày thanh toán</td>
+                <td>Ngày cập nhật</td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </thead>
+            <tbody>
+              <c:if test='<%= (orderList.size() != 0)%>'>
+                <c:forEach var="i" begin="0" end="<%= orderList.size() - 1%>">
+                  <%
                                         OrderManagerDAO omDAO = new OrderManagerDAO();
                                         Order o = orderList.get((int) pageContext.getAttribute("i"));
                                         Customer c = cDAO.getCustomer(o.getCustomerId());
-
-                                        String orderManagerName = "";
-
-                                        if (o.getUpdateByOrderManager()
-                                                > 0) {
-                                            OrderManager om = omDAO.getOrderManager(o.getUpdateByOrderManager());
-                                            orderManagerName = om.getName();
-                                        }
 
                                         String createAt = o.getCreatedAt(Generator.DatePattern.DateSqlPattern);
                                         String checkoutAt = o.getCheckoutAt() == null ? "" : o.getCheckoutAt(Generator.DatePattern.DateSqlPattern);
@@ -131,30 +121,28 @@
                                         String status = o.getStatus();
                                         boolean isRejected = status.equals("REJECTED");
                                         boolean isAccepted = status.equals("ACCEPTED");
-                                    %>
-                                    <tr class="rowTable <%= isActive ? " " : "faded"%>">
-                                        <td class="<%= isActive ? " " : "faded"%>"><%= o.getId()%></td>
-                                        <td class="<%= isActive ? " " : "faded"%>"><%= c.getName()%></td>
-                                        <td class="<%= isActive ? " " : "faded"%>"><%= o.getTotal()%></td>
-                                        <td class="<%= isActive ? " " : "faded"%>"><%= o.getDeductedPrice()%></td>
-                                        <td class="<%= isActive ? " " : "faded"%>"><%= o.getStatus()%></td>
-                                        <td class="<%= isActive ? " " : "faded"%>"><%= createAt%></td>              
-                                        <td class="<%= isActive ? " " : "faded"%>"><%= checkoutAt%></td>
-                                        <td class="<%= isActive ? " " : "faded"%>"><%= updateAt%></td>
-                                        <td class="<%= isActive ? " " : "faded"%>"><%= orderManagerName%></td>
+                  %>
+                  <tr class="rowTable <%= isActive ? " " : "faded"%>">
+                    <td class="<%= isActive ? " " : "faded"%>"><%= o.getId()%></td>
+                    <td class="<%= isActive ? " " : "faded"%>"><%= c.getName()%></td>
+                    <td class="<%= isActive ? " " : "faded"%>"><%= o.getTotal()%></td>
+                    <td class="<%= isActive ? " " : "faded"%>"><%= o.getDeductedPrice()%></td>
+                    <td class="<%= isActive ? " " : "faded"%>"><%= createAt%></td>              
+                    <td class="<%= isActive ? " " : "faded"%>"><%= checkoutAt%></td>
+                    <td class="<%= isActive ? " " : "faded"%>"><%= updateAt%></td>
 
                                         <td class="<%= isActive ? " " : "faded"%>">
                                             <a href="/OrderManager/Order/Detail/ID/<%= o.getId()%>" class="<%= isActive ? "" : "disabled"%> btn btn-outline-primary rounded-0">🤔</a>
                                         </td>
                                         <c:choose>
                                             <c:when test='<%= isAccepted%>'>
-                                                <td class="buttonStatus faded" colspan=2>
-                                                    <a href="/OrderManager/ACCEPT/Order/ID/<%= o.getId()%>" class="btn btn-outline-success rounded-0">✅</a>
+                                                <td class="buttonStatus faded px-3" colspan=2>
+                                                    <a href="/OrderManager/ACCEPT/Order/ID/<%= o.getId()%>" class="btn btn-outline-success rounded-0 w-100">✅</a>
                                                 </td>
                                             </c:when>
                                             <c:when test='<%= isRejected%>'>
-                                                <td class="buttonStatus faded" colspan=2>
-                                                    <a href="/OrderManager/REJECT/Order/ID/<%= o.getId()%>" class="btn btn-outline-danger rounded-0">❌</a>
+                                                <td class="buttonStatus faded px-3" colspan=2>
+                                                    <a href="/OrderManager/REJECT/Order/ID/<%= o.getId()%>" class="btn btn-outline-danger rounded-0 w-100">❌</a>
                                                 </td>
                                             </c:when>
                                             <c:otherwise>

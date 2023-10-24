@@ -10,6 +10,7 @@
 <%@page import="DAOs.ProductDAO"%>
 <%@page import="Models.Order"%>
 <%@page import="Models.User"%>
+<%@page import="Models.Employee"%>
 <%@page import="Models.Voucher"%>
 <%@page import="DAOs.UserDAO"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -27,13 +28,18 @@
     Cookie currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
     User user = usDAO.getUser(currentUserCookie.getValue());
     ProductDAO pDAO = new ProductDAO();
+
+    String role = "";
     
-    String role = eDAO.getEmployeeByUserId(user.getId()).getRole().getName();
+    if (user != null) {
+        Employee e = eDAO.getEmployeeByUserId(user.getId());
+        role = e != null ? e.getRole().getName() : "";
+    }
+
     boolean isAdmin = role.equals("Admin");
-    boolean isCustomer = role.equals("Customer");
     boolean isOrderManager = role.equals("Order Manager");
     boolean isInventoryManager = role.equals("Inventory Manager");
-    
+
     orderInfor = (Order) request.getAttribute("OrderInfor");
     List<OrderDetail> orderDetailList = orderInfor.getOrderDetailList();
     CheckOutSuccess = (String) request.getParameter("CheckOutSuccess");
@@ -76,19 +82,19 @@
       <!--Navbar section-->
       <div class="row">
         <div class="col-md-12 nav">
-            <c:choose>
-                <c:when test='<%= isOrderManager%>'><jsp:include page="/NAVBAR/OrderManagerNavbar.jsp"></jsp:include></c:when>
-                <c:when test='<%= isInventoryManager%>'><jsp:include page="/NAVBAR/InventoryManagerNavbar.jsp"></jsp:include></c:when>
-                <c:when test='<%= isAdmin%>'><jsp:include page="/NAVBAR/AdminNavbar.jsp"></jsp:include></c:when>
-                <c:otherwise><jsp:include page="/NAVBAR/ClientNavbar.jsp"></jsp:include></c:otherwise>
-            </c:choose>
-          </div>
+          <c:choose>
+            <c:when test='<%= isOrderManager%>'><jsp:include page="/NAVBAR/OrderManagerNavbar.jsp"></jsp:include></c:when>
+            <c:when test='<%= isInventoryManager%>'><jsp:include page="/NAVBAR/InventoryManagerNavbar.jsp"></jsp:include></c:when>
+            <c:when test='<%= isAdmin%>'><jsp:include page="/NAVBAR/AdminNavbar.jsp"></jsp:include></c:when>
+            <c:otherwise><jsp:include page="/NAVBAR/ClientNavbar.jsp"></jsp:include></c:otherwise>
+          </c:choose>
         </div>
+      </div>
 
 
-        <div class="main">
-          <div class="right">
-            <div class="order-page">
+      <div class="main">
+        <div class="right">
+          <div class="order-page">
             <c:if test='<%= CheckOutSuccess != null%>'>
               <div class="CheckOutSuccess">
                 <h1 class="display-4 mb-10">THANH TOÁN THÀNH CÔNG</h1>
@@ -109,14 +115,14 @@
                 <c:if test='<%=  orderDetailList.size() > 0%>'>
                   <c:forEach var="i" begin="0" end="<%= orderDetailList.size() - 1%>">
                     <%
-                        OrderDetail orderDetail = orderDetailList.get((int) pageContext.getAttribute("i"));
-                        Product product = pDAO.getProduct(orderDetail.getProductId());
+                                            OrderDetail orderDetail = orderDetailList.get((int) pageContext.getAttribute("i"));
+                                            Product product = pDAO.getProduct(orderDetail.getProductId());
 
-                        String productName = product.getName();
-                        String quantity = orderDetail.getQuantity() + "";
-                        String total = Converter.covertIntergerToMoney(orderDetail.getTotal());
+                                            String productName = product.getName();
+                                            String quantity = orderDetail.getQuantity() + "";
+                                            String total = Converter.covertIntergerToMoney(orderDetail.getTotal());
 
-                        int sum = orderDetail.getQuantity() * product.getStock().getPrice();
+                                            int sum = orderDetail.getQuantity() * product.getStock().getPrice();
                     %>
                     <tr>
                       <td scope="row"><%=(int) pageContext.getAttribute("i") + 1%></td>
@@ -232,7 +238,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 
-    <script src="/RESOURCES/admin/product/public/js/main.js"></script>
+    <script src="/RESOURCES/admin/product/public/js/list.js"></script>
     <!--Jquery Validation-->
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
     <script>

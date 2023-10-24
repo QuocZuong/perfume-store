@@ -5,6 +5,9 @@ import javax.mail.internet.*;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class EmailSender {
 
@@ -27,7 +30,21 @@ public class EmailSender {
 
     private String EmailTo;
 
-    public boolean sendToEmail(String subject, String html) throws UnsupportedEncodingException {
+    public void sendEmailByThread(final String subject, final String html) throws UnsupportedEncodingException {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    sendEmail(subject, html);
+                } catch (UnsupportedEncodingException ex) {
+                    Logger.getLogger(EmailSender.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        thread.start();
+    }
+
+    private boolean sendEmail(String subject, String html) throws UnsupportedEncodingException {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -271,7 +288,7 @@ public class EmailSender {
                 + "										<td id=\"header_wrapper\" style=\"padding: 36px 48px; display: block;\">\n"
                 + "											<h1\n"
                 + "												style='font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; font-size: 30px; font-weight: 300; line-height: 150%; margin: 0; text-align: left; text-shadow: 0 1px 0 #5691ab; color: #ffffff; background-color: inherit;'>\n"
-                + "												MẬT KHẨU CỦA BẠN ĐÃ BỊ THAY ĐỔI 😜</h1>\n"
+                + "												MẬT KHẨU CỦA BẠN ĐÃ BỊ THAY ĐỔI</h1>\n"
                 + "										</td>\n"
                 + "									</tr>\n"
                 + "								</table>\n"
@@ -379,7 +396,7 @@ public class EmailSender {
                 + "                                            <td id=\"header_wrapper\" style=\"padding: 36px 48px; display: block;\">\n"
                 + "                                                <h1\n"
                 + "                                                    style='font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; font-size: 30px; font-weight: 300; line-height: 150%; margin: 0; text-align: left; text-shadow: 0 1px 0 #5691ab; color: #ffffff; background-color: inherit;'>\n"
-                + "                                                    ĐỊA CHỈ EMAIL ĐÃ BỊ THAY ĐỔI 😾</h1>\n"
+                + "                                                    ĐỊA CHỈ EMAIL ĐÃ BỊ THAY ĐỔI</h1>\n"
                 + "                                            </td>\n"
                 + "                                        </tr>\n"
                 + "                                    </table>\n"
@@ -480,7 +497,7 @@ public class EmailSender {
                 + "                                            <td id=\"header_wrapper\" style=\"padding: 36px 48px; display: block;\">\n"
                 + "                                                <h1\n"
                 + "                                                    style='font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; font-size: 30px; font-weight: 300; line-height: 150%; margin: 0; text-align: left; text-shadow: 0 1px 0 #5691ab; color: #ffffff; background-color: inherit;'>\n"
-                + "                                                   USERNAME ĐÃ BỊ THAY ĐỔI 😾</h1>\n"
+                + "                                                   USERNAME ĐÃ BỊ THAY ĐỔI</h1>\n"
                 + "                                            </td>\n"
                 + "                                        </tr>\n"
                 + "                                    </table>\n"

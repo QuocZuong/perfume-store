@@ -148,12 +148,12 @@
                     <c:choose>
                       <c:when test='<%= isAccepted%>'>
                         <td class="buttonStatus faded" colspan=2>
-                          <a href="/Admin/Order/ID/<%= o.getId()%>/Accept" class="btn btn-outline-success rounded-0">✅</a>
+                          <a href="/Admin/Order/ID/<%= o.getId()%>/Accept" class="btn btn-outline-success rounded-0 w-100">✅</a>
                         </td>
                       </c:when>
                       <c:when test='<%= isRejected%>'>
                         <td class="buttonStatus faded" colspan=2>
-                        <a href="/Admin/Order/ID/<%= o.getId()%>/Reject" class="btn btn-outline-danger rounded-0">❌</a>
+                        <a href="/Admin/Order/ID/<%= o.getId()%>/Reject" class="btn btn-outline-danger rounded-0 w-100">❌</a>
                       </td>
                       </c:when>
                       <c:otherwise>

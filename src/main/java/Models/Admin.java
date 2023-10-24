@@ -1,16 +1,16 @@
 package Models;
 
 public class Admin extends Employee {
-
+    
     private int adminId;
     private int employeeId;
-
+    
     public Admin() {
     }
-
+    
     public Admin(Employee emp) {
         //User
-        setUserId(emp.getUserId());
+        setId(emp.getId());
         setName(emp.getName());
         setUsername(emp.getUsername());
         setPassword(emp.getPassword());
@@ -29,20 +29,20 @@ public class Admin extends Employee {
         setJoinDate(emp.getJoinDate());
         setRetireDate(emp.getRetireDate());
     }
-
+    
     public int getAdminId() {
         return adminId;
     }
-
+    
     public void setAdminId(int adminId) {
         this.adminId = adminId;
     }
-
+    
     @Override
     public int getEmployeeId() {
         return employeeId;
     }
-
+    
     @Override
     public void setEmployeeId(int employeeId) {
         this.employeeId = employeeId;
