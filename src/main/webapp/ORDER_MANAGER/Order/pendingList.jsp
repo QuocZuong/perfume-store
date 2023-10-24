@@ -112,7 +112,6 @@
                 <td>Tên khách hàng</td>
                 <td>Tổng tiền</td>
                 <td>Giảm giá</td>
-                <td>Trạng thái</td>
                 <td>Ngày tạo</td>
                 <td>Ngày thanh toán</td>
                 <td>Ngày cập nhật</td>
@@ -150,7 +149,6 @@
                     <td class="<%= isActive ? " " : "faded"%>"><%= c.getName()%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= o.getTotal()%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= o.getDeductedPrice()%></td>
-                    <td class="<%= isActive ? " " : "faded"%>"><%= o.getStatus()%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= createAt%></td>              
                     <td class="<%= isActive ? " " : "faded"%>"><%= checkoutAt%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= updateAt%></td>
