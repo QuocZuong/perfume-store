@@ -274,7 +274,7 @@ public class OrderManagerController extends HttpServlet {
                 OrderManager currentManager = omDAO.getOrderManager(currentUserCookie.getValue());
                 orderList = orderList
                         .stream()
-                        .filter(order -> (order.getUpdateByOrderManager() != 0 && order.getUpdateByOrderManager()== currentManager.getOrderManagerId()))
+                        .filter(order -> (order.getUpdateByOrderManager() != 0 && order.getUpdateByOrderManager() == currentManager.getOrderManagerId()))
                         .collect(Collectors.toList());
             }
         }
@@ -411,6 +411,10 @@ public class OrderManagerController extends HttpServlet {
 
         int result = usDAO.updateUser(updateUser);
 
+        if (result != 1) {
+            request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.OperationEditFailedException.toString());
+            return State.Fail.value;
+        }
         // Update cookie
         Cookie c = ((Cookie) request.getSession().getAttribute("userCookie"));
         c.setValue(username);
@@ -426,21 +430,21 @@ public class OrderManagerController extends HttpServlet {
                     System.out.println("Detect password change");
                     System.out.println("sending mail changing password");
                     es.setEmailTo(email);
-                    es.sendToEmail(es.CHANGE_PASSWORD_NOTFICATION,
+                    es.sendEmailByThread(es.CHANGE_PASSWORD_NOTFICATION,
                             es.changePasswordNotifcation());
                 }
                 if (isChangedEmail) {
                     System.out.println("Detect email change");
                     System.out.println("sending mail changing email");
                     es.setEmailTo(user.getEmail());
-                    es.sendToEmail(es.CHANGE_EMAIL_NOTFICATION,
+                    es.sendEmailByThread(es.CHANGE_EMAIL_NOTFICATION,
                             es.changeEmailNotification(email));
                 }
                 if (isChangedUsername) {
                     System.out.println("Detect username change");
                     System.out.println("sending mail changing username");
                     es.setEmailTo(email);
-                    es.sendToEmail(es.CHANGE_USERNAME_NOTFICATION,
+                    es.sendEmailByThread(es.CHANGE_USERNAME_NOTFICATION,
                             es.changeUsernameNotification(username));
                 }
             } catch (UnsupportedEncodingException e) {

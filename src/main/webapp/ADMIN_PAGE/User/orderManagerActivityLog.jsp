@@ -37,7 +37,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Hoạt động admin</title>
+        <title>Hoạt động Order Manager</title>
         <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
         <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
         <!--        <script>
@@ -115,7 +115,7 @@
                                             <%=order.getReceiverName()%>
                                         </td>
                                         <td ><%= order.getPhoneNumber()%></td>
-                                        <td ><%= order.getStatus()%></td>
+                                        <td class="<%=order.getStatus().equals("ACCEPTED") ? "bg-success text-white" : "bg-danger text-white"%> text-justify text-center"><%= order.getStatus()%></td>
                                     </tr>
                                 </c:forEach>
                             </c:if>

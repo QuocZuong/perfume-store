@@ -26,6 +26,7 @@ public class ExceptionUtils {
         PhoneNumberDuplicationException,
         UsernameDuplicationException,
         EmailDuplicationException,
+        EmailDoesntExist,
         DefaultDeliveryAddressNotFoundException,
         DefaultDeliveryAddressWillBeNotFoundException,
         // Employee info
@@ -47,7 +48,10 @@ public class ExceptionUtils {
         // Voucher
         InvalidVoucherException,
         VoucherNotFoundException,
-        NotEnoughVoucherQuantityException
+        NotEnoughVoucherQuantityException,
+        //Import
+        ImportNotFoundException
+
     }
 
     static {
@@ -60,6 +64,7 @@ public class ExceptionUtils {
                 put(ExceptionType.PhoneNumberDuplicationException.toString(), new PhoneNumberDuplicationException());
                 put(ExceptionType.UsernameDuplicationException.toString(), new UsernameDuplicationException());
                 put(ExceptionType.EmailDuplicationException.toString(), new EmailDuplicationException());
+                put(ExceptionType.EmailDoesntExist.toString(), new EmailDoesntExist());
                 put(ExceptionType.DefaultDeliveryAddressNotFoundException.toString(),
                         new DefaultDeliveryAddressNotFoundException());
                 put(ExceptionType.DefaultDeliveryAddressWillBeNotFoundException.toString(),
@@ -86,7 +91,7 @@ public class ExceptionUtils {
                         new NotEnoughProductQuantityException());
                 put(ExceptionType.NotEnoughVoucherQuantityException.toString(),
                         new NotEnoughProductQuantityException());
-
+                put(ExceptionType.ImportNotFoundException.toString(), new ImportNotFoundException());
             }
         };
 
@@ -276,5 +281,9 @@ public class ExceptionUtils {
 
     public static boolean isOrderNotFound(String queryString) {
         return getExceptionNameByQueryString(queryString).equals(ExceptionType.OrderNotFoundException.toString());
+    }
+
+    public static boolean isImportNotFound(String queryString) {
+        return getExceptionNameByQueryString(queryString).equals(ExceptionType.ImportNotFoundException.toString());
     }
 }

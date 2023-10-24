@@ -70,6 +70,20 @@ public class Generator {
         return new String(passwordChars);
     }
 
+    public static String generateForgotPassword() {
+        Random randomGenerator = new Random();
+        StringBuilder randomNumbers = new StringBuilder();
+
+        for (int i = 0; i < 6; i++) {
+            int randomNumber = randomGenerator.nextInt(10);
+            randomNumbers.append(randomNumber);
+        }
+
+        String randomNumberString = randomNumbers.toString();
+
+        return randomNumberString;
+    }
+
     public static String generateUsername(String email) {
         // Get the word before the symbol '@'
         int toIndex = email.indexOf('@', 0);

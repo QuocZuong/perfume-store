@@ -123,7 +123,7 @@
                                         <td><%= modifiedAt%></td>
                                         <td><%= modifiedByAdmin%></td>
                                         <td>
-                                            <a href="/InventoryManager/Import/Detail/ID/<%= ip.getId()%>" class="btn btn-outline-success rounded-0"></a>
+                                            <a href="/InventoryManager/Import/Detail/ID/<%= ip.getId()%>" class="btn btn-outline-success rounded-0">Import Detail</a>
                                         </td>
                                     </tr>
 

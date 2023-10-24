@@ -15,11 +15,16 @@ import Models.Product;
 import DAOs.ProductDAO;
 import DAOs.UserDAO;
 import DAOs.VoucherDAO;
+import Exceptions.AccountDeactivatedException;
+import Exceptions.AccountNotFoundException;
 import Exceptions.CitizenIDDuplicationException;
 import Exceptions.EmailDuplicationException;
+import Exceptions.InvalidInputException;
 import Exceptions.PhoneNumberDuplicationException;
 import Exceptions.ProductNotFoundException;
 import Exceptions.UsernameDuplicationException;
+import Exceptions.WrongPasswordException;
+import Interfaces.DAOs.IUserDAO;
 import Lib.Converter;
 import Lib.EmailSender;
 import Lib.ExceptionUtils;
@@ -43,6 +48,8 @@ import jakarta.servlet.http.Part;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, // 1MB
         maxFileSize = 1024 * 1024 * 5, // 5MB
@@ -239,13 +246,7 @@ public class AdminController extends HttpServlet {
             response.sendRedirect(ADMIN_USER_LIST_URI);
             return;
         }
-        //
-        // if (path.startsWith(ADMIN_CLIENT_DETAIL_URI)) {
-        // clientDetail(request, response);
-        // request.getRequestDispatcher("/ADMIN_PAGE/User/detail.jsp").forward(request,
-        // response);
-        // return;
-        // }
+
         if (path.startsWith(ADMIN_CLIENT_ORDER_URI)) {
             System.out.println("Going Order Detail");
 
@@ -369,19 +370,18 @@ public class AdminController extends HttpServlet {
             return;
         }
 
-        //
-        // if (path.startsWith(ADMIN_UPDATE_INFO_URI)) {
-        // if (request.getParameter("btnUpdateInfo") != null
-        // && request.getParameter("btnUpdateInfo").equals("Submit")) {
-        // System.out.println("Going update info");
-        // if (updateAdminInfomation(request, response)) {
-        // response.sendRedirect(ADMIN_USER_URI);
-        // } else {
-        // response.sendRedirect(ADMIN_USER_URI + checkException(request));
-        // }
-        // return;
-        // }
-        // }
+        if (path.startsWith(ADMIN_UPDATE_INFO_URI)) {
+            if (request.getParameter("btnUpdateInfo") != null
+                    && request.getParameter("btnUpdateInfo").equals("Submit")) {
+                System.out.println("Going update info");
+                if (updateAdminInfomation(request, response)) {
+                    response.sendRedirect(ADMIN_USER_URI);
+                } else {
+                    response.sendRedirect(ADMIN_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
+                }
+                return;
+            }
+        }
     }
 
     /* CRUD */
@@ -940,21 +940,21 @@ public class AdminController extends HttpServlet {
                 System.out.println("Detect password change");
                 System.out.println("sending mail changing password");
                 es.setEmailTo(uEmail);
-                es.sendToEmail(es.CHANGE_PASSWORD_NOTFICATION,
+                es.sendEmailByThread(es.CHANGE_PASSWORD_NOTFICATION,
                         es.changePasswordNotifcation());
             }
             if (isChangedEmail) {
                 System.out.println("Detect email change");
                 System.out.println("sending mail changing email");
                 es.setEmailTo(uDAO.getUser(uID).getEmail());
-                es.sendToEmail(es.CHANGE_EMAIL_NOTFICATION,
+                es.sendEmailByThread(es.CHANGE_EMAIL_NOTFICATION,
                         es.changeEmailNotification(uEmail));
             }
             if (isChangedUsername) {
                 System.out.println("Detect username change");
                 System.out.println("sending mail changing username");
                 es.setEmailTo(uEmail);
-                es.sendToEmail(es.CHANGE_USERNAME_NOTFICATION, es.changeUsernameNotification(uUsername));
+                es.sendEmailByThread(es.CHANGE_USERNAME_NOTFICATION, es.changeUsernameNotification(uUsername));
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -1102,21 +1102,21 @@ public class AdminController extends HttpServlet {
                 System.out.println("Detect password change");
                 System.out.println("sending mail changing password");
                 es.setEmailTo(uEmail);
-                es.sendToEmail(es.CHANGE_PASSWORD_NOTFICATION,
+                es.sendEmailByThread(es.CHANGE_PASSWORD_NOTFICATION,
                         es.changePasswordNotifcation());
             }
             if (isChangedEmail) {
                 System.out.println("Detect email change");
                 System.out.println("sending mail changing email");
                 es.setEmailTo(uDAO.getUser(uID).getEmail());
-                es.sendToEmail(es.CHANGE_EMAIL_NOTFICATION,
+                es.sendEmailByThread(es.CHANGE_EMAIL_NOTFICATION,
                         es.changeEmailNotification(uEmail));
             }
             if (isChangedUsername) {
                 System.out.println("Detect username change");
                 System.out.println("sending mail changing username");
                 es.setEmailTo(uEmail);
-                es.sendToEmail(es.CHANGE_USERNAME_NOTFICATION, es.changeUsernameNotification(uUsername));
+                es.sendEmailByThread(es.CHANGE_USERNAME_NOTFICATION, es.changeUsernameNotification(uUsername));
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -1267,140 +1267,129 @@ public class AdminController extends HttpServlet {
         return false;
     }
 
-    //
-    // private boolean updateAdminInfomation(HttpServletRequest request,
-    // HttpServletResponse response) {
-    // /*
-    // * txtFullname
-    // * txtUserName
-    // * txtEmail
-    // * pwdCurrent
-    // * pwdNew
-    // * pwdConfirmNew
-    // * btnUpdateInfo (value = Submit)
-    // */
-    //
-    // String fullname = request.getParameter("txtFullname");
-    //
-    // String username = request.getParameter("txtUserName");
-    // String email = request.getParameter("txtEmail");
-    // String currentPassword = request.getParameter("pwdCurrent");
-    // String newPassword = "";
-    // Cookie currentUserCookie = (Cookie)
-    // request.getSession().getAttribute("userCookie");
-    //
-    // UserDAO usDAO = new UserDAO();
-    // User user = usDAO.getUser(currentUserCookie.getValue());
-    //
-    // boolean isChangedEmail = true;
-    // boolean isChangedPassword = true;
-    // boolean isChangedUsername = true;
-    // // Username, email, phone number is unique
-    // try {
-    // if (!email.equals(user.getEmail())) {
-    // if (usDAO.isExistEmail(email)) {
-    // throw new EmailDuplicationException();
-    // }
-    // } else {
-    // isChangedEmail = false;
-    // }
-    //
-    // if (!username.equals(user.getUsername())) {
-    // if (usDAO.isExistUsername(username)) {
-    // throw new UsernameDuplicationException();
-    // }
-    // } else {
-    // isChangedUsername = false;
-    // }
-    //
-    // if (currentPassword == null || currentPassword.equals("")) {
-    // currentPassword = user.getPassword();
-    // isChangedPassword = false;
-    // // check if currentPassword is true
-    // } else if (!usDAO.login(user.getUsername(), currentPassword)) {
-    // throw new WrongPasswordException();
-    // }
-    //
-    // // Email and username duplication must come first
-    // } catch (WrongPasswordException e) {
-    // request.setAttribute("exceptionType", "WrongPasswordException");
-    // return false;
-    // } catch (AccountDeactivatedException e) {
-    // request.setAttribute("exceptionType", "AccountDeactivatedException");
-    // return false;
-    // } catch (AccountNotFoundException e) {
-    // request.setAttribute("exceptionType", "AccountNotFoundException");
-    // return false;
-    // } catch (EmailDuplicationException e) {
-    // request.setAttribute("exceptionType", "EmailDuplicationException");
-    // return false;
-    // } catch (UsernameDuplicationException e) {
-    // request.setAttribute("exceptionType", "UsernameDuplicationException");
-    // return false;
-    // }
-    // System.out.println("change password is " + isChangedPassword);
-    // System.out.println("New password is before if: " +
-    // request.getParameter("pwdNew"));
-    // if (isChangedPassword && request.getParameter("pwdNew") != null &&
-    // !request.getParameter("pwdNew").equals("")) {
-    // newPassword = request.getParameter("pwdNew");
-    // System.out.println("New password is before MD5: " + newPassword);
-    // newPassword = usDAO.getMD5hash(newPassword);
-    // } else {
-    // newPassword = user.getPassword();
-    // }
-    //
-    // User updateUser = new User(
-    // user.getID(),
-    // fullname,
-    // username,
-    // newPassword,
-    // email,
-    // user.getPhoneNumber(),
-    // user.getAddress(),
-    // user.getRole());
-    //
-    // usDAO.updateUser(updateUser);
-    //
-    // // Update cookie
-    // Cookie c = ((Cookie) request.getSession().getAttribute("userCookie"));
-    // c.setValue(username);
-    // c.setPath("/");
-    // response.addCookie(c);
-    //
-    // // Sending mail
-    // try {
-    // EmailSender es = new EmailSender();
-    // if (isChangedPassword) {
-    // System.out.println("Detect password change");
-    // System.out.println("sending mail changing password");
-    // es.setEmailTo(email);
-    // es.sendToEmail(es.CHANGE_PASSWORD_NOTFICATION,
-    // es.changePasswordNotifcation());
-    // }
-    // if (isChangedEmail) {
-    // System.out.println("Detect email change");
-    // System.out.println("sending mail changing email");
-    // es.setEmailTo(user.getEmail());
-    // es.sendToEmail(es.CHANGE_EMAIL_NOTFICATION,
-    // es.changeEmailNotification(email));
-    // }
-    // if (isChangedUsername) {
-    // System.out.println("Detect username change");
-    // System.out.println("sending mail changing username");
-    // es.setEmailTo(email);
-    // es.sendToEmail(es.CHANGE_USERNAME_NOTFICATION,
-    // es.changeUsernameNotification(username));
-    // }
-    // } catch (UnsupportedEncodingException e) {
-    // e.printStackTrace();
-    // }
-    //
-    // System.out.println("update account with ID " + user.getID() + "
-    // successfully");
-    // return true;
-    // }
-    //
+    private boolean updateAdminInfomation(HttpServletRequest request,
+            HttpServletResponse response) {
+        /*
+        * txtFullname
+        * txtUserName
+        * txtEmail
+        * pwdCurrent
+        * pwdNew
+        * pwdConfirmNew
+        * btnUpdateInfo (value = Submit)
+         */
+
+        String fullname = request.getParameter("txtFullname");
+
+        String username = request.getParameter("txtUserName");
+        String email = request.getParameter("txtEmail");
+        String currentPassword = request.getParameter("pwdCurrent");
+        String newPassword = "";
+        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+
+        AdminDAO adDAO = new AdminDAO();
+        UserDAO usDAO = new UserDAO();
+        Admin admin = adDAO.getAdmin(currentUserCookie.getValue());
+
+        boolean isChangedEmail = true;
+        boolean isChangedPassword = true;
+        boolean isChangedUsername = true;
+        // Username, email, phone number is unique
+
+        try {
+            if (!email.equals(admin.getEmail())) {
+                if (usDAO.getUserByEmail(email) != null) {
+                    throw new EmailDuplicationException();
+                }
+            } else {
+                isChangedEmail = false;
+            }
+
+            if (!username.equals(admin.getUsername())) {
+                if (usDAO.getUser(username) != null) {
+                    throw new UsernameDuplicationException();
+                }
+
+            } else {
+                isChangedUsername = false;
+            }
+
+            if (currentPassword == null || currentPassword.equals("")) {
+                isChangedPassword = false;
+                // check if currentPassword is true
+            } else {
+                usDAO.login(admin.getUsername(), currentPassword, IUserDAO.loginType.Username);
+            }
+            // Email and username duplication must come first
+        } catch (WrongPasswordException e) {
+            request.setAttribute("exceptionType", "WrongPasswordException");
+            return false;
+        } catch (AccountDeactivatedException e) {
+            request.setAttribute("exceptionType", "AccountDeactivatedException");
+            return false;
+        } catch (EmailDuplicationException e) {
+            request.setAttribute("exceptionType", "EmailDuplicationException");
+            return false;
+        } catch (UsernameDuplicationException e) {
+            request.setAttribute("exceptionType", "UsernameDuplicationException");
+            return false;
+        } catch (InvalidInputException ex) {
+            request.setAttribute("exceptionType", "InvalidInputException");
+            return false;
+        }
+        if (isChangedPassword
+                && request.getParameter("pwdNew") != null
+                && !request.getParameter("pwdNew").equals("")) {
+            newPassword = request.getParameter("pwdNew");
+            newPassword = Converter.convertToMD5Hash(newPassword);
+        } else {
+            newPassword = admin.getPassword();
+        }
+        admin.setName(fullname);
+        admin.setUsername(username);
+        admin.setPassword(newPassword);
+        admin.setEmail(email);
+
+        int result = adDAO.updateUser(admin);
+        if (result != 1) {
+            request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.OperationEditFailedException.toString());
+            return false;
+        }
+        // Update cookie
+        Cookie c = ((Cookie) request.getSession().getAttribute("userCookie"));
+        c.setValue(username);
+        c.setPath("/");
+        response.addCookie(c);
+        // Sending mail
+        try {
+            EmailSender es = new EmailSender();
+            if (isChangedPassword) {
+                System.out.println("Detect password change");
+                System.out.println("sending mail changing password");
+                es.setEmailTo(email);
+                es.sendEmailByThread(es.CHANGE_PASSWORD_NOTFICATION, es.changePasswordNotifcation());
+            }
+            if (isChangedEmail) {
+                System.out.println("Detect email change");
+                System.out.println("sending mail changing email");
+                es.setEmailTo(admin.getEmail());
+                es.sendEmailByThread(es.CHANGE_EMAIL_NOTFICATION, es.changeEmailNotification(email));
+            }
+            if (isChangedUsername) {
+                System.out.println("Detect username change");
+                System.out.println("sending mail changing username");
+                es.setEmailTo(email);
+                es.sendEmailByThread(es.CHANGE_USERNAME_NOTFICATION, es.changeUsernameNotification(username));
+            }
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("update account with ID " + admin.getId() + " successfully");
+        return true;
+    }
+
     // // ---------------------------- DELETE SECTION ----------------------------
     private int deleteProduct(HttpServletRequest request, HttpServletResponse response) {
         // Admin/Delete/ID/1
