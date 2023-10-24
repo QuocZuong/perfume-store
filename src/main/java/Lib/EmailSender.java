@@ -16,13 +16,14 @@ public class EmailSender {
     /* account back-up 
        quoczuong@gmail.com
        blwdycwxviquhbhn
-    */
+     */
     // public final String GENERATE_PASSWORD_SUBJECT = "Your account at XXVI Store
     // has been created!";
     public final String GENERATE_PASSWORD_SUBJECT = "Tài khoản của bạn đã được tạo tại trang web XXVI Store";
     public final String CHANGE_PASSWORD_NOTFICATION = "[XXVI STORE] Mật khẩu đã thay đổi";
     public final String CHANGE_EMAIL_NOTFICATION = "[XXVI STORE] Địa chỉ email đã đổi";
     public final String CHANGE_USERNAME_NOTFICATION = "[XXVI STORE] Username đã đổi";
+    public final String FORGOT_PASSWORD_NOTFICATION = "[XXVI STORE] Mật khẩu tạm thời đã được tạo";
 
     private String EmailTo;
 
@@ -109,6 +110,96 @@ public class EmailSender {
                 + generatePassword + "</strong></p>\n"
                 + "\n"
                 + "<p style=\"margin: 0 0 16px;\">We look forward to seeing you soon.</p>\n"
+                + "															</div>\n"
+                + "														</td>\n"
+                + "													</tr>\n"
+                + "												</table>\n"
+                + "												<!-- End Content -->\n"
+                + "											</td>\n"
+                + "										</tr>\n"
+                + "									</table>\n"
+                + "									<!-- End Body -->\n"
+                + "								</td>\n"
+                + "							</tr>\n"
+                + "						</table>\n"
+                + "					</td>\n"
+                + "				</tr>\n"
+                + "				<tr>\n"
+                + "					<td align=\"center\" valign=\"top\">\n"
+                + "						<!-- Footer -->\n"
+                + "						<table border=\"0\" cellpadding=\"10\" cellspacing=\"0\" width=\"600\" id=\"template_footer\">\n"
+                + "							<tr>\n"
+                + "								<td valign=\"top\" style=\"padding: 0; border-radius: 6px;\">\n"
+                + "									<table border=\"0\" cellpadding=\"10\" cellspacing=\"0\" width=\"100%\">\n"
+                + "										<tr>\n"
+                + "											<td colspan=\"2\" valign=\"middle\" id=\"credit\" style='border-radius: 6px; border: 0; color: #8a8a8a; font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; font-size: 12px; line-height: 150%; text-align: center; padding: 24px 0;'>\n"
+                + "												<p style=\"margin: 0 0 16px;\">XXVI STORE</p>\n"
+                + "											</td>\n"
+                + "										</tr>\n"
+                + "									</table>\n"
+                + "								</td>\n"
+                + "							</tr>\n"
+                + "						</table>\n"
+                + "						<!-- End Footer -->\n"
+                + "					</td>\n"
+                + "				</tr>\n"
+                + "			</table>\n"
+                + "		</div>\n"
+                + "	</body>\n"
+                + "</html>";
+        return html;
+    }
+
+    public String forgotPasswordEmailHTML(String newPassword) {
+        String username = EmailTo.substring(0, EmailTo.indexOf("@"));
+
+        String html = "<!DOCTYPE html>\n"
+                + "<html lang=\"vi\">\n"
+                + "	<head>\n"
+                + "		<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n"
+                + "		<title>XXVI STORE</title>\n"
+                + "	</head>\n"
+                + "	<body leftmargin=\"0\" marginwidth=\"0\" topmargin=\"0\" marginheight=\"0\" offset=\"0\" style=\"padding: 0;\">\n"
+                + "		<div id=\"wrapper\" dir=\"ltr\" style=\"background-color: #f7f7f7; margin: 0; padding: 70px 0; width: 100%; -webkit-text-size-adjust: none;\">\n"
+                + "			<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" height=\"100%\" width=\"100%\">\n"
+                + "				<tr>\n"
+                + "					<td align=\"center\" valign=\"top\">\n"
+                + "						<div id=\"template_header_image\">\n"
+                + "													</div>\n"
+                + "						<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"600\" id=\"template_container\" style=\"background-color: #ffffff; border: 1px solid #dedede; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); border-radius: 3px;\">\n"
+                + "							<tr>\n"
+                + "								<td align=\"center\" valign=\"top\">\n"
+                + "									<!-- Header -->\n"
+                + "									<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" id=\"template_header\" style='background-color: #000000db; color: #ffffff; border-bottom: 0; font-weight: bold; line-height: 100%; vertical-align: middle; font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; border-radius: 3px 3px 0 0;'>\n"
+                + "										<tr>\n"
+                + "											<td id=\"header_wrapper\" style=\"padding: 36px 48px; display: block;\">\n"
+                + "												<h1 style='font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; font-size: 30px; font-weight: 300; line-height: 150%; margin: 0; text-align: left; text-shadow: 0 1px 0 #5691ab; color: #ffffff; background-color: inherit;'>Mật khẩu tạm thời đã được tạo</h1>\n"
+                + "											</td>\n"
+                + "										</tr>\n"
+                + "									</table>\n"
+                + "									<!-- End Header -->\n"
+                + "								</td>\n"
+                + "							</tr>\n"
+                + "							<tr>\n"
+                + "								<td align=\"center\" valign=\"top\">\n"
+                + "									<!-- Body -->\n"
+                + "									<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"600\" id=\"template_body\">\n"
+                + "										<tr>\n"
+                + "											<td valign=\"top\" id=\"body_content\" style=\"background-color: #ffffff;\">\n"
+                + "												<!-- Content -->\n"
+                + "												<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\">\n"
+                + "													<tr>\n"
+                + "														<td valign=\"top\" style=\"padding: 48px 48px 32px;\">\n"
+                + "															<div id=\"body_content_inner\" style='color: #636363; font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; font-size: 14px; line-height: 150%; text-align: left;'>\n"
+                + "\n"
+                + "<p style=\"margin: 0 0 16px;\">Xin chào "
+                + username
+                + ",</p>\n"
+                + "<p style=\"margin: 0 0 16px;\">Lấy lại mật khẩu thành công XXVI STORE. Mật khẩu tạm thời cho tài khoản <strong>"
+                + username
+                + "</strong> của bạn là <strong>" + newPassword + "</strong> . Bạn có thể dùng mật khẩu tạm thời này để đăng nhập vào XXIV STORE."
+                + "\n"
+                + "<p style=\"margin: 0 0 16px;\">Sau khi đăng nhập vui lòng thay đổi mật khẩu.</p>\n"
                 + "															</div>\n"
                 + "														</td>\n"
                 + "													</tr>\n"
@@ -308,13 +399,13 @@ public class EmailSender {
                 + "                                                            <div id=\"body_content_inner\"\n"
                 + "                                                                 style='color: #636363; font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; font-size: 14px; line-height: 150%; text-align: left;'>\n"
                 + "\n"
-                + "                                                                <p style=\"margin: 0 0 16px;\">Xin chào "+username+",</p>\n"
-                + "                                                                <p style=\"margin: 0 0 16px;\">Thông báo này xác nhận rằng email của bạn trên XXIV STORE đã được thay đổi thành <strong><a href=\"mailto:"+newEmail+"\">"+newEmail+"</a></strong>.\n"
+                + "                                                                <p style=\"margin: 0 0 16px;\">Xin chào " + username + ",</p>\n"
+                + "                                                                <p style=\"margin: 0 0 16px;\">Thông báo này xác nhận rằng email của bạn trên XXIV STORE đã được thay đổi thành <strong><a href=\"mailto:" + newEmail + "\">" + newEmail + "</a></strong>.\n"
                 + "                                                                </p>\n"
-                + "                                                                <p style=\"margin: 0 0 16px;\">Nếu bạn không thay đổi email, vui lòng liên hệ Quản trị trang web tại <a href=\"mailto:"+ACCOUNT+"\">"+ACCOUNT+"</a></strong>.</p>\n"
+                + "                                                                <p style=\"margin: 0 0 16px;\">Nếu bạn không thay đổi email, vui lòng liên hệ Quản trị trang web tại <a href=\"mailto:" + ACCOUNT + "\">" + ACCOUNT + "</a></strong>.</p>\n"
                 + "                                                                <p style=\"margin: 0 0 16px;\">Thân ái,\n"
                 + "                                                                    <br>XXVI STORE\n"
-                + "                                                                    <br><a href=\""+ShopURL+"\">"+ShopURL+"</a>\n"
+                + "                                                                    <br><a href=\"" + ShopURL + "\">" + ShopURL + "</a>\n"
                 + "                                                                </p>\n"
                 + "                                                            </div>\n"
                 + "                                                        </td>\n"
@@ -409,13 +500,13 @@ public class EmailSender {
                 + "                                                            <div id=\"body_content_inner\"\n"
                 + "                                                                 style='color: #636363; font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; font-size: 14px; line-height: 150%; text-align: left;'>\n"
                 + "\n"
-                + "                                                                <p style=\"margin: 0 0 16px;\">Xin chào "+username+",</p>\n"
-                + "                                                                <p style=\"margin: 0 0 16px;\">Thông báo này xác nhận rằng username của bạn trên XXIV STORE đã được thay đổi thành <strong>"+newUsername+"</strong>.\n"
+                + "                                                                <p style=\"margin: 0 0 16px;\">Xin chào " + username + ",</p>\n"
+                + "                                                                <p style=\"margin: 0 0 16px;\">Thông báo này xác nhận rằng username của bạn trên XXIV STORE đã được thay đổi thành <strong>" + newUsername + "</strong>.\n"
                 + "                                                                </p>\n"
-                + "                                                                <p style=\"margin: 0 0 16px;\">Nếu bạn không thay đổi username, vui lòng liên hệ Quản trị trang web tại <a href=\"mailto:"+ACCOUNT+"\">"+ACCOUNT+"</a></strong>.</p>\n"
+                + "                                                                <p style=\"margin: 0 0 16px;\">Nếu bạn không thay đổi username, vui lòng liên hệ Quản trị trang web tại <a href=\"mailto:" + ACCOUNT + "\">" + ACCOUNT + "</a></strong>.</p>\n"
                 + "                                                                <p style=\"margin: 0 0 16px;\">Thân ái,\n"
                 + "                                                                    <br>XXVI STORE\n"
-                + "                                                                    <br><a href=\""+ShopURL+"\">"+ShopURL+"</a>\n"
+                + "                                                                    <br><a href=\"" + ShopURL + "\">" + ShopURL + "</a>\n"
                 + "                                                                </p>\n"
                 + "                                                            </div>\n"
                 + "                                                        </td>\n"
@@ -459,7 +550,7 @@ public class EmailSender {
 
         return html;
     }
-    
+
     public String getEmailSubscribe() {
         String username = EmailTo.substring(0, EmailTo.indexOf("@"));
         String ShopURL = "http://localhost:8080";
@@ -510,13 +601,13 @@ public class EmailSender {
                 + "                                                            <div id=\"body_content_inner\"\n"
                 + "                                                                 style='color: #636363; font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; font-size: 14px; line-height: 150%; text-align: left;'>\n"
                 + "\n"
-                + "                                                                <p style=\"margin: 0 0 16px;\">Xin chào "+username+",</p>\n"
+                + "                                                                <p style=\"margin: 0 0 16px;\">Xin chào " + username + ",</p>\n"
                 + "                                                                <p style=\"margin: 0 0 16px;\">Thông báo này xác nhận rằng bạn đã thành công nhận tin từ XXIV STORE\n"
                 + "                                                                </p>\n"
                 + "                                                                <p style=\"margin: 0 0 16px;\">Mọi tin tức và khuyến mãi sẽ được chúng mình gửi đến bạn sớm nhất có thể.</p>\n"
                 + "                                                                <p style=\"margin: 0 0 16px;\">Thân ái,\n"
                 + "                                                                    <br>XXVI STORE\n"
-                + "                                                                    <br><a href=\""+ShopURL+"\">"+ShopURL+"</a>\n"
+                + "                                                                    <br><a href=\"" + ShopURL + "\">" + ShopURL + "</a>\n"
                 + "                                                                </p>\n"
                 + "                                                            </div>\n"
                 + "                                                        </td>\n"
