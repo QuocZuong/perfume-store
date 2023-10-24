@@ -182,6 +182,9 @@
         <script src="/RESOURCES/admin/product/public/js/main.js"></script>
         <!--Jquery Validation-->
         <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+
+        <script src="/RESOURCES/admin/user/public/js/main.js"></script>
+
         <script>
             $(document).ready(function () {
                 $.validator.addMethod("emailCustom", function (value, element, toggler) {

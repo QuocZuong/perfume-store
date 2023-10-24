@@ -67,7 +67,7 @@
             <!--Navbar section-->
             <div class="row">
                 <div class="col-md-12 nav">
-                    <jsp:include page="/NAVBAR/ClientNavbar.jsp"></jsp:include>
+                    <jsp:include page="/NAVBAR/InventoryManagerNavbar.jsp"></jsp:include>
                     </div>
                 </div>
 
@@ -326,8 +326,11 @@
                 </div>
             </div>
         </div>
+
         <!--Jquery Validation-->
         <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+
+        <script src="/RESOURCES/admin/user/public/js/main.js"></script>
         <script>
             $(document).ready(function () {
                 $.validator.addMethod("emailCustom", function (value, element, toggler) {
@@ -338,31 +341,6 @@
                     }
                     return true;
                 }, "Vui lòng nhập đúng định dạng email");
-
-                $("#importCheckout").validate({
-                    rules: {
-                        txtSupplier: {
-                            required: true
-                        },
-                        txtImportAt: {
-                            required: true
-                        },
-                        txtDeliveredAt: {
-                            requred: true
-                        }
-                    },
-                    messages: {
-                        txtSupplier: {
-                            required: "Vui lòng nhập tên nhà cung cấp"
-                        },
-                        txtImportAt: {
-                            required: "Vui lòng nhập ngày import"
-                        },
-                        txtDeliveredAt: {
-                            required: "Vui lòng nhập ngày vận chuyển đến"
-                        }
-                    }
-                });
 
                 $("form[action='/home/subscribe']").validate({
                     rules: {
@@ -384,7 +362,34 @@
                     }
 
                 });
+
+                $("#importCheckout").validate({
+                    rules: {
+                        txtSupplier: {
+                            required: true
+                        },
+                        txtImportAt: {
+                            required: true
+                        },
+                        txtDeliveredAt: {
+                            required: true
+                        }
+                    },
+                    messages: {
+                        txtSupplier: {
+                            required: "Vui lòng nhập tên nhà cung cấp"
+                        },
+                        txtImportAt: {
+                            required: "Vui lòng nhập ngày import"
+                        },
+                        txtDeliveredAt: {
+                            required: "Vui lòng nhập ngày vận chuyển đến"
+                        }
+                    }
+                });
             });
+
+
         </script>
 
         <script

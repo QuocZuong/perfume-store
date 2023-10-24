@@ -26,7 +26,7 @@ public class StockDAO implements IStockDAO {
     public enum Table {
         Product_ID,
         Price,
-        Quantiy
+        Quantity
     }
 
     @Override
@@ -59,7 +59,7 @@ public class StockDAO implements IStockDAO {
             if (rs.next()) {
                 stock.setProductID(rs.getInt(Table.Product_ID.toString()));
                 stock.setPrice(rs.getInt(Table.Price.toString()));
-                stock.setQuantity(rs.getInt(Table.Quantiy.toString()));
+                stock.setQuantity(rs.getInt(Table.Quantity.toString()));
             }
             return stock;
         } catch (SQLException e) {

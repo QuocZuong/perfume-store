@@ -14,9 +14,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ImportDAO implements IImportDAO {
-    
+
     private Connection conn;
-    
+
     public ImportDAO() {
         conn = DB.DBContext.getConnection();
     }
@@ -88,7 +88,7 @@ public class ImportDAO implements IImportDAO {
         }
         return arrImport;
     }
-    
+
     @Override
     public Import getImport(int ipId) {
         List<ImportDetail> ipDList;
@@ -119,20 +119,23 @@ public class ImportDAO implements IImportDAO {
         }
         return ip;
     }
-    
+
     public List<Import> searchImport(String search) {
         int digit = -1;
         if (search == null || search.equals("")) {
             search = "%";
         }
-        
+
         if (search.matches("[0-9]+")) {
             digit = Integer.parseInt(search);
         }
+
+        search = "%" + search + "%";
+
         List<Import> impList = new ArrayList<>();
-        
+
         ResultSet rs;
-        
+
         String sql = "SELECT * FROM [Import] WHERE \n"
                 + "\n"
                 + "Import_ID = ? OR\n"
@@ -168,7 +171,7 @@ public class ImportDAO implements IImportDAO {
         }
         return impList;
     }
-    
+
     public List<Import> fillterImport(List<Import> importList, int inventoryManagerId) {
         List<Import> ipList = new ArrayList<>();
         if (importList != null && !importList.isEmpty()) {
@@ -194,5 +197,5 @@ public class ImportDAO implements IImportDAO {
         }
         return result;
     }
-    
+
 }

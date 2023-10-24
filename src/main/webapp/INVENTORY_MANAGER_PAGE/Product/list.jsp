@@ -66,7 +66,7 @@
             <!--Navbar section-->
             <div class="row">
                 <div class="col-md-12 nav">
-                    <jsp:include page="/NAVBAR/AdminNavbar.jsp"></jsp:include>
+                    <jsp:include page="/NAVBAR/InventoryManagerNavbar.jsp"></jsp:include>
                     </div>
                 </div>
 

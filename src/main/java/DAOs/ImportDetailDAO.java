@@ -146,7 +146,7 @@ public class ImportDetailDAO implements IImportDetailDAO {
                 ipD.setProductId(pdId);
                 ipD.setQuantity(rs.getInt("Quantity"));
                 ipD.setCost(rs.getInt("Cost"));
-                ipD.setStatus(rs.getNString("Status"));
+                ipD.setStatus(rs.getString("Status"));
             }
         } catch (SQLException ex) {
             Logger.getLogger(ImportDetailDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -200,6 +200,60 @@ public class ImportDetailDAO implements IImportDetailDAO {
             }
         }
         return total_cost;
+    }
+
+    public List<ImportDetail> searchImportDetail(String search) {
+        int digit = -1;
+        if (search == null || search.equals("")) {
+            search = "%";
+        }
+
+        if (search.matches("[0-9]+")) {
+            digit = Integer.parseInt(search);
+        }
+
+        search = "%" + search + "%";
+        List<ImportDetail> impDetailList = new ArrayList<>();
+
+        ResultSet rs;
+
+        String sql = "SELECT impD.Import_ID,\n"
+                + "	impD.Product_ID,\n"
+                + "	impD.Quantity,\n"
+                + "	impD.Cost,\n"
+                + "	impD.[Status]\n"
+                + "FROM\n"
+                + "	([Import_Detail] impD \n"
+                + "	LEFT JOIN [Product] pd ON impD.Product_ID = pd.Product_ID)\n"
+                + "	LEFT JOIN [Brand] br ON pd.Brand_ID = br.Brand_ID\n"
+                + "WHERE \n"
+                + "	impD.Product_ID = ? OR\n"
+                + "	impD.Product_ID = ? OR\n"
+                + "	pd.Product_Name LIKE ? OR\n"
+                + "	br.Brand_Name LIKE ?\n"
+                + "	AND impD.Status = \'WAIT\'\n"
+                + "	ORDER BY pd.Product_ID ASC";
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, digit);
+            ps.setInt(2, digit);
+            ps.setNString(3, search);
+            ps.setNString(4, search);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                ImportDetail ipD = new ImportDetail();
+                ipD.setImportId(rs.getInt("Import_ID"));
+                ipD.setProductId(rs.getInt("Product_ID"));
+                ipD.setQuantity(rs.getInt("Quantity"));
+                ipD.setCost(rs.getInt("Cost"));
+                ipD.setStatus(rs.getString("Status"));
+                impDetailList.add(ipD);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ImportDetailDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return impDetailList;
     }
 
     /* ------------------------- DELETE SECTION ---------------------------- */

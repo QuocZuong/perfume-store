@@ -4,6 +4,7 @@ import DAOs.AdminDAO;
 import DAOs.BrandDAO;
 import DAOs.CustomerDAO;
 import DAOs.EmployeeDAO;
+import DAOs.ImportDetailDAO;
 import DAOs.OrderDAO;
 import DAOs.ProductActivityLogDAO;
 import Models.User;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import Models.Product;
 import DAOs.ProductDAO;
+import DAOs.StockDAO;
 import DAOs.UserDAO;
 import DAOs.VoucherDAO;
 import Exceptions.CitizenIDDuplicationException;
@@ -29,6 +31,7 @@ import Models.Admin;
 import Models.Stock;
 import Models.Customer;
 import Models.Employee;
+import Models.ImportDetail;
 import Models.Order;
 import Models.OrderDetail;
 import Models.ProductActivityLog;
@@ -64,6 +67,11 @@ public class AdminController extends HttpServlet {
     public static final String ADMIN_ORDER_DETAIL_URI = "/Admin/Order/Detail";
     public static final String ADMIN_ORDER_DELETE_URI = "/Admin/Order/Delete";
     public static final String ADMIN_ORDER_RESTORE_URI = "/Admin/Order/Restore";
+
+    public static final String ADMIN_IMPORT_LIST_URI = "/Admin/Import/List";
+    public static final String ADMIN_IMPORT_DETAIL_URI = "/Admin/Import/Detail";
+    public static final String ADMIN_IMPORT_STORE = "/Admin/Import/Store";
+    public static final String ADMIN_IMPORT_BRING_TO_STOCK = "/Admin/Import/Bring";
 
     public static final String ADMIN_USER_INFO = "/Admin/User/Info";
     public static final String ADMIN_USER_LIST_URI = "/Admin/User/List";
@@ -260,6 +268,34 @@ public class AdminController extends HttpServlet {
             }
             return;
         }
+
+        // ---------------------------- IMPORT SECTION ----------------------------
+        if (path.startsWith(ADMIN_IMPORT_STORE)
+                || path.startsWith(ADMIN_IMPORT_STORE + "/page")) {
+            int result = -1;
+            if (!path.endsWith("?errAccNF=true") && !path.endsWith("?errImpNF")) {
+                result = searchImportDetail(request);
+            }
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/ADMIN_PAGE/User/bringImportToStock.jsp").forward(request, response);
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(ADMIN_IMPORT_STORE + ExceptionUtils.generateExceptionQueryString(request));
+            } else if (result == -1) {
+                response.sendRedirect(ADMIN_IMPORT_STORE);
+            }
+
+            return;
+        }
+
+        if (path.startsWith(ADMIN_IMPORT_BRING_TO_STOCK)) {
+            int result = bringToStock(request);
+            if (result == State.Success.value) {
+                response.sendRedirect(ADMIN_IMPORT_STORE);
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(ADMIN_IMPORT_STORE + ExceptionUtils.generateExceptionQueryString(request));
+            }
+        }
+        // ---------------------------- IMPORT SECTION ----------------------------
         // ---------------------------- CHART SECTION ----------------------------
         if (path.startsWith(ADMIN_CHART_BEST_SELLING_PRODUCT_BY_GENDER)) {
             bestSellingProductByGender(request, response);
@@ -1500,6 +1536,98 @@ public class AdminController extends HttpServlet {
         OrderDAO oDAO = new OrderDAO();
         List<Product> listProduct = oDAO.getOrderForChartByOrderIdByPrice();
         request.setAttribute("listProduct", listProduct);
+    }
+
+    private int searchImportDetail(HttpServletRequest request) {
+        AdminDAO adDAO = new AdminDAO();
+        ImportDetailDAO ipDetailDAO = new ImportDetailDAO();
+        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+        String username = currentUserCookie.getValue();
+        Admin ad = adDAO.getAdmin(username);
+
+        if (ad == null) {
+            System.out.println("Unknow Username to view import detail");
+            request.setAttribute("exceptionType", "AccountNotFoundException");
+            return State.Fail.value;
+        }
+        String URI = request.getRequestURI();
+        String data[] = URI.split("/");
+        int page = 1;
+        int rows = 20;
+        String search = request.getParameter("txtSearch");
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("page")) {
+                page = Integer.parseInt(data[i + 1]);
+            }
+        }
+        List<ImportDetail> importDetailList = ipDetailDAO.searchImportDetail(search);
+        //importDetailList = ipDetailDAO.fillterImportDetail();
+        if (importDetailList.isEmpty()) {
+            System.out.println("Empty import detail list");
+            request.setAttribute("exceptionType", "ImportNotFoundException");
+            return State.Fail.value;
+        }
+        int numberOfPage = (importDetailList.size() / rows) + (importDetailList.size() % rows == 0 ? 0 : 1);
+        importDetailList = Generator.pagingList(importDetailList, page, rows);
+        request.setAttribute("page", page);
+        request.setAttribute("numberOfPage", numberOfPage);
+        request.setAttribute("importDetailList", importDetailList);
+        request.setAttribute("search", search);
+        return State.Success.value;
+    }
+
+    private int bringToStock(HttpServletRequest request) {
+        AdminDAO adDAO = new AdminDAO();
+        ImportDetailDAO ipDetailDAO = new ImportDetailDAO();
+        String data[] = request.getRequestURI().split("/");
+
+        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+        String username = currentUserCookie.getValue();
+        Admin ad = adDAO.getAdmin(username);
+
+        if (ad == null) {
+            System.out.println("Unknow Username to add to stock");
+            request.setAttribute("exceptionType", "AccountNotFoundException");
+            return State.Fail.value;
+        }
+
+        try {
+            ImportDetail ipD = null;
+            int importId = -1;
+            int productId = -1;
+            for (int i = 0; i < data.length; i++) {
+                if (data[i].equals("ImportID")) {
+                    importId = Integer.parseInt(data[i + 1]);
+                }
+                if (data[i].equals("ProductID")) {
+                    productId = Integer.parseInt(data[i + 1]);
+                }
+            }
+            ipD = ipDetailDAO.getImportDetail(importId, productId);
+            if (ipD == null) {
+                System.out.println("not found import detail");
+                request.setAttribute("exceptionType", "ImportNotFoundException");
+                return State.Fail.value;
+            }
+            StockDAO stDAO = new StockDAO();
+            Stock st = stDAO.getStock(productId);
+            if (st == null) {
+                System.out.println("not found product to update stock");
+                request.setAttribute("exceptionType", "ProductNotFoundException");
+                return State.Fail.value;
+            }
+            st.setQuantity(st.getQuantity() + ipD.getQuantity());
+            int result = stDAO.updateStock(st);
+            if (result == 0) {
+                System.out.println("update stock failt");
+                request.setAttribute("exceptionType", "OperationEditFailedException");
+                return State.Fail.value;
+            }
+            return State.Success.value;
+        } catch (NumberFormatException e) {
+            request.setAttribute("exceptionType", "OperationEditFailedException");
+            return State.Fail.value;
+        }
     }
 
 }

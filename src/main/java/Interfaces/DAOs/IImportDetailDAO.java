@@ -6,8 +6,8 @@ import java.util.List;
 public interface IImportDetailDAO {
 
     public enum Status {
-        Wait,
-        Used;
+        WAIT,
+        USED;
     }
 
     int addImportDetail(ImportDetail importDetail);

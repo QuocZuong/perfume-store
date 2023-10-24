@@ -1,3 +1,5 @@
+<%@page import="Models.Product"%>
+<%@page import="Models.ImportDetail"%>
 <%@page import="Lib.Generator"%>
 <%@page import="Models.Import"%>
 <%@page import="DAOs.CustomerDAO"%>
@@ -17,11 +19,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib  uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
 
-<%! List<Import> importList = null; %>
+<%! List<ImportDetail> importDetailList = null; %>
+<%! ProductDAO pDAO = new ProductDAO(); %>
+<%! BrandDAO bDAO = new BrandDAO(); %>
 <%! int currentPage, numberOfPage;%>
 
 <%
-    importList = (List<Import>) request.getAttribute("importList");
+    importDetailList = (List<ImportDetail>) request.getAttribute("importDetailList");
     currentPage = (int) request.getAttribute("page");
     numberOfPage = (int) request.getAttribute("numberOfPage");
 
@@ -68,7 +72,7 @@
             <!--Navbar section-->
             <div class="row">
                 <div class="col-md-12 nav">
-                    <jsp:include page="/NAVBAR/InventoryManagerNavbar.jsp"></jsp:include>
+                    <jsp:include page="/NAVBAR/AdminNavbar.jsp"></jsp:include>
                     </div>
                 </div>
 
@@ -90,40 +94,36 @@
                     <table class="table" id="table">
                         <thead>
                             <tr>
-                                <td>ID</td>
-                                <td>ID Người quản lý</td>
-                                <td>Tổng tiền</td>
+                                <td>Import ID</td>
+                                <td>Product ID</td>
+                                <td>Tên sản phẩm</td>
+                                <td>Hình ảnh</td>
+                                <td>Hãng</td>
+                                <td>Đơn giá</td>
                                 <td>Tổng số lượng</td>
-                                <td>Nhà cung cấp</td>
-                                <td>Ngày nhập</td>
-                                <td>Ngày giao đến</td>
-                                <td>Ngày cập nhật</td>
-                                <td>Cập nhật bởi Admin</td>
-                                <td>Chi tiết</td>
+                                <td>Tổng tiền</td>
+                                <td>Trạng thái</td>
                             </tr>
                         </thead>
                         <tbody>
-                            <c:if test='<%= (importList.size() != 0)%>'>
-                                <c:forEach var="i" begin="0" end="<%= importList.size() - 1%>">
+                            <c:if test='<%= (importDetailList.size() != 0)%>'>
+                                <c:forEach var="i" begin="0" end="<%= importDetailList.size() - 1%>">
                                     <%
-                                        Import ip = importList.get((int) pageContext.getAttribute("i"));
-                                        String importAt = ip.getImportAt(Generator.DatePattern.DateForwardSlashPattern);
-                                        String deliveredAt = ip.getDeliveredAt(Generator.DatePattern.DateForwardSlashPattern);
-                                        String modifiedAt = (ip.getModifiedAt() != 0 ? ip.getModifiedAt(Generator.DatePattern.DateForwardSlashPattern) : "");
-                                        String modifiedByAdmin = (ip.getModifiedByAdmin() != 0 ? ip.getModifiedByAdmin() + "" : "");
+                                        ImportDetail ipD = importDetailList.get((int) pageContext.getAttribute("i"));
+                                        Product pd = pDAO.getProduct(ipD.getProductId());
+
                                     %>
                                     <tr class="rowTable">
-                                        <td><%= ip.getId()%></td>
-                                        <td><%= ip.getImportByInventoryManager()%></td>
-                                        <td><%= ip.getTotalCost()%></td>
-                                        <td><%= ip.getTotalQuantity()%></td>
-                                        <td><%= ip.getSupplierName()%></td>
-                                        <td><%= importAt%></td>
-                                        <td><%= deliveredAt%></td>
-                                        <td><%= modifiedAt%></td>
-                                        <td><%= modifiedByAdmin%></td>
+                                        <td><%= ipD.getImportId()%></td>
+                                        <td><%= ipD.getImportId()%></td>
+                                        <td><a src="/Product/Detail/ID/<%= pd.getId()%>"><%=pd.getName()%></a></td>
+                                        <td><img src="<%= pd.getImgURL()%>"/></td>
+                                        <td><%= bDAO.getBrand(pd.getBrandId()).getName()%></td>
+                                        <td><%= Converter.covertIntergerToMoney(ipD.getCost())%></td>
+                                        <td><%= ipD.getQuantity()%></td>
+                                        <td><%= Converter.covertIntergerToMoney(ipD.getCost() * ipD.getQuantity())%></td>
                                         <td>
-                                            <a href="/InventoryManager/Import/Detail/ID/<%= ip.getId()%>" class="btn btn-outline-success rounded-0">Import Detail</a>
+                                            <a href="/Admin/Import/Bring/ImportID/<%= ipD.getImportId()%>/ProductID/<%= ipD.getProductId()%>" class="btn btn-outline-success rounded-0"><%= ipD.getStatus()%></a>
                                         </td>
                                     </tr>
 
@@ -140,22 +140,22 @@
 
         <nav aria-label="...">
             <ul class="pagination">
-                <li class="page-item"><a class="page-link" href="/InventoryManager/Import/List/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-left" style="color: #000000;"></i></a></li>
-                <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>"><a class="page-link" href="/InventoryManager/Import/List/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></a></li>
+                <li class="page-item"><a class="page-link" href="/Admin/Import/Store/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-left" style="color: #000000;"></i></a></li>
+                <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>"><a class="page-link" href="/Admin/Import/Store/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></a></li>
                         <c:forEach var="i" begin="${page-2<0?0:page-2}" end="${page+2 +1}">
                             <c:choose>
                                 <c:when test="${i==page}">
-                            <li class="page-item active"><a href="/InventoryManager/Import/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
+                            <li class="page-item active"><a href="/Admin/Import/Store/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
                             </c:when>
                             <c:when test="${i>0 && i<=numberOfPage}"> 
-                            <li class="page-item"><a href="/InventoryManager/Import/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
+                            <li class="page-item"><a href="/Admin/Import/Store/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
                             </c:when>
                             <c:otherwise>
                             </c:otherwise>
                         </c:choose>
                     </c:forEach>
-                <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>"><a class="page-link" href="/InventoryManager/Import/List/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a></li>
-                <li class="page-item"><a class="page-link" href="/InventoryManager/Import/List/page/${numberOfPage}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-right" style="color: #000000;"></i></a></li>
+                <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>"><a class="page-link" href="/Admin/Import/Store/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a></li>
+                <li class="page-item"><a class="page-link" href="/Admin/Import/Store/page/${numberOfPage}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-right" style="color: #000000;"></i></a></li>
             </ul>
         </nav>
         <script src="/RESOURCES/admin/user/public/js/main.js"></script>
@@ -163,8 +163,16 @@
                             function changeLink() {
                                 let SearchURL = document.getElementById("inputSearch").value;
                                 SearchURL = encodeURIComponent(SearchURL);
-                                document.getElementById("Search").href = "/InventoryManager/Import/List/page/1?txtSearch=" + SearchURL;
+                                document.getElementById("Search").href = "/Admin/Import/Store/page/1?txtSearch=" + SearchURL;
                             }
+                            $(".btn").on({
+                                mouseenter: function () {
+                                    this.innerHTML = "ADD";
+                                },
+                                mouseleave: function () {
+                                    this.innerHTML = "WAIT";
+                                }
+                            });
         </script>
         <script
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"

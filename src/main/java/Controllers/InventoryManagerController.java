@@ -128,7 +128,7 @@ public class InventoryManagerController extends HttpServlet {
                 response.sendRedirect(
                         IVTR_MANAGER_IMPORT_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
             } else if (result == -1) {
-                response.sendRedirect("IVTR_MANAGER_IMPORT_LIST_URI");
+                response.sendRedirect(IVTR_MANAGER_IMPORT_LIST_URI);
             }
 
             return;
@@ -492,7 +492,7 @@ public class InventoryManagerController extends HttpServlet {
             ipD.setProductId(ipsiList.get(i).getProductId());
             ipD.setCost(ipsiList.get(i).getCost());
             ipD.setQuantity(ipsiList.get(i).getQuantity());
-            ipD.setStatus(IImportDetailDAO.Status.Wait.toString());
+            ipD.setStatus(IImportDetailDAO.Status.WAIT.toString());
             ipdList.add(ipD);
         }
 
