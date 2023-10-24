@@ -88,10 +88,10 @@ public class CustomerController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -161,10 +161,10 @@ public class CustomerController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -510,7 +510,6 @@ public class CustomerController extends HttpServlet {
          * pwdNew
          * pwdConfirmNew
          * btnUpdateInfo (value = Submit)
-         * <<<<<<< HEAD
          */
 
         String fullname = request.getParameter("txtFullname");
@@ -586,7 +585,11 @@ public class CustomerController extends HttpServlet {
         updateCustomer.setPassword(newPassword);
         updateCustomer.setEmail(email);
 
-        cusDAO.updateUser(updateCustomer);
+        int result = cusDAO.updateUser(updateCustomer);
+        if (result != 1) {
+            request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.OperationEditFailedException.toString());
+            return false;
+        }
 
         // Update cookie
         Cookie c = ((Cookie) request.getSession().getAttribute("userCookie"));
@@ -601,19 +604,19 @@ public class CustomerController extends HttpServlet {
                 System.out.println("Detect password change");
                 System.out.println("sending mail changing password");
                 es.setEmailTo(email);
-                es.sendToEmail(es.CHANGE_PASSWORD_NOTFICATION, es.changePasswordNotifcation());
+                es.sendEmailByThread(es.CHANGE_PASSWORD_NOTFICATION, es.changePasswordNotifcation());
             }
             if (isChangedEmail) {
                 System.out.println("Detect email change");
                 System.out.println("sending mail changing email");
                 es.setEmailTo(user.getEmail());
-                es.sendToEmail(es.CHANGE_EMAIL_NOTFICATION, es.changeEmailNotification(email));
+                es.sendEmailByThread(es.CHANGE_EMAIL_NOTFICATION, es.changeEmailNotification(email));
             }
             if (isChangedUsername) {
                 System.out.println("Detect username change");
                 System.out.println("sending mail changing username");
                 es.setEmailTo(email);
-                es.sendToEmail(es.CHANGE_USERNAME_NOTFICATION, es.changeUsernameNotification(username));
+                es.sendEmailByThread(es.CHANGE_USERNAME_NOTFICATION, es.changeUsernameNotification(username));
             }
 
         } catch (UnsupportedEncodingException e) {
@@ -627,7 +630,7 @@ public class CustomerController extends HttpServlet {
     /**
      * Update a delivery address
      *
-     * @param request  The request object
+     * @param request The request object
      * @param response The response object
      * @return 1 if the operation is successful, 0 otherwise
      */
@@ -675,8 +678,8 @@ public class CustomerController extends HttpServlet {
             return State.Fail.value;
         }
 
-        final String[] exceptionalAddresses = new String[] {
-                "Tỉnh Bà Rịa - Vũng Tàu"
+        final String[] exceptionalAddresses = new String[]{
+            "Tỉnh Bà Rịa - Vũng Tàu"
         };
 
         boolean isExceptionalAddress = false;

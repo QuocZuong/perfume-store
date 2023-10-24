@@ -5,6 +5,9 @@ import javax.mail.internet.*;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class EmailSender {
 
@@ -27,7 +30,21 @@ public class EmailSender {
 
     private String EmailTo;
 
-    public boolean sendToEmail(String subject, String html) throws UnsupportedEncodingException {
+    public void sendEmailByThread(final String subject, final String html) throws UnsupportedEncodingException {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    sendEmail(subject, html);
+                } catch (UnsupportedEncodingException ex) {
+                    Logger.getLogger(EmailSender.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        thread.start();
+    }
+
+    private boolean sendEmail(String subject, String html) throws UnsupportedEncodingException {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
