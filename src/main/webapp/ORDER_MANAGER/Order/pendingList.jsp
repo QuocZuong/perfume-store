@@ -100,7 +100,6 @@
                 <td>Ngày tạo</td>
                 <td>Ngày thanh toán</td>
                 <td>Ngày cập nhật</td>
-                <td>Người cập nhật</td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -113,14 +112,6 @@
                                         OrderManagerDAO omDAO = new OrderManagerDAO();
                                         Order o = orderList.get((int) pageContext.getAttribute("i"));
                                         Customer c = cDAO.getCustomer(o.getCustomerId());
-
-                                        String orderManagerName = "";
-
-                                        if (o.getUpdateByOrderManager()
-                                                > 0) {
-                                            OrderManager om = omDAO.getOrderManager(o.getUpdateByOrderManager());
-                                            orderManagerName = om.getName();
-                                        }
 
                                         String createAt = o.getCreatedAt(Generator.DatePattern.DateSqlPattern);
                                         String checkoutAt = o.getCheckoutAt() == null ? "" : o.getCheckoutAt(Generator.DatePattern.DateSqlPattern);
@@ -139,19 +130,18 @@
                     <td class="<%= isActive ? " " : "faded"%>"><%= createAt%></td>              
                     <td class="<%= isActive ? " " : "faded"%>"><%= checkoutAt%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= updateAt%></td>
-                    <td class="<%= isActive ? " " : "faded"%>"><%= orderManagerName%></td>
 
                                         <td class="<%= isActive ? " " : "faded"%>">
                                             <a href="/OrderManager/Order/Detail/ID/<%= o.getId()%>" class="<%= isActive ? "" : "disabled"%> btn btn-outline-primary rounded-0">🤔</a>
                                         </td>
                                         <c:choose>
                                             <c:when test='<%= isAccepted%>'>
-                                                <td class="buttonStatus faded" colspan=2>
+                                                <td class="buttonStatus faded px-3" colspan=2>
                                                     <a href="/OrderManager/ACCEPT/Order/ID/<%= o.getId()%>" class="btn btn-outline-success rounded-0">✅</a>
                                                 </td>
                                             </c:when>
                                             <c:when test='<%= isRejected%>'>
-                                                <td class="buttonStatus faded" colspan=2>
+                                                <td class="buttonStatus faded px-3" colspan=2>
                                                     <a href="/OrderManager/REJECT/Order/ID/<%= o.getId()%>" class="btn btn-outline-danger rounded-0">❌</a>
                                                 </td>
                                             </c:when>
