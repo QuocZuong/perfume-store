@@ -1,3 +1,4 @@
+<%@page import="java.util.List"%>
 <%@page import="Models.Brand"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.sql.ResultSet"%>
@@ -71,7 +72,7 @@
                     <c:forEach var="i" begin="65" end="90">
                         <%
                             char c = (char) ((Integer) (pageContext.getAttribute("i"))).intValue();
-                            ArrayList<Brand> brands = bDAO.getBrandNameByAlphabet(c);
+                            List<Brand> brands = bDAO.getBrandNameByAlphabet(c);
                         %>
                         <c:if test="<%=brands.size() != 0%>">
                             <div class="brands">
