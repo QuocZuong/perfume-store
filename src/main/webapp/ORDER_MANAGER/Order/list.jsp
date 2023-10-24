@@ -104,7 +104,6 @@
                 <td>Tên khách hàng</td>
                 <td>Tổng tiền</td>
                 <td>Giảm giá</td>
-                <td>Trạng thái</td>
                 <td>Ngày tạo</td>
                 <td>Ngày thanh toán</td>
                 <td>Ngày cập nhật</td>
@@ -142,7 +141,6 @@
                     <td class="<%= isActive ? " " : "faded"%>"><%= c.getName()%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= o.getTotal()%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= o.getDeductedPrice()%></td>
-                    <td class="<%= isActive ? " " : "faded"%>"><%= o.getStatus()%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= createAt%></td>              
                     <td class="<%= isActive ? " " : "faded"%>"><%= checkoutAt%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= updateAt%></td>
@@ -154,12 +152,12 @@
                     <c:choose>
                       <c:when test='<%= isAccepted%>'>
                         <td class="buttonStatus faded" colspan=2>
-                          <a href="/OrderManager/ACCEPT/Order/ID/<%= o.getId()%>" class="btn btn-outline-success rounded-0">✅</a>
+                          <a href="/OrderManager/ACCEPT/Order/ID/<%= o.getId()%>" class="btn btn-outline-success rounded-0 w-100">✅</a>
                         </td>
                       </c:when>
                       <c:when test='<%= isRejected%>'>
                         <td class="buttonStatus faded" colspan=2>
-                          <a href="/OrderManager/REJECT/Order/ID/<%= o.getId()%>" class="btn btn-outline-danger rounded-0">❌</a>
+                          <a href="/OrderManager/REJECT/Order/ID/<%= o.getId()%>" class="btn btn-outline-danger rounded-0 w-100">❌</a>
                         </td>
                       </c:when>
                       <c:otherwise>

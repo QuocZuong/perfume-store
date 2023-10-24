@@ -104,11 +104,9 @@
                 <td>Tên khách hàng</td>
                 <td>Tổng tiền</td>
                 <td>Giảm giá</td>
-                <td>Trạng thái</td>
                 <td>Ngày tạo</td>
                 <td>Ngày thanh toán</td>
                 <td>Ngày cập nhật</td>
-                <td>Người cập nhật</td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -121,12 +119,6 @@
                                         OrderManagerDAO omDAO = new OrderManagerDAO();
                                         Order o = orderList.get((int) pageContext.getAttribute("i"));
                                         Customer c = cDAO.getCustomer(o.getCustomerId());
-
-                                        String orderManagerName = "";
-                                        if (o.getUpdateByOrderManager() > 0) {
-                                            OrderManager om = omDAO.getOrderManager(o.getUpdateByOrderManager());
-                                            orderManagerName = om.getName();
-                                        }
 
                                         String createAt = o.getCreatedAt(Generator.DatePattern.DateSqlPattern);
                                         String checkoutAt = o.getCheckoutAt() == null ? "" : o.getCheckoutAt(Generator.DatePattern.DateSqlPattern);
@@ -142,11 +134,9 @@
                     <td class="<%= isActive ? " " : "faded"%>"><%= c.getName()%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= o.getTotal()%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= o.getDeductedPrice()%></td>
-                    <td class="<%= isActive ? " " : "faded"%>"><%= o.getStatus()%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= createAt%></td>              
                     <td class="<%= isActive ? " " : "faded"%>"><%= checkoutAt%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= updateAt%></td>
-                    <td class="<%= isActive ? " " : "faded"%>"><%= orderManagerName%></td>
 
                     <td class="<%= isActive ? " " : "faded"%>">
                       <a href="/OrderManager/Order/Detail/ID/<%= o.getId()%>" class="<%= isActive ? "" : "disabled"%> btn btn-outline-primary rounded-0">🤔</a>
