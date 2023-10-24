@@ -32,6 +32,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class OrderManagerController extends HttpServlet {
 
@@ -51,6 +52,11 @@ public class OrderManagerController extends HttpServlet {
         }
     }
 
+    enum SearchType {
+        PENDING,
+        HISTORY
+    };
+
     public static final String ORDER_MANAGER_USER_URI = "/OrderManager";
 
     public static final String ORDER_MANAGER_ORDER_LIST_URI = "/OrderManager/Order/List";
@@ -67,10 +73,10 @@ public class OrderManagerController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -81,7 +87,7 @@ public class OrderManagerController extends HttpServlet {
         if (path.startsWith(ORDER_MANAGER_ORDER_LIST_PENDING_URI)
                 || path.startsWith(ORDER_MANAGER_ORDER_LIST_PENDING_URI + "/page")) {
             System.out.println("Going Order List: Pending");
-            int result = searchOrder(request);
+            int result = searchOrder(request, SearchType.PENDING);
 
             if (result == State.Success.value) {
                 request.getRequestDispatcher("/ORDER_MANAGER/Order/pendingList.jsp").forward(request, response);
@@ -95,14 +101,14 @@ public class OrderManagerController extends HttpServlet {
         if (path.startsWith(ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_URI)
                 || path.startsWith(ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_URI + "/page")) {
             System.out.println("Going Order List: History Work");
-            int result = searchOrder(request);
+            int result = searchOrder(request, SearchType.HISTORY);
 
             if (result == State.Success.value) {
                 request.getRequestDispatcher("/ORDER_MANAGER/Order/workingHistoryList.jsp").forward(request, response);
             } else if (result == State.Fail.value) {
                 response.sendRedirect(
                         ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_URI
-                                + ExceptionUtils.generateExceptionQueryString(request));
+                        + ExceptionUtils.generateExceptionQueryString(request));
             }
             return;
         }
@@ -110,7 +116,7 @@ public class OrderManagerController extends HttpServlet {
         if (path.startsWith(ORDER_MANAGER_ORDER_LIST_URI)
                 || path.startsWith(ORDER_MANAGER_ORDER_LIST_URI + "/page")) {
             System.out.println("Going Order List");
-            int result = searchOrder(request);
+            int result = searchOrder(request, null);
 
             if (result == State.Success.value) {
                 request.getRequestDispatcher("/ORDER_MANAGER/Order/list.jsp").forward(request, response);
@@ -160,10 +166,10 @@ public class OrderManagerController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -235,7 +241,7 @@ public class OrderManagerController extends HttpServlet {
         return State.Fail.value;
     }
 
-    private int searchOrder(HttpServletRequest request) {
+    private int searchOrder(HttpServletRequest request, SearchType type) {
         String URI = request.getRequestURI();
         String data[] = URI.split("/");
         int page = 1;
@@ -255,6 +261,22 @@ public class OrderManagerController extends HttpServlet {
             System.out.println("Empty order list");
             request.setAttribute("exceptionType", "OrderNotFoundException");
             return State.Fail.value;
+        }
+        if (type != null) {
+            if (type == SearchType.PENDING) {
+                orderList = orderList
+                        .stream()
+                        .filter(order -> order.getStatus().equals("PENDING"))
+                        .collect(Collectors.toList());
+            } else if (type == SearchType.HISTORY) {
+                OrderManagerDAO omDAO = new OrderManagerDAO();
+                Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+                OrderManager currentManager = omDAO.getOrderManager(currentUserCookie.getValue());
+                orderList = orderList
+                        .stream()
+                        .filter(order -> (order.getUpdateByOrderManager() != 0 && order.getUpdateByOrderManager()== currentManager.getOrderManagerId()))
+                        .collect(Collectors.toList());
+            }
         }
 
         int numberOfPage = (orderList.size() / rows) + (orderList.size() % rows == 0 ? 0 : 1);

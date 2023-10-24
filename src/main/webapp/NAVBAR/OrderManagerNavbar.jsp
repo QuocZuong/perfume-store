@@ -50,8 +50,8 @@ pageEncoding="UTF-8"%>
                 <img src="/RESOURCES/images/icons/shopping-bag-alone.png" alt="" />
             </button>
             <ul class="shadow position-absolute align-items-start ps-1 pt-2">
-                <li class="py-3 text-dark"><a href="/OrderManager/Order/List">Đơn hàng đang chờ</a></li>
-                <li class="pb-3 text-dark"><a href="/OrderManager/Order/List">Lịch sử duyệt đơn</a></li>
+                <li class="py-3 text-dark"><a href="/OrderManager/Order/List/Pending">Đơn hàng đang chờ</a></li>
+                <li class="pb-3 text-dark"><a href="/OrderManager/Order/List/HistoryWork">Lịch sử duyệt đơn</a></li>
             </ul>
 
             <a href="/OrderManager/User"><img src="/RESOURCES/images/icons/user.png" alt="" /></a>

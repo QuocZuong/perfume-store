@@ -38,30 +38,6 @@
     String queryString = request.getQueryString();
     boolean isError = ExceptionUtils.isWebsiteError(queryString);
     String exceptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
-
-    Cookie currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
-    User user = usDAO.getUser(currentUserCookie.getValue());
-    username = user.getUsername();
-    OrderManager currentManager = omDAO.getOrderManager(username);
-
-    if (orderList != null && orderList.size() > 0) {
-        for (int i = 0; i < orderList.size(); i++) {
-
-            boolean isCurrentManagerWork = orderList.get(i).getUpdateByOrderManager() == currentManager.getOrderManagerId();
-            System.out.println("Comparing current manager id: " + currentManager.getId() + " with order manager id: " + orderList.get(i).getUpdateByOrderManager() + " result: " + isCurrentManagerWork);
-            
-            if (!isCurrentManagerWork) {
-                orderList.remove(i);
-                i--;
-            }
-
-        }
-
-        // Sort the order list by id
-        orderList.sort((Order o1, Order o2) -> {
-            return o2.getId() - o1.getId();
-        });
-    }
 %>
 <!DOCTYPE html>
 <html>
