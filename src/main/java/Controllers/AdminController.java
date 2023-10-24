@@ -59,19 +59,28 @@ public class AdminController extends HttpServlet {
 
     // ----------------------- URI DECLARATION SECTION ----------------------------
     public static final String ADMIN_USER_URI = "/Admin";
-
+    //Product
     public static final String ADMIN_PRODUCT_LIST_URI = "/Admin/Product/List";
     public static final String ADMIN_PRODUCT_ADD_URI = "/Admin/Product/Add";
     public static final String ADMIN_PRODUCT_UPDATE_URI = "/Admin/Product/Update";
     public static final String ADMIN_PRODUCT_DELETE_URI = "/Admin/Product/Delete";
     public static final String ADMIN_PRODUCT_RESTORE_URI = "/Admin/Product/Restore";
-
+    //Order
     public static final String ADMIN_ORDER_LIST_URI = "/Admin/Order/List";
     public static final String ADMIN_ORDER_REQUEST_URI = "/Admin/Order/Request";
     public static final String ADMIN_ORDER_DETAIL_URI = "/Admin/Order/Detail";
     public static final String ADMIN_ORDER_DELETE_URI = "/Admin/Order/Delete";
     public static final String ADMIN_ORDER_RESTORE_URI = "/Admin/Order/Restore";
 
+    //Voucher
+    public static final String ADMIN_VOUCHER_LIST_URI = "/Admin/Voucher/List";
+    public static final String ADMIN_VOUCHER_REQUEST_URI = "/Admin/Voucher/Request";
+    public static final String ADMIN_VOUCHER_UPDATE_URI = "/Admin/Voucher/Update";
+    public static final String ADMIN_VOUCHER_DETAIL_URI = "/Admin/Voucher/Detail";
+    public static final String ADMIN_VOUCHER_DELETE_URI = "/Admin/Voucher/Delete";
+    public static final String ADMIN_VOUCHER_RESTORE_URI = "/Admin/Voucher/Restore";
+
+    //User
     public static final String ADMIN_USER_INFO = "/Admin/User/Info";
     public static final String ADMIN_USER_LIST_URI = "/Admin/User/List";
     public static final String ADMIN_USER_ADD_URI = "/Admin/User/Add";
@@ -180,7 +189,30 @@ public class AdminController extends HttpServlet {
 
             return;
         }
+        // ---------------------------- VOUCHER SECTION ----------------------------
 
+        if (path.startsWith(ADMIN_VOUCHER_LIST_URI)
+                || path.startsWith(ADMIN_VOUCHER_LIST_URI + "/page")) {
+            int result = searchVoucher(request);
+
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/ADMIN_PAGE/Voucher/list.jsp").forward(request, response);
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(ADMIN_VOUCHER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
+
+        if (path.startsWith(ADMIN_VOUCHER_UPDATE_URI)) {
+            int result = getUpdateVoucher(request);
+
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/ADMIN_PAGE/Voucher/updateVoucher.jsp").forward(request, response);
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(ADMIN_VOUCHER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
         // ---------------------------- USER SECTION ----------------------------
         if (path.startsWith(ADMIN_USER_INFO)) {
             userInfo(request, response);
@@ -371,6 +403,18 @@ public class AdminController extends HttpServlet {
         }
 
         if (path.startsWith(ADMIN_UPDATE_INFO_URI)) {
+            if (request.getParameter("btnUpdateInfo") != null
+                    && request.getParameter("btnUpdateInfo").equals("Submit")) {
+                System.out.println("Going update info");
+                if (updateAdminInfomation(request, response)) {
+                    response.sendRedirect(ADMIN_USER_URI);
+                } else {
+                    response.sendRedirect(ADMIN_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
+                }
+                return;
+            }
+        }
+        if (path.startsWith(ADMIN_VOUCHER_UPDATE_URI)) {
             if (request.getParameter("btnUpdateInfo") != null
                     && request.getParameter("btnUpdateInfo").equals("Submit")) {
                 System.out.println("Going update info");
@@ -596,6 +640,38 @@ public class AdminController extends HttpServlet {
         request.setAttribute("page", page);
         request.setAttribute("numberOfPage", numberOfPage);
         request.setAttribute("orderList", orderList);
+        request.setAttribute("search", search);
+
+        return State.Success.value;
+    }
+
+    private int searchVoucher(HttpServletRequest request) {
+        String URI = request.getRequestURI();
+        String data[] = URI.split("/");
+        int page = 1;
+        int rows = 20;
+        String search = request.getParameter("txtSearch");
+        VoucherDAO vDAO = new VoucherDAO();
+
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("page")) {
+                page = Integer.parseInt(data[i + 1]);
+            }
+        }
+        List<Voucher> voucherList = vDAO.getAllVoucher();
+
+        if (voucherList.isEmpty()) {
+            System.out.println("Empty voucher list");
+            request.setAttribute("exceptionType", "VoucherNotFoundException");
+            return State.Fail.value;
+        }
+
+        int numberOfPage = (voucherList.size() / rows) + (voucherList.size() % rows == 0 ? 0 : 1);
+        voucherList = Generator.pagingList(voucherList, page, rows);
+
+        request.setAttribute("page", page);
+        request.setAttribute("numberOfPage", numberOfPage);
+        request.setAttribute("voucherList", voucherList);
         request.setAttribute("search", search);
 
         return State.Success.value;
@@ -1219,6 +1295,29 @@ public class AdminController extends HttpServlet {
                     Product pd = pDAO.getProduct(ProductID);
                     if (pd != null) {
                         request.setAttribute("ProductUpdate", pd);
+                        return State.Success.value;
+                    }
+                }
+            }
+        } catch (NumberFormatException e) {
+            request.setAttribute("exceptionType", "");
+            return State.Fail.value;
+        }
+
+        request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.ProductNotFoundException.toString());
+        return State.Fail.value;
+    }
+
+    private int getUpdateVoucher(HttpServletRequest request) {
+        VoucherDAO vDAO = new VoucherDAO();
+        try {
+            String data[] = request.getRequestURI().split("/");
+            for (int i = 0; i < data.length; i++) {
+                if (data[i].equals("ID")) {
+                    int vId = Integer.parseInt(data[i + 1]);
+                    Voucher v = vDAO.getVoucher(vId);
+                    if (v != null) {
+                        request.setAttribute("VoucherUpdate", v);
                         return State.Success.value;
                     }
                 }

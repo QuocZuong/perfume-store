@@ -76,7 +76,6 @@ public class ProductActivityLogDAO {
         // Description (nvarchar(max) default null)
         // Updated_By_Admin (int not null)
         // Updated_At (Long)
-        // Updated_At (Long)
         int result = 0;
 
         try {
