@@ -858,7 +858,6 @@ public class AdminController extends HttpServlet {
     private boolean updateCustomer(HttpServletRequest request, HttpServletResponse response) {
         UserDAO uDAO = new UserDAO();
         int result = 0;
-
         // [User] Update Section
         int uID = Integer.parseInt(request.getParameter("txtUserID"));
         String uName = request.getParameter("txtName");
