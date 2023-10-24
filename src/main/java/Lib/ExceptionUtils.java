@@ -26,6 +26,7 @@ public class ExceptionUtils {
         PhoneNumberDuplicationException,
         UsernameDuplicationException,
         EmailDuplicationException,
+        EmailDoesntExist,
         DefaultDeliveryAddressNotFoundException,
         DefaultDeliveryAddressWillBeNotFoundException,
         // Employee info
@@ -60,6 +61,7 @@ public class ExceptionUtils {
                 put(ExceptionType.PhoneNumberDuplicationException.toString(), new PhoneNumberDuplicationException());
                 put(ExceptionType.UsernameDuplicationException.toString(), new UsernameDuplicationException());
                 put(ExceptionType.EmailDuplicationException.toString(), new EmailDuplicationException());
+                put(ExceptionType.EmailDoesntExist.toString(), new EmailDoesntExist());
                 put(ExceptionType.DefaultDeliveryAddressNotFoundException.toString(),
                         new DefaultDeliveryAddressNotFoundException());
                 put(ExceptionType.DefaultDeliveryAddressWillBeNotFoundException.toString(),
