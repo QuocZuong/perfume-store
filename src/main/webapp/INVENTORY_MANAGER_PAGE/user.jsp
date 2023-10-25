@@ -93,7 +93,7 @@
                         </p>
                     </div>
                     <div class="manager-page">
-                        <div class="d-flex flex-wrap h-100 gap-5">
+                        <div class="d-flex">
                             <div class="w-25 h-25">
                                 <a href="/InventoryManager/Import/List" class="text-decoration-none">
                                     <button class="btn btn-outline-dark d-flex w-100 h-100 justify-content-center align-items-center rounded-0 fn-btn">
