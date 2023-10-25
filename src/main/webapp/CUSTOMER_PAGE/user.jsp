@@ -169,7 +169,7 @@
                                                     <div class="col-1"><%= orderId%></div>
                                                     <div class="col-2 offset-1 ps-4 text-center"><%= createAt%></div>
                                                     <div class="col-2 offset-1 ps-5 text-center"><%= totalMoney%></div>
-                                                    <div class="col-3 text-center"><a href="/Customer/Order/Detail/ID/<%=orders.get((int) pageContext.getAttribute("i")).getId()%>" target="_blank">Xem chi tiết</a></div>
+                                                    <div class="col-3 text-center"><a href="/Customer/Order/Detail/ID/<%=orders.get((int) pageContext.getAttribute("i")).getId()%>" target="_blank">Xem chi tiết</a></div>                                                    
                                                 </div>
                                             </div>
                                         </div>   

@@ -63,6 +63,7 @@ public class CustomerController extends HttpServlet {
 
     public static final String CUSTOMER_CHECKOUT_URI = "/Customer/Checkout";
     public static final String CUSTOMER_ORDER_DETAIL_URI = "/Customer/Order/Detail/ID";
+    public static final String CUSTOMER_ORDER_RECEIPT_URI = "/Customer/Order/Receipt/ID";
 
     public static final String BTN_ADD_DELIVERY_ADDRESS = "btnAddAddress";
     public static final String BTN_DELETE_DELIVERY_ADDRESS = "btnDeleteAddress";
@@ -151,6 +152,12 @@ public class CustomerController extends HttpServlet {
             } else {
                 request.getRequestDispatcher(CUSTOMER_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
             }
+            return;
+        }
+
+        if (path.startsWith(CUSTOMER_ORDER_RECEIPT_URI)) {
+            System.out.println("Going export receipt");
+            exportReceipt(request, response);
             return;
         }
 
@@ -1126,6 +1133,27 @@ public class CustomerController extends HttpServlet {
 
         System.out.println("Delete address successfully");
         return State.Success.value;
+    }
+
+    private void exportReceipt(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException, IOException {
+        System.out.println("vao export");
+        OrderDAO orderDAO = new OrderDAO();
+        CustomerDAO customerDAO = new CustomerDAO();
+        EmailSender emailSender = new EmailSender();
+        String data[] = request.getRequestURI().split("/");
+        int orderId = 0;
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("ID")) {
+                orderId = Integer.parseInt(data[i + 1]);
+            }
+        }
+
+        Order order = orderDAO.getOrderByOrderId(orderId);
+        Customer customer = customerDAO.getCustomer(order.getCustomerId());
+        emailSender.setEmailTo(customer.getEmail());
+        emailSender.sendEmailByThread(emailSender.EXPORT_RECEIPT_NOTFICATION, emailSender.exportEmailReceipt(order));
+        System.out.println("email to export: " + customer.getEmail());
+        response.sendRedirect(CUSTOMER_ORDER_DETAIL_URI + "/" + order.getId());
     }
 
     // ------------------------- EXEPTION HANDLING SECTION -------------------------
