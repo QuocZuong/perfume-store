@@ -3,6 +3,7 @@ package Lib;
 import DAOs.UserDAO;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 import java.security.SecureRandom;
@@ -121,7 +122,7 @@ public class Generator {
      * Get the filtered list from the original list, according to its page and
      * num of row.
      *
-     * @param <T> The type of the list.
+     * @param <T>  The type of the list.
      * @param list The original list.
      * @param page The page number.
      * @param rows The number of rows per page.
@@ -151,7 +152,7 @@ public class Generator {
      * Get the current time in milliseconds.
      *
      * @return a long number that represents the current time in milliseconds
-     * from the epoch (1970-01-01).
+     *         from the epoch (1970-01-01).
      */
     public static long getCurrentTimeFromEpochMilli() {
         return Instant.now().toEpochMilli();
@@ -161,12 +162,34 @@ public class Generator {
      * Get the time string in a specific format.
      *
      * @param epochMilli The time in milliseconds from the epoch (1970-01-01).
-     * @param pattern The format of the time string, as defined in
-     * {@link Generator#DatePattern}.
+     * @param pattern    The format of the time string, as defined in
+     *                   {@link Generator#DatePattern}.
      * @return The time string in the specified format.
      */
     public static String getDateTime(long epochMilli, DatePattern pattern) {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern.pattern);
         return sdf.format(new Date(epochMilli));
+    }
+
+    /**
+     * Get the current day time range in milliseconds, from the epoch.
+     * 
+     * @param day   The day of the month.
+     * @param month The month of the year.
+     * @param year  The year.
+     * @return An array of two long numbers, the first element is the start and the
+     *         second element is end of the day in milliseconds, counting from the
+     *         epoch.
+     */
+    public static long[] getTodayTimeRangeInMilli(int day, int month, int year) {
+        long[] timeRange = new long[2];
+        Calendar cal = Calendar.getInstance();
+
+        cal.set(year, month - 1, day, 0, 0, 0);
+        timeRange[0] = cal.getTimeInMillis();
+        cal.set(year, month - 1, day, 23, 59, 59);
+        timeRange[1] = cal.getTimeInMillis();
+
+        return timeRange;
     }
 }

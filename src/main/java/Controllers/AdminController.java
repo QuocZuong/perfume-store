@@ -81,12 +81,10 @@ public class AdminController extends HttpServlet {
     public static final String ADMIN_IMPORT_BRING_TO_STOCK = "/Admin/Import/Bring";
 
     // Voucher
+    public static final String ADMIN_VOUCHER_ADD_URI = "/Admin/Voucher/Add";
     public static final String ADMIN_VOUCHER_LIST_URI = "/Admin/Voucher/List";
-    public static final String ADMIN_VOUCHER_REQUEST_URI = "/Admin/Voucher/Request";
     public static final String ADMIN_VOUCHER_UPDATE_URI = "/Admin/Voucher/Update";
-    public static final String ADMIN_VOUCHER_DETAIL_URI = "/Admin/Voucher/Detail";
     public static final String ADMIN_VOUCHER_DELETE_URI = "/Admin/Voucher/Delete";
-    public static final String ADMIN_VOUCHER_RESTORE_URI = "/Admin/Voucher/Restore";
 
     // User
     public static final String ADMIN_USER_INFO = "/Admin/User/Info";
@@ -210,7 +208,18 @@ public class AdminController extends HttpServlet {
             }
             return;
         }
+        // Page chua co
+        if (path.startsWith(ADMIN_VOUCHER_ADD_URI)) {
+            int result = getUpdateVoucher(request);
 
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/ADMIN_PAGE/Voucher/addVoucher.jsp").forward(request, response);
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(ADMIN_VOUCHER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
+        // Page nhu cc
         if (path.startsWith(ADMIN_VOUCHER_UPDATE_URI)) {
             int result = getUpdateVoucher(request);
 
@@ -221,6 +230,18 @@ public class AdminController extends HttpServlet {
             }
             return;
         }
+
+        if (path.startsWith(ADMIN_VOUCHER_DELETE_URI)) {
+            int result = deleteVoucher(request);
+
+            if (result == State.Success.value) {
+                response.sendRedirect(ADMIN_VOUCHER_LIST_URI);
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(ADMIN_VOUCHER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
+
         // ---------------------------- USER SECTION ----------------------------
         if (path.startsWith(ADMIN_USER_INFO)) {
             userInfo(request, response);
@@ -1578,6 +1599,10 @@ public class AdminController extends HttpServlet {
             return;
         }
         System.out.println("Deactivated User with ID: " + userId + " successfully!");
+    }
+
+    private int deleteVoucher(HttpServletRequest request) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     private void bestSellingProductByGender(HttpServletRequest request, HttpServletResponse response) {

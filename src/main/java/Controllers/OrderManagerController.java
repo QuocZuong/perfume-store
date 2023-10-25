@@ -3,13 +3,17 @@ package Controllers;
 import DAOs.OrderDAO;
 import DAOs.OrderManagerDAO;
 import DAOs.ProductDAO;
+import DAOs.StockDAO;
 import DAOs.UserDAO;
 import DAOs.VoucherDAO;
 import Exceptions.AccountDeactivatedException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.InvalidInputException;
+import Exceptions.NotEnoughProductQuantityException;
+import Exceptions.NotEnoughVoucherQuantityException;
 import Exceptions.OperationEditFailedException;
 import Exceptions.UsernameDuplicationException;
+import Exceptions.VoucherNotFoundException;
 import Exceptions.WrongPasswordException;
 import Interfaces.DAOs.IUserDAO.loginType;
 import Lib.ExceptionUtils;
@@ -20,6 +24,7 @@ import Models.Order;
 import Models.OrderDetail;
 import Models.OrderManager;
 import Models.Product;
+import Models.Stock;
 import Models.User;
 import Models.Voucher;
 import java.io.IOException;
@@ -32,6 +37,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class OrderManagerController extends HttpServlet {
@@ -85,10 +92,10 @@ public class OrderManagerController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -120,7 +127,7 @@ public class OrderManagerController extends HttpServlet {
             } else if (result == State.Fail.value) {
                 response.sendRedirect(
                         ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_URI
-                                + ExceptionUtils.generateExceptionQueryString(request));
+                        + ExceptionUtils.generateExceptionQueryString(request));
             }
             return;
         }
@@ -198,7 +205,7 @@ public class OrderManagerController extends HttpServlet {
             } else {
                 response.sendRedirect(
                         ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_URI
-                                + ExceptionUtils.generateExceptionQueryString(request));
+                        + ExceptionUtils.generateExceptionQueryString(request));
             }
             return;
         }
@@ -214,10 +221,10 @@ public class OrderManagerController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -273,17 +280,51 @@ public class OrderManagerController extends HttpServlet {
             OrderDAO orDAO = new OrderDAO();
             Order order = orDAO.getOrderByOrderId(orderId);
             System.out.println("\n" + orderManager.getOrderManagerId() + " | " + orderManager.getName() + "\n");
-            if (op == Operation.ACCEPT) {
-                orDAO.acceptOrder(order, orderManager.getOrderManagerId());
-                return State.Success.value;
-            }
-
             if (op == Operation.REJECT) {
                 orDAO.rejectOrder(order, orderManager.getOrderManagerId());
                 return State.Success.value;
             }
+            if (op == Operation.ACCEPT) {
+                //Check quantity for voucher
+                VoucherDAO voucherDAO = new VoucherDAO();
+                Voucher voucher = voucherDAO.getVoucher(order.getVoucherId());
+                if (voucher != null) {
+                    if (voucher.getQuantity() == 0) {
+                        throw new NotEnoughVoucherQuantityException();
+                    }
+                    //Proceed to minus voucher quantity
+                    voucher.setQuantity(voucher.getQuantity() - 1);
+                    voucherDAO.updateVoucher(voucher);
+                }
+
+                List<OrderDetail> orderDetailList = order.getOrderDetailList();
+                StockDAO stkDAO = new StockDAO();
+                //Check if the quantity stock is less than the order detail
+                for (OrderDetail orderDetail : orderDetailList) {
+                    Stock stk = stkDAO.getStock(orderDetail.getProductId());
+                    if (stk.getQuantity() < orderDetail.getQuantity()) {
+                        throw new NotEnoughProductQuantityException();
+                    }
+                    //Proceed to minus the product
+                    stk.setQuantity(stk.getQuantity() - orderDetail.getQuantity());
+                    int result = stkDAO.updateStock(stk);
+                    if (result < 1) {
+                        System.out.println("Update stock fail!");
+                        throw new OperationEditFailedException();
+                    }
+                }
+                orDAO.acceptOrder(order, orderManager.getOrderManagerId());
+                return State.Success.value;
+            }
+
         } catch (OperationEditFailedException ex) {
             request.setAttribute("exceptionType", "OperationEditFailedException");
+            return State.Fail.value;
+        } catch (NotEnoughProductQuantityException ex) {
+            request.setAttribute("exceptionType", "NotEnoughProductQuantityException");
+            return State.Fail.value;
+        } catch (NotEnoughVoucherQuantityException ex) {
+            request.setAttribute("exceptionType", "NotEnoughVoucherQuantityException");
             return State.Fail.value;
         }
         return State.Fail.value;
@@ -323,7 +364,7 @@ public class OrderManagerController extends HttpServlet {
                 orderList = orderList
                         .stream()
                         .filter(order -> (order.getUpdateByOrderManager() != 0
-                                && order.getUpdateByOrderManager() == currentManager.getOrderManagerId()))
+                        && order.getUpdateByOrderManager() == currentManager.getOrderManagerId()))
                         .collect(Collectors.toList());
             }
         }
