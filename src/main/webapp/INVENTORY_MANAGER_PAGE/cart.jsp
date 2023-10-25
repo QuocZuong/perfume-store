@@ -59,6 +59,8 @@
             rel="stylesheet"
             type="text/css" 
             />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
+
         <title>Giỏ hàng</title>
     </head>
     <body>
@@ -106,11 +108,11 @@
                                                     <td>
                                                         <h4>Quantity</h4>
                                                         <span>
-                                                            <input type="number" name="<%= "ProductQuan" + pageContext.getAttribute("i")%>" value="<%= CartQuan%>" /> 
+                                                            <input type="number" min="1" name="<%= "ProductQuan" + pageContext.getAttribute("i")%>" value="<%= CartQuan%>" /> 
                                                         </span>
                                                         <h4>Cost</h4>
                                                         <span>
-                                                            <input type="number" name="<%= "ProductCost" + pageContext.getAttribute("i")%>" value="<%= CartCost%>" /> 
+                                                            <input type="number" min="0" name="<%= "ProductCost" + pageContext.getAttribute("i")%>" value="<%= CartCost%>" /> 
                                                         </span>
                                                         <a href="/InventoryManager/ImportCart/Delete/ProductID/<%= p.getId()%>/InventoryManagerID/<%=ivtrManaId%>">
                                                             <img src="/RESOURCES/images/icons/close.png" alt="" />
@@ -330,7 +332,6 @@
         <!--Jquery Validation-->
         <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
 
-        <script src="/RESOURCES/admin/user/public/js/main.js"></script>
         <script>
             $(document).ready(function () {
                 $.validator.addMethod("emailCustom", function (value, element, toggler) {
@@ -397,16 +398,13 @@
             integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
             crossorigin="anonymous"
         ></script>
-        <script src="/RESOURCES/cart/public/js/main.js"></script>
-        <script src="/RESOURCES/home/public/js/main.js"></script>
+        <script src="/RESOURCES/importCart/public/js/main.js"></script>
+
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
                 integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 
-        <script src="/RESOURCES/admin/product/public/js/main.js"></script>
 
     </body>
 </html>

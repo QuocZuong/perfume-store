@@ -108,7 +108,7 @@
                                         <td class="<%= pd.isActive() ? " " : "faded"%>"><%= bDAO.getBrand(pd.getBrandId()).getName()%></td>
                                         <td class="<%= pd.isActive() ? " " : "faded"%>"><img src="<%= pd.getImgURL()%>" alt="<%= pd.getName()%>"/></td>
                                         <td class="<%= pd.isActive() ? " " : "faded"%>">
-                                            <input type="number" name="txtQuantity<%=pd.getId()%>" id="txtQuantity<%=pd.getId()%>">
+                                            <input type="number" min="1" name="txtQuantity<%=pd.getId()%>" id="txtQuantity<%=pd.getId()%>">
                                         </td>
                                         <td class="<%= pd.isActive() ? " " : "faded"%>">
                                             <a id="ImportClick<%= pd.getId()%>" href="/InventoryManager/ProductImport/ProductID/<%= pd.getId()%>" class="<%= pd.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0 import-click">Add to import cart</a>
@@ -161,7 +161,6 @@
                     quantity = 1;
                 }
                 this.href = this.href + "/Quantity/"+quantity+"/";
-                alert(this.href);
             });
         </script>
         <script

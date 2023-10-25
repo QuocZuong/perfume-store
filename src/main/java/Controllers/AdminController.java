@@ -81,12 +81,10 @@ public class AdminController extends HttpServlet {
     public static final String ADMIN_IMPORT_BRING_TO_STOCK = "/Admin/Import/Bring";
 
     // Voucher
+    public static final String ADMIN_VOUCHER_ADD_URI = "/Admin/Voucher/Add";
     public static final String ADMIN_VOUCHER_LIST_URI = "/Admin/Voucher/List";
-    public static final String ADMIN_VOUCHER_REQUEST_URI = "/Admin/Voucher/Request";
     public static final String ADMIN_VOUCHER_UPDATE_URI = "/Admin/Voucher/Update";
-    public static final String ADMIN_VOUCHER_DETAIL_URI = "/Admin/Voucher/Detail";
     public static final String ADMIN_VOUCHER_DELETE_URI = "/Admin/Voucher/Delete";
-    public static final String ADMIN_VOUCHER_RESTORE_URI = "/Admin/Voucher/Restore";
 
     // User
     public static final String ADMIN_USER_INFO = "/Admin/User/Info";
@@ -127,10 +125,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -210,7 +208,18 @@ public class AdminController extends HttpServlet {
             }
             return;
         }
+        // Page chua co
+        if (path.startsWith(ADMIN_VOUCHER_ADD_URI)) {
+            int result = getUpdateVoucher(request);
 
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/ADMIN_PAGE/Voucher/addVoucher.jsp").forward(request, response);
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(ADMIN_VOUCHER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
+        // Page nhu cc
         if (path.startsWith(ADMIN_VOUCHER_UPDATE_URI)) {
             int result = getUpdateVoucher(request);
 
@@ -221,6 +230,18 @@ public class AdminController extends HttpServlet {
             }
             return;
         }
+
+        if (path.startsWith(ADMIN_VOUCHER_DELETE_URI)) {
+            int result = deleteVoucher(request);
+
+            if (result == State.Success.value) {
+                response.sendRedirect(ADMIN_VOUCHER_LIST_URI);
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(ADMIN_VOUCHER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
+
         // ---------------------------- USER SECTION ----------------------------
         if (path.startsWith(ADMIN_USER_INFO)) {
             userInfo(request, response);
@@ -327,6 +348,7 @@ public class AdminController extends HttpServlet {
             } else if (result == State.Fail.value) {
                 response.sendRedirect(ADMIN_IMPORT_STORE + ExceptionUtils.generateExceptionQueryString(request));
             }
+            return;
         }
         // ---------------------------- IMPORT SECTION ----------------------------
         // ---------------------------- CHART SECTION ----------------------------
@@ -352,10 +374,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -862,7 +884,7 @@ public class AdminController extends HttpServlet {
             return State.Fail.value;
         }
     }
-  
+
     // ---------------------------- UPDATE SECTION ----------------------------
     private int updateProduct(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
@@ -1579,6 +1601,10 @@ public class AdminController extends HttpServlet {
         System.out.println("Deactivated User with ID: " + userId + " successfully!");
     }
 
+    private int deleteVoucher(HttpServletRequest request) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     private void bestSellingProductByGender(HttpServletRequest request, HttpServletResponse response) {
         OrderDAO oDAO = new OrderDAO();
         List<Product> listProduct = oDAO.getOrderForChartByOrderIdByGender();
@@ -1632,6 +1658,7 @@ public class AdminController extends HttpServlet {
     private int bringToStock(HttpServletRequest request) {
         AdminDAO adDAO = new AdminDAO();
         ImportDetailDAO ipDetailDAO = new ImportDetailDAO();
+        ProductDAO pDAO = new ProductDAO();
         String data[] = request.getRequestURI().split("/");
 
         Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
@@ -1662,17 +1689,26 @@ public class AdminController extends HttpServlet {
                 request.setAttribute("exceptionType", "ImportNotFoundException");
                 return State.Fail.value;
             }
-            StockDAO stDAO = new StockDAO();
-            Stock st = stDAO.getStock(productId);
-            if (st == null) {
+            Product pd = pDAO.getProduct(productId);
+            Stock st = pd.getStock();
+            if (pd == null || st == null) {
                 System.out.println("not found product to update stock");
                 request.setAttribute("exceptionType", "ProductNotFoundException");
                 return State.Fail.value;
             }
             st.setQuantity(st.getQuantity() + ipD.getQuantity());
-            int result = stDAO.updateStock(st);
+            int result = pDAO.updateProduct(pd, ad);
             if (result == 0) {
                 System.out.println("update stock failt");
+                request.setAttribute("exceptionType", "OperationEditFailedException");
+                return State.Fail.value;
+            }
+            ipD.setStatus(ImportDetailDAO.Status.USED.toString());
+            result = ipDetailDAO.updateImportDetail(ipD);
+            if (result == 0) {
+                st.setQuantity(st.getQuantity() - ipD.getQuantity());
+                pDAO.updateProduct(pd, ad);
+                System.out.println("set status for import detail fail");
                 request.setAttribute("exceptionType", "OperationEditFailedException");
                 return State.Fail.value;
             }

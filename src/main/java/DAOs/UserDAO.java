@@ -299,7 +299,7 @@ public class UserDAO implements IUserDAO {
     // Check input 2-side
 
     public boolean checkRegexPassword(String password) {
-        final Pattern PASSWORD_REGEX = Pattern.compile("^[a-zA-Z0-9]{1,}$", Pattern.CASE_INSENSITIVE);
+        final Pattern PASSWORD_REGEX = Pattern.compile("^.+$", Pattern.CASE_INSENSITIVE);
         return PASSWORD_REGEX.matcher(password).matches();
     }
 

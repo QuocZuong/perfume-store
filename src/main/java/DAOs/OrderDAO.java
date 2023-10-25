@@ -1,6 +1,8 @@
 package DAOs;
 
+import Exceptions.NotEnoughProductQuantityException;
 import Exceptions.OperationEditFailedException;
+import Exceptions.VoucherNotFoundException;
 import Models.Order;
 import Models.OrderDetail;
 import Models.Product;
@@ -19,18 +21,23 @@ import Interfaces.DAOs.IOrderDAO;
 import Lib.DatabaseUtils;
 import Lib.Generator;
 import Models.OrderManager;
+import Models.Voucher;
 
 public class OrderDAO implements IOrderDAO {
 
+
     private Connection conn;
+
 
     public OrderDAO() {
         conn = DB.DBContext.getConnection();
     }
 
+
     @Override
     public Order orderFactory(ResultSet rs, operation op) throws SQLException {
         Order order = new Order();
+
 
         switch (op) {
             default:
@@ -440,7 +447,8 @@ public class OrderDAO implements IOrderDAO {
     }
 
     public boolean acceptOrder(Order order, int orderManagerId)
-            throws NullPointerException, OperationEditFailedException {
+            throws NullPointerException,
+            OperationEditFailedException {
         if (!order.getStatus().equals(status.PENDING.toString())) {
             System.out.println("Can not update status of an accepted order");
             throw new OperationEditFailedException();
@@ -463,6 +471,7 @@ public class OrderDAO implements IOrderDAO {
             throw new OperationEditFailedException();
         }
 
+        //check if the quantity stock is less than the order detail
         long now = Generator.getCurrentTimeFromEpochMilli();
 
         order.setUpdateAt(now);
