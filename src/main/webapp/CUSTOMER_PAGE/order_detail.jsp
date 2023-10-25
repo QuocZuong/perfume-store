@@ -135,8 +135,12 @@
                                             String quantity = orderDetail.getQuantity() + "";
                                             String total = Converter.covertIntergerToMoney(orderDetail.getTotal());
 
+
                                             int sum = orderDetail.getQuantity() * product.getStock().getPrice();
-                                        %>
+                                                                String totalMoney = Converter.covertIntergerToMoney(sum);
+                                            String totalMoneyAfterDeducted = Converter.covertIntergerToMoney(sumDeductPrice < v.getDiscountMax() ? (sum - (product.getStock().getPrice() * v.getDiscountPercent() / 100)) : (sum - (product.getStock().getPrice() * v.getDiscountPercent() / 100) + ((sumDeductPrice - v.getDiscountMax()) / approvedProductsList.size())));
+
+                    %>
                                         <tr>
                                             <td scope="row"><%=(int) pageContext.getAttribute("i") + 1%></td>
                                             <td><a src="/Product/Detail/ID/<%= product.getId()%>"><%= productName%></a></td>
@@ -144,7 +148,7 @@
                                             <td><%= quantity%></td>
                                             <td>
                                                 <c:choose>
-                                                    <c:when test="<%= (v != null && approvedProductsList != null && ProductDAO.isContain(product, approvedProductsList))%>">  
+                                                    <c:when test="<%= (v != null && approvedProductsList != null && ProductDAO.isContain(product, approvedProductsList)) %>">  
                                                         <span><%= Converter.covertIntergerToMoney(product.getStock().getPrice())%> <span>₫</span></span>
                                                     </c:when>
                                                     <c:otherwise>
@@ -155,8 +159,8 @@
                                             <td>
                                                 <c:choose>
                                                     <c:when test="<%= (v != null && approvedProductsList != null && ProductDAO.isContain(product, approvedProductsList))%>">  
-                                                        <span style="text-decoration: line-through;color: rgba(0,0,0,0.5);">Total:<%= Converter.covertIntergerToMoney(sum)%> <span>₫</span></span>
-                                                        <span>Total: <%= Converter.covertIntergerToMoney(sumDeductPrice < v.getDiscountMax() ? (sum - (product.getStock().getPrice() * v.getDiscountPercent() / 100)) : (sum - (product.getStock().getPrice() * v.getDiscountPercent() / 100) + ((sumDeductPrice - v.getDiscountMax()) / approvedProductsList.size())))%> <span>₫</span></span>
+                                                        <span style="text-decoration: line-through;color: rgba(0,0,0,0.5);">Total:<%= totalMoney%> <span>₫</span></span>
+                                                        <span>Total: <%= totalMoneyAfterDeducted%> <span>₫</span></span>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <span>Total: <%= Converter.covertIntergerToMoney(sum)%> <span>₫</span></span>
