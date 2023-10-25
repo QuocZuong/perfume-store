@@ -67,16 +67,28 @@ public class OrderManagerController extends HttpServlet {
 
     public static final String ORDER_MANAGER_UPDATE_INFO_URI = "/OrderManager/Update/Info";
 
-    public final String ORDER_MANAGER_ACCEPT_ORDER_URI = "/OrderManager/" + Operation.ACCEPT.toString() + "/Order/ID/";
-    public final String ORDER_MANAGER_REJECT_ORDER_URI = "/OrderManager/" + Operation.REJECT.toString() + "/Order/ID/";
+    public final String ORDER_MANAGER_ORDER_LIST_ACCEPT_ORDER_URI = "/OrderManager/OrderList/"
+            + Operation.ACCEPT.toString() + "/Order/ID/";
+    public final String ORDER_MANAGER_ORDER_LIST_REJECT_ORDER_URI = "/OrderManager/OrderList/"
+            + Operation.REJECT.toString() + "/Order/ID/";
+
+    public final String ORDER_MANAGER_ORDER_LIST_PENDING_ACCEPT_ORDER_URI = "/OrderManager/OrderList/Pending/"
+            + Operation.ACCEPT.toString() + "/Order/ID/";
+    public final String ORDER_MANAGER_ORDER_LIST_PENDING_REJECT_ORDER_URI = "/OrderManager/OrderList/Pending/"
+            + Operation.REJECT.toString() + "/Order/ID/";
+
+    public final String ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_ACCEPT_ORDER_URI = "/OrderManager/OrderList/HistoryWork/"
+            + Operation.ACCEPT.toString() + "/Order/ID/";
+    public final String ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_REJECT_ORDER_URI = "/OrderManager/OrderList/HistoryWork/"
+            + Operation.REJECT.toString() + "/Order/ID/";
 
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -108,7 +120,7 @@ public class OrderManagerController extends HttpServlet {
             } else if (result == State.Fail.value) {
                 response.sendRedirect(
                         ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_URI
-                        + ExceptionUtils.generateExceptionQueryString(request));
+                                + ExceptionUtils.generateExceptionQueryString(request));
             }
             return;
         }
@@ -141,9 +153,12 @@ public class OrderManagerController extends HttpServlet {
             }
             return;
         }
-        if (path.startsWith(ORDER_MANAGER_ACCEPT_ORDER_URI)
-                || path.startsWith(ORDER_MANAGER_REJECT_ORDER_URI)) {
+
+        // Accept/Rejecting order then redirect to order list
+        if (path.startsWith(ORDER_MANAGER_ORDER_LIST_ACCEPT_ORDER_URI)
+                || path.startsWith(ORDER_MANAGER_ORDER_LIST_REJECT_ORDER_URI)) {
             System.out.println("Update order status");
+
             int result = updateOrderStatus(request, response);
 
             if (result == State.Success.value) {
@@ -151,6 +166,39 @@ public class OrderManagerController extends HttpServlet {
             } else {
                 response.sendRedirect(
                         ORDER_MANAGER_ORDER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
+
+        // Accept/Rejecting order then redirect to order list: pending
+        if (path.startsWith(ORDER_MANAGER_ORDER_LIST_PENDING_ACCEPT_ORDER_URI)
+                || path.startsWith(ORDER_MANAGER_ORDER_LIST_PENDING_REJECT_ORDER_URI)) {
+            System.out.println("Update order status");
+
+            int result = updateOrderStatus(request, response);
+
+            if (result == State.Success.value) {
+                response.sendRedirect(ORDER_MANAGER_ORDER_LIST_PENDING_URI);
+            } else {
+                response.sendRedirect(
+                        ORDER_MANAGER_ORDER_LIST_PENDING_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
+
+        // Accept/Rejecting order then redirect to order list: history work
+        if (path.startsWith(ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_ACCEPT_ORDER_URI)
+                || path.startsWith(ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_REJECT_ORDER_URI)) {
+            System.out.println("Update order status");
+
+            int result = updateOrderStatus(request, response);
+
+            if (result == State.Success.value) {
+                response.sendRedirect(ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_URI);
+            } else {
+                response.sendRedirect(
+                        ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_URI
+                                + ExceptionUtils.generateExceptionQueryString(request));
             }
             return;
         }
@@ -166,10 +214,10 @@ public class OrderManagerController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -274,7 +322,8 @@ public class OrderManagerController extends HttpServlet {
                 OrderManager currentManager = omDAO.getOrderManager(currentUserCookie.getValue());
                 orderList = orderList
                         .stream()
-                        .filter(order -> (order.getUpdateByOrderManager() != 0 && order.getUpdateByOrderManager() == currentManager.getOrderManagerId()))
+                        .filter(order -> (order.getUpdateByOrderManager() != 0
+                                && order.getUpdateByOrderManager() == currentManager.getOrderManagerId()))
                         .collect(Collectors.toList());
             }
         }

@@ -132,25 +132,25 @@
                     <td class="<%= isActive ? " " : "faded"%>"><%= updateAt%></td>
 
                                         <td class="<%= isActive ? " " : "faded"%>">
-                                            <a href="/OrderManager/Order/Detail/ID/<%= o.getId()%>" class="<%= isActive ? "" : "disabled"%> btn btn-outline-primary rounded-0">🤔</a>
+                                            <a href="/OrderManager/Order/Detail/ID/<%= o.getId()%>" class="<%= isActive ? "" : "disabled"%> btn btn-outline-primary rounded-0">Detail</a>
                                         </td>
                                         <c:choose>
                                             <c:when test='<%= isAccepted%>'>
                                                 <td class="buttonStatus faded px-3" colspan=2>
-                                                    <a href="/OrderManager/ACCEPT/Order/ID/<%= o.getId()%>" class="btn btn-outline-success rounded-0 w-100">✅</a>
+                                                    <a href="/OrderManager/OrderList/Pending/ACCEPT/Order/ID/<%= o.getId()%>" class="btn btn-outline-success btn-disabled rounded-0 w-100" tabindex="-1">Accepted</a>
                                                 </td>
                                             </c:when>
                                             <c:when test='<%= isRejected%>'>
                                                 <td class="buttonStatus faded px-3" colspan=2>
-                                                    <a href="/OrderManager/REJECT/Order/ID/<%= o.getId()%>" class="btn btn-outline-danger rounded-0 w-100">❌</a>
+                                                    <a href="/OrderManager/OrderList/Pending/REJECT/Order/ID/<%= o.getId()%>" class="btn btn-outline-danger btn-disabled rounded-0 w-100" tabindex="-1">Rejected</a>
                                                 </td>
                                             </c:when>
                                             <c:otherwise>
                                                 <td class="buttonStatus">
-                                                    <a href="/OrderManager/ACCEPT/Order/ID/<%= o.getId()%>" class="btn btn-outline-success rounded-0">✅</a>
+                                                    <a href="/OrderManager/OrderList/Pending/ACCEPT/Order/ID/<%= o.getId()%>" class="btn btn-outline-success rounded-0">Accept</a>
                                                 </td>
                                                 <td class="buttonStatus">
-                                                    <a href="/OrderManager/REJECT/Order/ID/<%= o.getId()%>" class="btn btn-outline-danger rounded-0">❌</a>
+                                                    <a href="/OrderManager/OrderList/Pending/REJECT/Order/ID/<%= o.getId()%>" class="btn btn-outline-danger rounded-0">Reject</a>
                                                 </td>
                                             </c:otherwise>
                                         </c:choose>
@@ -199,5 +199,6 @@
             integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>
         <script src="/RESOURCES/admin/product/public/js/list.js"></script>
+        <script src="/RESOURCES/orderManager/order/public/js/list.js"></script>
     </body>
 </html>
