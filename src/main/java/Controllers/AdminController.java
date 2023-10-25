@@ -862,46 +862,7 @@ public class AdminController extends HttpServlet {
             return State.Fail.value;
         }
     }
-
-    //
-    // private void clientDetail(HttpServletRequest request, HttpServletResponse
-    // response) {
-    // OrderDAO oDAO = new OrderDAO();
-    // UserDAO uDAO = new UserDAO();
-    // String URI = request.getRequestURI();
-    // String data[] = URI.split("/");
-    // int ClientID = -1;
-    // for (int i = 0; i < data.length; i++) {
-    // if (data[i].equals("ID")) {
-    // ClientID = Integer.parseInt(data[i + 1]);
-    // }
-    // }
-    // List<Order> orderList = oDAO.getOrderByClientId(ClientID);
-    // User client = uDAO.getUser(ClientID);
-    // request.setAttribute("client", client);
-    // request.setAttribute("orderList", orderList);
-    // }
-    //
-    // private void OrderDetail(HttpServletRequest request, HttpServletResponse
-    // response) {
-    // UserDAO uDAO = new UserDAO();
-    // OrderDAO oDAO = new OrderDAO();
-    // String URI = request.getRequestURI();
-    // String data[] = URI.split("/");
-    // int OrderID = -1;
-    // for (int i = 0; i < data.length; i++) {
-    // if (data[i].equals("ID")) {
-    // OrderID = Integer.parseInt(data[i + 1]);
-    // }
-    // }
-    // List<String[]> orderDetail = oDAO.getOrderDetailByOrderID(OrderID);
-    // Order OrderInfor = oDAO.getOrderByOrderId(OrderID);
-    // User client = uDAO.getUser(OrderInfor.getClientID());
-    // request.setAttribute("client", client);
-    // request.setAttribute("OrderInfor", OrderInfor);
-    // request.setAttribute("OrderDetail", orderDetail);
-    // }
-    //
+  
     // ---------------------------- UPDATE SECTION ----------------------------
     private int updateProduct(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {

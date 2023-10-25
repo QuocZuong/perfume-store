@@ -27,6 +27,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class LogController extends HttpServlet {
 
@@ -82,8 +84,7 @@ public class LogController extends HttpServlet {
         // Login
         if (request.getParameter("submitBtn") != null && request.getParameter("submitBtn").equals("submitLogin")) {
             if (login(request, response)) {
-                System.out.println("Login Successfully. Going to /Product/List");
-                response.sendRedirect("/Product/List");
+                //redirect in the login method
             } else {
                 System.out.println("Login failed. Going to /Log/Login");
                 response.sendRedirect(LOGIN_URI + ExceptionUtils.generateExceptionQueryString(request));
@@ -148,6 +149,7 @@ public class LogController extends HttpServlet {
         String cookieValue = user.getUsername();
 
         String userType = user.getType();
+        String URI = "/Product/List";
         if (userType.equals("Customer")) {
             cookieKey = "Customer";
         } else if (userType.equals("Employee")) {
@@ -155,6 +157,7 @@ public class LogController extends HttpServlet {
             Employee emp = empDAO.getEmployeeByUserId(user.getId());
             cookieKey = emp.getRole().getName();
             cookieKey = cookieKey.replaceAll(" ", "");
+            URI = "/" + cookieKey;
         }
         Cookie c = new Cookie(cookieKey, cookieValue);
         if (rememberPw) {
@@ -165,6 +168,12 @@ public class LogController extends HttpServlet {
         c.setPath("/");
         request.getSession().setAttribute("userCookie", c);
         response.addCookie(c);
+        //send redirect
+        try {
+            response.sendRedirect(URI);
+        } catch (IOException ex) {
+            Logger.getLogger(LogController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return true;
     }
 
