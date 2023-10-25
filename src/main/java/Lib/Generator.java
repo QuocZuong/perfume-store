@@ -10,6 +10,7 @@ import java.security.SecureRandom;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -171,6 +172,308 @@ public class Generator {
         return sdf.format(new Date(epochMilli));
     }
 
+    public static String generateProductHTML(String imageURL, String productName, int quantity, int price) {
+        String result = "<tr>\n"
+                + "                                            <td\n"
+                + "                                                class=\"esdev-adapt-off\"\n"
+                + "                                                align=\"left\"\n"
+                + "                                                style=\"\n"
+                + "                                                    margin: 0;\n"
+                + "                                                    padding-top: 10px;\n"
+                + "                                                    padding-bottom: 10px;\n"
+                + "                                                    padding-left: 20px;\n"
+                + "                                                    padding-right: 20px;\n"
+                + "                                                \"\n"
+                + "                                            >\n"
+                + "                                                <table\n"
+                + "                                                    cellpadding=\"0\"\n"
+                + "                                                    cellspacing=\"0\"\n"
+                + "                                                    class=\"esdev-mso-table\"\n"
+                + "                                                    role=\"none\"\n"
+                + "                                                    style=\"\n"
+                + "                                                        mso-table-lspace: 0pt;\n"
+                + "                                                        mso-table-rspace: 0pt;\n"
+                + "                                                        border-collapse: collapse;\n"
+                + "                                                        border-spacing: 0px;\n"
+                + "                                                        width: 560px;\n"
+                + "                                                    \"\n"
+                + "                                                >\n"
+                + "                                                    <tr>\n"
+                + "                                                        <td\n"
+                + "                                                            class=\"esdev-mso-td\"\n"
+                + "                                                            valign=\"top\"\n"
+                + "                                                            style=\"padding: 0; margin: 0\"\n"
+                + "                                                        >\n"
+                + "                                                            <table\n"
+                + "                                                                cellpadding=\"0\"\n"
+                + "                                                                cellspacing=\"0\"\n"
+                + "                                                                class=\"es-left\"\n"
+                + "                                                                align=\"left\"\n"
+                + "                                                                role=\"none\"\n"
+                + "                                                                style=\"\n"
+                + "                                                                    mso-table-lspace: 0pt;\n"
+                + "                                                                    mso-table-rspace: 0pt;\n"
+                + "                                                                    border-collapse: collapse;\n"
+                + "                                                                    border-spacing: 0px;\n"
+                + "                                                                    float: left;\n"
+                + "                                                                \"\n"
+                + "                                                            >\n"
+                + "                                                                <tr>\n"
+                + "                                                                    <td\n"
+                + "                                                                        class=\"es-m-p0r\"\n"
+                + "                                                                        align=\"center\"\n"
+                + "                                                                        style=\"padding: 0; margin: 0; width: 70px\"\n"
+                + "                                                                    >\n"
+                + "                                                                        <table\n"
+                + "                                                                            cellpadding=\"0\"\n"
+                + "                                                                            cellspacing=\"0\"\n"
+                + "                                                                            width=\"100%\"\n"
+                + "                                                                            role=\"presentation\"\n"
+                + "                                                                            style=\"\n"
+                + "                                                                                mso-table-lspace: 0pt;\n"
+                + "                                                                                mso-table-rspace: 0pt;\n"
+                + "                                                                                border-collapse: collapse;\n"
+                + "                                                                                border-spacing: 0px;\n"
+                + "                                                                            \"\n"
+                + "                                                                        >\n"
+                + "                                                                            <tr>\n"
+                + "                                                                                <td\n"
+                + "                                                                                    align=\"center\"\n"
+                + "                                                                                    style=\"\n"
+                + "                                                                                        padding: 0;\n"
+                + "                                                                                        margin: 0;\n"
+                + "                                                                                        font-size: 0px;\n"
+                + "                                                                                    \"\n"
+                + "                                                                                >\n"
+                + "                                                                                    <img\n"
+                + "                                                                                        class=\"adapt-img\"\n"
+                + "                                                                                        src=\"https://fbhjjld.stripocdn.email/content/guids/CABINET_c67048fd0acf81b47e18129166337c05/images/43961618299486640.png\"\n"
+                + "                                                                                        alt\n"
+                + "                                                                                        style=\"\n"
+                + "                                                                                            display: block;\n"
+                + "                                                                                            border: 0;\n"
+                + "                                                                                            outline: none;\n"
+                + "                                                                                            text-decoration: none;\n"
+                + "                                                                                            -ms-interpolation-mode: bicubic;\n"
+                + "                                                                                        \"\n"
+                + "                                                                                        width=\"70\"\n"
+                + "                                                                                    />\n"
+                + "                                                                                </td>\n"
+                + "                                                                            </tr>\n"
+                + "                                                                        </table>\n"
+                + "                                                                    </td>\n"
+                + "                                                                </tr>\n"
+                + "                                                            </table>\n"
+                + "                                                        </td>\n"
+                + "                                                        <td style=\"padding: 0; margin: 0; width: 20px\"></td>\n"
+                + "                                                        <td\n"
+                + "                                                            class=\"esdev-mso-td\"\n"
+                + "                                                            valign=\"top\"\n"
+                + "                                                            style=\"padding: 0; margin: 0\"\n"
+                + "                                                        >\n"
+                + "                                                            <table\n"
+                + "                                                                cellpadding=\"0\"\n"
+                + "                                                                cellspacing=\"0\"\n"
+                + "                                                                class=\"es-left\"\n"
+                + "                                                                align=\"left\"\n"
+                + "                                                                role=\"none\"\n"
+                + "                                                                style=\"\n"
+                + "                                                                    mso-table-lspace: 0pt;\n"
+                + "                                                                    mso-table-rspace: 0pt;\n"
+                + "                                                                    border-collapse: collapse;\n"
+                + "                                                                    border-spacing: 0px;\n"
+                + "                                                                    float: left;\n"
+                + "                                                                \"\n"
+                + "                                                            >\n"
+                + "                                                                <tr>\n"
+                + "                                                                    <td\n"
+                + "                                                                        align=\"center\"\n"
+                + "                                                                        style=\"padding: 0; margin: 0; width: 265px\"\n"
+                + "                                                                    >\n"
+                + "                                                                        <table\n"
+                + "                                                                            cellpadding=\"0\"\n"
+                + "                                                                            cellspacing=\"0\"\n"
+                + "                                                                            width=\"100%\"\n"
+                + "                                                                            role=\"presentation\"\n"
+                + "                                                                            style=\"\n"
+                + "                                                                                mso-table-lspace: 0pt;\n"
+                + "                                                                                mso-table-rspace: 0pt;\n"
+                + "                                                                                border-collapse: collapse;\n"
+                + "                                                                                border-spacing: 0px;\n"
+                + "                                                                            \"\n"
+                + "                                                                        >\n"
+                + "                                                                            <tr>\n"
+                + "                                                                                <td\n"
+                + "                                                                                    align=\"left\"\n"
+                + "                                                                                    style=\"padding: 0; margin: 0\"\n"
+                + "                                                                                >\n"
+                + "                                                                                    <p\n"
+                + "                                                                                        style=\"\n"
+                + "                                                                                            margin: 0;\n"
+                + "                                                                                            -webkit-text-size-adjust: none;\n"
+                + "                                                                                            -ms-text-size-adjust: none;\n"
+                + "                                                                                            mso-line-height-rule: exactly;\n"
+                + "                                                                                            font-family: arial,\n"
+                + "                                                                                                'helvetica neue',\n"
+                + "                                                                                                helvetica, sans-serif;\n"
+                + "                                                                                            line-height: 21px;\n"
+                + "                                                                                            color: #333333;\n"
+                + "                                                                                            font-size: 14px;\n"
+                + "                                                                                        \"\n"
+                + "                                                                                    >\n"
+                + "                                                                                        <strong>T-shirt</strong>\n"
+                + "                                                                                    </p>\n"
+                + "                                                                                </td>\n"
+                + "                                                                            </tr>\n"
+                + "                                                                        </table>\n"
+                + "                                                                    </td>\n"
+                + "                                                                </tr>\n"
+                + "                                                            </table>\n"
+                + "                                                        </td>\n"
+                + "                                                        <td style=\"padding: 0; margin: 0; width: 20px\"></td>\n"
+                + "                                                        <td\n"
+                + "                                                            class=\"esdev-mso-td\"\n"
+                + "                                                            valign=\"top\"\n"
+                + "                                                            style=\"padding: 0; margin: 0\"\n"
+                + "                                                        >\n"
+                + "                                                            <table\n"
+                + "                                                                cellpadding=\"0\"\n"
+                + "                                                                cellspacing=\"0\"\n"
+                + "                                                                class=\"es-left\"\n"
+                + "                                                                align=\"left\"\n"
+                + "                                                                role=\"none\"\n"
+                + "                                                                style=\"\n"
+                + "                                                                    mso-table-lspace: 0pt;\n"
+                + "                                                                    mso-table-rspace: 0pt;\n"
+                + "                                                                    border-collapse: collapse;\n"
+                + "                                                                    border-spacing: 0px;\n"
+                + "                                                                    float: left;\n"
+                + "                                                                \"\n"
+                + "                                                            >\n"
+                + "                                                                <tr>\n"
+                + "                                                                    <td\n"
+                + "                                                                        align=\"left\"\n"
+                + "                                                                        style=\"padding: 0; margin: 0; width: 80px\"\n"
+                + "                                                                    >\n"
+                + "                                                                        <table\n"
+                + "                                                                            cellpadding=\"0\"\n"
+                + "                                                                            cellspacing=\"0\"\n"
+                + "                                                                            width=\"100%\"\n"
+                + "                                                                            role=\"presentation\"\n"
+                + "                                                                            style=\"\n"
+                + "                                                                                mso-table-lspace: 0pt;\n"
+                + "                                                                                mso-table-rspace: 0pt;\n"
+                + "                                                                                border-collapse: collapse;\n"
+                + "                                                                                border-spacing: 0px;\n"
+                + "                                                                            \"\n"
+                + "                                                                        >\n"
+                + "                                                                            <tr>\n"
+                + "                                                                                <td\n"
+                + "                                                                                    align=\"center\"\n"
+                + "                                                                                    style=\"padding: 0; margin: 0\"\n"
+                + "                                                                                >\n"
+                + "                                                                                    <p\n"
+                + "                                                                                        style=\"\n"
+                + "                                                                                            margin: 0;\n"
+                + "                                                                                            -webkit-text-size-adjust: none;\n"
+                + "                                                                                            -ms-text-size-adjust: none;\n"
+                + "                                                                                            mso-line-height-rule: exactly;\n"
+                + "                                                                                            font-family: arial,\n"
+                + "                                                                                                'helvetica neue',\n"
+                + "                                                                                                helvetica, sans-serif;\n"
+                + "                                                                                            line-height: 21px;\n"
+                + "                                                                                            color: #333333;\n"
+                + "                                                                                            font-size: 14px;\n"
+                + "                                                                                        \"\n"
+                + "                                                                                    >\n"
+                + "                                                                                        1 pcs\n"
+                + "                                                                                    </p>\n"
+                + "                                                                                </td>\n"
+                + "                                                                            </tr>\n"
+                + "                                                                        </table>\n"
+                + "                                                                    </td>\n"
+                + "                                                                </tr>\n"
+                + "                                                            </table>\n"
+                + "                                                        </td>\n"
+                + "                                                        <td style=\"padding: 0; margin: 0; width: 20px\"></td>\n"
+                + "                                                        <td\n"
+                + "                                                            class=\"esdev-mso-td\"\n"
+                + "                                                            valign=\"top\"\n"
+                + "                                                            style=\"padding: 0; margin: 0\"\n"
+                + "                                                        >\n"
+                + "                                                            <table\n"
+                + "                                                                cellpadding=\"0\"\n"
+                + "                                                                cellspacing=\"0\"\n"
+                + "                                                                class=\"es-right\"\n"
+                + "                                                                align=\"right\"\n"
+                + "                                                                role=\"none\"\n"
+                + "                                                                style=\"\n"
+                + "                                                                    mso-table-lspace: 0pt;\n"
+                + "                                                                    mso-table-rspace: 0pt;\n"
+                + "                                                                    border-collapse: collapse;\n"
+                + "                                                                    border-spacing: 0px;\n"
+                + "                                                                    float: right;\n"
+                + "                                                                \"\n"
+                + "                                                            >\n"
+                + "                                                                <tr>\n"
+                + "                                                                    <td\n"
+                + "                                                                        align=\"left\"\n"
+                + "                                                                        style=\"padding: 0; margin: 0; width: 85px\"\n"
+                + "                                                                    >\n"
+                + "                                                                        <table\n"
+                + "                                                                            cellpadding=\"0\"\n"
+                + "                                                                            cellspacing=\"0\"\n"
+                + "                                                                            width=\"100%\"\n"
+                + "                                                                            role=\"presentation\"\n"
+                + "                                                                            style=\"\n"
+                + "                                                                                mso-table-lspace: 0pt;\n"
+                + "                                                                                mso-table-rspace: 0pt;\n"
+                + "                                                                                border-collapse: collapse;\n"
+                + "                                                                                border-spacing: 0px;\n"
+                + "                                                                            \"\n"
+                + "                                                                        >\n"
+                + "                                                                            <tr>\n"
+                + "                                                                                <td\n"
+                + "                                                                                    align=\"right\"\n"
+                + "                                                                                    style=\"padding: 0; margin: 0\"\n"
+                + "                                                                                >\n"
+                + "                                                                                    <p\n"
+                + "                                                                                        style=\"\n"
+                + "                                                                                            margin: 0;\n"
+                + "                                                                                            -webkit-text-size-adjust: none;\n"
+                + "                                                                                            -ms-text-size-adjust: none;\n"
+                + "                                                                                            mso-line-height-rule: exactly;\n"
+                + "                                                                                            font-family: arial,\n"
+                + "                                                                                                'helvetica neue',\n"
+                + "                                                                                                helvetica, sans-serif;\n"
+                + "                                                                                            line-height: 21px;\n"
+                + "                                                                                            color: #333333;\n"
+                + "                                                                                            font-size: 14px;\n"
+                + "                                                                                        \"\n"
+                + "                                                                                    >\n"
+                + "                                                                                        $20\n"
+                + "                                                                                    </p>\n"
+                + "                                                                                </td>\n"
+                + "                                                                            </tr>\n"
+                + "                                                                        </table>\n"
+                + "                                                                    </td>\n"
+                + "                                                                </tr>\n"
+                + "                                                            </table>\n"
+                + "                                                        </td>\n"
+                + "                                                    </tr>\n"
+                + "                                                </table>\n"
+                + "                                            </td>\n"
+                + "                                        </tr>";
+
+        result = result.replace(
+                "https://fbhjjld.stripocdn.email/content/guids/CABINET_c67048fd0acf81b47e18129166337c05/images/43961618299486640.png",
+                imageURL);
+        result = result.replace("T-shirt", productName);
+        result = result.replace("1 pcs", quantity + "");
+        result = result.replace("$20", Converter.convertMoneyToInteger(price + "") + "vnđ");
+        return result;
+    }
+
     /**
      * Get the current day time range in milliseconds, from the epoch.
      * 
@@ -181,7 +484,7 @@ public class Generator {
      *         second element is end of the day in milliseconds, counting from the
      *         epoch.
      */
-    public static long[] getTodayTimeRangeInMilli(int day, int month, int year) {
+    public static long[] getDayTimeRangeInMilli(int day, int month, int year) {
         long[] timeRange = new long[2];
         Calendar cal = Calendar.getInstance();
 
@@ -189,6 +492,45 @@ public class Generator {
         timeRange[0] = cal.getTimeInMillis();
         cal.set(year, month - 1, day, 23, 59, 59);
         timeRange[1] = cal.getTimeInMillis();
+
+        return timeRange;
+    }
+
+    /**
+     * Get the time range in milliseconds, from the epoch, of a specific month.
+     * 
+     * @param month The month of the year.
+     * @param year  The year.
+     * @return An array of two long numbers, the first element is the start and the
+     *         second element is end of the month in milliseconds, counting from the
+     *         epoch.
+     */
+    public static long[] getMonthTimeRangeInMilli(int month, int year) {
+        long[] timeRange = new long[2];
+
+        String date = "1/" + month + "/" + year;
+        LocalDate convertedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("d/M/yyyy"));
+        int lastDayOfMonth = convertedDate.getMonth().length(convertedDate.isLeapYear());
+
+        timeRange[0] = getDayTimeRangeInMilli(1, month, year)[0];
+        timeRange[1] = getDayTimeRangeInMilli(lastDayOfMonth, month, year)[1];
+
+        return timeRange;
+    }
+
+    /**
+     * Get the time range in milliseconds, from the epoch, of a specific year.
+     * 
+     * @param year The year.
+     * @return An array of two long numbers, the first element is the start and the
+     *         second element is end of the year in milliseconds, counting from the
+     *         epoch.
+     */
+    public static long[] getYearTimeRangeInMilli(int year) {
+        long[] timeRange = new long[2];
+
+        timeRange[0] = getDayTimeRangeInMilli(1, 1, year)[0];
+        timeRange[1] = getDayTimeRangeInMilli(31, 12, year)[1];
 
         return timeRange;
     }

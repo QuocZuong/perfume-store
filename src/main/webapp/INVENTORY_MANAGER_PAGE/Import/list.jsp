@@ -100,6 +100,13 @@
                                 <td>Ngày cập nhật</td>
                                 <td>Cập nhật bởi Admin</td>
                                 <td>Chi tiết</td>
+                                <td>
+                                    <a href="/InventoryManager/Product/List" class="text-decoration-none">
+                                        <button class="btn btn-outline-dark d-flex justify-content-center align-items-center rounded-0 fn-btn">
+                                            <span class="">Nhập hàng</span>
+                                        </button>
+                                    </a>
+                                </td>
                             </tr>
                         </thead>
                         <tbody>
@@ -125,6 +132,7 @@
                                         <td>
                                             <a href="/InventoryManager/Import/Detail/ID/<%= ip.getId()%>" class="btn btn-outline-success rounded-0">Import Detail</a>
                                         </td>
+                                        <td></td>
                                     </tr>
 
                                 </c:forEach>

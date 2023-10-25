@@ -117,6 +117,12 @@ public class Converter {
         return null;
     }
 
+    /**
+     * Convert a string to epoch milli.
+     * 
+     * @param str the {@code String} to be converted, must have format "yyyy-MM-dd".
+     * @return Epoch milli of the string.
+     */
     public static Long convertStringToEpochMilli(String str) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

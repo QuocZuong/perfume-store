@@ -1,3 +1,4 @@
+<%@page import="Lib.Converter"%>
 <%@page import="Lib.ExceptionUtils"%>
 <%@page import="Models.Brand"%>
 <%@page import="Models.Product"%>
@@ -189,7 +190,7 @@
                                                     <%= product.getName()%> 
                                                 </span>
                                                 <span class="product-price">
-                                                    <%= product.getStock().getPrice()%> <span>đ</span>
+                                                    <%=Converter.covertIntergerToMoney(product.getStock().getPrice())%> <span>đ</span>
                                                 </span>
                                             </div>
                                         </a>
