@@ -184,9 +184,9 @@ public class Generator {
         long[] timeRange = new long[2];
         Calendar cal = Calendar.getInstance();
 
-        cal.set(year, month, day, 0, 0, 0);
+        cal.set(year, month - 1, day, 0, 0, 0);
         timeRange[0] = cal.getTimeInMillis();
-        cal.set(year, month, day, 23, 59, 59);
+        cal.set(year, month - 1, day, 23, 59, 59);
         timeRange[1] = cal.getTimeInMillis();
 
         return timeRange;
