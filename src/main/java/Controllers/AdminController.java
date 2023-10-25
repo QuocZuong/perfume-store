@@ -4,6 +4,7 @@ import DAOs.AdminDAO;
 import DAOs.BrandDAO;
 import DAOs.CustomerDAO;
 import DAOs.EmployeeDAO;
+import DAOs.ImportDetailDAO;
 import DAOs.OrderDAO;
 import DAOs.ProductActivityLogDAO;
 import Models.User;
@@ -13,13 +14,19 @@ import java.util.List;
 
 import Models.Product;
 import DAOs.ProductDAO;
+import DAOs.StockDAO;
 import DAOs.UserDAO;
 import DAOs.VoucherDAO;
+import Exceptions.AccountDeactivatedException;
+import Exceptions.AccountNotFoundException;
 import Exceptions.CitizenIDDuplicationException;
 import Exceptions.EmailDuplicationException;
+import Exceptions.InvalidInputException;
 import Exceptions.PhoneNumberDuplicationException;
 import Exceptions.ProductNotFoundException;
 import Exceptions.UsernameDuplicationException;
+import Exceptions.WrongPasswordException;
+import Interfaces.DAOs.IUserDAO;
 import Lib.Converter;
 import Lib.EmailSender;
 import Lib.ExceptionUtils;
@@ -29,6 +36,7 @@ import Models.Admin;
 import Models.Stock;
 import Models.Customer;
 import Models.Employee;
+import Models.ImportDetail;
 import Models.Order;
 import Models.OrderDetail;
 import Models.ProductActivityLog;
@@ -43,6 +51,8 @@ import jakarta.servlet.http.Part;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, // 1MB
         maxFileSize = 1024 * 1024 * 5, // 5MB
@@ -52,19 +62,31 @@ public class AdminController extends HttpServlet {
 
     // ----------------------- URI DECLARATION SECTION ----------------------------
     public static final String ADMIN_USER_URI = "/Admin";
-
+    // Product
     public static final String ADMIN_PRODUCT_LIST_URI = "/Admin/Product/List";
     public static final String ADMIN_PRODUCT_ADD_URI = "/Admin/Product/Add";
     public static final String ADMIN_PRODUCT_UPDATE_URI = "/Admin/Product/Update";
     public static final String ADMIN_PRODUCT_DELETE_URI = "/Admin/Product/Delete";
     public static final String ADMIN_PRODUCT_RESTORE_URI = "/Admin/Product/Restore";
-
+    // Order
     public static final String ADMIN_ORDER_LIST_URI = "/Admin/Order/List";
     public static final String ADMIN_ORDER_REQUEST_URI = "/Admin/Order/Request";
     public static final String ADMIN_ORDER_DETAIL_URI = "/Admin/Order/Detail";
     public static final String ADMIN_ORDER_DELETE_URI = "/Admin/Order/Delete";
     public static final String ADMIN_ORDER_RESTORE_URI = "/Admin/Order/Restore";
 
+    public static final String ADMIN_IMPORT_LIST_URI = "/Admin/Import/List";
+    public static final String ADMIN_IMPORT_DETAIL_URI = "/Admin/Import/Detail";
+    public static final String ADMIN_IMPORT_STORE = "/Admin/Import/Store";
+    public static final String ADMIN_IMPORT_BRING_TO_STOCK = "/Admin/Import/Bring";
+
+    // Voucher
+    public static final String ADMIN_VOUCHER_ADD_URI = "/Admin/Voucher/Add";
+    public static final String ADMIN_VOUCHER_LIST_URI = "/Admin/Voucher/List";
+    public static final String ADMIN_VOUCHER_UPDATE_URI = "/Admin/Voucher/Update";
+    public static final String ADMIN_VOUCHER_DELETE_URI = "/Admin/Voucher/Delete";
+
+    // User
     public static final String ADMIN_USER_INFO = "/Admin/User/Info";
     public static final String ADMIN_USER_LIST_URI = "/Admin/User/List";
     public static final String ADMIN_USER_ADD_URI = "/Admin/User/Add";
@@ -173,6 +195,52 @@ public class AdminController extends HttpServlet {
 
             return;
         }
+        // ---------------------------- VOUCHER SECTION ----------------------------
+
+        if (path.startsWith(ADMIN_VOUCHER_LIST_URI)
+                || path.startsWith(ADMIN_VOUCHER_LIST_URI + "/page")) {
+            int result = searchVoucher(request);
+
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/ADMIN_PAGE/Voucher/list.jsp").forward(request, response);
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(ADMIN_VOUCHER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
+        // Page chua co
+        if (path.startsWith(ADMIN_VOUCHER_ADD_URI)) {
+            int result = getUpdateVoucher(request);
+
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/ADMIN_PAGE/Voucher/addVoucher.jsp").forward(request, response);
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(ADMIN_VOUCHER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
+        // Page nhu cc
+        if (path.startsWith(ADMIN_VOUCHER_UPDATE_URI)) {
+            int result = getUpdateVoucher(request);
+
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/ADMIN_PAGE/Voucher/updateVoucher.jsp").forward(request, response);
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(ADMIN_VOUCHER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
+
+        if (path.startsWith(ADMIN_VOUCHER_DELETE_URI)) {
+            int result = deleteVoucher(request);
+
+            if (result == State.Success.value) {
+                response.sendRedirect(ADMIN_VOUCHER_LIST_URI);
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(ADMIN_VOUCHER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
 
         // ---------------------------- USER SECTION ----------------------------
         if (path.startsWith(ADMIN_USER_INFO)) {
@@ -239,13 +307,7 @@ public class AdminController extends HttpServlet {
             response.sendRedirect(ADMIN_USER_LIST_URI);
             return;
         }
-        //
-        // if (path.startsWith(ADMIN_CLIENT_DETAIL_URI)) {
-        // clientDetail(request, response);
-        // request.getRequestDispatcher("/ADMIN_PAGE/User/detail.jsp").forward(request,
-        // response);
-        // return;
-        // }
+
         if (path.startsWith(ADMIN_CLIENT_ORDER_URI)) {
             System.out.println("Going Order Detail");
 
@@ -260,6 +322,35 @@ public class AdminController extends HttpServlet {
             }
             return;
         }
+
+        // ---------------------------- IMPORT SECTION ----------------------------
+        if (path.startsWith(ADMIN_IMPORT_STORE)
+                || path.startsWith(ADMIN_IMPORT_STORE + "/page")) {
+            int result = -1;
+            if (!path.endsWith("?errAccNF=true") && !path.endsWith("?errImpNF")) {
+                result = searchImportDetail(request);
+            }
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/ADMIN_PAGE/User/bringImportToStock.jsp").forward(request, response);
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(ADMIN_IMPORT_STORE + ExceptionUtils.generateExceptionQueryString(request));
+            } else if (result == -1) {
+                response.sendRedirect(ADMIN_IMPORT_STORE);
+            }
+
+            return;
+        }
+
+        if (path.startsWith(ADMIN_IMPORT_BRING_TO_STOCK)) {
+            int result = bringToStock(request);
+            if (result == State.Success.value) {
+                response.sendRedirect(ADMIN_IMPORT_STORE);
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(ADMIN_IMPORT_STORE + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
+        // ---------------------------- IMPORT SECTION ----------------------------
         // ---------------------------- CHART SECTION ----------------------------
         if (path.startsWith(ADMIN_CHART_BEST_SELLING_PRODUCT_BY_GENDER)) {
             bestSellingProductByGender(request, response);
@@ -369,19 +460,30 @@ public class AdminController extends HttpServlet {
             return;
         }
 
-        //
-        // if (path.startsWith(ADMIN_UPDATE_INFO_URI)) {
-        // if (request.getParameter("btnUpdateInfo") != null
-        // && request.getParameter("btnUpdateInfo").equals("Submit")) {
-        // System.out.println("Going update info");
-        // if (updateAdminInfomation(request, response)) {
-        // response.sendRedirect(ADMIN_USER_URI);
-        // } else {
-        // response.sendRedirect(ADMIN_USER_URI + checkException(request));
-        // }
-        // return;
-        // }
-        // }
+        if (path.startsWith(ADMIN_UPDATE_INFO_URI)) {
+            if (request.getParameter("btnUpdateInfo") != null
+                    && request.getParameter("btnUpdateInfo").equals("Submit")) {
+                System.out.println("Going update info");
+                if (updateAdminInfomation(request, response)) {
+                    response.sendRedirect(ADMIN_USER_URI);
+                } else {
+                    response.sendRedirect(ADMIN_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
+                }
+                return;
+            }
+        }
+        if (path.startsWith(ADMIN_VOUCHER_UPDATE_URI)) {
+            if (request.getParameter("btnUpdateInfo") != null
+                    && request.getParameter("btnUpdateInfo").equals("Submit")) {
+                System.out.println("Going update info");
+                if (updateAdminInfomation(request, response)) {
+                    response.sendRedirect(ADMIN_USER_URI);
+                } else {
+                    response.sendRedirect(ADMIN_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
+                }
+                return;
+            }
+        }
     }
 
     /* CRUD */
@@ -601,6 +703,38 @@ public class AdminController extends HttpServlet {
         return State.Success.value;
     }
 
+    private int searchVoucher(HttpServletRequest request) {
+        String URI = request.getRequestURI();
+        String data[] = URI.split("/");
+        int page = 1;
+        int rows = 20;
+        String search = request.getParameter("txtSearch");
+        VoucherDAO vDAO = new VoucherDAO();
+
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("page")) {
+                page = Integer.parseInt(data[i + 1]);
+            }
+        }
+        List<Voucher> voucherList = vDAO.getAllVoucher();
+
+        if (voucherList.isEmpty()) {
+            System.out.println("Empty voucher list");
+            request.setAttribute("exceptionType", "VoucherNotFoundException");
+            return State.Fail.value;
+        }
+
+        int numberOfPage = (voucherList.size() / rows) + (voucherList.size() % rows == 0 ? 0 : 1);
+        voucherList = Generator.pagingList(voucherList, page, rows);
+
+        request.setAttribute("page", page);
+        request.setAttribute("numberOfPage", numberOfPage);
+        request.setAttribute("voucherList", voucherList);
+        request.setAttribute("search", search);
+
+        return State.Success.value;
+    }
+
     private void searchUser(HttpServletRequest request, HttpServletResponse response) {
         String URI = request.getRequestURI();
         String data[] = URI.split("/");
@@ -751,45 +885,6 @@ public class AdminController extends HttpServlet {
         }
     }
 
-    //
-    // private void clientDetail(HttpServletRequest request, HttpServletResponse
-    // response) {
-    // OrderDAO oDAO = new OrderDAO();
-    // UserDAO uDAO = new UserDAO();
-    // String URI = request.getRequestURI();
-    // String data[] = URI.split("/");
-    // int ClientID = -1;
-    // for (int i = 0; i < data.length; i++) {
-    // if (data[i].equals("ID")) {
-    // ClientID = Integer.parseInt(data[i + 1]);
-    // }
-    // }
-    // List<Order> orderList = oDAO.getOrderByClientId(ClientID);
-    // User client = uDAO.getUser(ClientID);
-    // request.setAttribute("client", client);
-    // request.setAttribute("orderList", orderList);
-    // }
-    //
-    // private void OrderDetail(HttpServletRequest request, HttpServletResponse
-    // response) {
-    // UserDAO uDAO = new UserDAO();
-    // OrderDAO oDAO = new OrderDAO();
-    // String URI = request.getRequestURI();
-    // String data[] = URI.split("/");
-    // int OrderID = -1;
-    // for (int i = 0; i < data.length; i++) {
-    // if (data[i].equals("ID")) {
-    // OrderID = Integer.parseInt(data[i + 1]);
-    // }
-    // }
-    // List<String[]> orderDetail = oDAO.getOrderDetailByOrderID(OrderID);
-    // Order OrderInfor = oDAO.getOrderByOrderId(OrderID);
-    // User client = uDAO.getUser(OrderInfor.getClientID());
-    // request.setAttribute("client", client);
-    // request.setAttribute("OrderInfor", OrderInfor);
-    // request.setAttribute("OrderDetail", orderDetail);
-    // }
-    //
     // ---------------------------- UPDATE SECTION ----------------------------
     private int updateProduct(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
@@ -858,19 +953,20 @@ public class AdminController extends HttpServlet {
     private boolean updateCustomer(HttpServletRequest request, HttpServletResponse response) {
         UserDAO uDAO = new UserDAO();
         int result = 0;
-
         // [User] Update Section
         int uID = Integer.parseInt(request.getParameter("txtUserID"));
         String uName = request.getParameter("txtName");
         String uUsername = request.getParameter("txtUsername");
         String uPassword = request.getParameter("txtPassword");
         String uEmail = request.getParameter("txtEmail");
+
         // For sending email
         boolean isChangedUsername = false;
         boolean isChangedEmail = false;
         boolean isChangedPassword = false;
 
         User userForUpdate = uDAO.getUser(uID);
+        String oldEmail = userForUpdate.getEmail();
 
         if (!uUsername.equals(userForUpdate.getUsername())) {
             isChangedUsername = true;
@@ -926,6 +1022,7 @@ public class AdminController extends HttpServlet {
         userForUpdate.setName(uName);
         userForUpdate.setActive(true);
         userForUpdate.setType("Customer");
+
         result = uDAO.updateUser(userForUpdate);
 
         if (result < 1) {
@@ -940,21 +1037,21 @@ public class AdminController extends HttpServlet {
                 System.out.println("Detect password change");
                 System.out.println("sending mail changing password");
                 es.setEmailTo(uEmail);
-                es.sendToEmail(es.CHANGE_PASSWORD_NOTFICATION,
+                es.sendEmailByThread(es.CHANGE_PASSWORD_NOTFICATION,
                         es.changePasswordNotifcation());
             }
             if (isChangedEmail) {
                 System.out.println("Detect email change");
-                System.out.println("sending mail changing email");
-                es.setEmailTo(uDAO.getUser(uID).getEmail());
-                es.sendToEmail(es.CHANGE_EMAIL_NOTFICATION,
+
+                es.setEmailTo(oldEmail);
+                es.sendEmailByThread(es.CHANGE_EMAIL_NOTFICATION,
                         es.changeEmailNotification(uEmail));
             }
             if (isChangedUsername) {
                 System.out.println("Detect username change");
                 System.out.println("sending mail changing username");
                 es.setEmailTo(uEmail);
-                es.sendToEmail(es.CHANGE_USERNAME_NOTFICATION, es.changeUsernameNotification(uUsername));
+                es.sendEmailByThread(es.CHANGE_USERNAME_NOTFICATION, es.changeUsernameNotification(uUsername));
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -984,6 +1081,7 @@ public class AdminController extends HttpServlet {
         String eRetireDate = request.getParameter("txtRetireDate");
 
         Employee employeeForUpdate = eDAO.getEmployeeByUserId(uID);
+        String oldEmail = employeeForUpdate.getEmail();
 
         // For sending email
         boolean isChangedUsername = false;
@@ -1102,21 +1200,21 @@ public class AdminController extends HttpServlet {
                 System.out.println("Detect password change");
                 System.out.println("sending mail changing password");
                 es.setEmailTo(uEmail);
-                es.sendToEmail(es.CHANGE_PASSWORD_NOTFICATION,
+                es.sendEmailByThread(es.CHANGE_PASSWORD_NOTFICATION,
                         es.changePasswordNotifcation());
             }
             if (isChangedEmail) {
                 System.out.println("Detect email change");
                 System.out.println("sending mail changing email");
-                es.setEmailTo(uDAO.getUser(uID).getEmail());
-                es.sendToEmail(es.CHANGE_EMAIL_NOTFICATION,
+                es.setEmailTo(oldEmail);
+                es.sendEmailByThread(es.CHANGE_EMAIL_NOTFICATION,
                         es.changeEmailNotification(uEmail));
             }
             if (isChangedUsername) {
                 System.out.println("Detect username change");
                 System.out.println("sending mail changing username");
                 es.setEmailTo(uEmail);
-                es.sendToEmail(es.CHANGE_USERNAME_NOTFICATION, es.changeUsernameNotification(uUsername));
+                es.sendEmailByThread(es.CHANGE_USERNAME_NOTFICATION, es.changeUsernameNotification(uUsername));
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -1233,6 +1331,29 @@ public class AdminController extends HttpServlet {
         return State.Fail.value;
     }
 
+    private int getUpdateVoucher(HttpServletRequest request) {
+        VoucherDAO vDAO = new VoucherDAO();
+        try {
+            String data[] = request.getRequestURI().split("/");
+            for (int i = 0; i < data.length; i++) {
+                if (data[i].equals("ID")) {
+                    int vId = Integer.parseInt(data[i + 1]);
+                    Voucher v = vDAO.getVoucher(vId);
+                    if (v != null) {
+                        request.setAttribute("VoucherUpdate", v);
+                        return State.Success.value;
+                    }
+                }
+            }
+        } catch (NumberFormatException e) {
+            request.setAttribute("exceptionType", "");
+            return State.Fail.value;
+        }
+
+        request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.ProductNotFoundException.toString());
+        return State.Fail.value;
+    }
+
     private boolean handleUpdateCustomer(HttpServletRequest request, HttpServletResponse response) {
         String data[] = request.getRequestURI().split("/");
         for (int i = 0; i < data.length; i++) {
@@ -1267,140 +1388,130 @@ public class AdminController extends HttpServlet {
         return false;
     }
 
-    //
-    // private boolean updateAdminInfomation(HttpServletRequest request,
-    // HttpServletResponse response) {
-    // /*
-    // * txtFullname
-    // * txtUserName
-    // * txtEmail
-    // * pwdCurrent
-    // * pwdNew
-    // * pwdConfirmNew
-    // * btnUpdateInfo (value = Submit)
-    // */
-    //
-    // String fullname = request.getParameter("txtFullname");
-    //
-    // String username = request.getParameter("txtUserName");
-    // String email = request.getParameter("txtEmail");
-    // String currentPassword = request.getParameter("pwdCurrent");
-    // String newPassword = "";
-    // Cookie currentUserCookie = (Cookie)
-    // request.getSession().getAttribute("userCookie");
-    //
-    // UserDAO usDAO = new UserDAO();
-    // User user = usDAO.getUser(currentUserCookie.getValue());
-    //
-    // boolean isChangedEmail = true;
-    // boolean isChangedPassword = true;
-    // boolean isChangedUsername = true;
-    // // Username, email, phone number is unique
-    // try {
-    // if (!email.equals(user.getEmail())) {
-    // if (usDAO.isExistEmail(email)) {
-    // throw new EmailDuplicationException();
-    // }
-    // } else {
-    // isChangedEmail = false;
-    // }
-    //
-    // if (!username.equals(user.getUsername())) {
-    // if (usDAO.isExistUsername(username)) {
-    // throw new UsernameDuplicationException();
-    // }
-    // } else {
-    // isChangedUsername = false;
-    // }
-    //
-    // if (currentPassword == null || currentPassword.equals("")) {
-    // currentPassword = user.getPassword();
-    // isChangedPassword = false;
-    // // check if currentPassword is true
-    // } else if (!usDAO.login(user.getUsername(), currentPassword)) {
-    // throw new WrongPasswordException();
-    // }
-    //
-    // // Email and username duplication must come first
-    // } catch (WrongPasswordException e) {
-    // request.setAttribute("exceptionType", "WrongPasswordException");
-    // return false;
-    // } catch (AccountDeactivatedException e) {
-    // request.setAttribute("exceptionType", "AccountDeactivatedException");
-    // return false;
-    // } catch (AccountNotFoundException e) {
-    // request.setAttribute("exceptionType", "AccountNotFoundException");
-    // return false;
-    // } catch (EmailDuplicationException e) {
-    // request.setAttribute("exceptionType", "EmailDuplicationException");
-    // return false;
-    // } catch (UsernameDuplicationException e) {
-    // request.setAttribute("exceptionType", "UsernameDuplicationException");
-    // return false;
-    // }
-    // System.out.println("change password is " + isChangedPassword);
-    // System.out.println("New password is before if: " +
-    // request.getParameter("pwdNew"));
-    // if (isChangedPassword && request.getParameter("pwdNew") != null &&
-    // !request.getParameter("pwdNew").equals("")) {
-    // newPassword = request.getParameter("pwdNew");
-    // System.out.println("New password is before MD5: " + newPassword);
-    // newPassword = usDAO.getMD5hash(newPassword);
-    // } else {
-    // newPassword = user.getPassword();
-    // }
-    //
-    // User updateUser = new User(
-    // user.getID(),
-    // fullname,
-    // username,
-    // newPassword,
-    // email,
-    // user.getPhoneNumber(),
-    // user.getAddress(),
-    // user.getRole());
-    //
-    // usDAO.updateUser(updateUser);
-    //
-    // // Update cookie
-    // Cookie c = ((Cookie) request.getSession().getAttribute("userCookie"));
-    // c.setValue(username);
-    // c.setPath("/");
-    // response.addCookie(c);
-    //
-    // // Sending mail
-    // try {
-    // EmailSender es = new EmailSender();
-    // if (isChangedPassword) {
-    // System.out.println("Detect password change");
-    // System.out.println("sending mail changing password");
-    // es.setEmailTo(email);
-    // es.sendToEmail(es.CHANGE_PASSWORD_NOTFICATION,
-    // es.changePasswordNotifcation());
-    // }
-    // if (isChangedEmail) {
-    // System.out.println("Detect email change");
-    // System.out.println("sending mail changing email");
-    // es.setEmailTo(user.getEmail());
-    // es.sendToEmail(es.CHANGE_EMAIL_NOTFICATION,
-    // es.changeEmailNotification(email));
-    // }
-    // if (isChangedUsername) {
-    // System.out.println("Detect username change");
-    // System.out.println("sending mail changing username");
-    // es.setEmailTo(email);
-    // es.sendToEmail(es.CHANGE_USERNAME_NOTFICATION,
-    // es.changeUsernameNotification(username));
-    // }
-    // } catch (UnsupportedEncodingException e) {
-    // e.printStackTrace();
-    // }
-    //
-    // System.out.println("update account with ID " + user.getID() + "
-    // successfully");
-    // return true;
-    // }
-    //
+    private boolean updateAdminInfomation(HttpServletRequest request,
+            HttpServletResponse response) {
+        /*
+         * txtFullname
+         * txtUserName
+         * txtEmail
+         * pwdCurrent
+         * pwdNew
+         * pwdConfirmNew
+         * btnUpdateInfo (value = Submit)
+         */
+
+        String fullname = request.getParameter("txtFullname");
+
+        String username = request.getParameter("txtUserName");
+        String email = request.getParameter("txtEmail");
+        String currentPassword = request.getParameter("pwdCurrent");
+        String newPassword = "";
+        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+
+        AdminDAO adDAO = new AdminDAO();
+        UserDAO usDAO = new UserDAO();
+        Admin admin = adDAO.getAdmin(currentUserCookie.getValue());
+        String oldEmail = admin.getEmail();
+
+        boolean isChangedEmail = true;
+        boolean isChangedPassword = true;
+        boolean isChangedUsername = true;
+        // Username, email, phone number is unique
+
+        try {
+            if (!email.equals(admin.getEmail())) {
+                if (usDAO.getUserByEmail(email) != null) {
+                    throw new EmailDuplicationException();
+                }
+            } else {
+                isChangedEmail = false;
+            }
+
+            if (!username.equals(admin.getUsername())) {
+                if (usDAO.getUser(username) != null) {
+                    throw new UsernameDuplicationException();
+                }
+
+            } else {
+                isChangedUsername = false;
+            }
+
+            if (currentPassword == null || currentPassword.equals("")) {
+                isChangedPassword = false;
+                // check if currentPassword is true
+            } else {
+                usDAO.login(admin.getUsername(), currentPassword, IUserDAO.loginType.Username);
+            }
+            // Email and username duplication must come first
+        } catch (WrongPasswordException e) {
+            request.setAttribute("exceptionType", "WrongPasswordException");
+            return false;
+        } catch (AccountDeactivatedException e) {
+            request.setAttribute("exceptionType", "AccountDeactivatedException");
+            return false;
+        } catch (EmailDuplicationException e) {
+            request.setAttribute("exceptionType", "EmailDuplicationException");
+            return false;
+        } catch (UsernameDuplicationException e) {
+            request.setAttribute("exceptionType", "UsernameDuplicationException");
+            return false;
+        } catch (InvalidInputException ex) {
+            request.setAttribute("exceptionType", "InvalidInputException");
+            return false;
+        }
+        if (isChangedPassword
+                && request.getParameter("pwdNew") != null
+                && !request.getParameter("pwdNew").equals("")) {
+            newPassword = request.getParameter("pwdNew");
+            newPassword = Converter.convertToMD5Hash(newPassword);
+        } else {
+            newPassword = admin.getPassword();
+        }
+        admin.setName(fullname);
+        admin.setUsername(username);
+        admin.setPassword(newPassword);
+        admin.setEmail(email);
+
+        int result = adDAO.updateUser(admin);
+        if (result != 1) {
+            request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.OperationEditFailedException.toString());
+            return false;
+        }
+        // Update cookie
+        Cookie c = ((Cookie) request.getSession().getAttribute("userCookie"));
+        c.setValue(username);
+        c.setPath("/");
+        response.addCookie(c);
+        // Sending mail
+        try {
+            EmailSender es = new EmailSender();
+            if (isChangedPassword) {
+                System.out.println("Detect password change");
+                System.out.println("sending mail changing password");
+                es.setEmailTo(email);
+                es.sendEmailByThread(es.CHANGE_PASSWORD_NOTFICATION, es.changePasswordNotifcation());
+            }
+            if (isChangedEmail) {
+                System.out.println("Detect email change");
+                System.out.println("sending mail changing email");
+                es.setEmailTo(oldEmail);
+                es.sendEmailByThread(es.CHANGE_EMAIL_NOTFICATION, es.changeEmailNotification(email));
+            }
+            if (isChangedUsername) {
+                System.out.println("Detect username change");
+                System.out.println("sending mail changing username");
+                es.setEmailTo(email);
+                es.sendEmailByThread(es.CHANGE_USERNAME_NOTFICATION, es.changeUsernameNotification(username));
+            }
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("update account with ID " + admin.getId() + " successfully");
+        return true;
+    }
+
     // // ---------------------------- DELETE SECTION ----------------------------
     private int deleteProduct(HttpServletRequest request, HttpServletResponse response) {
         // Admin/Delete/ID/1
@@ -1490,6 +1601,10 @@ public class AdminController extends HttpServlet {
         System.out.println("Deactivated User with ID: " + userId + " successfully!");
     }
 
+    private int deleteVoucher(HttpServletRequest request) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     private void bestSellingProductByGender(HttpServletRequest request, HttpServletResponse response) {
         OrderDAO oDAO = new OrderDAO();
         List<Product> listProduct = oDAO.getOrderForChartByOrderIdByGender();
@@ -1500,6 +1615,108 @@ public class AdminController extends HttpServlet {
         OrderDAO oDAO = new OrderDAO();
         List<Product> listProduct = oDAO.getOrderForChartByOrderIdByPrice();
         request.setAttribute("listProduct", listProduct);
+    }
+
+    private int searchImportDetail(HttpServletRequest request) {
+        AdminDAO adDAO = new AdminDAO();
+        ImportDetailDAO ipDetailDAO = new ImportDetailDAO();
+        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+        String username = currentUserCookie.getValue();
+        Admin ad = adDAO.getAdmin(username);
+
+        if (ad == null) {
+            System.out.println("Unknow Username to view import detail");
+            request.setAttribute("exceptionType", "AccountNotFoundException");
+            return State.Fail.value;
+        }
+        String URI = request.getRequestURI();
+        String data[] = URI.split("/");
+        int page = 1;
+        int rows = 20;
+        String search = request.getParameter("txtSearch");
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("page")) {
+                page = Integer.parseInt(data[i + 1]);
+            }
+        }
+        List<ImportDetail> importDetailList = ipDetailDAO.searchImportDetail(search);
+        // importDetailList = ipDetailDAO.fillterImportDetail();
+        if (importDetailList.isEmpty()) {
+            System.out.println("Empty import detail list");
+            request.setAttribute("exceptionType", "ImportNotFoundException");
+            return State.Fail.value;
+        }
+        int numberOfPage = (importDetailList.size() / rows) + (importDetailList.size() % rows == 0 ? 0 : 1);
+        importDetailList = Generator.pagingList(importDetailList, page, rows);
+        request.setAttribute("page", page);
+        request.setAttribute("numberOfPage", numberOfPage);
+        request.setAttribute("importDetailList", importDetailList);
+        request.setAttribute("search", search);
+        return State.Success.value;
+    }
+
+    private int bringToStock(HttpServletRequest request) {
+        AdminDAO adDAO = new AdminDAO();
+        ImportDetailDAO ipDetailDAO = new ImportDetailDAO();
+        ProductDAO pDAO = new ProductDAO();
+        String data[] = request.getRequestURI().split("/");
+
+        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+        String username = currentUserCookie.getValue();
+        Admin ad = adDAO.getAdmin(username);
+
+        if (ad == null) {
+            System.out.println("Unknow Username to add to stock");
+            request.setAttribute("exceptionType", "AccountNotFoundException");
+            return State.Fail.value;
+        }
+
+        try {
+            ImportDetail ipD = null;
+            int importId = -1;
+            int productId = -1;
+            for (int i = 0; i < data.length; i++) {
+                if (data[i].equals("ImportID")) {
+                    importId = Integer.parseInt(data[i + 1]);
+                }
+                if (data[i].equals("ProductID")) {
+                    productId = Integer.parseInt(data[i + 1]);
+                }
+            }
+            ipD = ipDetailDAO.getImportDetail(importId, productId);
+            if (ipD == null) {
+                System.out.println("not found import detail");
+                request.setAttribute("exceptionType", "ImportNotFoundException");
+                return State.Fail.value;
+            }
+            Product pd = pDAO.getProduct(productId);
+            Stock st = pd.getStock();
+            if (pd == null || st == null) {
+                System.out.println("not found product to update stock");
+                request.setAttribute("exceptionType", "ProductNotFoundException");
+                return State.Fail.value;
+            }
+            st.setQuantity(st.getQuantity() + ipD.getQuantity());
+            int result = pDAO.updateProduct(pd, ad);
+            if (result == 0) {
+                System.out.println("update stock failt");
+                request.setAttribute("exceptionType", "OperationEditFailedException");
+                return State.Fail.value;
+            }
+            ipD.setStatus(ImportDetailDAO.Status.USED.toString());
+            result = ipDetailDAO.updateImportDetail(ipD);
+            if (result == 0) {
+                st.setQuantity(st.getQuantity() - ipD.getQuantity());
+                pDAO.updateProduct(pd, ad);
+                System.out.println("set status for import detail fail");
+                request.setAttribute("exceptionType", "OperationEditFailedException");
+                return State.Fail.value;
+            }
+            return State.Success.value;
+        } catch (NumberFormatException e) {
+            request.setAttribute("exceptionType", "OperationEditFailedException");
+            return State.Fail.value;
+        }
     }
 
 }

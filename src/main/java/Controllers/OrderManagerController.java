@@ -3,13 +3,17 @@ package Controllers;
 import DAOs.OrderDAO;
 import DAOs.OrderManagerDAO;
 import DAOs.ProductDAO;
+import DAOs.StockDAO;
 import DAOs.UserDAO;
 import DAOs.VoucherDAO;
 import Exceptions.AccountDeactivatedException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.InvalidInputException;
+import Exceptions.NotEnoughProductQuantityException;
+import Exceptions.NotEnoughVoucherQuantityException;
 import Exceptions.OperationEditFailedException;
 import Exceptions.UsernameDuplicationException;
+import Exceptions.VoucherNotFoundException;
 import Exceptions.WrongPasswordException;
 import Interfaces.DAOs.IUserDAO.loginType;
 import Lib.ExceptionUtils;
@@ -20,6 +24,7 @@ import Models.Order;
 import Models.OrderDetail;
 import Models.OrderManager;
 import Models.Product;
+import Models.Stock;
 import Models.User;
 import Models.Voucher;
 import java.io.IOException;
@@ -32,6 +37,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class OrderManagerController extends HttpServlet {
 
@@ -51,6 +59,11 @@ public class OrderManagerController extends HttpServlet {
         }
     }
 
+    enum SearchType {
+        PENDING,
+        HISTORY
+    };
+
     public static final String ORDER_MANAGER_USER_URI = "/OrderManager";
 
     public static final String ORDER_MANAGER_ORDER_LIST_URI = "/OrderManager/Order/List";
@@ -61,16 +74,28 @@ public class OrderManagerController extends HttpServlet {
 
     public static final String ORDER_MANAGER_UPDATE_INFO_URI = "/OrderManager/Update/Info";
 
-    public final String ORDER_MANAGER_ACCEPT_ORDER_URI = "/OrderManager/" + Operation.ACCEPT.toString() + "/Order/ID/";
-    public final String ORDER_MANAGER_REJECT_ORDER_URI = "/OrderManager/" + Operation.REJECT.toString() + "/Order/ID/";
+    public final String ORDER_MANAGER_ORDER_LIST_ACCEPT_ORDER_URI = "/OrderManager/OrderList/"
+            + Operation.ACCEPT.toString() + "/Order/ID/";
+    public final String ORDER_MANAGER_ORDER_LIST_REJECT_ORDER_URI = "/OrderManager/OrderList/"
+            + Operation.REJECT.toString() + "/Order/ID/";
+
+    public final String ORDER_MANAGER_ORDER_LIST_PENDING_ACCEPT_ORDER_URI = "/OrderManager/OrderList/Pending/"
+            + Operation.ACCEPT.toString() + "/Order/ID/";
+    public final String ORDER_MANAGER_ORDER_LIST_PENDING_REJECT_ORDER_URI = "/OrderManager/OrderList/Pending/"
+            + Operation.REJECT.toString() + "/Order/ID/";
+
+    public final String ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_ACCEPT_ORDER_URI = "/OrderManager/OrderList/HistoryWork/"
+            + Operation.ACCEPT.toString() + "/Order/ID/";
+    public final String ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_REJECT_ORDER_URI = "/OrderManager/OrderList/HistoryWork/"
+            + Operation.REJECT.toString() + "/Order/ID/";
 
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -81,7 +106,7 @@ public class OrderManagerController extends HttpServlet {
         if (path.startsWith(ORDER_MANAGER_ORDER_LIST_PENDING_URI)
                 || path.startsWith(ORDER_MANAGER_ORDER_LIST_PENDING_URI + "/page")) {
             System.out.println("Going Order List: Pending");
-            int result = searchOrder(request);
+            int result = searchOrder(request, SearchType.PENDING);
 
             if (result == State.Success.value) {
                 request.getRequestDispatcher("/ORDER_MANAGER/Order/pendingList.jsp").forward(request, response);
@@ -95,14 +120,14 @@ public class OrderManagerController extends HttpServlet {
         if (path.startsWith(ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_URI)
                 || path.startsWith(ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_URI + "/page")) {
             System.out.println("Going Order List: History Work");
-            int result = searchOrder(request);
+            int result = searchOrder(request, SearchType.HISTORY);
 
             if (result == State.Success.value) {
                 request.getRequestDispatcher("/ORDER_MANAGER/Order/workingHistoryList.jsp").forward(request, response);
             } else if (result == State.Fail.value) {
                 response.sendRedirect(
                         ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_URI
-                                + ExceptionUtils.generateExceptionQueryString(request));
+                        + ExceptionUtils.generateExceptionQueryString(request));
             }
             return;
         }
@@ -110,7 +135,7 @@ public class OrderManagerController extends HttpServlet {
         if (path.startsWith(ORDER_MANAGER_ORDER_LIST_URI)
                 || path.startsWith(ORDER_MANAGER_ORDER_LIST_URI + "/page")) {
             System.out.println("Going Order List");
-            int result = searchOrder(request);
+            int result = searchOrder(request, null);
 
             if (result == State.Success.value) {
                 request.getRequestDispatcher("/ORDER_MANAGER/Order/list.jsp").forward(request, response);
@@ -135,9 +160,12 @@ public class OrderManagerController extends HttpServlet {
             }
             return;
         }
-        if (path.startsWith(ORDER_MANAGER_ACCEPT_ORDER_URI)
-                || path.startsWith(ORDER_MANAGER_REJECT_ORDER_URI)) {
+
+        // Accept/Rejecting order then redirect to order list
+        if (path.startsWith(ORDER_MANAGER_ORDER_LIST_ACCEPT_ORDER_URI)
+                || path.startsWith(ORDER_MANAGER_ORDER_LIST_REJECT_ORDER_URI)) {
             System.out.println("Update order status");
+
             int result = updateOrderStatus(request, response);
 
             if (result == State.Success.value) {
@@ -145,6 +173,39 @@ public class OrderManagerController extends HttpServlet {
             } else {
                 response.sendRedirect(
                         ORDER_MANAGER_ORDER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
+
+        // Accept/Rejecting order then redirect to order list: pending
+        if (path.startsWith(ORDER_MANAGER_ORDER_LIST_PENDING_ACCEPT_ORDER_URI)
+                || path.startsWith(ORDER_MANAGER_ORDER_LIST_PENDING_REJECT_ORDER_URI)) {
+            System.out.println("Update order status");
+
+            int result = updateOrderStatus(request, response);
+
+            if (result == State.Success.value) {
+                response.sendRedirect(ORDER_MANAGER_ORDER_LIST_PENDING_URI);
+            } else {
+                response.sendRedirect(
+                        ORDER_MANAGER_ORDER_LIST_PENDING_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
+
+        // Accept/Rejecting order then redirect to order list: history work
+        if (path.startsWith(ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_ACCEPT_ORDER_URI)
+                || path.startsWith(ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_REJECT_ORDER_URI)) {
+            System.out.println("Update order status");
+
+            int result = updateOrderStatus(request, response);
+
+            if (result == State.Success.value) {
+                response.sendRedirect(ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_URI);
+            } else {
+                response.sendRedirect(
+                        ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_URI
+                        + ExceptionUtils.generateExceptionQueryString(request));
             }
             return;
         }
@@ -160,10 +221,10 @@ public class OrderManagerController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -219,23 +280,57 @@ public class OrderManagerController extends HttpServlet {
             OrderDAO orDAO = new OrderDAO();
             Order order = orDAO.getOrderByOrderId(orderId);
             System.out.println("\n" + orderManager.getOrderManagerId() + " | " + orderManager.getName() + "\n");
-            if (op == Operation.ACCEPT) {
-                orDAO.acceptOrder(order, orderManager.getOrderManagerId());
-                return State.Success.value;
-            }
-
             if (op == Operation.REJECT) {
                 orDAO.rejectOrder(order, orderManager.getOrderManagerId());
                 return State.Success.value;
             }
+            if (op == Operation.ACCEPT) {
+                //Check quantity for voucher
+                VoucherDAO voucherDAO = new VoucherDAO();
+                Voucher voucher = voucherDAO.getVoucher(order.getVoucherId());
+                if (voucher != null) {
+                    if (voucher.getQuantity() == 0) {
+                        throw new NotEnoughVoucherQuantityException();
+                    }
+                    //Proceed to minus voucher quantity
+                    voucher.setQuantity(voucher.getQuantity() - 1);
+                    voucherDAO.updateVoucher(voucher);
+                }
+
+                List<OrderDetail> orderDetailList = order.getOrderDetailList();
+                StockDAO stkDAO = new StockDAO();
+                //Check if the quantity stock is less than the order detail
+                for (OrderDetail orderDetail : orderDetailList) {
+                    Stock stk = stkDAO.getStock(orderDetail.getProductId());
+                    if (stk.getQuantity() < orderDetail.getQuantity()) {
+                        throw new NotEnoughProductQuantityException();
+                    }
+                    //Proceed to minus the product
+                    stk.setQuantity(stk.getQuantity() - orderDetail.getQuantity());
+                    int result = stkDAO.updateStock(stk);
+                    if (result < 1) {
+                        System.out.println("Update stock fail!");
+                        throw new OperationEditFailedException();
+                    }
+                }
+                orDAO.acceptOrder(order, orderManager.getOrderManagerId());
+                return State.Success.value;
+            }
+
         } catch (OperationEditFailedException ex) {
             request.setAttribute("exceptionType", "OperationEditFailedException");
+            return State.Fail.value;
+        } catch (NotEnoughProductQuantityException ex) {
+            request.setAttribute("exceptionType", "NotEnoughProductQuantityException");
+            return State.Fail.value;
+        } catch (NotEnoughVoucherQuantityException ex) {
+            request.setAttribute("exceptionType", "NotEnoughVoucherQuantityException");
             return State.Fail.value;
         }
         return State.Fail.value;
     }
 
-    private int searchOrder(HttpServletRequest request) {
+    private int searchOrder(HttpServletRequest request, SearchType type) {
         String URI = request.getRequestURI();
         String data[] = URI.split("/");
         int page = 1;
@@ -255,6 +350,23 @@ public class OrderManagerController extends HttpServlet {
             System.out.println("Empty order list");
             request.setAttribute("exceptionType", "OrderNotFoundException");
             return State.Fail.value;
+        }
+        if (type != null) {
+            if (type == SearchType.PENDING) {
+                orderList = orderList
+                        .stream()
+                        .filter(order -> order.getStatus().equals("PENDING"))
+                        .collect(Collectors.toList());
+            } else if (type == SearchType.HISTORY) {
+                OrderManagerDAO omDAO = new OrderManagerDAO();
+                Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+                OrderManager currentManager = omDAO.getOrderManager(currentUserCookie.getValue());
+                orderList = orderList
+                        .stream()
+                        .filter(order -> (order.getUpdateByOrderManager() != 0
+                        && order.getUpdateByOrderManager() == currentManager.getOrderManagerId()))
+                        .collect(Collectors.toList());
+            }
         }
 
         int numberOfPage = (orderList.size() / rows) + (orderList.size() % rows == 0 ? 0 : 1);
@@ -389,6 +501,10 @@ public class OrderManagerController extends HttpServlet {
 
         int result = usDAO.updateUser(updateUser);
 
+        if (result != 1) {
+            request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.OperationEditFailedException.toString());
+            return State.Fail.value;
+        }
         // Update cookie
         Cookie c = ((Cookie) request.getSession().getAttribute("userCookie"));
         c.setValue(username);
@@ -404,21 +520,21 @@ public class OrderManagerController extends HttpServlet {
                     System.out.println("Detect password change");
                     System.out.println("sending mail changing password");
                     es.setEmailTo(email);
-                    es.sendToEmail(es.CHANGE_PASSWORD_NOTFICATION,
+                    es.sendEmailByThread(es.CHANGE_PASSWORD_NOTFICATION,
                             es.changePasswordNotifcation());
                 }
                 if (isChangedEmail) {
                     System.out.println("Detect email change");
                     System.out.println("sending mail changing email");
                     es.setEmailTo(user.getEmail());
-                    es.sendToEmail(es.CHANGE_EMAIL_NOTFICATION,
+                    es.sendEmailByThread(es.CHANGE_EMAIL_NOTFICATION,
                             es.changeEmailNotification(email));
                 }
                 if (isChangedUsername) {
                     System.out.println("Detect username change");
                     System.out.println("sending mail changing username");
                     es.setEmailTo(email);
-                    es.sendToEmail(es.CHANGE_USERNAME_NOTFICATION,
+                    es.sendEmailByThread(es.CHANGE_USERNAME_NOTFICATION,
                             es.changeUsernameNotification(username));
                 }
             } catch (UnsupportedEncodingException e) {

@@ -104,7 +104,7 @@ public class HomeController extends HttpServlet {
         String html = es.getEmailSubscribe();
         String subject = "ĐĂNG KÝ NHẬN TIN TỪ XXVI STORE THÀNH CÔNG!";
         try {
-            es.sendToEmail(subject, html);
+            es.sendEmailByThread(subject, html);
         } catch (UnsupportedEncodingException ex) {
             System.out.println("Send mail fail");
             Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);

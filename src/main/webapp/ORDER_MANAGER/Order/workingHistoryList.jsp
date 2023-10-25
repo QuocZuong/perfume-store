@@ -38,30 +38,6 @@
     String queryString = request.getQueryString();
     boolean isError = ExceptionUtils.isWebsiteError(queryString);
     String exceptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
-
-    Cookie currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
-    User user = usDAO.getUser(currentUserCookie.getValue());
-    username = user.getUsername();
-    OrderManager currentManager = omDAO.getOrderManager(username);
-
-    if (orderList != null && orderList.size() > 0) {
-        for (int i = 0; i < orderList.size(); i++) {
-
-            boolean isCurrentManagerWork = orderList.get(i).getUpdateByOrderManager() == currentManager.getOrderManagerId();
-            System.out.println("Comparing current manager id: " + currentManager.getId() + " with order manager id: " + orderList.get(i).getUpdateByOrderManager() + " result: " + isCurrentManagerWork);
-            
-            if (!isCurrentManagerWork) {
-                orderList.remove(i);
-                i--;
-            }
-
-        }
-
-        // Sort the order list by id
-        orderList.sort((Order o1, Order o2) -> {
-            return o2.getId() - o1.getId();
-        });
-    }
 %>
 <!DOCTYPE html>
 <html>
@@ -128,11 +104,9 @@
                 <td>Tên khách hàng</td>
                 <td>Tổng tiền</td>
                 <td>Giảm giá</td>
-                <td>Trạng thái</td>
                 <td>Ngày tạo</td>
                 <td>Ngày thanh toán</td>
                 <td>Ngày cập nhật</td>
-                <td>Người cập nhật</td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -145,12 +119,6 @@
                                         OrderManagerDAO omDAO = new OrderManagerDAO();
                                         Order o = orderList.get((int) pageContext.getAttribute("i"));
                                         Customer c = cDAO.getCustomer(o.getCustomerId());
-
-                                        String orderManagerName = "";
-                                        if (o.getUpdateByOrderManager() > 0) {
-                                            OrderManager om = omDAO.getOrderManager(o.getUpdateByOrderManager());
-                                            orderManagerName = om.getName();
-                                        }
 
                                         String createAt = o.getCreatedAt(Generator.DatePattern.DateSqlPattern);
                                         String checkoutAt = o.getCheckoutAt() == null ? "" : o.getCheckoutAt(Generator.DatePattern.DateSqlPattern);
@@ -166,32 +134,30 @@
                     <td class="<%= isActive ? " " : "faded"%>"><%= c.getName()%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= o.getTotal()%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= o.getDeductedPrice()%></td>
-                    <td class="<%= isActive ? " " : "faded"%>"><%= o.getStatus()%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= createAt%></td>              
                     <td class="<%= isActive ? " " : "faded"%>"><%= checkoutAt%></td>
                     <td class="<%= isActive ? " " : "faded"%>"><%= updateAt%></td>
-                    <td class="<%= isActive ? " " : "faded"%>"><%= orderManagerName%></td>
 
                     <td class="<%= isActive ? " " : "faded"%>">
-                      <a href="/OrderManager/Order/Detail/ID/<%= o.getId()%>" class="<%= isActive ? "" : "disabled"%> btn btn-outline-primary rounded-0">🤔</a>
+                      <a href="/OrderManager/Order/Detail/ID/<%= o.getId()%>" class="<%= isActive ? "" : "disabled"%> btn btn-outline-primary rounded-0">Detail</a>
                     </td>
                     <c:choose>
                       <c:when test='<%= isAccepted%>'>
-                        <td class="buttonStatus faded" colspan=2>
-                          <a href="/OrderManager/ACCEPT/Order/ID/<%= o.getId()%>" class="btn btn-outline-success rounded-0">✅</a>
+                        <td class="buttonStatus faded px-3" colspan=2>
+                          <a href="/OrderManager/OrderList/HistoryWork/ACCEPT/Order/ID/<%= o.getId()%>" class="btn btn-outline-success btn-disabled rounded-0 w-100" tabindex="-1">Accepted</a>
                         </td>
                       </c:when>
                       <c:when test='<%= isRejected%>'>
-                        <td class="buttonStatus faded" colspan=2>
-                          <a href="/OrderManager/REJECT/Order/ID/<%= o.getId()%>" class="btn btn-outline-danger rounded-0">❌</a>
+                        <td class="buttonStatus faded px-3" colspan=2>
+                          <a href="/OrderManager/OrderList/HistoryWork/REJECT/Order/ID/<%= o.getId()%>" class="btn btn-outline-danger btn-disabled rounded-0 w-100" tabindex="-1">Rejected</a>
                         </td>
                       </c:when>
                       <c:otherwise>
                         <td class="buttonStatus">
-                          <a href="/OrderManager/ACCEPT/Order/ID/<%= o.getId()%>" class="btn btn-outline-success rounded-0">✅</a>
+                          <a href="/OrderManager/OrderList/HistoryWork/ACCEPT/Order/ID/<%= o.getId()%>" class="btn btn-outline-success rounded-0">Accept</a>
                         </td>
                         <td class="buttonStatus">
-                          <a href="/OrderManager/REJECT/Order/ID/<%= o.getId()%>" class="btn btn-outline-danger rounded-0">❌</a>
+                          <a href="/OrderManager/OrderList/HistoryWork/REJECT/Order/ID/<%= o.getId()%>" class="btn btn-outline-danger rounded-0">Reject</a>
                         </td>
                       </c:otherwise>
                     </c:choose>
@@ -240,5 +206,6 @@
       integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
     crossorigin="anonymous"></script>
     <script src="/RESOURCES/admin/product/public/js/list.js"></script>
+    <script src="/RESOURCES/orderManager/order/public/js/list.js"></script>
   </body>
 </html>

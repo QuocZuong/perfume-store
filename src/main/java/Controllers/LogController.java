@@ -8,9 +8,13 @@ import Exceptions.EmailDuplicationException;
 import Exceptions.WrongPasswordException;
 
 import DAOs.UserDAO;
+import Exceptions.EmailDoesntExist;
 import Exceptions.InvalidInputException;
 import Interfaces.DAOs.IUserDAO;
+import Lib.Converter;
+import Lib.EmailSender;
 import Lib.ExceptionUtils;
+import Lib.Generator;
 import Models.Employee;
 import Models.User;
 
@@ -22,11 +26,15 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class LogController extends HttpServlet {
 
     public static final String LOGIN_URI = "/Log/Login";
     public static final String LOGOUT_URI = "/Log/Logout";
+    public static final String FORGOT_PASSWORD_URI = "/Log/ForgotPassword";
 
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -44,6 +52,11 @@ public class LogController extends HttpServlet {
 
         if (path.startsWith(LOGIN_URI)) {
             request.getRequestDispatcher("/LOGIN_PAGE/logIn.jsp").forward(request, response);
+            return;
+        }
+
+        if (path.startsWith(FORGOT_PASSWORD_URI)) {
+            request.getRequestDispatcher("/LOGIN_PAGE/forgotPassword.jsp").forward(request, response);
             return;
         }
 
@@ -71,8 +84,7 @@ public class LogController extends HttpServlet {
         // Login
         if (request.getParameter("submitBtn") != null && request.getParameter("submitBtn").equals("submitLogin")) {
             if (login(request, response)) {
-                System.out.println("Login Successfully. Going to /Product/List");
-                response.sendRedirect("/Product/List");
+                //redirect in the login method
             } else {
                 System.out.println("Login failed. Going to /Log/Login");
                 response.sendRedirect(LOGIN_URI + ExceptionUtils.generateExceptionQueryString(request));
@@ -87,6 +99,20 @@ public class LogController extends HttpServlet {
             } else {
                 System.out.println("Register failed. Going to /Log/Login");
                 response.sendRedirect(LOGIN_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
+
+        // Forgot password
+        if (request.getParameter("submitBtn") != null && request.getParameter("submitBtn").equals("submitForgotPassword")) {
+            if (forgotPassword(request, response)) {
+                System.out.println("Forgot password successfully");
+                response.sendRedirect("/Log/Login");
+            } else {
+                System.out.println("Forgot password failed. Going to /Log/Login");
+                System.out.println(FORGOT_PASSWORD_URI + request.getAttribute("errUserID")
+                        + ExceptionUtils.generateExceptionQueryString(request));
+                response.sendRedirect(FORGOT_PASSWORD_URI + ExceptionUtils.generateExceptionQueryString(request));
             }
             return;
         }
@@ -123,6 +149,7 @@ public class LogController extends HttpServlet {
         String cookieValue = user.getUsername();
 
         String userType = user.getType();
+        String URI = "/Product/List";
         if (userType.equals("Customer")) {
             cookieKey = "Customer";
         } else if (userType.equals("Employee")) {
@@ -130,6 +157,7 @@ public class LogController extends HttpServlet {
             Employee emp = empDAO.getEmployeeByUserId(user.getId());
             cookieKey = emp.getRole().getName();
             cookieKey = cookieKey.replaceAll(" ", "");
+            URI = "/" + cookieKey;
         }
         Cookie c = new Cookie(cookieKey, cookieValue);
         if (rememberPw) {
@@ -140,6 +168,12 @@ public class LogController extends HttpServlet {
         c.setPath("/");
         request.getSession().setAttribute("userCookie", c);
         response.addCookie(c);
+        //send redirect
+        try {
+            response.sendRedirect(URI);
+        } catch (IOException ex) {
+            Logger.getLogger(LogController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return true;
     }
 
@@ -181,6 +215,32 @@ public class LogController extends HttpServlet {
         }
 
         return true;
+    }
+
+    public boolean forgotPassword(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
+        String email = request.getParameter("txtEmail");
+        UserDAO userDAO = new UserDAO();
+
+        try {
+            if (userDAO.isExistEmail(email)) {
+                String randomPassword = Generator.generateForgotPassword();
+                User user = userDAO.getUserByEmail(email);
+                user.setPassword(Converter.convertToMD5Hash(randomPassword));
+                userDAO.updateUser(user);
+
+                //send mail
+                EmailSender eSender = new EmailSender();
+                eSender.setEmailTo(email);
+                eSender.sendEmailByThread(eSender.FORGOT_PASSWORD_NOTFICATION, eSender.forgotPasswordEmailHTML(randomPassword));
+                return true;
+            } else {
+                throw new EmailDoesntExist();
+            }
+        } catch (EmailDoesntExist e) {
+            request.setAttribute("exceptionType", "EmailDoesntExist");
+        }
+
+        return false;
     }
 
 }

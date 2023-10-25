@@ -274,3 +274,7 @@ h1 {
 .nav .account #user-dropdown-btn + ul.drop-down-show {
   height: 61px !important;
 }
+
+.btn-disabled {
+  cursor: not-allowed;
+}

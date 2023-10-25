@@ -522,7 +522,7 @@ public class ProductDAO implements IProductDAO {
         }
         
         if (oldProduct.getStock().getQuantity()!= updateProduct.getStock().getQuantity()) {
-            strBuilder.append("Price : \"").append(oldProduct.getStock().getQuantity())
+            strBuilder.append("Quantity : \"").append(oldProduct.getStock().getQuantity())
                     .append("\"=>\"").append(updateProduct.getStock().getQuantity()).append("\"\n");
         }
 

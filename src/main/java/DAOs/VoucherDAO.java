@@ -176,6 +176,48 @@ public class VoucherDAO implements IVoucherDAO {
     }
 
     // get all productID that approved for a voucher
+    public List<Voucher> searchVoucher(String code, int discountPercent) {
+        ResultSet rs = null;
+        List<Voucher> voucherList = new ArrayList<>();
+        String sql = "SELECT \n"
+                + "v.Voucher_ID,\n"
+                + "v.Voucher_Code,\n"
+                + "v.Voucher_Quantity,\n"
+                + "v.Voucher_Discount_Percent,\n"
+                + "v.Voucher_Discount_Max,\n"
+                + "v.Voucher_Created_At,\n"
+                + "v.Voucher_Expired_At,\n"
+                + "v.Voucher_Created_By_Admin\n"
+                + "FROM [Voucher] v\n"
+                + "WHERE v.Voucher_Code LIKE ?\n"
+                + "OR v.Voucher_Discount_Percent LIKE ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, code);
+            ps.setInt(2, discountPercent);
+
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Voucher v = new Voucher();
+                int vId = rs.getInt("Voucher_ID");
+                v.setId(vId);
+                v.setCode(rs.getNString("Voucher_Code"));
+                v.setQuantity(rs.getInt("Voucher_Quantity"));
+                v.setDiscountPercent(rs.getInt("Voucher_Discount_Percent"));
+                v.setDiscountMax(rs.getInt("Voucher_Discount_Max"));
+                v.setCreatedAt(rs.getLong("Voucher_Created_At"));
+                v.setExpiredAt(rs.getLong("Voucher_Expired_At"));
+                v.setCreatedByAdmin(rs.getInt("Voucher_Created_By_Admin"));
+                v.setApprovedProductId(getAllApprovedProductIdByVoucherId(vId));
+                voucherList.add(v);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(VoucherDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return voucherList;
+    }
+
     @Override
     public List<Integer> getAllApprovedProductIdByVoucherId(int vId) {
         ResultSet rs;
@@ -275,6 +317,35 @@ public class VoucherDAO implements IVoucherDAO {
         return false;
     }
 
+    /* ------------------------- UPDATE SECTION ---------------------------- */
+    public int updateVoucher(Voucher voucher) {
+        String sql = "UPDATE [Voucher]\n"
+                + "SET [Voucher_Code] = ?,\n" // 1
+                + "[Voucher_Quantity] = ?,\n" // 2
+                + "[Voucher_Discount_Percent] = ?,\n" // 3
+                + "[Voucher_Created_At] = ?,\n" // 4
+                + "[Voucher_Expired_At] = ?,\n" // 5
+                + "[Voucher_Created_By_Admin] = ?\n" // 6
+                + "WHERE [Voucher_ID] = ? "; // 7
+        int result = 0;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setNString(1, voucher.getCode());
+            ps.setInt(2, voucher.getQuantity());
+            ps.setInt(3, voucher.getDiscountPercent());
+            ps.setLong(4, voucher.getCreatedAt());
+            ps.setLong(5, voucher.getExpiredAt());
+            ps.setInt(6, voucher.getCreatedByAdmin());
+            ps.setInt(7, voucher.getId());
+
+            result = ps.executeUpdate();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(VoucherDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+
     /* ------------------------- DELETE SECTION ---------------------------- */
     public int removeVoucherOnly(int vId) {
         String sql = "DELETE FROM [Voucher] WHERE Voucher_ID = ?";
@@ -331,4 +402,5 @@ public class VoucherDAO implements IVoucherDAO {
         }
         return true;
     }
+
 }

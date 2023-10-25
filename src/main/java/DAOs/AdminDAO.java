@@ -1,4 +1,3 @@
-
 package DAOs;
 
 import Models.Admin;
@@ -20,6 +19,27 @@ public class AdminDAO extends EmployeeDAO {
 
     public AdminDAO() {
         conn = DB.DBContext.getConnection();
+    }
+
+    public Admin getAdmin(int adminId) {
+        EmployeeDAO empDAO = new EmployeeDAO();
+
+        String sql = "SELECT * FROM [Admin] WHERE Admin_ID = ?;";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, adminId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int empId = rs.getInt("Employee_ID");
+                Employee emp = empDAO.getEmployee(empId);
+                Admin admin = new Admin(emp);
+                admin.setAdminId(adminId);
+                return admin;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     public Admin getAdmin(String username) {

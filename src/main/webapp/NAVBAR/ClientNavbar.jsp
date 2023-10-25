@@ -14,11 +14,11 @@
     <body>
         
         <ul>
-            <li><a href="/">trang chủ</a></li>
-            <li> <a href="/home/introduction">giới thiệu</a></li>
-            <li><a href="/home/brand">thương hiệu</a></li>
+            <li><a href="/">Trang chủ</a></li>
+            <li> <a href="/home/introduction">Giới thiệu</a></li>
+            <li><a href="/home/brand">Thương hiệu</a></li>
             <!-- This link to shop servlet file. DO NOT MODIFY the link -->
-            <li><a href="/Product/List">sản phẩm</a></li>
+            <li><a href="/Product/List">Sản phẩm</a></li>
         </ul>
         <a href="/" class="iconPage"><img src="/RESOURCES/images/icons/icon.webp" alt=""
                                           height="64"></a>

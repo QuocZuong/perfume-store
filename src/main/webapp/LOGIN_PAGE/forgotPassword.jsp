@@ -2,7 +2,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib  uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
-<%! boolean isError, isExistEmail;%>
+<%! boolean isError;%>
 <%! String exceptionMessage = "";%>
 <%
     // Handling execption
@@ -10,8 +10,6 @@
     isError = ExceptionUtils.isWebsiteError(queryString);
     exceptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
 
-    // For navigating login form or register form (UI problem related)
-    isExistEmail = ExceptionUtils.isEmailDuplication(queryString);
 %>
 
 <!DOCTYPE html>
@@ -59,36 +57,16 @@
                 </c:if>
                 <!--Execption Handling-->
 
-                <div class="col-md-12 login-form">
-                    <div class="type">
-                        <button type="button" id="signIn" class="<%= isExistEmail ? "" : "active"%>">Đăng nhập</button>
-                        <button type="button" id="signUp" class="<%= isExistEmail ? "active" : ""%>">Đăng ký</button>
-                    </div>
+                <div class="col-md-12 login-form" style="margin-top: 12rem;">
+                    <h3>Quên mật khẩu</h3>
 
-                    <form action="LogController" method="post" class="sign-in" id="signInForm">
-                        <label for="txtUsername">Tên tài khoản hoặc địa chỉ email *</label>
-                        <br>
-                        <input type="text" name="txtUsername" id="txtUsername">
-                        <br>
-                        <label for="password-input">Mật khẩu *</label>
-                        <br>
-                        <input type="password" name="txtPassword" id="password-input">
-                        <br>
-                        <input type="checkbox" name="txtRememberPassword" id="remember-password"
-                               class="remember-password">
-                        <label for="remember-password">Ghi nhớ mật khẩu</label>
-                        <a href="/Log/ForgotPassword" class="float-end text-dark" style="margin-top: 10px; text-decoration: none;">Quên mật khẩu?</a>
-                        <br>
-                        <button type="submit" name="submitBtn" value="submitLogin" class="enter">Đăng nhập</button>
-                    </form>
-
-                    <form action="LogController" method="post" class="sign-up" id="signUpForm">
+                    <form action="LogController" method="post" class="forgot-password" id="forgotPasswordForm">
                         <label for="user-input">Địa chỉ email *</label>
                         <br>
                         <input type="text" name="txtEmail" id="user-input">
                         <p>Một mật khẩu sẽ được gửi đến địa chỉ email của bạn.</p>
                         <br>
-                        <button type="submit" name="submitBtn" value="submitRegister" class="enter">Đăng ký</button>
+                        <button type="submit" name="submitBtn" value="submitForgotPassword" class="enter">Xác nhận</button>
                     </form>
                 </div>
             </div>
@@ -164,7 +142,7 @@
         <!--Jquery Validation-->
         <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
 
-        <script src="/RESOURCES/logIn/public/js/main.js"></script>
+        <!--<script src="/RESOURCES/logIn/public/js/main.js"></script>-->   
 
         <script>
 

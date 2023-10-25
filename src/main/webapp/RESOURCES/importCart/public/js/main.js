@@ -22,13 +22,13 @@ for (let i = 0; i < ProductQuantInputs.length; i++) {
 
 for (let i = 0; i < ProductCostInputs.length; i++) {
     ProductCostInputs[i].addEventListener("input", function () {
-        if (ProductQuantInputs[i].value < 0) {
-            ProductQuantInputs[i].value = 0;
+        if (ProductCostInputs[i].value < 0) {
+            ProductCostInputs[i].value = 0;
         }
     });
-    ProductQuantInputs[i].addEventListener("blur", function () {
-        if (ProductQuantInputs[i].value === "") {
-            ProductQuantInputs[i].value = 0;
+    ProductCostInputs[i].addEventListener("blur", function () {
+        if (ProductCostInputs[i].value === "") {
+            ProductCostInputs[i].value = 0;
         }
     });
 }
@@ -88,13 +88,5 @@ inputs.forEach((input) => {
     });
 });
 
-document.getElementById("addVoucher").addEventListener("click", function () {
-    let voucherCode = document.getElementById("VoucherTXT").value;
-    if (voucherCode !== null && voucherCode !== "") {
-        document.getElementById("addVoucher").href = "/Customer/Cart?VoucherCode=" + voucherCode;
-    } else {
-        document.getElementById("addVoucher").href = "/Customer/Cart";
-    }
 
-});
 
