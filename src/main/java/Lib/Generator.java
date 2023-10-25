@@ -177,8 +177,9 @@ public class Generator {
      * @param day   The day of the month.
      * @param month The month of the year.
      * @param year  The year.
-     * @return An array of two long numbers, representing the start and end of the
-     *         day in milliseconds, counting from the epoch.
+     * @return An array of two long numbers, the first element is the start and the
+     *         second element is end of the day in milliseconds, counting from the
+     *         epoch.
      */
     public static long[] getTodayTimeRangeInMilli(int day, int month, int year) {
         long[] timeRange = new long[2];
