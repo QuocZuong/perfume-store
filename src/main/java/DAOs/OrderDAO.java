@@ -1,6 +1,8 @@
 package DAOs;
 
+import Exceptions.NotEnoughProductQuantityException;
 import Exceptions.OperationEditFailedException;
+import Exceptions.VoucherNotFoundException;
 import Models.Order;
 import Models.OrderDetail;
 import Models.Product;
@@ -19,19 +21,20 @@ import Interfaces.DAOs.IOrderDAO;
 import Lib.DatabaseUtils;
 import Lib.Generator;
 import Models.OrderManager;
+import Models.Voucher;
 
 public class OrderDAO implements IOrderDAO {
-    
+
     private Connection conn;
-    
+
     public OrderDAO() {
         conn = DB.DBContext.getConnection();
     }
-    
+
     @Override
     public Order orderFactory(ResultSet rs, operation op) throws SQLException {
         Order order = new Order();
-        
+
         switch (op) {
             default:
                 try {
@@ -53,17 +56,17 @@ public class OrderDAO implements IOrderDAO {
                 e.printStackTrace();
             }
         }
-        
+
         return order;
     }
-    
+
     @Override
     public PreparedStatement fillPreparedStatement(PreparedStatement ps, Order order, operation op)
             throws NullPointerException, SQLException {
         if (ps == null || order == null) {
             throw new NullPointerException("PreparedStatement or Order is null");
         }
-        
+
         if (op == operation.READ) {
             ps.setInt(1, order.getId());
             ps.setInt(2, order.getCustomerId());
@@ -100,7 +103,7 @@ public class OrderDAO implements IOrderDAO {
                 ps.setNull(2, java.sql.Types.INTEGER);
                 ps.setNull(8, java.sql.Types.INTEGER);
             }
-            
+
             if (order.getNote() != null && !order.getNote().equals("")) {
                 ps.setNString(6, order.getNote());
             } else {
@@ -127,14 +130,14 @@ public class OrderDAO implements IOrderDAO {
                 ps.setNull(2, java.sql.Types.INTEGER);
                 ps.setNull(8, java.sql.Types.INTEGER);
             }
-            
+
             if (order.getNote() != null && !order.getNote().equals("")) {
                 ps.setNString(6, order.getNote());
             } else {
                 ps.setNull(6, java.sql.Types.NVARCHAR);
             }
         }
-        
+
         return ps;
     }
 
@@ -149,7 +152,7 @@ public class OrderDAO implements IOrderDAO {
         if (order.getOrderDetailList().isEmpty()) {
             throw new NullPointerException("OrderDetail list is empty");
         }
-        
+
         boolean result = false;
         String sql = "	INSERT INTO [Order] (\n"
                 + "    Customer_ID,\n"
@@ -166,23 +169,23 @@ public class OrderDAO implements IOrderDAO {
                 + "    Order_Update_At,\n"
                 + "    Order_Update_By_Order_Manager)\n"
                 + "    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
-        
+
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps = fillPreparedStatement(ps, order, operation.CREATE);
             result = ps.executeUpdate() > 0;
-            
+
             if (!result) {
                 return false;
             }
             int orderId = DatabaseUtils.getLastIndentityOf("[Order]");
-            
+
             for (int i = 0; i < order.getOrderDetailList().size(); i++) {
                 order.getOrderDetailList().get(i).setOrderId(orderId);
             }
             OrderDetailDao odDAO = new OrderDetailDao();
             result = odDAO.addOrderDetail(order.getOrderDetailList());
-            
+
             if (!result) {
                 deleteOrder(DatabaseUtils.getLastIndentityOf("Order"));
                 odDAO.deleteOrderDetail(order.getOrderDetailList());
@@ -191,7 +194,7 @@ public class OrderDAO implements IOrderDAO {
         } catch (SQLException ex) {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return result;
     }
 
@@ -199,34 +202,34 @@ public class OrderDAO implements IOrderDAO {
     @Override
     public List<Order> getAll() {
         String sql = "SELECT * FROM [Order]";
-        
+
         ResultSet rs;
         List<Order> result = new ArrayList<>();
-        
+
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
-            
+
             while (rs.next()) {
                 result.add(orderFactory(rs, operation.READ));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         return result;
     }
-    
+
     @Override
     public List<Order> getOrderByCustomerId(int customerId) {
-        
+
         if (customerId <= 0) {
             throw new IllegalArgumentException("Customer ID must be greater than 0");
         }
-        
+
         List<Order> orders = new ArrayList<>();
         String sql = "SELECT * FROM [Order] where Customer_ID = ?";
-        
+
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, customerId);
@@ -237,23 +240,23 @@ public class OrderDAO implements IOrderDAO {
         } catch (SQLException ex) {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return orders;
     }
-    
+
     public Order getOrderByOrderId(int orderId) {
         if (orderId <= 0) {
             throw new IllegalArgumentException("Order ID must be greater than 0");
         }
-        
+
         String sql = "SELECT * FROM [Order] where Order_ID = ?";
         Order order = null;
-        
+
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, orderId);
             ResultSet rs = ps.executeQuery();
-            
+
             if (rs.next()) {
                 order = orderFactory(rs, operation.READ);
                 OrderDetailDao odDAO = new OrderDetailDao();
@@ -263,10 +266,10 @@ public class OrderDAO implements IOrderDAO {
         } catch (SQLException ex) {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return order;
     }
-    
+
     public List<Product> getOrderForChartByOrderIdByGender() {
         String sql = "SELECT [Product].Product_Name, [Product].Product_Gender FROM [Order]\n"
                 + "INNER JOIN [OrderDetail] ON [Order].Order_ID=[OrderDetail].Order_ID\n"
@@ -286,7 +289,7 @@ public class OrderDAO implements IOrderDAO {
         }
         return products;
     }
-    
+
     public List<Product> getOrderForChartByOrderIdByPrice() {
         String sql = "SELECT [Product].Product_Name, [Stock].Price, [Stock].Product_ID, [Stock].Quantity FROM [Order]\n"
                 + "INNER JOIN [OrderDetail] ON [Order].Order_ID=[OrderDetail].Order_ID\n"
@@ -311,7 +314,7 @@ public class OrderDAO implements IOrderDAO {
         }
         return products;
     }
-    
+
     public List<Order> getNumberOfOrderByDay(int day, int month, int year) {
         String sql = "SELECT * FROM [Order] WHERE DAY(Order_Created_At) = ? AND MONTH(Order_Created_At) = ? AND  YEAR(Order_Created_At) = ?";
         List<Order> orders = new ArrayList<>();
@@ -330,7 +333,7 @@ public class OrderDAO implements IOrderDAO {
         }
         return orders;
     }
-    
+
     public List<Order> getNumberOfOrderByMonth(int month, int year) {
         String sql = "SELECT * FROM [Order] WHERE MONTH(Order_Created_At) = ? AND YEAR(Order_Created_At) = ?";
         List<Order> orders = new ArrayList<>();
@@ -348,7 +351,7 @@ public class OrderDAO implements IOrderDAO {
         }
         return orders;
     }
-    
+
     public List<Order> getNumberOfOrderByYear(int year) {
         String sql = "SELECT * FROM [Order] WHERE YEAR(Order_Created_At) = ?";
         List<Order> orders = new ArrayList<>();
@@ -378,7 +381,7 @@ public class OrderDAO implements IOrderDAO {
         if (order.getOrderDetailList().isEmpty()) {
             throw new NullPointerException("OrderDetail list is empty");
         }
-        
+
         boolean result = false;
         String sql = "UPDATE [Order]\n"
                 + "SET [Customer_ID] = ?,\n" //1
@@ -400,50 +403,52 @@ public class OrderDAO implements IOrderDAO {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps = fillPreparedStatement(ps, order, operation.UPDATE);
             result = ps.executeUpdate() > 0;
-            
+
             if (!result) {
                 return false;
             }
-            
+
             OrderDetailDao odDAO = new OrderDetailDao();
             result = odDAO.updateOrderDetail(order.getOrderDetailList());
-            
+
             if (!result) {
                 deleteOrder(DatabaseUtils.getLastIndentityOf("Order"));
             }
         } catch (SQLException ex) {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return result;
     }
-    
+
     public boolean acceptOrder(Order order, int orderManagerId)
-            throws NullPointerException, OperationEditFailedException {
+            throws NullPointerException,
+            OperationEditFailedException {
         if (!order.getStatus().equals(status.PENDING.toString())) {
             System.out.println("Can not update status of an accepted order");
             throw new OperationEditFailedException();
         }
-        
+
         long now = Generator.getCurrentTimeFromEpochMilli();
-        
+
         order.setCheckoutAt(now);
         order.setUpdateAt(now);
         order.setUpdateByOrderManager(orderManagerId);
         order.setStatus(status.ACCEPTED.toString());
-        
+
         return updateOrder(order);
     }
-    
+
     public boolean rejectOrder(Order order, int orderManagerId)
             throws NullPointerException, OperationEditFailedException {
         if (!order.getStatus().equals(status.PENDING.toString())) {
             System.out.println("Can not update status of an rejected order");
             throw new OperationEditFailedException();
         }
-        
+
+        //check if the quantity stock is less than the order detail
         long now = Generator.getCurrentTimeFromEpochMilli();
-        
+
         order.setUpdateAt(now);
         order.setUpdateByOrderManager(orderManagerId);
         order.setStatus(status.REJECTED.toString());
@@ -458,12 +463,12 @@ public class OrderDAO implements IOrderDAO {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, orderID);
             result = ps.executeUpdate() > 0;
-            
+
             if (result) {
                 OrderDetailDao odDAO = new OrderDetailDao();
                 result = odDAO.deleteOrderDetail(orderID);
             }
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -477,10 +482,10 @@ public class OrderDAO implements IOrderDAO {
         } else {
             search = "%" + search + "%";
         }
-        
+
         ResultSet rs;
         List<Order> orderList = new ArrayList<>();
-        
+
         try {
             String sql = "SELECT o.Order_ID,\n"
                     + "    o.Customer_ID,\n"
@@ -508,9 +513,9 @@ public class OrderDAO implements IOrderDAO {
                     + "    OR o.Order_Delivery_Address LIKE ?\n"
                     + "    OR u.User_Name LIKE ?\n"
                     + "    OR o.Order_Update_By_Order_Manager LIKE ?;";
-            
+
             PreparedStatement ps = conn.prepareStatement(sql);
-            
+
             ps.setNString(1, search);
             ps.setString(2, search);
             ps.setString(3, search);
@@ -519,19 +524,19 @@ public class OrderDAO implements IOrderDAO {
             ps.setNString(6, search);
             ps.setNString(7, search);
             ps.setNString(8, search);
-            
+
             rs = ps.executeQuery();
-            
+
             while (rs.next()) {
                 orderList.add(orderFactory(rs, operation.SEARCH));
             }
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return orderList;
     }
-    
+
     public List<Order> searchOrderActivityLog(String search) {
 //        String sql = "SELECT [Order].Order_Update_At, [User].[User_Name],[User].[User_Email], [Order].Order_Created_At, [Order].Order_Receiver_Name, [Order].Order_Phone_Number, [Order].Order_Status FROM [Order]\n"
 //                + "JOIN [Order_Manager] ON [Order].[Order_Update_By_Order_Manager] = [Order_Manager].[Order_Manager_ID]\n"
@@ -554,11 +559,11 @@ public class OrderDAO implements IOrderDAO {
             ps.setNString(4, search);
             ps.setNString(5, search);
             ResultSet rs = ps.executeQuery();
-            
+
             while (rs.next()) {
                 orderForActivityLogs.add(orderFactory(rs, operation.READ));
             }
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(ProductActivityLogDAO.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -317,6 +317,35 @@ public class VoucherDAO implements IVoucherDAO {
         return false;
     }
 
+    /* ------------------------- UPDATE SECTION ---------------------------- */
+    public int updateVoucher(Voucher voucher) {
+        String sql = "UPDATE [Voucher]\n"
+                + "SET [Voucher_Code] = ?,\n" //1
+                + "[Voucher_Quantity] = ?,\n" //2
+                + "[Voucher_Discount_Percent] = ?,\n" //3
+                + "[Voucher_Created_At] = ?,\n" //4
+                + "[Voucher_Expired_At] = ?,\n" //5
+                + "[Voucher_Created_By_Admin] = ?\n" //6
+                + "WHERE [Voucher_ID] = ? "; //7
+        int result = 0;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setNString(1, voucher.getCode());
+            ps.setInt(2, voucher.getQuantity());
+            ps.setInt(3, voucher.getDiscountPercent());
+            ps.setLong(4, voucher.getCreatedAt());
+            ps.setLong(5, voucher.getExpiredAt());
+            ps.setInt(6, voucher.getCreatedByAdmin());
+            ps.setInt(7, voucher.getId());
+
+            result = ps.executeUpdate();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(VoucherDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+
     /* ------------------------- DELETE SECTION ---------------------------- */
     public int removeVoucherOnly(int vId) {
         String sql = "DELETE FROM [Voucher] WHERE Voucher_ID = ?";
@@ -373,4 +402,5 @@ public class VoucherDAO implements IVoucherDAO {
         }
         return true;
     }
+
 }
