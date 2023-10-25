@@ -105,6 +105,7 @@
                 <tr>
                   <td scope="col">#</td>
                   <td scope="col">Sản phẩm</td>
+                  <td scope="col">Hình ảnh</td>
                   <td scope="col" class="number">Số lượng</td>
                   <td scope="col">Đơn giá</td>
                   <td scope="col">Tổng tiền</td>
@@ -133,11 +134,19 @@
                         <c:choose>
                           <c:when test="<%= (v != null && approvedProductsList != null && ProductDAO.isContain(product, approvedProductsList))%>">  
                             <span><%= Converter.covertIntergerToMoney(product.getStock().getPrice())%> <span>₫</span></span>
+                          </c:when>
+                          <c:otherwise>
+                            <span><%= Converter.covertIntergerToMoney(product.getStock().getPrice())%> <span>₫</span></span>
+                          </c:otherwise>
+                        </c:choose>
+                      </td>
+                      <td>
+                        <c:choose>
+                          <c:when test="<%= (v != null && approvedProductsList != null && ProductDAO.isContain(product, approvedProductsList))%>">  
                             <span style="text-decoration: line-through;color: rgba(0,0,0,0.5);">Total:<%= Converter.covertIntergerToMoney(sum)%> <span>₫</span></span>
                             <span>Total: <%= Converter.covertIntergerToMoney(sumDeductPrice < v.getDiscountMax() ? (sum - (product.getStock().getPrice() * v.getDiscountPercent() / 100)) : (sum - (product.getStock().getPrice() * v.getDiscountPercent() / 100) + ((sumDeductPrice - v.getDiscountMax()) / approvedProductsList.size())))%> <span>₫</span></span>
                           </c:when>
                           <c:otherwise>
-                            <span><%= Converter.covertIntergerToMoney(product.getStock().getPrice())%> <span>₫</span></span>
                             <span>Total: <%= Converter.covertIntergerToMoney(sum)%> <span>₫</span></span>
                           </c:otherwise>
                         </c:choose>
