@@ -272,7 +272,7 @@
                                             </div>
 
                                             <div>
-                                                <a href="/Admin/EmployeeActivityLog/InventoryManager" class="text-decoration-none">
+                                                <a href="/Admin/Import/Store" class="text-decoration-none">
                                                     <button class="btn btn-outline-dark d-flex w-100 h-100 justify-content-center align-items-center rounded-0 fn-btn">
                                                         <span class="h2">&nbsp;&nbsp;Hoạt động <br/> inventory manager</span>
                                                     </button>

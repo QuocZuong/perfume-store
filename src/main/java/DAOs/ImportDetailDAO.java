@@ -81,7 +81,7 @@ public class ImportDetailDAO implements IImportDetailDAO {
     public int updateImportDetail(ImportDetail ipD) {
         String sql = "UPDATE Import_Detail SET\n"
                 + "Quantity = ?,\n"
-                + "Cost = ?\n"
+                + "Cost = ?,\n"
                 + "Status = ?\n"
                 + "WHERE Import_ID = ? AND Product_ID = ?";
         try {
@@ -227,10 +227,10 @@ public class ImportDetailDAO implements IImportDetailDAO {
                 + "	LEFT JOIN [Product] pd ON impD.Product_ID = pd.Product_ID)\n"
                 + "	LEFT JOIN [Brand] br ON pd.Brand_ID = br.Brand_ID\n"
                 + "WHERE \n"
-                + "	impD.Product_ID = ? OR\n"
+                + "	(impD.Import_ID = ? OR\n"
                 + "	impD.Product_ID = ? OR\n"
                 + "	pd.Product_Name LIKE ? OR\n"
-                + "	br.Brand_Name LIKE ?\n"
+                + "	br.Brand_Name LIKE ?)\n"
                 + "	AND impD.Status = \'WAIT\'\n"
                 + "	ORDER BY pd.Product_ID ASC";
 

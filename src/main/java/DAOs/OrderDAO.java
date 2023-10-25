@@ -330,7 +330,7 @@ public class OrderDAO implements IOrderDAO {
         }
         return orders;
     }
-    
+
     public List<Order> getNumberOfOrderByMonth(int month, int year) {
         String sql = "SELECT * FROM [Order] WHERE MONTH(Order_Created_At) = ? AND YEAR(Order_Created_At) = ?";
         List<Order> orders = new ArrayList<>();
@@ -348,7 +348,7 @@ public class OrderDAO implements IOrderDAO {
         }
         return orders;
     }
-    
+
     public List<Order> getNumberOfOrderByYear(int year) {
         String sql = "SELECT * FROM [Order] WHERE YEAR(Order_Created_At) = ?";
         List<Order> orders = new ArrayList<>();

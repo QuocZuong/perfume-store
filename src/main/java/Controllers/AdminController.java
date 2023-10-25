@@ -127,10 +127,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -327,6 +327,7 @@ public class AdminController extends HttpServlet {
             } else if (result == State.Fail.value) {
                 response.sendRedirect(ADMIN_IMPORT_STORE + ExceptionUtils.generateExceptionQueryString(request));
             }
+            return;
         }
         // ---------------------------- IMPORT SECTION ----------------------------
         // ---------------------------- CHART SECTION ----------------------------
@@ -352,10 +353,10 @@ public class AdminController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -862,7 +863,7 @@ public class AdminController extends HttpServlet {
             return State.Fail.value;
         }
     }
-  
+
     // ---------------------------- UPDATE SECTION ----------------------------
     private int updateProduct(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
@@ -1632,6 +1633,7 @@ public class AdminController extends HttpServlet {
     private int bringToStock(HttpServletRequest request) {
         AdminDAO adDAO = new AdminDAO();
         ImportDetailDAO ipDetailDAO = new ImportDetailDAO();
+        ProductDAO pDAO = new ProductDAO();
         String data[] = request.getRequestURI().split("/");
 
         Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
@@ -1662,17 +1664,26 @@ public class AdminController extends HttpServlet {
                 request.setAttribute("exceptionType", "ImportNotFoundException");
                 return State.Fail.value;
             }
-            StockDAO stDAO = new StockDAO();
-            Stock st = stDAO.getStock(productId);
-            if (st == null) {
+            Product pd = pDAO.getProduct(productId);
+            Stock st = pd.getStock();
+            if (pd == null || st == null) {
                 System.out.println("not found product to update stock");
                 request.setAttribute("exceptionType", "ProductNotFoundException");
                 return State.Fail.value;
             }
             st.setQuantity(st.getQuantity() + ipD.getQuantity());
-            int result = stDAO.updateStock(st);
+            int result = pDAO.updateProduct(pd, ad);
             if (result == 0) {
                 System.out.println("update stock failt");
+                request.setAttribute("exceptionType", "OperationEditFailedException");
+                return State.Fail.value;
+            }
+            ipD.setStatus(ImportDetailDAO.Status.USED.toString());
+            result = ipDetailDAO.updateImportDetail(ipD);
+            if (result == 0) {
+                st.setQuantity(st.getQuantity() - ipD.getQuantity());
+                pDAO.updateProduct(pd, ad);
+                System.out.println("set status for import detail fail");
                 request.setAttribute("exceptionType", "OperationEditFailedException");
                 return State.Fail.value;
             }
