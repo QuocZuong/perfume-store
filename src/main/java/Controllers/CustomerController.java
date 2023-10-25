@@ -1037,9 +1037,6 @@ public class CustomerController extends HttpServlet {
                     oDAO.getOrderByOrderId(DatabaseUtils.getLastIndentityOf("[Order]")).getId());
             request.setAttribute("CheckOutSuccess", "?CheckOutSuccess=true");
             ciDAO.deleteAllCartItemOfCustomer(CustomerID);
-            if (v != null) {
-                v.setQuantity(v.getQuantity() - 1);
-            }
             return State.Success.value;
         }
 
