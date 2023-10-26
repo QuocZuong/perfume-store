@@ -12,6 +12,7 @@ import Exceptions.InvalidInputException;
 import Exceptions.NotEnoughProductQuantityException;
 import Exceptions.NotEnoughVoucherQuantityException;
 import Exceptions.OperationEditFailedException;
+import Exceptions.ProductNotFoundException;
 import Exceptions.UsernameDuplicationException;
 import Exceptions.WrongPasswordException;
 import Interfaces.DAOs.IUserDAO.loginType;
@@ -91,10 +92,10 @@ public class OrderManagerController extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -126,7 +127,7 @@ public class OrderManagerController extends HttpServlet {
             } else if (result == State.Fail.value) {
                 response.sendRedirect(
                         ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_URI
-                                + ExceptionUtils.generateExceptionQueryString(request));
+                        + ExceptionUtils.generateExceptionQueryString(request));
             }
             return;
         }
@@ -204,7 +205,7 @@ public class OrderManagerController extends HttpServlet {
             } else {
                 response.sendRedirect(
                         ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_URI
-                                + ExceptionUtils.generateExceptionQueryString(request));
+                        + ExceptionUtils.generateExceptionQueryString(request));
             }
             return;
         }
@@ -220,10 +221,10 @@ public class OrderManagerController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -365,7 +366,7 @@ public class OrderManagerController extends HttpServlet {
                 orderList = orderList
                         .stream()
                         .filter(order -> (order.getUpdateByOrderManager() != 0
-                                && order.getUpdateByOrderManager() == currentManager.getOrderManagerId()))
+                        && order.getUpdateByOrderManager() == currentManager.getOrderManagerId()))
                         .collect(Collectors.toList());
             }
         }
@@ -418,6 +419,10 @@ public class OrderManagerController extends HttpServlet {
             request.setAttribute("OrderInfor", order);
             return State.Success.value;
         } catch (NumberFormatException e) {
+            request.setAttribute("exceptionType", "NumberFormatException");
+            return State.Fail.value;
+        } catch (ProductNotFoundException ex) {
+            request.setAttribute("exceptionType", "ProductNotFoundException");
             return State.Fail.value;
         }
     }

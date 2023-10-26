@@ -1,9 +1,14 @@
 
+<%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="Models.Brand"%>
+<%@page import="DAOs.BrandDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%@page import="Lib.ExceptionUtils"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib  uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
+<%! BrandDAO bDAO = new BrandDAO(); %>
 <%! boolean isError;%>
 <%! String exceptionMessage = "";%>
 <%
@@ -68,7 +73,22 @@
                         </div>
                         <div class="brand">
                             <label class="required">Product brand</label>
-                            <input type="text" name="txtBrandName">
+                            <input  list="brandList" name="txtBrandName" >
+
+                            <%
+                                List<Brand> brandList = bDAO.getAll();
+                            %>
+                            <datalist id="brandList">
+                                <c:forEach var='i' begin='0' end='<%=  brandList.size() - 1%>'>
+                                    <%
+                                        int index = (int) pageContext.getAttribute("i");
+                                        Brand brand = brandList.get(index);
+                                    %>
+                                    <option value="<%=brand.getName()%>"><%= brand.getName()%></option>
+                                </c:forEach>
+                            </datalist>
+
+
                         </div>
                         <div class="price">
                             <label class="required">Product price</label>
@@ -155,7 +175,7 @@
                         },
                         txtProductPrice: {
                             required: true,
-                            number: true
+                            digits: true
                         },
                         rdoGender: {
                             required: true
@@ -176,7 +196,7 @@
                             required: true,
                             digits: true
                         },
-                        fileProductImg: {
+                        fileProductImg: {                       
                             requiredFile: true,
                             accept: "image/*"
                         },
@@ -195,7 +215,7 @@
                         },
                         txtProductPrice: {
                             required: "Vui lòng nhập giá sản phẩm",
-                            number: "Giá sản phẩm phải là số"
+                            digits: "Giá sản phẩm phải là số nguyên"
                         },
                         rdoGender: {
                             required: "Vui lòng chọn giới tính"
