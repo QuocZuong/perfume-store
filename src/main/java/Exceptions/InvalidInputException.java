@@ -20,7 +20,7 @@ public class InvalidInputException extends Exception implements Interfaces.Excep
         return super.getMessage();
     }
     public InvalidInputException() {
-        super("Input sai format hãy thử lại");
+        super("Input sai format, hãy thử lại");
         queryString = "InvalidInput";
     }
 
