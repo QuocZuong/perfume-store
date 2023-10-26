@@ -407,8 +407,9 @@ public class AdminController extends HttpServlet {
                 if (result == State.Success.value) {
                     response.sendRedirect(ADMIN_PRODUCT_LIST_URI);
                 } else {
+                    int pID = Integer.parseInt(request.getParameter("txtProductID"));
                     response.sendRedirect(
-                            ADMIN_PRODUCT_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+                            ADMIN_PRODUCT_UPDATE_URI + "/ID/" + pID + ExceptionUtils.generateExceptionQueryString(request));
                 }
             }
             return;
@@ -940,12 +941,19 @@ public class AdminController extends HttpServlet {
         String username = userCookie.getValue();
         AdminDAO adDAO = new AdminDAO();
         Admin admin = adDAO.getAdmin(username);
-        int kq = pDAO.updateProduct(product, admin);
-        if (kq == 0) {
-            System.out.println("Update Failed, The Product is not in the database");
-            request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.OperationEditFailedException.toString());
+        int kq;
+        try {
+            kq = pDAO.updateProduct(product, admin);
+            if (kq == 0) {
+                System.out.println("Update Failed, The Product is not in the database");
+                request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.OperationEditFailedException.toString());
+                return State.Fail.value;
+            }
+        } catch (InvalidInputException ex) {
+            request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.InvalidInputException.toString());
             return State.Fail.value;
         }
+
         System.out.println("Update Product with ID: " + pID + " successfully!");
         return State.Success.value;
     }
@@ -1261,6 +1269,9 @@ public class AdminController extends HttpServlet {
         } catch (ProductNotFoundException ex) {
             request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.ProductNotFoundException.toString());
             return State.Fail.value;
+        } catch (InvalidInputException ex) {
+            request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.InvalidInputException.toString());
+            return State.Fail.value;
         }
         System.out.println("Restore Product with ID: " + productId + "successfully!");
         return State.Success.value;
@@ -1555,6 +1566,9 @@ public class AdminController extends HttpServlet {
         } catch (ProductNotFoundException ex) {
             request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.ProductNotFoundException.toString());
             return State.Fail.value;
+        } catch (InvalidInputException ex) {
+            request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.InvalidInputException.toString());
+            return State.Fail.value;
         }
 
         System.out.println("Delete Product with ID: " + productId + "successfully!");
@@ -1717,6 +1731,9 @@ public class AdminController extends HttpServlet {
             return State.Success.value;
         } catch (NumberFormatException e) {
             request.setAttribute("exceptionType", "OperationEditFailedException");
+            return State.Fail.value;
+        } catch (InvalidInputException ex) {
+            request.setAttribute("exceptionType", "InvalidInputException");
             return State.Fail.value;
         }
     }
