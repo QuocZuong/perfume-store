@@ -1,3 +1,4 @@
+<%@page import="Lib.Generator"%>
 <%@page import="DAOs.InventoryManagerDAO"%>
 <%@page import="Models.ImportDetail"%>
 <%@page import="Models.Import"%>
@@ -48,14 +49,29 @@
         <title>Chi tiết đơn hàng</title>
         <style>
             .Import-Info{
+                display: block;
+                margin: 0rem 1rem;
+            }
+            .Import-Info h4{
                 display: flex;
+                align-items: flex-start;
                 margin: 0rem 1rem;
             }
             .Import-Info p{
                 display: flex;
                 align-items: flex-start;
                 font-size: 3rem !important;
-
+            }
+            .right h1{
+                font-size: 4rem;
+                font-weight: bold;
+            }
+            .main{
+                margin: 0px 0px 100px 0px;
+            }
+            a.disabled {
+                pointer-events: none;
+                cursor: default;
             }
         </style>
     </head>
@@ -71,16 +87,18 @@
                     <jsp:include page="/NAVBAR/AdminNavbar.jsp"></jsp:include>
                     </div>
                 </div>
-
                 <div class="main">
                     <div class="right">
+                        <h1>Chi tiết hóa đơn nhập</h1>
                         <div class="order-info">
                             <div class="Import-Info">
-                            <h6 class="display-6">Import ID: <%= importInfo.getId()%></h6>
-                            <h6 class="display-6">Nhà cung cấp: <%= importInfo.getSupplierName()%></h6>
-                            <h6 class="display-6">Người nhập đơn: <%= ivtrManaDAO.getInventoryManager(importInfo.getImportByInventoryManager())%></h6>
-                            <h6 class="display-6">Import ID: <%= importInfo.getId()%></h6>
-
+                                <h4 class="">Import ID: <%= importInfo.getId()%></h4>
+                            <h4 class="">Nhà cung cấp: <%= importInfo.getSupplierName()%></h4>
+                            <h4 class="">Người nhập đơn: <%= ivtrManaDAO.getInventoryManager(importInfo.getImportByInventoryManager()).getName()%></h4>
+                            <h4 class="">Ngày nhập: <%= importInfo.getImportAt(Generator.DatePattern.DateForwardSlashPattern)%></h4>
+                            <h4 class="">Ngày vận chuyển đến: <%= importInfo.getDeliveredAt(Generator.DatePattern.DateForwardSlashPattern)%></h4>
+                            <br>
+                            <br>
                         </div>
                     </div>
                     <div class="order-page">
@@ -119,7 +137,13 @@
                                             <td>
                                                 Total cost: <%= sumCost%>₫
                                             </td>
-                                            <td><%=status%></td>
+                                            <td>
+                                                <a href="/Admin/Import/Bring/ImportID/<%= importDetail.getImportId()%>/ProductID/<%= importDetail.getProductId()%>" class="text-decoration-none <%= status.equals("WAIT") ? "" : "disabled"%>">
+                                                    <button class="btn btn-outline-dark d-flex justify-content-center align-items-center rounded-0 fn-btn">
+                                                        <span class="add-import"><%= status%></span>
+                                                    </button>
+                                                </a>
+                                            </td>
                                         </tr>
                                     </c:forEach>
                                 </c:if>
@@ -238,6 +262,16 @@
                         error.addClass("text-danger d-block mt-3");
                         error.insertAfter(element.next());
                     }
+                });
+
+                $(".add-import").on({
+                    mouseenter: function () {
+                        this.innerHTML = "ADD";
+                    },
+                    mouseleave: function () {
+                        this.innerHTML = "WAIT";
+                    }
+
                 });
             });
         </script>

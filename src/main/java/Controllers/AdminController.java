@@ -79,6 +79,10 @@ public class AdminController extends HttpServlet {
 
     public static final String ADMIN_IMPORT_LIST_URI = "/Admin/Import/List";
     public static final String ADMIN_IMPORT_DETAIL_URI = "/Admin/Import/Detail";
+    public static final String ADMIN_IMPORT_UPDATE_URI = "/Admin/Import/Update";
+    public static final String ADMIN_IMPORT_CONFIRM_UPDATE_URI = "/Admin/Import/ConfirmUpdate";
+
+    public static final String ADMIN_IMPORT_DELETE_DETAIL_URI = "/Admin/Import/DeleteDetail";
     public static final String ADMIN_IMPORT_STORE = "/Admin/Import/Store";
     public static final String ADMIN_IMPORT_BRING_TO_STOCK = "/Admin/Import/Bring";
 
@@ -382,6 +386,29 @@ public class AdminController extends HttpServlet {
             }
             return;
         }
+
+        if (path.startsWith(ADMIN_IMPORT_DELETE_DETAIL_URI)) {
+            System.out.println("Going delete");
+            int result = deleteImportDetail(request);
+            if (result == State.Success.value) {
+                response.sendRedirect(ADMIN_IMPORT_UPDATE_URI + "/ID/" + (String) request.getAttribute("ImportID"));
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(ADMIN_IMPORT_UPDATE_URI + "/ID/" + ((String) request.getAttribute("ImportID") != null ? (String) request.getAttribute("ImportID") : "-1") + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
+
+        if (path.startsWith(ADMIN_IMPORT_UPDATE_URI)) {
+            System.out.println("Going import update");
+            int result = getUpdateImport(request);
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/ADMIN_PAGE/Import/update.jsp").forward(request,
+                        response);
+            } else if (result == State.Fail.value) {
+                request.getRequestDispatcher(ADMIN_IMPORT_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
         // ---------------------------- IMPORT SECTION ----------------------------
         // ---------------------------- CHART SECTION ----------------------------
         if (path.startsWith(ADMIN_CHART_BEST_SELLING_PRODUCT_BY_GENDER)) {
@@ -511,6 +538,20 @@ public class AdminController extends HttpServlet {
                 if (updateAdminInfomation(request, response)) {
                     response.sendRedirect(ADMIN_USER_URI);
                 } else {
+                    response.sendRedirect(ADMIN_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
+                }
+                return;
+            }
+        }
+
+        if (path.startsWith(ADMIN_IMPORT_CONFIRM_UPDATE_URI)) {
+            if (request.getParameter("btnCheckoutImportCart") != null
+                    && request.getParameter("btnCheckoutImportCart").equals("Submit")) {
+                System.out.println("Going update info");
+                int result = updateImportInformation(request);
+                if (result == State.Success.value) {
+                    response.sendRedirect(ADMIN_USER_URI);
+                } else if (result == State.Fail.value) {
                     response.sendRedirect(ADMIN_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
                 }
                 return;
@@ -680,6 +721,48 @@ public class AdminController extends HttpServlet {
 
         if (ad == null) {
             System.out.println("Unknow Username to view import detail");
+            request.setAttribute("exceptionType", "AccountNotFoundException");
+            return State.Fail.value;
+        }
+
+        try {
+            Import ip = null;
+            for (int i = 0; i < data.length; i++) {
+                if (data[i].equals("ID")) {
+                    int importId = Integer.parseInt(data[i + 1]);
+                    ip = ipDAO.getImport(importId);
+                }
+            }
+            if (ip == null) {
+                System.out.println("not found import detail");
+                request.setAttribute("exceptionType", "ImportNotFoundException");
+                return State.Fail.value;
+            }
+            if (ip.getImportDetail() == null || ip.getImportDetail().isEmpty()) {
+                System.out.println("import has no import detail");
+                request.setAttribute("exceptionType", "ImportNotFoundException");
+                return State.Fail.value;
+            }
+            request.setAttribute("importInfo", ip);
+            return State.Success.value;
+        } catch (NumberFormatException e) {
+            request.setAttribute("exceptionType", "ImportNotFoundException");
+            return State.Fail.value;
+        }
+    }
+
+    private int getUpdateImport(HttpServletRequest request) {
+        ImportDAO ipDAO = new ImportDAO();
+        AdminDAO adDAO = new AdminDAO();
+
+        String data[] = request.getRequestURI().split("/");
+
+        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+        String username = currentUserCookie.getValue();
+        Admin ad = adDAO.getAdmin(username);
+
+        if (ad == null) {
+            System.out.println("Unknow Username to update import");
             request.setAttribute("exceptionType", "AccountNotFoundException");
             return State.Fail.value;
         }
@@ -1501,6 +1584,10 @@ public class AdminController extends HttpServlet {
         return false;
     }
 
+    private int updateImportInformation(HttpServletRequest request) {
+        return 0;
+    }
+
     private boolean updateAdminInfomation(HttpServletRequest request,
             HttpServletResponse response) {
         /*
@@ -1712,6 +1799,70 @@ public class AdminController extends HttpServlet {
             return;
         }
         System.out.println("Deactivated User with ID: " + userId + " successfully!");
+    }
+
+    private int deleteImportDetail(HttpServletRequest request) {
+        ImportDAO ipDAO = new ImportDAO();
+        AdminDAO adDAO = new AdminDAO();
+        ImportDetailDAO ipDetailDAO = new ImportDetailDAO();
+        ProductDAO pDAO = new ProductDAO();
+        String data[] = request.getRequestURI().split("/");
+
+        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+        String username = currentUserCookie.getValue();
+        Admin ad = adDAO.getAdmin(username);
+
+        if (ad == null) {
+            System.out.println("Unknow Username to delete import detail");
+            request.setAttribute("exceptionType", "AccountNotFoundException");
+            return State.Fail.value;
+        }
+
+        try {
+            ImportDetail ipD = null;
+            int importId = -1;
+            int productId = -1;
+            for (int i = 0; i < data.length; i++) {
+                if (data[i].equals("ImportID")) {
+                    importId = Integer.parseInt(data[i + 1]);
+                }
+                if (data[i].equals("ProductID")) {
+                    productId = Integer.parseInt(data[i + 1]);
+                }
+            }
+            request.setAttribute("ImportID", importId + "");
+            ipD = ipDetailDAO.getImportDetail(importId, productId);
+            if (ipD == null) {
+                System.out.println("not found import detail");
+                request.setAttribute("exceptionType", "ImportNotFoundException");
+                return State.Fail.value;
+            }
+            if (ipD.getStatus().equals(ImportDetailDAO.Status.USED.toString())) {
+                System.out.println("import detail is used so cannot delete");
+                request.setAttribute("exceptionType", "OperationDeleteFailedException");
+                return State.Fail.value;
+            }
+            int result = ipDetailDAO.deleteImportDetail(ipD);
+            if (result == 0) {
+                System.out.println("delete import detail fail");
+                request.setAttribute("exceptionType", "OperationDeleteFailedException");
+                return State.Fail.value;
+            }
+            Import ip = ipDAO.getImport(importId);
+            ip.setTotalCost(ip.getTotalCost() - ipD.getCost() * ipD.getQuantity());
+            ip.setTotalQuantity(ip.getTotalQuantity() - ipD.getQuantity());
+            result = ipDAO.updateImport(ip, ad.getAdminId());
+            if (result == 0) {
+                System.out.println("update import fail so cannot delete");
+                ipDetailDAO.addImportDetail(ipD);
+                request.setAttribute("exceptionType", "OperationDeleteFailedException");
+                return State.Fail.value;
+            }
+            return State.Success.value;
+        } catch (NumberFormatException e) {
+            request.setAttribute("exceptionType", "OperationDeleteFailedException");
+            return State.Fail.value;
+        }
     }
 
     private int deleteVoucher(HttpServletRequest request) {

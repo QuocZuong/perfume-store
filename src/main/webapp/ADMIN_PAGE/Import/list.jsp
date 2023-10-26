@@ -110,7 +110,7 @@
                                         Import ip = importList.get((int) pageContext.getAttribute("i"));
                                         String importAt = ip.getImportAt(Generator.DatePattern.DateForwardSlashPattern);
                                         String deliveredAt = ip.getDeliveredAt(Generator.DatePattern.DateForwardSlashPattern);
-                                        String modifiedAt = (ip.getModifiedAt() != 0 ? ip.getModifiedAt(Generator.DatePattern.DateForwardSlashPattern) : "");
+                                        String modifiedAt = (ip.getModifiedAt() != null ? ip.getModifiedAt(Generator.DatePattern.DateForwardSlashPattern) : "");
                                         String modifiedByAdmin = (ip.getModifiedByAdmin() != 0 ? ip.getModifiedByAdmin() + "" : "");
                                     %>
                                     <tr class="rowTable">

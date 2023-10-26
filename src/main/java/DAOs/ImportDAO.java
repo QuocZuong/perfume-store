@@ -3,6 +3,7 @@ package DAOs;
 import Interfaces.DAOs.IImportDAO;
 import Lib.Converter;
 import Lib.DatabaseUtils;
+import Lib.Generator;
 import Models.Import;
 import Models.ImportDetail;
 import java.sql.Connection;
@@ -81,7 +82,7 @@ public class ImportDAO implements IImportDAO {
                 ip.setImportAt(Converter.getNullOrValue(rs.getLong("Import_At")));
                 ip.setDeliveredAt(Converter.getNullOrValue(rs.getLong("Delivered_At")));
                 ip.setImportByInventoryManager(rs.getInt("Import_By_Inventory_Manager"));
-                ip.setModifiedAt(rs.getInt("Modified_At"));
+                ip.setModifiedAt(Converter.getNullOrValue(rs.getLong("Modified_At")));
                 ip.setModifiedByAdmin(rs.getInt("Modified_By_Admin"));
                 ip.setImportDetail(ipD);
                 arrImport.add(ip);
@@ -113,7 +114,7 @@ public class ImportDAO implements IImportDAO {
                 ip.setImportAt(Converter.getNullOrValue(rs.getLong("Import_At")));
                 ip.setDeliveredAt(Converter.getNullOrValue(rs.getLong("Delivered_At")));
                 ip.setImportByInventoryManager(rs.getInt("Import_By_Inventory_Manager"));
-                ip.setModifiedAt(rs.getLong("Modified_At"));
+                ip.setModifiedAt(Converter.getNullOrValue(rs.getLong("Modified_At")));
                 ip.setModifiedByAdmin(rs.getInt("Modified_By_Admin"));
                 ip.setImportDetail(ipDList);
             }
@@ -165,7 +166,7 @@ public class ImportDAO implements IImportDAO {
                 ip.setImportAt(Converter.getNullOrValue(rs.getLong("Import_At")));
                 ip.setDeliveredAt(Converter.getNullOrValue(rs.getLong("Delivered_At")));
                 ip.setImportByInventoryManager(rs.getInt("Import_By_Inventory_Manager"));
-                ip.setModifiedAt(rs.getInt("Modified_At"));
+                ip.setModifiedAt(Converter.getNullOrValue(rs.getLong("Modified_At")));
                 ip.setModifiedByAdmin(rs.getInt("Modified_By_Admin"));
                 impList.add(ip);
             }
@@ -201,4 +202,37 @@ public class ImportDAO implements IImportDAO {
         return result;
     }
 
+    /* ------------------------- DELETE SECTION ---------------------------- */
+    public int updateImport(Import ip, int adminId) {
+        if (ip == null) {
+            return 0;
+        }
+        String sql = "UPDATE [Import] SET\n"
+                + "Import_Total_Quantity = ?,\n"
+                + "Import_Total_Cost = ?,\n"
+                + "Supplier_Name = ?,\n"
+                + "Import_At = ?,\n"
+                + "Delivered_At = ?,\n"
+                + "Import_By_Inventory_Manager = ?,\n"
+                + "Modified_At = ?,\n"
+                + "Modified_By_Admin = ?\n"
+                + "\n"
+                + "WHERE Import_ID = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, ip.getTotalQuantity());
+            ps.setInt(2, ip.getTotalCost());
+            ps.setNString(3, ip.getSupplierName());
+            ps.setLong(4, ip.getImportAt());
+            ps.setLong(5, ip.getDeliveredAt());
+            ps.setInt(6, ip.getImportByInventoryManager());
+            ps.setLong(7, Generator.getCurrentTimeFromEpochMilli());
+            ps.setInt(8, adminId);
+            ps.setInt(9, ip.getId());
+            return ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ImportDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
 }
