@@ -1340,7 +1340,9 @@ public class AdminController extends HttpServlet {
                     int vId = Integer.parseInt(data[i + 1]);
                     Voucher v = vDAO.getVoucher(vId);
                     if (v != null) {
+                        List<Integer> approvedProductId = vDAO.getAllApprovedProductIdByVoucherId(vId);
                         request.setAttribute("VoucherUpdate", v);
+                        request.setAttribute("ApprovedProductId", approvedProductId);
                         return State.Success.value;
                     }
                 }
