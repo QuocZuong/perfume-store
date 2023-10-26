@@ -1,3 +1,4 @@
+<%@page import="Models.Product"%>
 <%@page import="Lib.Generator"%>
 <%@page import="Models.Admin"%>
 <%@page import="java.util.List"%>
@@ -15,9 +16,12 @@
 <%@ taglib  uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
 
 <%! String Tinh, QuanHuyen, PhuongXa;%>
-<%Voucher voucher;%>
+<%!Voucher voucher;%>
+<%! ProductDAO pDAO = new ProductDAO(); %>
+<%! List<Integer> approvedProductId;%>
 
 <%
+    approvedProductId = request.getAttribute("ApprovedProductId") == null ? null : (List<Integer>) request.getAttribute("ApprovedProductId");
     voucher = (Voucher) request.getAttribute("VoucherUpdate");
     // Handling execption
     String queryString = request.getQueryString();
@@ -95,41 +99,79 @@
             </div>
             <div class="container mt-5">
                 <div class="row">
-                    <h1>Update Voucher</h1>
-                    <form action="/Admin/Voucher/Update" method="POST" id="updateCustomer">
-                        <div class="id">
-                            <label>Voucher ID *</label>
-                            <input type="number" name="txtId" readonly="true" value="<%= voucher.getId()%>" />
-                        </div>
-                        <div class="code">
-                            <label>Code *</label>
-                            <input type="text" name="txtCode" value="<%= voucher.getCode()%>" />
-                        </div>
-                        <div class="quantity">
-                            <label>Quantity *</label>
-                            <input type="number" name="txtQuantity" value="<%= voucher.getQuantity()%>" />
-                        </div>
-                        <div class="discount-percent">
-                            <label>Discount percent *</label>
-                            <input type="number" name="txtDiscountPercent" value="<%= voucher.getDiscountPercent()%>" />
-                        </div>
-                        <div class="discount-max">
-                            <label>Discount max *</label>
-                            <input type="number" name="txtDiscountMax" value="<%= voucher.getDiscountMax()%>" />
-                        </div>
-                        <div class="created-at">
-                            <label>Created at *</label>
-                            <input type="date" name="txtCreateAt" value="<%=  Generator.getDateTime(voucher.getCreatedAt(), DatePattern.DateSqlPattern)%>" />
-                        </div>
-                        <div class="expired-at">
-                            <label>Expired at *</label>
-                            <input type="date" name="txtExpiredAt" value="<%= Generator.getDateTime(voucher.getExpiredAt(), DatePattern.DateSqlPattern)%>" />
-                        </div>
-                        <button type="submit" name="btnUpdateVoucher" value="Submit" class="btnUpdateCustomer mb-3">
-                            Update Voucher
-                        </button>
-                        <br />
-                    </form>
+                    <div class="col-sm-6">
+
+                        <h1>Update Voucher</h1>
+                        <form action="/Admin/Voucher/Update" method="POST" id="updateCustomer">
+                            <div class="id">
+                                <label>Voucher ID *</label>
+                                <input type="number" name="txtId" readonly="true" value="<%= voucher.getId()%>" />
+                            </div>
+                            <div class="code">
+                                <label>Code *</label>
+                                <input type="text" name="txtCode" value="<%= voucher.getCode()%>" />
+                            </div>
+                            <div class="quantity">
+                                <label>Quantity *</label>
+                                <input type="number" name="txtQuantity" value="<%= voucher.getQuantity()%>" />
+                            </div>
+                            <div class="discount-percent">
+                                <label>Discount percent *</label>
+                                <input type="number" name="txtDiscountPercent" value="<%= voucher.getDiscountPercent()%>" />
+                            </div>
+                            <div class="discount-max">
+                                <label>Discount max *</label>
+                                <input type="number" name="txtDiscountMax" value="<%= voucher.getDiscountMax()%>" />
+                            </div>
+                            <div class="created-at">
+                                <label>Created at *</label>
+                                <input type="date" name="txtCreateAt" value="<%=  Generator.getDateTime(voucher.getCreatedAt(), DatePattern.DateSqlPattern)%>" />
+                            </div>
+                            <div class="expired-at">
+                                <label>Expired at *</label>
+                                <input type="date" name="txtExpiredAt" value="<%= Generator.getDateTime(voucher.getExpiredAt(), DatePattern.DateSqlPattern)%>" />
+                            </div>
+                            <button type="submit" name="btnUpdateVoucher" value="Submit" class="btnUpdateCustomer mb-3">
+                                Update Voucher
+                            </button>
+                            <br />
+                        </form>
+                    </div>
+                    <div class="col-sm-4 offset-sm-2">
+
+                        <%
+                            List<Product> productList = pDAO.getAll();
+                        %>
+                        <c:choose>
+                            <c:when test='<%=productList.size() == 0%>'>
+                                <div>Bạn chưa thêm địa chỉ nào</div>
+                            </c:when>
+
+                            <c:otherwise>
+                                <div class="scroll-list">
+                                    <c:forEach var='i' begin='0' end="<%=productList.size() - 1%>">
+                                        <%
+                                            int index = (int) pageContext.getAttribute("i");
+                                            Product product = productList.get(index);
+
+                                            boolean isCheck = true;
+                                        %>
+                                        <div class="<%= isCheck ? "default-address" : ""%>">
+                                            <div class="delivery-address-item <%= isCheck ? "active" : ""%>">
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <%= product.getName()%>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>   
+                                    </c:forEach>
+                                </div>
+
+                            </c:otherwise>
+
+                        </c:choose>
+                    </div>
                 </div>
             </div>
         </div>
@@ -152,77 +194,77 @@
                     rules: {
                         txtName: {
                             required: true,
-                            maxlength: 50,
+                            maxlength: 50
                         },
                         txtUsername: {
                             required: true,
-                            maxlength: 50,
+                            maxlength: 50
                         },
                         txtPassword: {
                             required: true,
-                            minlength: 6,
+                            minlength: 6
                         },
                         txtEmail: {
                             required: true,
                             email: true,
-                            maxlength: 100,
+                            maxlength: 100
                         },
                         txtCitizenId: {
                             required: true,
-                            maxlength: 20,
+                            maxlength: 20
                         },
                         txtDOB: {
-                            required: true,
+                            required: true
                         },
                         txtPhoneNumber: {
                             required: true,
                             digits: true,
                             maxlength: 10,
-                            minlength: 10,
+                            minlength: 10
                         },
                         txtAddress: {
-                            maxlength: 500,
+                            maxlength: 500
                         },
                         txtJoinDate: {
-                            required: true,
+                            required: true
                         },
                     },
                     messages: {
                         txtName: {
                             required: "Tên không được để trống.",
-                            maxlength: "Tên không được vượt quá 50 ký tự.",
+                            maxlength: "Tên không được vượt quá 50 ký tự."
                         },
                         txtUsername: {
                             required: "Tên đăng nhập không được để trống.",
-                            maxlength: "Tên đăng nhập không được vượt quá 50 ký tự.",
+                            maxlength: "Tên đăng nhập không được vượt quá 50 ký tự."
                         },
                         txtPassword: {
                             required: "Mật khẩu không được để trống.",
-                            minlength: "Mật khẩu phải có ít nhất 6 ký tự.",
+                            minlength: "Mật khẩu phải có ít nhất 6 ký tự."
                         },
                         txtEmail: {
                             required: "Email không được để trống.",
                             email: "Email không hợp lệ.",
-                            maxlength: "Email không được vượt quá 100 ký tự.",
+                            maxlength: "Email không được vượt quá 100 ký tự."
                         },
                         txtCitizenId: {
                             required: "Số CMND không được để trống.",
-                            maxlength: "Số CMND không được vượt quá 20 ký tự.",
+                            maxlength: "Số CMND không được vượt quá 20 ký tự."
                         },
                         txtDOB: {
-                            required: "Ngày tháng năm sinh không được để trống",
+                            required: "Ngày tháng năm sinh không được để trống"
                         },
                         txtPhoneNumber: {
                             required: "Số điện thoại không được để trống",
                             digits: "Số điện thoại không hợp lệ",
                             maxlength: "Số điện thoại phải là 10 chữ số",
-                            minlength: "Số điện thoại phải là 10 chữ số",
+                            minlength: "Số điện thoại phải là 10 chữ số"
                         },
                         txtAddress: {
-                            maxlength: "Địa chỉ không được vượt quá 500 ký tự.",
+                            maxlength: "Địa chỉ không được vượt quá 500 ký tự."
                         },
                         txtJoinDate: {
-                            required: "Ngày tham gia không được để trống.",
+                            required: "Ngày tham gia không được để trống."
                         },
                     },
                 });
