@@ -12,7 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.faces.webapp.ConverterTag;
+
 import Interfaces.DAOs.IVoucherDAO;
+import Lib.Converter;
 import Lib.Generator;
 
 public class VoucherDAO implements IVoucherDAO {
@@ -108,8 +112,8 @@ public class VoucherDAO implements IVoucherDAO {
                 v.setQuantity(rs.getInt("Voucher_Quantity"));
                 v.setDiscountPercent(rs.getInt("Voucher_Discount_Percent"));
                 v.setDiscountMax(rs.getInt("Voucher_Discount_Max"));
-                v.setCreatedAt(rs.getLong("Voucher_Created_At"));
-                v.setExpiredAt(rs.getLong("Voucher_Expired_At"));
+                v.setCreatedAt(Converter.getNullOrValue(rs.getLong("Voucher_Created_At")));
+                v.setExpiredAt(Converter.getNullOrValue(rs.getLong("Voucher_Expired_At")));
                 v.setCreatedByAdmin(rs.getInt("Voucher_Created_By_Admin"));
                 v.setApprovedProductId(getAllApprovedProductIdByVoucherId(vId));
                 return v;
@@ -134,8 +138,8 @@ public class VoucherDAO implements IVoucherDAO {
                 v.setQuantity(rs.getInt("Voucher_Quantity"));
                 v.setDiscountPercent(rs.getInt("Voucher_Discount_Percent"));
                 v.setDiscountMax(rs.getInt("Voucher_Discount_Max"));
-                v.setCreatedAt(rs.getLong("Voucher_Created_At"));
-                v.setExpiredAt(rs.getLong("Voucher_Expired_At"));
+                v.setCreatedAt(Converter.getNullOrValue(rs.getLong("Voucher_Created_At")));
+                v.setExpiredAt(Converter.getNullOrValue(rs.getLong("Voucher_Expired_At")));
                 v.setCreatedByAdmin(rs.getInt("Voucher_Created_By_Admin"));
                 v.setApprovedProductId(getAllApprovedProductIdByVoucherId(v.getId()));
                 return v;
@@ -163,8 +167,8 @@ public class VoucherDAO implements IVoucherDAO {
                 v.setQuantity(rs.getInt("Voucher_Quantity"));
                 v.setDiscountPercent(rs.getInt("Voucher_Discount_Percent"));
                 v.setDiscountMax(rs.getInt("Voucher_Discount_Max"));
-                v.setCreatedAt(rs.getLong("Voucher_Created_At"));
-                v.setExpiredAt(rs.getLong("Voucher_Expired_At"));
+                v.setCreatedAt(Converter.getNullOrValue(rs.getLong("Voucher_Created_At")));
+                v.setExpiredAt(Converter.getNullOrValue(rs.getLong("Voucher_Expired_At")));
                 v.setCreatedByAdmin(rs.getInt("Voucher_Created_By_Admin"));
                 v.setApprovedProductId(getAllApprovedProductIdByVoucherId(vId));
                 arrVoucher.add(v);
@@ -205,8 +209,8 @@ public class VoucherDAO implements IVoucherDAO {
                 v.setQuantity(rs.getInt("Voucher_Quantity"));
                 v.setDiscountPercent(rs.getInt("Voucher_Discount_Percent"));
                 v.setDiscountMax(rs.getInt("Voucher_Discount_Max"));
-                v.setCreatedAt(rs.getLong("Voucher_Created_At"));
-                v.setExpiredAt(rs.getLong("Voucher_Expired_At"));
+                v.setCreatedAt(Converter.getNullOrValue(rs.getLong("Voucher_Created_At")));
+                v.setExpiredAt(Converter.getNullOrValue(rs.getLong("Voucher_Expired_At")));
                 v.setCreatedByAdmin(rs.getInt("Voucher_Created_By_Admin"));
                 v.setApprovedProductId(getAllApprovedProductIdByVoucherId(vId));
                 voucherList.add(v);
@@ -271,8 +275,8 @@ public class VoucherDAO implements IVoucherDAO {
                 v.setQuantity(rs.getInt("Voucher_Quantity"));
                 v.setDiscountPercent(rs.getInt("Voucher_Discount_Percent"));
                 v.setDiscountMax(rs.getInt("Voucher_Discount_Max"));
-                v.setCreatedAt(rs.getLong("Voucher_Created_At"));
-                v.setExpiredAt(rs.getLong("Voucher_Expired_At"));
+                v.setCreatedAt(Converter.getNullOrValue(rs.getLong("Voucher_Created_At")));
+                v.setExpiredAt(Converter.getNullOrValue(rs.getLong("Voucher_Expired_At")));
                 v.setCreatedByAdmin(rs.getInt("Voucher_Created_By_Admin"));
                 arrVoucher.add(v);
             }
