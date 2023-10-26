@@ -5,6 +5,7 @@ import DAOs.DeliveryAddressDAO;
 import DAOs.OrderDetailDao;
 import DAOs.ProductDAO;
 import DAOs.UserDAO;
+import Exceptions.ProductNotFoundException;
 import Models.Customer;
 import Models.DeliveryAddress;
 import Models.Order;
@@ -682,7 +683,7 @@ public class EmailSender {
         return html;
     }
 
-    public String exportEmailReceipt(Order order) {
+    public String exportEmailReceipt(Order order) throws ProductNotFoundException {
         CustomerDAO cusDAO = new CustomerDAO();
         OrderDetailDao orderDetailDao = new OrderDetailDao();
         ProductDAO productDAO = new ProductDAO();

@@ -10,15 +10,22 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import Lib.DatabaseUtils;
+import Lib.Generator;
 import Models.Admin;
 import Models.Brand;
 import Models.Stock;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 public class ProductDAO implements IProductDAO {
@@ -93,7 +100,9 @@ public class ProductDAO implements IProductDAO {
      */
  /* ------------------------- CREATE SECTION ---------------------------- */
     @Override
-    public int addProduct(Product pd, Admin admin) {
+    public int addProduct(Product pd, Admin admin) throws InvalidInputException {
+        validateProduct(pd);
+
         int result = 0;
         try {
             StringBuilder sql = new StringBuilder("INSERT INTO Product");
@@ -145,7 +154,7 @@ public class ProductDAO implements IProductDAO {
         return result;
     }
 
-    public int addProduct(String data, Admin admin) {
+    public int addProduct(String data, Admin admin) throws InvalidInputException {
         int result = 0;
         String datas[] = data.split("~");
         BrandDAO brDAO = new BrandDAO();
@@ -221,16 +230,21 @@ public class ProductDAO implements IProductDAO {
 
     public List<Product> getAllSimplified() {
         ResultSet rs;
-        String sql = "SELECT Product_ID, Product_Name, Product_Img_URL FROM [Product]";
+        String sql = "SELECT * FROM Product p\n"
+                + "JOIN Stock stk ON stk.Product_ID = p.Product_ID";
         List<Product> productList = new ArrayList<>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
             while (rs.next()) {
-                Product product = new Product();
-                product.setId(rs.getInt("Product_ID"));
-                product.setName(rs.getNString("Product_Name"));
-                product.setImgURL(rs.getNString("Product_Img_URL"));
+                Product product = productFactory(rs, operation.GET);
+
+                Stock stock = new Stock();
+                stock.setProductID(rs.getInt(Table.Product_ID.toString()));
+                stock.setPrice(rs.getInt("Price"));
+                stock.setQuantity(rs.getInt("Quantity"));
+
+                product.setStock(stock);
 
                 productList.add(product);
             }
@@ -242,7 +256,7 @@ public class ProductDAO implements IProductDAO {
     }
 
     @Override
-    public Product getProduct(int productId) {
+    public Product getProduct(int productId) throws ProductNotFoundException {
         ResultSet rs;
         String sql = "SELECT * FROM Product p\n"
                 + "JOIN Stock stk ON stk.Product_ID = p.Product_ID\n"
@@ -268,14 +282,19 @@ public class ProductDAO implements IProductDAO {
         } catch (SQLException ex) {
             Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        if (product == null) {
+            throw new ProductNotFoundException();
+        }
         return product;
     }
 
     @Override
-    public Product getActiveProduct(int productId) {
+    public Product getActiveProduct(int productId) throws ProductNotFoundException {
         Product product = getProduct(productId);
-        return product.isActive() ? product : null;
+        if (!product.isActive()) {
+            throw new ProductNotFoundException();
+        }
+        return product;
     }
 
     public static boolean isContain(Product p, List<Product> arrP) {
@@ -292,7 +311,7 @@ public class ProductDAO implements IProductDAO {
 
     /* --------------------------- FILTER SECTION --------------------------- */
     @Override
-    public List<Product> searchProduct(String search) {
+    public List<Product> searchProduct(String search) throws ProductNotFoundException {
         ResultSet rs;
         List<Product> productList = new ArrayList<>();
         try {
@@ -335,6 +354,10 @@ public class ProductDAO implements IProductDAO {
         } catch (SQLException ex) {
             Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+        if (productList.isEmpty()) {
+            throw new ProductNotFoundException();
+        }
+
         return productList;
     }
 
@@ -343,7 +366,8 @@ public class ProductDAO implements IProductDAO {
             List<Product> productList,
             int brandId,
             String gender,
-            String price) {
+            String price)
+            throws ProductNotFoundException {
         final String GENDER = gender;
         // Format price range
         final int LOW = (price == null) ? 0 : Integer.parseInt(price.split("-")[0]);
@@ -354,6 +378,11 @@ public class ProductDAO implements IProductDAO {
                 && (GENDER == null || product.getGender().equals(GENDER))
                 && product.getStock().getPrice() >= LOW && product.getStock().getPrice() <= HIGH)
                 .collect(Collectors.toList());
+
+        if (productList.isEmpty()) {
+            throw new ProductNotFoundException();
+        }
+
         return filteredProduct;
     }
 
@@ -362,19 +391,28 @@ public class ProductDAO implements IProductDAO {
             List<Product> productList,
             int brandId,
             String gender,
-            String price) {
+            String price)
+            throws ProductNotFoundException {
         List<Product> filteredProductList = filterProduct(productList, brandId, gender, price);
         List<Product> filteredActiveProductList = filteredProductList.stream()
                 .filter(product -> product.isActive())
                 .collect(Collectors.toList());
+
+        if (productList.isEmpty()) {
+            throw new ProductNotFoundException();
+        }
         return filteredActiveProductList;
     }
 
     @Override
-    public List<Product> filterProductByBrand(Brand brand) {
+    public List<Product> filterProductByBrand(Brand brand) throws ProductNotFoundException {
         List<Product> productList = getAll().stream()
                 .filter(product -> product.getBrandId() == brand.getId())
                 .collect(Collectors.toList());
+
+        if (productList.isEmpty()) {
+            throw new ProductNotFoundException();
+        }
         return productList;
     }
 
@@ -452,7 +490,12 @@ public class ProductDAO implements IProductDAO {
 
     /* --------------------------- OTHER SECTION --------------------------- */
     public boolean validateProduct(Product product) throws InvalidInputException {
+
         Stock stock = product.getStock();
+        if (stock == null) {
+            System.out.println("Stock is null");
+            throw new InvalidInputException();
+        }
         if (stock.getPrice() < 0 || stock.getQuantity() < 0) {
             throw new InvalidInputException();
         }
@@ -460,7 +503,7 @@ public class ProductDAO implements IProductDAO {
         return true;
     }
 
-    public String detectChange(Product updateProduct) {
+    public String detectChange(Product updateProduct) throws ProductNotFoundException {
         Product oldProduct = getProduct(updateProduct.getId());
 
         if (oldProduct == null) {

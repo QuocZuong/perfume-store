@@ -19,6 +19,7 @@ import Exceptions.InvalidInputException;
 import Exceptions.InvalidVoucherException;
 import Exceptions.NotEnoughInformationException;
 import Exceptions.NotEnoughVoucherQuantityException;
+import Exceptions.ProductNotFoundException;
 import Exceptions.UsernameDuplicationException;
 import Exceptions.VoucherNotFoundException;
 import Exceptions.WrongPasswordException;
@@ -457,6 +458,9 @@ public class CustomerController extends HttpServlet {
                 Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);
                 return State.Fail.value;
 
+            } catch (ProductNotFoundException ex) {
+                request.setAttribute("exceptionType", "ProductNotFoundException");
+                return State.Fail.value;
             }
         }
         return State.Success.value;
@@ -503,6 +507,10 @@ public class CustomerController extends HttpServlet {
             request.setAttribute("OrderInfor", order);
             return State.Success.value;
         } catch (NumberFormatException e) {
+            request.setAttribute("exceptionType", "");
+            return State.Fail.value;
+        } catch (ProductNotFoundException ex) {
+            request.setAttribute("exceptionType", "ProductNotFoundException");
             return State.Fail.value;
         }
     }
@@ -903,6 +911,9 @@ public class CustomerController extends HttpServlet {
                 Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);
                 return State.Fail.value;
 
+            } catch (ProductNotFoundException ex) {
+                request.setAttribute("exceptionType", "ProductNotFoundException");
+                return State.Fail.value;
             }
         }
 
@@ -1004,6 +1015,9 @@ public class CustomerController extends HttpServlet {
                 request.setAttribute("exceptionType", "NotEnoughVoucherException");
                 Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);
                 return State.Fail.value;
+            } catch (ProductNotFoundException ex) {
+                request.setAttribute("exceptionType", "ProductNotFoundException");
+                return State.Fail.value;
             }
         }
 
@@ -1015,7 +1029,12 @@ public class CustomerController extends HttpServlet {
             Product p;
             for (int i = 0; i < cartItemList.size(); i++) {
                 if (v.getApprovedProductId().contains(cartItemList.get(i).getProductId())) {
-                    p = pDAO.getProduct(cartItemList.get(i).getProductId());
+                    try {
+                        p = pDAO.getProduct(cartItemList.get(i).getProductId());
+                    } catch (ProductNotFoundException ex) {
+                        request.setAttribute("exceptionType", "ProductNotFoundException");
+                        return State.Fail.value;
+                    }
                     sumDeductPrice += p.getStock().getPrice() * v.getDiscountPercent() / 100;
                 }
             }
@@ -1148,7 +1167,12 @@ public class CustomerController extends HttpServlet {
         Order order = orderDAO.getOrderByOrderId(orderId);
         Customer customer = customerDAO.getCustomer(order.getCustomerId());
         emailSender.setEmailTo(customer.getEmail());
-        emailSender.sendEmailByThread(emailSender.EXPORT_RECEIPT_NOTFICATION, emailSender.exportEmailReceipt(order));
+        try {
+            emailSender.sendEmailByThread(emailSender.EXPORT_RECEIPT_NOTFICATION, emailSender.exportEmailReceipt(order));
+        } catch (ProductNotFoundException ex) {
+            request.setAttribute("exceptionType", "ProductNotFoundException");
+            return;
+        }
         System.out.println("email to export: " + customer.getEmail());
         response.sendRedirect(CUSTOMER_ORDER_DETAIL_URI + "/" + order.getId());
     }

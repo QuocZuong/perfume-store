@@ -4,6 +4,7 @@ import DAOs.ImportDAO;
 import DAOs.ImportStashItemDAO;
 import DAOs.InventoryManagerDAO;
 import DAOs.ProductDAO;
+import Exceptions.ProductNotFoundException;
 import Interfaces.DAOs.IImportDetailDAO;
 import Lib.Converter;
 import Lib.ExceptionUtils;
@@ -21,6 +22,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class InventoryManagerController extends HttpServlet {
 
@@ -290,11 +293,14 @@ public class InventoryManagerController extends HttpServlet {
         } else {
             search = "%" + search + "%";
         }
-        List<Product> productList = pDAO.searchProduct(search);
-        if (productList.isEmpty()) {
+        List<Product> productList;
+        try {
+            productList = pDAO.searchProduct(search);
+        } catch (ProductNotFoundException ex) {
             request.setAttribute("exceptionType", "ProductNotFoundException");
             return State.Fail.value;
         }
+
         int numberOfPage = (productList.size() / rows) + (productList.size() % rows == 0 ? 0 : 1);
         productList = Generator.pagingList(productList, page, rows);
 

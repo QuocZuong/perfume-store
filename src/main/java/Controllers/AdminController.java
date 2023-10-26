@@ -495,9 +495,7 @@ public class AdminController extends HttpServlet {
         BrandDAO bDAO = new BrandDAO();
         String pName = request.getParameter("txtProductName");
         String bName = request.getParameter("txtBrandName");
-        int pPrice = Integer.parseInt(
-                Converter.covertIntergerToMoney(
-                        Integer.parseInt(request.getParameter("txtProductPrice").replace(",", ""))));
+        int pPrice = Integer.parseInt(request.getParameter("txtProductPrice").replace(",", ""));
         String gender = request.getParameter("rdoGender");
         String smell = request.getParameter("txtProductSmell");
         int quantity = Integer.parseInt(request.getParameter("txtProductQuantity").replace(",", ""));
@@ -522,6 +520,7 @@ public class AdminController extends HttpServlet {
         Stock stock = new Stock();
         stock.setPrice(pPrice);
         stock.setQuantity(quantity);
+        product.setStock(stock);
 
         Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
         String username = userCookie.getValue();
@@ -529,12 +528,19 @@ public class AdminController extends HttpServlet {
         Admin admin = adDAO.getAdmin(username);
 
         // Upload data to db
-        int kq = pDAO.addProduct(product, admin);
-        if (kq == 0) {
-            System.out.println("Add failed, Some attribute may be duplicate");
-            request.setAttribute("exceptionType", "OperationAddFailedException");
+        int kq;
+        try {
+            kq = pDAO.addProduct(product, admin);
+            if (kq == 0) {
+                System.out.println("Add failed, Some attribute may be duplicate");
+                request.setAttribute("exceptionType", "OperationAddFailedException");
+                return State.Fail.value;
+            }
+        } catch (InvalidInputException ex) {
+            request.setAttribute("exceptionType", "InvalidInputException");
             return State.Fail.value;
         }
+
         System.out.println("Add successfully");
         return State.Success.value;
     }
@@ -655,11 +661,14 @@ public class AdminController extends HttpServlet {
         } else {
             search = "%" + search + "%";
         }
-        List<Product> productList = pDAO.searchProduct(search);
-        if (productList.isEmpty()) {
+        List<Product> productList = new ArrayList<>();
+        try {
+            productList = pDAO.searchProduct(search);
+        } catch (ProductNotFoundException ex) {
             request.setAttribute("exceptionType", "ProductNotFoundException");
             return State.Fail.value;
         }
+
         int numberOfPage = (productList.size() / rows) + (productList.size() % rows == 0 ? 0 : 1);
         productList = Generator.pagingList(productList, page, rows);
 
@@ -883,6 +892,9 @@ public class AdminController extends HttpServlet {
             return State.Success.value;
         } catch (NumberFormatException e) {
             return State.Fail.value;
+        } catch (ProductNotFoundException ex) {
+            request.setAttribute("exceptionType", "ProductNotFoundException");
+            return State.Fail.value;
         }
     }
 
@@ -893,7 +905,13 @@ public class AdminController extends HttpServlet {
         ProductDAO pDAO = new ProductDAO();
         BrandDAO bDAO = new BrandDAO();
         int pID = Integer.parseInt(request.getParameter("txtProductID"));
-        Product oldProduct = pDAO.getProduct(pID);
+        Product oldProduct;
+        try {
+            oldProduct = pDAO.getProduct(pID);
+        } catch (ProductNotFoundException ex) {
+            request.setAttribute("exceptionType", "ProductNotFoundException");
+            return State.Fail.value;
+        }
         String pName = request.getParameter("txtProductName");
         String bName = request.getParameter("txtBrandName");
         String gender = request.getParameter("rdoGender");
@@ -1336,6 +1354,9 @@ public class AdminController extends HttpServlet {
         } catch (NumberFormatException e) {
             request.setAttribute("exceptionType", "");
             return State.Fail.value;
+        } catch (ProductNotFoundException ex) {
+            request.setAttribute("exceptionType", "ProductNotFoundException");
+            return State.Fail.value;
         }
 
         request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.ProductNotFoundException.toString());
@@ -1734,6 +1755,9 @@ public class AdminController extends HttpServlet {
             return State.Fail.value;
         } catch (InvalidInputException ex) {
             request.setAttribute("exceptionType", "InvalidInputException");
+            return State.Fail.value;
+        } catch (ProductNotFoundException ex) {
+            request.setAttribute("exceptionType", "ProductNotFoundException");
             return State.Fail.value;
         }
     }
