@@ -4,6 +4,7 @@ import DAOs.AdminDAO;
 import DAOs.BrandDAO;
 import DAOs.CustomerDAO;
 import DAOs.EmployeeDAO;
+import DAOs.ImportDAO;
 import DAOs.ImportDetailDAO;
 import DAOs.OrderDAO;
 import DAOs.ProductActivityLogDAO;
@@ -36,6 +37,7 @@ import Models.Admin;
 import Models.Stock;
 import Models.Customer;
 import Models.Employee;
+import Models.Import;
 import Models.ImportDetail;
 import Models.Order;
 import Models.OrderDetail;
@@ -350,6 +352,36 @@ public class AdminController extends HttpServlet {
             }
             return;
         }
+
+        if (path.startsWith(ADMIN_IMPORT_LIST_URI)
+                || path.startsWith(ADMIN_IMPORT_LIST_URI + "/page")) {
+            System.out.println("Going Import List");
+            int result = -1;
+            if (!path.endsWith("?errAccNF=true") && !path.endsWith("?errImpNF")) {
+                result = searchImport(request);
+            }
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/ADMIN_PAGE/Import/list.jsp").forward(request, response);
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(
+                        ADMIN_IMPORT_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+            } else if (result == -1) {
+                response.sendRedirect(ADMIN_IMPORT_LIST_URI);
+            }
+            return;
+        }
+
+        if (path.startsWith(ADMIN_IMPORT_DETAIL_URI)) {
+            System.out.println("Going Order Detail");
+            int result = getImportDetail(request);
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/ADMIN_PAGE/Import/importDetail.jsp").forward(request,
+                        response);
+            } else if (result == State.Fail.value) {
+                request.getRequestDispatcher(ADMIN_IMPORT_DETAIL_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
         // ---------------------------- IMPORT SECTION ----------------------------
         // ---------------------------- CHART SECTION ----------------------------
         if (path.startsWith(ADMIN_CHART_BEST_SELLING_PRODUCT_BY_GENDER)) {
@@ -636,6 +668,85 @@ public class AdminController extends HttpServlet {
     }
 
     // ---------------------------- READ SECTION ----------------------------
+    private int getImportDetail(HttpServletRequest request) {
+        ImportDAO ipDAO = new ImportDAO();
+        AdminDAO adDAO = new AdminDAO();
+
+        String data[] = request.getRequestURI().split("/");
+
+        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+        String username = currentUserCookie.getValue();
+        Admin ad = adDAO.getAdmin(username);
+
+        if (ad == null) {
+            System.out.println("Unknow Username to view import detail");
+            request.setAttribute("exceptionType", "AccountNotFoundException");
+            return State.Fail.value;
+        }
+
+        try {
+            Import ip = null;
+            for (int i = 0; i < data.length; i++) {
+                if (data[i].equals("ID")) {
+                    int importId = Integer.parseInt(data[i + 1]);
+                    ip = ipDAO.getImport(importId);
+                }
+            }
+            if (ip == null) {
+                System.out.println("not found import detail");
+                request.setAttribute("exceptionType", "ImportNotFoundException");
+                return State.Fail.value;
+            }
+            if (ip.getImportDetail() == null || ip.getImportDetail().isEmpty()) {
+                System.out.println("import has no import detail");
+                request.setAttribute("exceptionType", "ImportNotFoundException");
+                return State.Fail.value;
+            }
+            request.setAttribute("importInfo", ip);
+            return State.Success.value;
+        } catch (NumberFormatException e) {
+            request.setAttribute("exceptionType", "ImportNotFoundException");
+            return State.Fail.value;
+        }
+    }
+
+    private int searchImport(HttpServletRequest request) {
+        AdminDAO adDAO = new AdminDAO();
+        ImportDAO ipDAO = new ImportDAO();
+        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+        String username = currentUserCookie.getValue();
+        Admin ad = adDAO.getAdmin(username);
+
+        if (ad == null) {
+            System.out.println("Unknow Username to view import");
+            request.setAttribute("exceptionType", "AccountNotFoundException");
+            return State.Fail.value;
+        }
+        String URI = request.getRequestURI();
+        String data[] = URI.split("/");
+        int page = 1;
+        int rows = 20;
+        String search = request.getParameter("txtSearch");
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("page")) {
+                page = Integer.parseInt(data[i + 1]);
+            }
+        }
+        List<Import> importList = ipDAO.searchImport(search);
+        if (importList.isEmpty()) {
+            System.out.println("Empty import list");
+            request.setAttribute("exceptionType", "ImportNotFoundException");
+            return State.Fail.value;
+        }
+        int numberOfPage = (importList.size() / rows) + (importList.size() % rows == 0 ? 0 : 1);
+        importList = Generator.pagingList(importList, page, rows);
+        request.setAttribute("page", page);
+        request.setAttribute("numberOfPage", numberOfPage);
+        request.setAttribute("importList", importList);
+        request.setAttribute("search", search);
+        return State.Success.value;
+    }
+
     private int searchProduct(HttpServletRequest request, HttpServletResponse response) {
         String URI = request.getRequestURI();
         String data[] = URI.split("/");

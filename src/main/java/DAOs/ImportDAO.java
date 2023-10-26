@@ -110,7 +110,7 @@ public class ImportDAO implements IImportDAO {
                 ip.setImportAt(rs.getLong("Import_At"));
                 ip.setDeliveredAt(rs.getLong("Delivered_At"));
                 ip.setImportByInventoryManager(rs.getInt("Import_By_Inventory_Manager"));
-                ip.setModifiedAt(rs.getInt("Modified_At"));
+                ip.setModifiedAt(rs.getLong("Modified_At"));
                 ip.setModifiedByAdmin(rs.getInt("Modified_By_Admin"));
                 ip.setImportDetail(ipDList);
             }
