@@ -1,5 +1,6 @@
 package DAOs;
 
+import Exceptions.InvalidInputException;
 import Exceptions.ProductNotFoundException;
 import Interfaces.DAOs.IProductDAO;
 import Lib.Converter;
@@ -218,6 +219,28 @@ public class ProductDAO implements IProductDAO {
         return productList;
     }
 
+    public List<Product> getAllSimplified() {
+        ResultSet rs;
+        String sql = "SELECT Product_ID, Product_Name, Product_Img_URL FROM [Product]";
+        List<Product> productList = new ArrayList<>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Product product = new Product();
+                product.setId(rs.getInt("Product_ID"));
+                product.setName(rs.getNString("Product_Name"));
+                product.setImgURL(rs.getNString("Product_Img_URL"));
+
+                productList.add(product);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return productList;
+    }
+
     @Override
     public Product getProduct(int productId) {
         ResultSet rs;
@@ -266,40 +289,6 @@ public class ProductDAO implements IProductDAO {
         return false;
     }
 
-    // TODO: Refactor later because lack of model Order
-    @Override
-    public List<Product> getProductByOrderID(int id) {
-        ResultSet rs = null;
-        String sql = "SELECT * FROM  Product, OrderDetail WHERE Product.ID = OrderDetail.ProductID";
-
-        List<Product> pdList = new LinkedList<>();
-
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-
-            ps.setInt(1, id);
-            rs = ps.executeQuery();
-
-            if (rs.next()) {
-                Product pd;
-                pd = new Product();
-                pd.setId(rs.getInt("ID"));
-                pd.setName(rs.getNString("Name"));
-                pd.setBrandId(rs.getInt("BrandID"));
-                pd.setGender(rs.getNString("Gender"));
-                pd.setSmell(rs.getNString("Smell"));
-                pd.setReleaseYear(rs.getInt("ReleaseYear"));
-                pd.setVolume(rs.getInt("Volume"));
-                pd.setImgURL(rs.getNString("ImgURL"));
-                pd.setDescription(rs.getNString("Description"));
-                pdList.add(pd);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return pdList;
-    }
 
     /* --------------------------- FILTER SECTION --------------------------- */
     @Override
@@ -391,7 +380,9 @@ public class ProductDAO implements IProductDAO {
 
     /* --------------------------- UPDATE SECTION --------------------------- */
     @Override
-    public int updateProduct(Product product, Admin admin) {
+    public int updateProduct(Product product, Admin admin) throws InvalidInputException {
+        validateProduct(product);
+
         String sql = "UPDATE Product\n"
                 + "SET Product_Name = ?,\n" // 1
                 + "Brand_ID = ?,\n" // 2
@@ -403,6 +394,7 @@ public class ProductDAO implements IProductDAO {
                 + "Product_Description = ?,\n" // 8
                 + "Product_Active = ?\n" // 9
                 + "WHERE Product_ID = ?"; // 10
+
         int result = 0;
 
         try {
@@ -440,7 +432,7 @@ public class ProductDAO implements IProductDAO {
     }
 
     @Override
-    public int restoreProduct(Product product, Admin admin) throws ProductNotFoundException {
+    public int restoreProduct(Product product, Admin admin) throws ProductNotFoundException, InvalidInputException {
         if (product == null) {
             throw new ProductNotFoundException();
         }
@@ -450,12 +442,22 @@ public class ProductDAO implements IProductDAO {
 
     /* --------------------------- DELETE SECTION --------------------------- */
     @Override
-    public int disableProduct(Product product, Admin admin) throws ProductNotFoundException {
+    public int disableProduct(Product product, Admin admin) throws ProductNotFoundException, InvalidInputException {
         if (product == null) {
             throw new ProductNotFoundException();
         }
         product.setActive(false);
         return updateProduct(product, admin);
+    }
+
+    /* --------------------------- OTHER SECTION --------------------------- */
+    public boolean validateProduct(Product product) throws InvalidInputException {
+        Stock stock = product.getStock();
+        if (stock.getPrice() < 0 || stock.getQuantity() < 0) {
+            throw new InvalidInputException();
+        }
+
+        return true;
     }
 
     public String detectChange(Product updateProduct) {
@@ -515,13 +517,13 @@ public class ProductDAO implements IProductDAO {
             strBuilder.append("Active status : \"").append(oldProduct.isActive())
                     .append("\"=>\"").append(updateProduct.isActive()).append("\"\n");
         }
-        
+
         if (oldProduct.getStock().getPrice() != updateProduct.getStock().getPrice()) {
             strBuilder.append("Price : \"").append(oldProduct.getStock().getPrice())
                     .append("\"=>\"").append(updateProduct.getStock().getPrice()).append("\"\n");
         }
-        
-        if (oldProduct.getStock().getQuantity()!= updateProduct.getStock().getQuantity()) {
+
+        if (oldProduct.getStock().getQuantity() != updateProduct.getStock().getQuantity()) {
             strBuilder.append("Quantity : \"").append(oldProduct.getStock().getQuantity())
                     .append("\"=>\"").append(updateProduct.getStock().getQuantity()).append("\"\n");
         }

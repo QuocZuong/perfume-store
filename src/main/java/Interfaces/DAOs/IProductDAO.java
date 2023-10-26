@@ -1,5 +1,6 @@
 package Interfaces.DAOs;
 
+import Exceptions.InvalidInputException;
 import Exceptions.ProductNotFoundException;
 import Models.Admin;
 import Models.Brand;
@@ -15,8 +16,6 @@ public interface IProductDAO {
     public Product getProduct(int productId);
 
     public Product getActiveProduct(int productId);
-
-    public List<Product> getProductByOrderID(int id);
 
     public List<Product> searchProduct(String search);
 
@@ -34,9 +33,9 @@ public interface IProductDAO {
 
     public List<Product> filterProductByBrand(Brand brand);
 
-    public int updateProduct(Product product, Admin admin);
+    public int updateProduct(Product product, Admin admin) throws InvalidInputException;
 
-    public int restoreProduct(Product product, Admin admin) throws ProductNotFoundException;
+    public int restoreProduct(Product product, Admin admin) throws ProductNotFoundException, InvalidInputException;
 
-    public int disableProduct(Product product, Admin admin) throws ProductNotFoundException;
+    public int disableProduct(Product product, Admin admin) throws ProductNotFoundException, InvalidInputException;
 }

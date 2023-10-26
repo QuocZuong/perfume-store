@@ -312,10 +312,9 @@ public class OrderDAO implements IOrderDAO {
         return products;
     }
 
-    public List<Order> getNumberOfOrderByDay(int day, int month, int year) {
-        String sql = "SELECT * FROM [Order] WHERE Order_Created_At BETWEEN ? AND ?";
-        List<Order> orders = new ArrayList<>();
-
+    public int getNumberOfOrderByDay(int day, int month, int year) {
+        String sql = "SELECT COUNT(Order_ID) as Count_Order FROM [Order] WHERE Order_Created_At BETWEEN ? AND ?";
+        int countOrder = 0;
         long[] timeRange = Generator.getDayTimeRangeInMilli(day, month, year);
 
         try {
@@ -326,20 +325,18 @@ public class OrderDAO implements IOrderDAO {
 
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()) {
-                Order order = new Order();
-                orders.add(order);
+            if (rs.next()) {
+                countOrder = rs.getInt("Count_Order");
             }
         } catch (SQLException ex) {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        return orders;
+        return countOrder;
     }
 
-    public List<Order> getNumberOfOrderByMonth(int month, int year) {
-        String sql = "SELECT * FROM [Order] WHERE Order_Created_At BETWEEN ? AND ?";
-        List<Order> orders = new ArrayList<>();
+    public int getNumberOfOrderByMonth(int month, int year) {
+        String sql = "SELECT COUNT(Order_ID) as Count_Order FROM [Order] WHERE Order_Created_At BETWEEN ? AND ?";
+        int countOrder = 0;
 
         long[] timeRange = Generator.getMonthTimeRangeInMilli(month, year);
 
@@ -350,21 +347,19 @@ public class OrderDAO implements IOrderDAO {
             ps.setLong(2, timeRange[1]);
 
             ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                Order order = new Order();
-                orders.add(order);
+            if (rs.next()) {
+                countOrder = rs.getInt("Count_Order");
             }
         } catch (SQLException ex) {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return orders;
+        return countOrder;
     }
 
-    public List<Order> getNumberOfOrderByYear(int year) {
-        String sql = "SELECT * FROM [Order] WHERE Order_Created_At BETWEEN ? AND ?";
-        List<Order> orders = new ArrayList<>();
+    public int getNumberOfOrderByYear(int year) {
+        String sql = "SELECT COUNT(Order_ID) as Count_Order FROM [Order] WHERE Order_Created_At BETWEEN ? AND ?";
+        int countOrder = 0;
 
         long[] timeRange = Generator.getYearTimeRangeInMilli(year);
 
@@ -375,16 +370,13 @@ public class OrderDAO implements IOrderDAO {
             ps.setLong(2, timeRange[1]);
 
             ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                Order order = new Order();
-                orders.add(order);
+            if (rs.next()) {
+                countOrder = rs.getInt("Count_Order");
             }
         } catch (SQLException ex) {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        return orders;
+        return countOrder;
     }
 
     /* --------------------------- UPDATE SECTION --------------------------- */
@@ -470,6 +462,7 @@ public class OrderDAO implements IOrderDAO {
         order.setUpdateAt(now);
         order.setUpdateByOrderManager(orderManagerId);
         order.setStatus(status.REJECTED.toString());
+        order.setCheckoutAt(0l);
         return updateOrder(order);
     }
 
