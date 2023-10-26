@@ -25,40 +25,36 @@ import Models.Voucher;
 
 public class OrderDAO implements IOrderDAO {
 
-
     private Connection conn;
-
 
     public OrderDAO() {
         conn = DB.DBContext.getConnection();
     }
 
-
     @Override
     public Order orderFactory(ResultSet rs, operation op) throws SQLException {
         Order order = new Order();
 
-
         switch (op) {
             default:
                 try {
-                    order.setId(rs.getInt(ORDER_Id));
-                    order.setCustomerId(rs.getInt(CUSTOMER_Id));
-                    order.setVoucherId(rs.getInt(VOUCHER_Id));
-                    order.setReceiverName(rs.getNString(ORDER_RECEIVER_NAME));
-                    order.setDeliveryAddress(rs.getNString(ORDER_DELIVERY_ADDRESS));
-                    order.setPhoneNumber(rs.getString(ORDER_PHONE_NUMBER));
-                    order.setNote(rs.getNString(ORDER_NOTE));
-                    order.setTotal(rs.getInt(ORDER_TOTAL));
-                    order.setDeductedPrice(rs.getInt(ORDER_DEDUCTED_PRICE));
-                    order.setStatus(rs.getString(ORDER_STATUS));
-                    order.setCreatedAt(rs.getLong(ORDER_CREATED_AT));
-                    order.setCheckoutAt(rs.getLong(ORDER_CHECKOUT_AT));
-                    order.setUpdateAt(rs.getLong(ORDER_UPDATE_AT));
-                    order.setUpdateByOrderManager(rs.getInt(ORDER_UPDATE_BY_ORDER_MANAGER));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                order.setId(rs.getInt(ORDER_Id));
+                order.setCustomerId(rs.getInt(CUSTOMER_Id));
+                order.setVoucherId(rs.getInt(VOUCHER_Id));
+                order.setReceiverName(rs.getNString(ORDER_RECEIVER_NAME));
+                order.setDeliveryAddress(rs.getNString(ORDER_DELIVERY_ADDRESS));
+                order.setPhoneNumber(rs.getString(ORDER_PHONE_NUMBER));
+                order.setNote(rs.getNString(ORDER_NOTE));
+                order.setTotal(rs.getInt(ORDER_TOTAL));
+                order.setDeductedPrice(rs.getInt(ORDER_DEDUCTED_PRICE));
+                order.setStatus(rs.getString(ORDER_STATUS));
+                order.setCreatedAt(rs.getLong(ORDER_CREATED_AT));
+                order.setCheckoutAt(rs.getLong(ORDER_CHECKOUT_AT));
+                order.setUpdateAt(rs.getLong(ORDER_UPDATE_AT));
+                order.setUpdateByOrderManager(rs.getInt(ORDER_UPDATE_BY_ORDER_MANAGER));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         return order;
@@ -319,10 +315,9 @@ public class OrderDAO implements IOrderDAO {
         return products;
     }
 
-    public List<Order> getNumberOfOrderByDay(int day, int month, int year) {
-        String sql = "SELECT * FROM [Order] WHERE Order_Created_At BETWEEN ? AND ?";
-        List<Order> orders = new ArrayList<>();
-
+    public int getNumberOfOrderByDay(int day, int month, int year) {
+        String sql = "SELECT COUNT(Order_ID) as Count_Order FROM [Order] WHERE Order_Created_At BETWEEN ? AND ?";
+        int countOrder = 0;
         long[] timeRange = Generator.getDayTimeRangeInMilli(day, month, year);
 
         try {
@@ -333,20 +328,18 @@ public class OrderDAO implements IOrderDAO {
 
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()) {
-                Order order = new Order();
-                orders.add(order);
+            if (rs.next()) {
+                countOrder = rs.getInt("Count_Order");
             }
         } catch (SQLException ex) {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        return orders;
+        return countOrder;
     }
 
-    public List<Order> getNumberOfOrderByMonth(int month, int year) {
-        String sql = "SELECT * FROM [Order] WHERE Order_Created_At BETWEEN ? AND ?";
-        List<Order> orders = new ArrayList<>();
+    public int getNumberOfOrderByMonth(int month, int year) {
+        String sql = "SELECT COUNT(Order_ID) as Count_Order FROM [Order] WHERE Order_Created_At BETWEEN ? AND ?";
+        int countOrder = 0;
 
         long[] timeRange = Generator.getMonthTimeRangeInMilli(month, year);
 
@@ -357,21 +350,19 @@ public class OrderDAO implements IOrderDAO {
             ps.setLong(2, timeRange[1]);
 
             ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                Order order = new Order();
-                orders.add(order);
+            if (rs.next()) {
+                countOrder = rs.getInt("Count_Order");
             }
         } catch (SQLException ex) {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return orders;
+        return countOrder;
     }
 
-    public List<Order> getNumberOfOrderByYear(int year) {
-        String sql = "SELECT * FROM [Order] WHERE Order_Created_At BETWEEN ? AND ?";
-        List<Order> orders = new ArrayList<>();
+    public int getNumberOfOrderByYear(int year) {
+        String sql = "SELECT COUNT(Order_ID) as Count_Order FROM [Order] WHERE Order_Created_At BETWEEN ? AND ?";
+        int countOrder = 0;
 
         long[] timeRange = Generator.getYearTimeRangeInMilli(year);
 
@@ -382,16 +373,13 @@ public class OrderDAO implements IOrderDAO {
             ps.setLong(2, timeRange[1]);
 
             ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                Order order = new Order();
-                orders.add(order);
+            if (rs.next()) {
+                countOrder = rs.getInt("Count_Order");
             }
         } catch (SQLException ex) {
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        return orders;
+        return countOrder;
     }
 
     /* --------------------------- UPDATE SECTION --------------------------- */
@@ -477,6 +465,7 @@ public class OrderDAO implements IOrderDAO {
         order.setUpdateAt(now);
         order.setUpdateByOrderManager(orderManagerId);
         order.setStatus(status.REJECTED.toString());
+        order.setCheckoutAt(0l);
         return updateOrder(order);
     }
 

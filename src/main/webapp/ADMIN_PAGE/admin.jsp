@@ -38,9 +38,9 @@
     int year = calendar.get(Calendar.YEAR);
 
     OrderDAO orderDAO = new OrderDAO();
-    int numberOrderOfDay = orderDAO.getNumberOfOrderByDay(day, month, year).size();
-    int numberOrderOfMonth = orderDAO.getNumberOfOrderByMonth(month, year).size();
-    int numberOrderOfYear = orderDAO.getNumberOfOrderByYear(year).size();
+    int numberOrderOfDay = orderDAO.getNumberOfOrderByDay(day, month, year);
+    int numberOrderOfMonth = orderDAO.getNumberOfOrderByMonth(month, year);
+    int numberOrderOfYear = orderDAO.getNumberOfOrderByYear(year);
 
 %>
 
