@@ -31,13 +31,6 @@
     String queryString = request.getQueryString();
     boolean isError = ExceptionUtils.isWebsiteError(queryString);
     String exceptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
-
-    // Sort the order list by id
-    if (orderList != null && orderList.size() > 0) {
-        orderList.sort((Order o1, Order o2) -> {
-            return o2.getId() - o1.getId();
-        });
-    }
 %>
 <!DOCTYPE html>
 <html>
