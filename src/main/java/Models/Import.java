@@ -13,7 +13,7 @@ public class Import {
     private Long importAt;
     private Long deliveredAt;
     private int importByInventoryManager;
-    private long modifiedAt;
+    private Long modifiedAt;
     private int modifiedByAdmin;
 
     private List<ImportDetail> importDetail;
@@ -97,11 +97,11 @@ public class Import {
         return Generator.getDateTime(modifiedAt, pattern);
     }
 
-    public long getModifiedAt() {
+    public Long getModifiedAt() {
         return modifiedAt;
     }
 
-    public void setModifiedAt(long modifiedAt) {
+    public void setModifiedAt(Long modifiedAt) {
         this.modifiedAt = modifiedAt;
     }
 

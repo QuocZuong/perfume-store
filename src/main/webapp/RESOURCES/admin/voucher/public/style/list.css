@@ -1,0 +1,124 @@
+.list {
+  width: 600px;
+
+  margin-top: 85px;
+  margin-left: 3rem;
+
+  /* border: 1px solid rgba(0, 0, 0, 0.3); */
+  border-radius: 0.6rem;
+}
+
+.list .scroll-list {
+  display: flex;
+  flex-direction: column;
+
+  height: 500px;
+
+  overflow: hidden auto;
+}
+
+.scroll-list {
+  height: 320px;
+}
+
+.list .scroll-list > .item.default {
+  order: -1;
+}
+
+.list .scroll-list > .item.enabled {
+  background-color: #198754;
+}
+
+.list .scroll-list::-webkit-scrollbar,
+.scroll-list::-webkit-scrollbar {
+  width: 10px;
+  border-radius: 0.5em;
+}
+
+.list .scroll-list::-webkit-scrollbar-track,
+.scroll-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 0.5em;
+}
+
+.list .scroll-list::-webkit-scrollbar-thumb,
+.scroll-list::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 0.5em;
+}
+
+.list .scroll-list::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.list .item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: background-color 0.3s;
+
+  position: relative;
+
+  padding: 1rem;
+
+  border-width: 1px 0px 0px 0px;
+  border-style: ridge;
+  border-color: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.list .item.active {
+  background-color: var(--bs-gray-300);
+}
+
+.list .item:not(:first-child) {
+  margin-top: 1rem;
+}
+
+.list .item .row {
+  width: 100%;
+}
+
+.list .item .row div:last-child {
+  margin-right: 2rem;
+}
+
+.list .item .status {
+  height: 20px;
+  position: absolute;
+
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: var(--bs-gray-700);
+  color: var(--bs-white);
+
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 0.6rem;
+}
+
+.list .item #status-default {
+  max-width: 17%;
+}
+
+.list .item .status.active {
+  background-color: var(--bs-green);
+}
+
+.list .item:hover {
+  background-color: var(--bs-gray-400);
+}
+
+.list .item:active {
+  background-color: var(--bs-gray-600);
+}
+
+.list .item img {
+  width: 60px;
+  margin-left: auto;
+}

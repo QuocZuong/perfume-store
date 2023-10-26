@@ -1756,9 +1756,11 @@ public class AdminController extends HttpServlet {
         } catch (InvalidInputException ex) {
             request.setAttribute("exceptionType", "InvalidInputException");
             return State.Fail.value;
+
         } catch (ProductNotFoundException ex) {
             request.setAttribute("exceptionType", "ProductNotFoundException");
             return State.Fail.value;
+
         }
     }
 

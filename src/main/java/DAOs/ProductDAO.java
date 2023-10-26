@@ -488,6 +488,7 @@ public class ProductDAO implements IProductDAO {
         return updateProduct(product, admin);
     }
 
+
     /* --------------------------- OTHER SECTION --------------------------- */
     public boolean validateProduct(Product product) throws InvalidInputException {
 
