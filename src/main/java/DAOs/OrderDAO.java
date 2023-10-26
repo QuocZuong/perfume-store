@@ -1,8 +1,6 @@
 package DAOs;
 
-import Exceptions.NotEnoughProductQuantityException;
 import Exceptions.OperationEditFailedException;
-import Exceptions.VoucherNotFoundException;
 import Models.Order;
 import Models.OrderDetail;
 import Models.Product;
@@ -18,10 +16,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import Interfaces.DAOs.IOrderDAO;
+import Lib.Converter;
 import Lib.DatabaseUtils;
 import Lib.Generator;
-import Models.OrderManager;
-import Models.Voucher;
 
 public class OrderDAO implements IOrderDAO {
 
@@ -38,23 +35,23 @@ public class OrderDAO implements IOrderDAO {
         switch (op) {
             default:
                 try {
-                order.setId(rs.getInt(ORDER_Id));
-                order.setCustomerId(rs.getInt(CUSTOMER_Id));
-                order.setVoucherId(rs.getInt(VOUCHER_Id));
-                order.setReceiverName(rs.getNString(ORDER_RECEIVER_NAME));
-                order.setDeliveryAddress(rs.getNString(ORDER_DELIVERY_ADDRESS));
-                order.setPhoneNumber(rs.getString(ORDER_PHONE_NUMBER));
-                order.setNote(rs.getNString(ORDER_NOTE));
-                order.setTotal(rs.getInt(ORDER_TOTAL));
-                order.setDeductedPrice(rs.getInt(ORDER_DEDUCTED_PRICE));
-                order.setStatus(rs.getString(ORDER_STATUS));
-                order.setCreatedAt(rs.getLong(ORDER_CREATED_AT));
-                order.setCheckoutAt(rs.getLong(ORDER_CHECKOUT_AT));
-                order.setUpdateAt(rs.getLong(ORDER_UPDATE_AT));
-                order.setUpdateByOrderManager(rs.getInt(ORDER_UPDATE_BY_ORDER_MANAGER));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                    order.setId(rs.getInt(ORDER_Id));
+                    order.setCustomerId(rs.getInt(CUSTOMER_Id));
+                    order.setVoucherId(rs.getInt(VOUCHER_Id));
+                    order.setReceiverName(rs.getNString(ORDER_RECEIVER_NAME));
+                    order.setDeliveryAddress(rs.getNString(ORDER_DELIVERY_ADDRESS));
+                    order.setPhoneNumber(rs.getString(ORDER_PHONE_NUMBER));
+                    order.setNote(rs.getNString(ORDER_NOTE));
+                    order.setTotal(rs.getInt(ORDER_TOTAL));
+                    order.setDeductedPrice(rs.getInt(ORDER_DEDUCTED_PRICE));
+                    order.setStatus(rs.getString(ORDER_STATUS));
+                    order.setCreatedAt(Converter.getNullOrValue(rs.getLong(ORDER_CREATED_AT)));
+                    order.setCheckoutAt(Converter.getNullOrValue(rs.getLong(ORDER_CHECKOUT_AT)));
+                    order.setUpdateAt(Converter.getNullOrValue(rs.getLong(ORDER_UPDATE_AT)));
+                    order.setUpdateByOrderManager(rs.getInt(ORDER_UPDATE_BY_ORDER_MANAGER));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
         }
 
         return order;
@@ -459,7 +456,7 @@ public class OrderDAO implements IOrderDAO {
             throw new OperationEditFailedException();
         }
 
-        //check if the quantity stock is less than the order detail
+        // check if the quantity stock is less than the order detail
         long now = Generator.getCurrentTimeFromEpochMilli();
 
         order.setUpdateAt(now);
@@ -526,7 +523,8 @@ public class OrderDAO implements IOrderDAO {
                     + "    OR o.Order_Phone_Number LIKE ?\n"
                     + "    OR o.Order_Delivery_Address LIKE ?\n"
                     + "    OR u.User_Name LIKE ?\n"
-                    + "    OR o.Order_Update_By_Order_Manager LIKE ?;";
+                    + "    OR o.Order_Update_By_Order_Manager LIKE ?\n"
+                    + "ORDER BY o.Order_ID DESC";
 
             PreparedStatement ps = conn.prepareStatement(sql);
 

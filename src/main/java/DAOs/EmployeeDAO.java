@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.persistence.Convert;
+
 import Exceptions.CitizenIDDuplicationException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.PhoneNumberDuplicationException;
@@ -116,7 +118,7 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
      *
      * @param rs get a ResultSet.
      * @return return the employee that contain user information and employee
-     * information.
+     *         information.
      * @throws SQLException return error when execute SQL occur.
      */
     private Employee generateEmployeeByResultSet(ResultSet rs) throws SQLException {
@@ -124,19 +126,16 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
 
         employee.setId(rs.getInt("Employee_ID"));
         employee.setCitizenId(rs.getNString("Employee_Citizen_ID"));
-        employee.setDateOfBirth(rs.getLong("Employee_DoB"));
+        employee.setDateOfBirth(Converter.getNullOrValue(rs.getLong("Employee_DoB")));
         employee.setPhoneNumber(rs.getString("Employee_Phone_Number"));
         employee.setAddress(rs.getNString("Employee_Address"));
         Role role = new Role();
         role.setId(rs.getInt("Role_ID"));
         role.setName(rs.getString("Role_Name"));
         employee.setRole(role);
-        employee.setJoinDate(rs.getLong("Employee_Join_Date"));
-        if (rs.getLong("Employee_Retire_Date") == 0) {
-            employee.setRetireDate(null);
-        } else {
-            employee.setRetireDate(rs.getLong("Employee_Retire_Date"));
-        }
+        employee.setJoinDate(Converter.getNullOrValue(rs.getLong("Employee_Join_Date")));
+        employee.setRetireDate(Converter.getNullOrValue(rs.getLong("Employee_Retire_Date")));
+
         return employee;
     }
 
@@ -145,8 +144,9 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
      * data from a ResultSet.
      *
      * @param rs The parameter "rs" is a ResultSet object, which is used to
-     * retrieve data from a database query result. In this case, it is used to
-     * retrieve data for an Employee object.
+     *           retrieve data from a database query result. In this case, it is
+     *           used to
+     *           retrieve data for an Employee object.
      * @return The method is returning an instance of the Employee class.
      */
     private Employee generateFullyEmployeeByResultSet(ResultSet rs) throws SQLException {
@@ -162,19 +162,15 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
 
         employee.setEmployeeId(rs.getInt("Employee_ID"));
         employee.setCitizenId(rs.getNString("Employee_Citizen_ID"));
-        employee.setDateOfBirth(rs.getLong("Employee_DoB"));
+        employee.setDateOfBirth(Converter.getNullOrValue(rs.getLong("Employee_DoB")));
         employee.setPhoneNumber(rs.getString("Employee_Phone_Number"));
         employee.setAddress(rs.getNString("Employee_Address"));
         Role role = new Role();
         role.setId(rs.getInt("Role_ID"));
         role.setName(rs.getString("Role_Name"));
         employee.setRole(role);
-        employee.setJoinDate(rs.getLong("Employee_Join_Date"));
-        if (rs.getLong("Employee_Retire_Date") == 0) {
-            employee.setRetireDate(null);
-        } else {
-            employee.setRetireDate(rs.getLong("Employee_Retire_Date"));
-        }
+        employee.setJoinDate(Converter.getNullOrValue(rs.getLong("Employee_Join_Date")));
+        employee.setRetireDate(Converter.getNullOrValue(rs.getLong("Employee_Retire_Date")));
 
         return employee;
     }

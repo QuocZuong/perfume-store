@@ -1,6 +1,7 @@
 package DAOs;
 
 import Interfaces.DAOs.IImportDAO;
+import Lib.Converter;
 import Lib.DatabaseUtils;
 import Models.Import;
 import Models.ImportDetail;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.faces.webapp.ConverterTag;
 
 public class ImportDAO implements IImportDAO {
 
@@ -75,8 +78,8 @@ public class ImportDAO implements IImportDAO {
                 ip.setTotalQuantity(total_quan);
                 ip.setTotalCost(total_cost);
                 ip.setSupplierName(rs.getNString("Supplier_Name"));
-                ip.setImportAt(rs.getLong("Import_At"));
-                ip.setDeliveredAt(rs.getLong("Delivered_At"));
+                ip.setImportAt(Converter.getNullOrValue(rs.getLong("Import_At")));
+                ip.setDeliveredAt(Converter.getNullOrValue(rs.getLong("Delivered_At")));
                 ip.setImportByInventoryManager(rs.getInt("Import_By_Inventory_Manager"));
                 ip.setModifiedAt(rs.getInt("Modified_At"));
                 ip.setModifiedByAdmin(rs.getInt("Modified_By_Admin"));
@@ -107,8 +110,8 @@ public class ImportDAO implements IImportDAO {
                 ip.setTotalQuantity(rs.getInt("Import_Total_Quantity"));
                 ip.setTotalCost(rs.getInt("Import_Total_Cost"));
                 ip.setSupplierName(rs.getNString("Supplier_Name"));
-                ip.setImportAt(rs.getLong("Import_At"));
-                ip.setDeliveredAt(rs.getLong("Delivered_At"));
+                ip.setImportAt(Converter.getNullOrValue(rs.getLong("Import_At")));
+                ip.setDeliveredAt(Converter.getNullOrValue(rs.getLong("Delivered_At")));
                 ip.setImportByInventoryManager(rs.getInt("Import_By_Inventory_Manager"));
                 ip.setModifiedAt(rs.getInt("Modified_At"));
                 ip.setModifiedByAdmin(rs.getInt("Modified_By_Admin"));
@@ -159,8 +162,8 @@ public class ImportDAO implements IImportDAO {
                 ip.setTotalQuantity(rs.getInt("Import_Total_Quantity"));
                 ip.setTotalCost(rs.getInt("Import_Total_Cost"));
                 ip.setSupplierName(rs.getNString("Supplier_Name"));
-                ip.setImportAt(rs.getLong("Import_At"));
-                ip.setDeliveredAt(rs.getLong("Delivered_At"));
+                ip.setImportAt(Converter.getNullOrValue(rs.getLong("Import_At")));
+                ip.setDeliveredAt(Converter.getNullOrValue(rs.getLong("Delivered_At")));
                 ip.setImportByInventoryManager(rs.getInt("Import_By_Inventory_Manager"));
                 ip.setModifiedAt(rs.getInt("Modified_At"));
                 ip.setModifiedByAdmin(rs.getInt("Modified_By_Admin"));
