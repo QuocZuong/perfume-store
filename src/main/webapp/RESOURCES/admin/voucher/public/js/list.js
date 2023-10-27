@@ -1,37 +1,34 @@
 const items = document.querySelectorAll(".item");
 const productListInput = document.querySelector("#productList");
 
-items.forEach((item) => {
-    const label = item.querySelector("label");
+items.forEach((item, index) => {
+    const label = item.querySelector(".item-name");
+    
     item.addEventListener("click", () => {
         if (item.classList.contains("enabled")) {
             item.classList.remove("enabled");
-            productListInput.value = productListInput.value.replace(label.innerText + ", ", "");
+            productListInput.value = productListInput.value.replace(", " + label.innerText, "");
         } else {
             item.classList.add("enabled");
-            productListInput.value += label.innerText + ", ";
+
+            if (index === 0) {
+                productListInput.value += label.innerText;
+            } else {
+                productListInput.value += ", " + label.innerText;
+            }
         }
     });
 
-    label.addEventListener("click", () => {
-        if (item.classList.contains("enabled")) {
-            item.classList.remove("enabled");
-            productListInput.value = productListInput.value.replace(label.innerText + ", ", "");
-        } else {
-            item.classList.add("enabled");
-            productListInput.value += label.innerText + ", ";
-        }
-    });
 });
 
 items.forEach((item, index) => {
     if (item.classList.contains("enabled")) {
-        const label = item.querySelector("label");
+        const label = item.querySelector(".item-name");
 
-        if (index === items.length - 1) {
+        if (index === 0) {
             productListInput.value += productListInput.value + label.innerText;
         } else {
-            productListInput.value = productListInput.value + label.innerText + ", ";
+            productListInput.value = productListInput.value + ", " + label.innerText;
         }
     }
 });
