@@ -168,6 +168,11 @@
 
                 <c:otherwise>
                   <input placeholder="Tìm kiếm nhanh" type="text" class="searchBox w-100">
+                  <div class="loading-section">
+                    <svg class="spinner" viewBox="0 0 10 10">
+                      <circle class="path" cx="50%" cy="50%" r="4"></circle>
+                    </svg>
+                  </div>
                   <div class="scroll-list">
 
                     <!-- Product List -->
