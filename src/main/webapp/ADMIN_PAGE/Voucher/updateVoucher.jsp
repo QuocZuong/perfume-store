@@ -1,4 +1,4 @@
- <%@page import="Models.Product"%>
+<%@page import="Models.Product"%>
 <%@page import="Lib.Generator"%>
 <%@page import="Models.Admin"%>
 <%@page import="java.util.List"%>
@@ -152,25 +152,30 @@
 
                 <c:otherwise>
                   <div class="scroll-list">
-                    <c:forEach var='i' begin='0' end="<%=productList.size() - 1%>">
-                      <%
-                                                int index = (int) pageContext.getAttribute("i");
-                                                Product product = productList.get(index);
+                    <input placeholder="Tìm kiếm nhanh" type="text" name="" id="searchBox">
+                    
+                    <!-- Product List -->
+                    <div class="list-product">
+                      <c:forEach var='i' begin='0' end="<%=productList.size() - 1%>">
+                        <%
+                                                  int index = (int) pageContext.getAttribute("i");
+                                                  Product product = productList.get(index);
 
-                                                boolean isCheck = true;
-                      %>
-                      <div>
-                        <div class="item">
-                          <div class="row">
-                            <div class="col-sm-12 row">
-                              <input type="checkbox" id="<%= "Product_Item_" + product.getId()%>" value="<%= product.getName()%>" class="d-none">
-                              <label class="col-6 d-flex align-items-center" for="<%= "Product_Item_" + product.getId()%>"> <%= product.getName()%></label>
-                              <img class="col-2 me-5" src=<%= product.getImgURL() %> alt="<%= product.getName()%>">
+                                                  boolean isCheck = true;
+                        %>
+                        <div>
+                          <div class="item fw-bold">
+                            <div class="row">
+                              <div class="col-sm-12 row curso">
+                                <input type="checkbox" id="<%= "Product_Item_" + product.getId()%>" value="<%= product.getName()%>" class="d-none">
+                                <label class="col-6 d-flex align-items-center" for="<%= "Product_Item_" + product.getId()%>"> <%= product.getName()%></label>
+                                <img class="col-2 me-5" src=<%= product.getImgURL()%> alt="<%= product.getName()%>">
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </div>   
-                    </c:forEach>
+                        </div>   
+                      </c:forEach>
+                    </div>
                   </div>
 
                 </c:otherwise>
@@ -187,7 +192,7 @@
       integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
       crossorigin="anonymous"
     ></script>
-
+    <script src="/RESOURCES/admin/product/public/js/list.js"></script>
 
     <!--Jquery Validation-->
     <script>
@@ -326,6 +331,29 @@
         joinDate.classList.add('hidden');
         retireDate.classList.add('hidden');
       }
+    </script>
+    <script>
+      $(document).ready(function () {
+        // Highlight items when enabled
+        const items = $('.item');
+
+        items.click(function (e) {
+          const item = $(this);
+
+          const checkbox = item.find('input[type="checkbox"]');
+          checkbox.prop('checked', !checkbox.prop('checked'));
+          const isChecked = checkbox.prop('checked');
+
+          console.log(`Is the input checked? ${isChecked}`);
+
+          if (isChecked === true) {
+            item.addClass('enabled');
+          } else {
+            item.removeClass('enabled')
+          }
+        });
+
+      });
     </script>
   </body>
 </html>

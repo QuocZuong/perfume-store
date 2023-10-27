@@ -69,8 +69,21 @@
   user-select: none;
 }
 
+.list .item:hover {
+  background-color: var(--bs-gray-400);
+}
+
+.list .item:active {
+  background-color: var(--bs-gray-600);
+}
+
 .list .item.active {
   background-color: var(--bs-gray-300);
+}
+
+.list .item.enabled {
+  background-color: var(--bs-green);
+  color: var(--bs-light);
 }
 
 .list .item:not(:first-child) {
@@ -110,14 +123,6 @@
 
 .list .item .status.active {
   background-color: var(--bs-green);
-}
-
-.list .item:hover {
-  background-color: var(--bs-gray-400);
-}
-
-.list .item:active {
-  background-color: var(--bs-gray-600);
 }
 
 .list .item img {
