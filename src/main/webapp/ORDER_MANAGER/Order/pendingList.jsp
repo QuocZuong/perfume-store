@@ -173,26 +173,30 @@
         <h1 class="d-none">num page: ${numberOfPage}</h1>
         <h1 class="d-none">page:  <%= currentPage%> </h1>
 
-        <nav aria-label="...">
-            <ul class="pagination">
-                <li class="page-item"><a class="page-link" href="/OrderManager/Order/List/Pending/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-left" style="color: #000000;"></i></a></li>
-                <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>"><a class="page-link" href="/OrderManager/Order/List/Pending/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></a></li>
-                        <c:forEach var="i" begin="${page-2<0?0:page-2}" end="${page+2 +1}">
-                            <c:choose>
-                                <c:when test="${i==page}">
-                            <li class="page-item active"><a href="/OrderManager/Order/List/Pending/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
-                            </c:when>
-                            <c:when test="${i>0 && i<=numberOfPage}"> 
-                            <li class="page-item"><a href="/OrderManager/Order/List/Pending/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
-                            </c:when>
-                            <c:otherwise>
-                            </c:otherwise>
-                        </c:choose>
-                    </c:forEach>
-                <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>"><a class="page-link" href="/OrderManager/Order/List/Pending/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a></li>
-                <li class="page-item"><a class="page-link" href="/OrderManager/Order/List/Pending/page/${numberOfPage}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-right" style="color: #000000;"></i></a></li>
-            </ul>
-        </nav>
+        <c:if test="<%= orderList.size() != 0%>">
+
+            <nav aria-label="...">
+                <ul class="pagination">
+                    <li class="page-item"><a class="page-link" href="/OrderManager/Order/List/Pending/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-left" style="color: #000000;"></i></a></li>
+                    <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>"><a class="page-link" href="/OrderManager/Order/List/Pending/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></a></li>
+                            <c:forEach var="i" begin="${page-2<0?0:page-2}" end="${page+2 +1}">
+                                <c:choose>
+                                    <c:when test="${i==page}">
+                                <li class="page-item active"><a href="/OrderManager/Order/List/Pending/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
+                                </c:when>
+                                <c:when test="${i>0 && i<=numberOfPage}"> 
+                                <li class="page-item"><a href="/OrderManager/Order/List/Pending/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
+                                </c:when>
+                                <c:otherwise>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                    <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>"><a class="page-link" href="/OrderManager/Order/List/Pending/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a></li>
+                    <li class="page-item"><a class="page-link" href="/OrderManager/Order/List/Pending/page/${numberOfPage}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-right" style="color: #000000;"></i></a></li>
+                </ul>
+            </nav>
+        </c:if>
+
         <script>
             function changeLink() {
                 let SearchURL = document.getElementById("inputSearch").value;

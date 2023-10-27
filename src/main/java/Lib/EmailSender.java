@@ -88,7 +88,7 @@ public class EmailSender {
 
     public String generatePasswordEmailHTML(String generatePassword) {
         String username = EmailTo.substring(0, EmailTo.indexOf("@"));
-        String ClientURL = "http://localhost:8080/Client/User";
+        String ClientURL = "http://localhost:8080/Customer/User";
 
         String html = "<!DOCTYPE html>\n"
                 + "<html lang=\"vi\">\n"
@@ -271,8 +271,9 @@ public class EmailSender {
         return html;
     }
 
-    public String changePasswordNotifcation() {
-        String username = EmailTo.substring(0, EmailTo.indexOf("@"));
+    public String changePasswordNotifcation(User user) {
+        String email = EmailTo;
+        String username = user.getUsername();
         String ShopURL = "http://localhost:8080";
 
         String html = "<!DOCTYPE html>\n"
@@ -331,7 +332,7 @@ public class EmailSender {
                 + "															</p>\n"
                 + "															<p style=\"margin: 0 0 16px;\">Email này đã được gửi đến <a\n"
                 + "																	href=\"mailto:" + username
-                + "@fpt.edu.vn\">" + username + "@fpt.edu.vn</a></strong></p>\n"
+                + "@fpt.edu.vn\">" + email + "</a></strong></p>\n"
                 + "\n"
                 + "															<p style=\"margin: 0 0 16px;\">Xin cảm ơn\n"
                 + "																<br>XXVI STORE\n"

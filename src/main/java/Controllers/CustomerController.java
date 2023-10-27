@@ -216,7 +216,7 @@ public class CustomerController extends HttpServlet {
                 if (updateClientInfomation(request, response)) {
                     response.sendRedirect(CUSTOMER_USER_URI);
                 } else {
-                    response.sendRedirect(CUSTOMER_USER_URI + checkException(request));
+                    response.sendRedirect(CUSTOMER_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
                 }
                 return;
             }
@@ -620,7 +620,7 @@ public class CustomerController extends HttpServlet {
                 System.out.println("Detect password change");
                 System.out.println("sending mail changing password");
                 es.setEmailTo(email);
-                es.sendEmailByThread(es.CHANGE_PASSWORD_NOTFICATION, es.changePasswordNotifcation());
+                es.sendEmailByThread(es.CHANGE_PASSWORD_NOTFICATION, es.changePasswordNotifcation(updateCustomer));
             }
             if (isChangedEmail) {
                 System.out.println("Detect email change");
@@ -1176,14 +1176,5 @@ public class CustomerController extends HttpServlet {
         }
         System.out.println("email to export: " + customer.getEmail());
         response.sendRedirect(CUSTOMER_ORDER_DETAIL_URI + "/" + order.getId());
-    }
-
-    // ------------------------- EXEPTION HANDLING SECTION -------------------------
-    private String checkException(HttpServletRequest request) {
-        if (request.getAttribute("exceptionType") == null) {
-            return "";
-        }
-        return null;
-
     }
 }
