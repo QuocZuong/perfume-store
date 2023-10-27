@@ -83,6 +83,10 @@
   color: var(--bs-light);
 }
 
+.list .item.enabled:hover {
+  opacity: 0.9;
+}
+
 .list .item .row {
   width: 100%;
 }
