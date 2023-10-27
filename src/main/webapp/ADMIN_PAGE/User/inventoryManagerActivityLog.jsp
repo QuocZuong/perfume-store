@@ -26,7 +26,6 @@
     importList = (List<Import>) request.getAttribute("listActivityLogs");
     currentPage = (int) request.getAttribute("page");
     numberOfPage = (int) request.getAttribute("numberOfPage");
-        System.out.println("listactivity: " + importList.size());
 
     String queryString = request.getQueryString();
     boolean isError = ExceptionUtils.isWebsiteError(queryString);

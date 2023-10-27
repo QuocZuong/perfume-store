@@ -527,7 +527,7 @@ public class OrderManagerController extends HttpServlet {
                     System.out.println("sending mail changing password");
                     es.setEmailTo(email);
                     es.sendEmailByThread(es.CHANGE_PASSWORD_NOTFICATION,
-                            es.changePasswordNotifcation());
+                            es.changePasswordNotifcation(updateUser));
                 }
                 if (isChangedEmail) {
                     System.out.println("Detect email change");

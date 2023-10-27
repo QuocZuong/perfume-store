@@ -638,6 +638,61 @@ end
 ```
 
 
+# Script demo
+## Role customer
+## Trang chủ:
+- Lướt xuống thương hiệu nổi tiếng
+	- Chọn 1 thương hiệu qua tab mới
+	- Trở về home page
+- Lướt sản phẩm nổi bật
+	- Kéo danh sách sản phẩm qua trái, qua phải
+	- Bấm chuyển sang nước hoa nữ
+	- Kéo danh sách sản phẩm qua trái, qua phải
+	- Bấm chuyển sang nước hoa unisex
+	- Kéo danh sách sản phẩm qua trái, qua phải
+	- Chọn 1 sản phẩm qua tab mới
+	- Trở về homepage
+- Lướt xuống "Tại sao chọn xxiv store"
+- Lướt xuống hình ảnh của store
+- Lướt xuống "Đăng kí thành viên để nhận khuyến mãi"
+- Lướt xuống footer
+## Giới thiệu
+- Lướt từ từ cho đến hết trang
+## Thương hiệu
+- Lướt từ từ cho đến hết trang
+- Bấm chữ "I" trong danh sách 
+- Bấm chữ "J" trong danh sách
+- Chọn 1 "thương hiệu" qua tab mới
+- Trở về trang "thương hiệu"
+## Sản phẩm
+- Lướt từ từ cho đến hết trang
+- Vào filter thương hiệu search "KENZO" qua tab mới, rồi quay lại trang sản phẩm
+- Vào filter thương hiệu search "Tom Ford" qua tab mới
+	- Bấm qua trang 2
+	- Bấm vào filter theo giới tính "Nam"
+	- Bấm vào filter theo giới tính "Nữ"
+	- Bấm vào filter theo giới tính "Unisex"
+	- Bấm vào filter theo giá "1.500.000 - 3.000.000"
+	- Bấm vào filter theo giá "3.000.000 - 5.000.000"
+	- Bấm vào filter theo giá "1.500.000 - 3.000.000"
+	- Chọn chai "Musk Oud" của "By Kilian" và đợi 5s cho file javascript load
+		- Nhấp vào hình ảnh
+		- Lướt từ từ đến cuối trang
+		- Lướt sản phẩm được đề xuất
+		- Bấm thêm vào giỏ hàng sẽ bị đá sang trang Login
+			- Bấm login nhập "ducnltCE170499@fpt.edu.vn" và password "123456" thì ra login failed
+			- Register với email "ducnltCE170499@fpt.edu.vn"
+			- Vào email lấy password được generated ra vào user đổi lại tên đăng nhập và mật khẩu là "ducnlt"
+			- Check email
+			- Quay lại trang sản phẩm
+			- Bấm vào kính lúp search lại chai "Musk Oud"
+			- Bấm "Thêm vào giỏ hàng"
+			- Bấm "Thêm vào giỏ hàng" lần hai với số lượng là 2
+			- Lướt xuống chọn chai "Good Girl Gone Bad Extreme" trong sản phẩm liên quan
+			- Bấm "Thêm vào giỏ hàng"
+	- Click vào icon "Giỏ hàng"
+		- Giảm số lượng Musk Oud xuống 1 rồi bấm cập nhật giỏ hàng
+
 # Bảng phân công công việc
 ## Nguyễn Lê Tài Đức
 - *FrontEnd*:

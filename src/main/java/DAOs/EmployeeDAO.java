@@ -171,7 +171,6 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
         employee.setJoinDate(Converter.getNullOrValue(rs.getLong("Employee_Join_Date")));
         employee.setRetireDate(Converter.getNullOrValue(rs.getLong("Employee_Retire_Date")));
 
-        System.out.println("employee in DAO: " + employee.getName());
         return employee;
     }
 
@@ -317,7 +316,6 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
             Employee employee = null;
             if (rs.next()) {
                 employee = generateFullyEmployeeByResultSet(rs);
-                System.out.println("employee name in DAO: " + employee.getName());
             }
             return employee;
         } catch (SQLException ex) {

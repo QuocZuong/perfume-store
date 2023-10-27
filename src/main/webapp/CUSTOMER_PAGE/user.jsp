@@ -27,8 +27,8 @@
 <%! DeliveryAddress currentDeliveryAddress = null;%>
 <%! boolean isError; %>
 <%! String exceptionMessage;%>
-<%! boolean isUpdateAccountExecption;%>
-<%! boolean isUpdateAddressExecption;%>
+<%! boolean isUpdateAccountExeception;%>
+<%! boolean isUpdateAddressExeception;%>
 
 <%
 
@@ -66,13 +66,14 @@
     isError = ExceptionUtils.isWebsiteError(queryString);
     exceptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
 
-    isUpdateAccountExecption
+    isUpdateAccountExeception
             = ExceptionUtils.isAccountNotFound(queryString)
+            || ExceptionUtils.isWrongPassword(queryString)
             || ExceptionUtils.isAccountDeactivated(queryString)
             || ExceptionUtils.isEmailDuplication(queryString)
             || ExceptionUtils.isUsernameDuplication(queryString);
 
-    isUpdateAddressExecption
+    isUpdateAddressExeception
             = ExceptionUtils.isPhoneNumberDuplication(queryString)
             || ExceptionUtils.isNotEnoughInformation(queryString)
             || ExceptionUtils.isDefaultDeliveryAddressNotFound(queryString);
@@ -117,13 +118,14 @@
 
                 <div class="main">
                     <div class="left">
-                        <h1>Tài khoản của tôi</h1>
+                        <h1>Tài khoản của tôi </h1>
+
                         <div class="list">
                             <ul>
-                                <li><a class="<%= isUpdateAccountExecption || isUpdateAddressExecption ? "" : "active"%>">Trang tài khoản</a></li>
+                                <li><a class="<%= isUpdateAccountExeception || isUpdateAddressExeception ? "" : "active"%>">Trang tài khoản</a></li>
                             <li><a class="">Đơn hàng</a></li>
-                            <li><a class="<%= isUpdateAddressExecption ? "active" : ""%>">Địa chỉ</a></li>
-                            <li><a class="<%= isUpdateAccountExecption ? "active" : ""%>">Tài khoản</a></li>
+                            <li><a class="<%= isUpdateAddressExeception ? "active" : ""%>">Địa chỉ</a></li>
+                            <li><a class="<%= isUpdateAccountExeception ? "active" : ""%>">Tài khoản</a></li>
                             <li><a href="/Log/Logout">Đăng xuất</a></li>
                         </ul>
                     </div>
@@ -185,7 +187,7 @@
 
 
                         <!--Execption Handling-->
-                        <c:if test='<%= isError%>'>
+                        <c:if test='<%= isUpdateAccountExeception%>'>
                             <h2 class="alert alert-danger text-center">
                                 <%= exceptionMessage%>
                             </h2>
@@ -216,13 +218,17 @@
                                     <input type="text" name="txtReceiverName" id="txtReceiverName" value="<%= receiverName%>" placeholder="Người nhận">
                                     <label><input type="checkbox" name="txtStatus" id="txtStatus" value="<%= status%>" <%= status.equals("Default") ? "checked" : ""%>> Đặt làm địa chỉ mặc định</label>
                                 </div>
-                                <c:if test='<%=deliveryAddress.size() != 0%>'><button type="submit" name="btnUpdateAddress" value="Submit"> <h4>Sửa</h4> </button></c:if>
-                                    <button type="submit" name="btnAddAddress" value="Submit"> <h4>Thêm</h4> </button>
+                                <c:if test='<%=deliveryAddress.size() != 0%>'>
+                                    <button type="submit" name="btnUpdateAddress" value="Submit"> <h4>Sửa</h4> </button>
+                                </c:if>
+                                <button type="submit" name="btnAddAddress" value="Submit"> <h4>Thêm</h4> </button>
+                                <c:if test='<%=deliveryAddress.size() != 0%>'>
                                     <button type="submit" name="btnDeleteAddress" value="Submit""><h4>Xoá</h4></button>
-                                </form>
+                                </c:if>
+                            </form>
 
-                                <div class="address-list">
-                                    <h3>Danh sách địa chỉ</h3>
+                            <div class="address-list">
+                                <h3>Danh sách địa chỉ</h3>
 
                                 <c:choose>
 
@@ -335,7 +341,7 @@
 
 
                         <!--Execption Handling-->
-                        <c:if test='<%= isError%>'>
+                        <c:if test='<%= isUpdateAccountExeception%>'>
                             <h2 class="alert alert-danger text-center">
                                 <%= exceptionMessage%>
                             </h2>
