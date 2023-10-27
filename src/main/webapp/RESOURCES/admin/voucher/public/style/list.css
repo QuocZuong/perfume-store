@@ -64,7 +64,9 @@
   border-width: 1px 0px 0px 0px;
   border-style: ridge;
   border-color: rgba(0, 0, 0, 0.3);
-  cursor: pointer;
+  
+  cursor: default;
+  user-select: none;
 }
 
 .list .item.active {
