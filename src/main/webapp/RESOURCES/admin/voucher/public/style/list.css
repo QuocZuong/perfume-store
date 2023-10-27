@@ -1,6 +1,13 @@
+:root {
+  --list-width: 600px;
+  --list-height: 543px;
+
+  --loading-section-width: 590px;
+}
+
 .list {
   position: relative;
-  width: 600px;
+  width: var(--list-width);
 
   margin-top: 85px;
   margin-left: 3rem;
@@ -13,7 +20,7 @@
   display: flex;
   flex-direction: column;
 
-  height: 320px;
+  height: var(--list-height);
 
   overflow: hidden auto;
 }
@@ -32,14 +39,12 @@
   border-radius: 0.5em;
 }
 
-.list .scroll-list::-webkit-scrollbar-track,
-.scroll-list::-webkit-scrollbar-track {
+.list .scroll-list::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 0.5em;
 }
 
-.list .scroll-list::-webkit-scrollbar-thumb,
-.scroll-list::-webkit-scrollbar-thumb {
+.list .scroll-list::-webkit-scrollbar-thumb {
   background: #888;
   border-radius: 0.5em;
 }
@@ -91,10 +96,6 @@
   width: 100%;
 }
 
-.list .item .row div:last-child {
-  margin-right: 2rem;
-}
-
 .list .item .status {
   height: 20px;
   position: absolute;
@@ -124,7 +125,7 @@
 
 .list .item img {
   width: 60px;
-  margin-left: auto;
+  cursor: pointer;
 }
 
 .list input.searchBox {
@@ -149,8 +150,8 @@
   top: 10;
   left: 0;
 
-  width: 590px;
-  height: 320px;
+  width: var(--loading-section-width);
+  height: var(--list-height);
 
   background-color: white;
   opacity: 0.95;
