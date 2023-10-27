@@ -86,10 +86,6 @@
   color: var(--bs-light);
 }
 
-.list .item:not(:first-child) {
-  margin-top: 1rem;
-}
-
 .list .item .row {
   width: 100%;
 }
