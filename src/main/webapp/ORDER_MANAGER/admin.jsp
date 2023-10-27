@@ -29,17 +29,6 @@
     boolean isError = ExceptionUtils.isWebsiteError(queryString);
     String exceptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
 
-    // Get total order
-    Calendar calendar = Calendar.getInstance();
-
-    int day = calendar.get(Calendar.DAY_OF_MONTH);
-    int month = calendar.get(Calendar.MONTH) + 1;
-    int year = calendar.get(Calendar.YEAR);
-
-    OrderDAO orderDAO = new OrderDAO();
-    int numberOrderOfDay = orderDAO.getNumberOfOrderByDay(day, month, year).size();
-    int numberOrderOfMonth = orderDAO.getNumberOfOrderByMonth(month, year).size();
-    int numberOrderOfYear = orderDAO.getNumberOfOrderByYear(year).size();
 
 %>
 
@@ -74,11 +63,6 @@
 
 
         <div class="container-fluid">
-            <h1 class="d-none"><%= user.getId()%></h1>
-            <h1 class="d-none"><%= user.getName()%></h1>
-            <h1 class="d-none"><%= user.getUsername()%></h1>
-            <h1 class="d-none"><%= user.getEmail()%></h1>
-            <h1 class="d-none"><%= user.getPassword()%></h1>
             <!--Navbar section-->
             <div class="row">
                 <div class="col-md-12 nav">
