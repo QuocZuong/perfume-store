@@ -19,7 +19,7 @@
 <%!Voucher voucher;%>
 <%! ProductDAO pDAO = new ProductDAO(); %>
 <%! List<Integer> approvedProductId;%>
-<%! String productList;%>
+<%! String productListString = "";%>
 
 <%
     approvedProductId = request.getAttribute("ApprovedProductId") == null ? null : (List<Integer>) request.getAttribute("ApprovedProductId");
@@ -28,15 +28,17 @@
     String queryString = request.getQueryString();
     boolean isErr = ExceptionUtils.isWebsiteError(queryString);
     String exeptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
-    System.out.println("hihi: " + voucher.getApprovedProductId().size());
+
     for (int i = 0; i < voucher.getApprovedProductId().size(); i++) {
         Product product = pDAO.getProduct(voucher.getApprovedProductId().get(i));
-        if (i != voucher.getApprovedProductId().size() - 1) {
-            productList += product.getName() + ", ";
+        if (product.getName() != null && i != voucher.getApprovedProductId().size() - 1) {
+            productListString += product.getName() + ", ";
         } else {
-            productList += product.getName();
+            productListString += product.getName();
         }
     }
+
+
 %>
 
 <!DOCTYPE html>
@@ -133,7 +135,7 @@
                             </div>
                             <div class="discount-max">
                                 <label>Product to apply *</label>
-                                <input type="text" name="txtDiscountMax" value="<%= productList%>" />
+                                <input id="productList" type="text" name="txtApprovedProduct" readonly="true" />
                             </div>
                             <div class="discount-max">
                                 <label>Discount max *</label>
@@ -178,7 +180,7 @@
                                                     boolean isCheck = true;
                                                 %>
                                                 <div>
-                                                    <div class="item fw-bold">
+                                                    <div class="item fw-bold <%=productListString.contains(product.getName()) ? "enabled" : ""%>">
                                                         <div class="row">
                                                             <div class="col-sm-12 row curso">
                                                                 <input type="checkbox" id="<%= "Product_Item_" + product.getId()%>" value="<%= product.getName()%>" class="d-none">
@@ -207,7 +209,7 @@
             crossorigin="anonymous"
         ></script>
         <script src="/RESOURCES/admin/product/public/js/list.js"></script>
-
+        <script src="/RESOURCES/admin/voucher/public/js/list.js"></script>
         <!--Jquery Validation-->
         <script>
             $(document).ready(function () {
@@ -346,7 +348,7 @@
                 retireDate.classList.add('hidden');
             }
         </script>
-        <script>
+        <!-- <script>
             $(document).ready(function () {
                 // Highlight items when enabled
                 const items = $('.item');
@@ -363,11 +365,11 @@
                     if (isChecked === true) {
                         item.addClass('enabled');
                     } else {
-                        item.removeClass('enabled')
+                        item.removeClass('enabled');
                     }
                 });
 
             });
-        </script>
+        </script> -->
     </body>
 </html>
