@@ -274,7 +274,7 @@ public class AdminController extends HttpServlet {
         }
 
         if (path.startsWith(ADMIN_INVENTORY_MANAGER_ACTIVITY_LOG_URI)) {
-            adminActivityLog(request, response);
+            inventoryManagerActivityLog(request, response);
             request.getRequestDispatcher("/ADMIN_PAGE/User/inventoryManagerActivityLog.jsp").forward(request, response);
             return;
         }
@@ -1029,6 +1029,36 @@ public class AdminController extends HttpServlet {
         request.setAttribute("page", page);
         request.setAttribute("numberOfPage", NumberOfPage);
         request.setAttribute("listActivityLogs", listOrderActivityLogs);
+        request.setAttribute("Search", Search);
+    }
+
+    private void inventoryManagerActivityLog(HttpServletRequest request, HttpServletResponse response) {
+        String URI = request.getRequestURI();
+        String data[] = URI.split("/");
+        int page = 1;
+        int rows = 20;
+        String Search = request.getParameter("txtSearch");
+        ImportDAO importDAO = new ImportDAO();
+
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("page")) {
+                page = Integer.parseInt(data[i + 1]);
+            }
+        }
+
+        if (Search == null || Search.equals("")) {
+            Search = "%";
+        }
+
+        List<Import> inventoryActivityLogsFromSearch = importDAO.searchImportForActivityLog(Search);
+        List<Import> listImportActivityLogs = Generator.pagingList(inventoryActivityLogsFromSearch, page, rows);
+
+        final int ROWS = 20;
+        int NumberOfPage = inventoryActivityLogsFromSearch.size() / ROWS;
+        NumberOfPage = (inventoryActivityLogsFromSearch.size() % ROWS == 0 ? NumberOfPage : NumberOfPage + 1);
+        request.setAttribute("page", page);
+        request.setAttribute("numberOfPage", NumberOfPage);
+        request.setAttribute("listActivityLogs", listImportActivityLogs);
         request.setAttribute("Search", Search);
     }
 
