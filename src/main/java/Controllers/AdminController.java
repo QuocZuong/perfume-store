@@ -1290,7 +1290,7 @@ public class AdminController extends HttpServlet {
                 System.out.println("sending mail changing password");
                 es.setEmailTo(uEmail);
                 es.sendEmailByThread(es.CHANGE_PASSWORD_NOTFICATION,
-                        es.changePasswordNotifcation());
+                        es.changePasswordNotifcation(userForUpdate));
             }
             if (isChangedEmail) {
                 System.out.println("Detect email change");
@@ -1453,7 +1453,7 @@ public class AdminController extends HttpServlet {
                 System.out.println("sending mail changing password");
                 es.setEmailTo(uEmail);
                 es.sendEmailByThread(es.CHANGE_PASSWORD_NOTFICATION,
-                        es.changePasswordNotifcation());
+                        es.changePasswordNotifcation(userForUpdate));
             }
             if (isChangedEmail) {
                 System.out.println("Detect email change");
@@ -1819,7 +1819,7 @@ public class AdminController extends HttpServlet {
                 System.out.println("Detect password change");
                 System.out.println("sending mail changing password");
                 es.setEmailTo(email);
-                es.sendEmailByThread(es.CHANGE_PASSWORD_NOTFICATION, es.changePasswordNotifcation());
+                es.sendEmailByThread(es.CHANGE_PASSWORD_NOTFICATION, es.changePasswordNotifcation(admin));
             }
             if (isChangedEmail) {
                 System.out.println("Detect email change");
