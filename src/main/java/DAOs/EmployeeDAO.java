@@ -118,7 +118,7 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
      *
      * @param rs get a ResultSet.
      * @return return the employee that contain user information and employee
-     *         information.
+     * information.
      * @throws SQLException return error when execute SQL occur.
      */
     private Employee generateEmployeeByResultSet(ResultSet rs) throws SQLException {
@@ -144,9 +144,8 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
      * data from a ResultSet.
      *
      * @param rs The parameter "rs" is a ResultSet object, which is used to
-     *           retrieve data from a database query result. In this case, it is
-     *           used to
-     *           retrieve data for an Employee object.
+     * retrieve data from a database query result. In this case, it is used to
+     * retrieve data for an Employee object.
      * @return The method is returning an instance of the Employee class.
      */
     private Employee generateFullyEmployeeByResultSet(ResultSet rs) throws SQLException {
@@ -172,6 +171,7 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
         employee.setJoinDate(Converter.getNullOrValue(rs.getLong("Employee_Join_Date")));
         employee.setRetireDate(Converter.getNullOrValue(rs.getLong("Employee_Retire_Date")));
 
+        System.out.println("employee in DAO: " + employee.getName());
         return employee;
     }
 
@@ -290,6 +290,34 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
             Employee employee = null;
             if (rs.next()) {
                 employee = generateFullyEmployeeByResultSet(rs);
+            }
+            return employee;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public Employee getEmployeeByInventoryManagerId(int inventoryManagerId) {
+        if (inventoryManagerId <= 0) {
+            throw new IllegalArgumentException("inventoryManagerId cannot be less than or equal to 0");
+        }
+
+        ResultSet rs;
+
+        String sql = "SELECT * FROM Inventory_Manager\n"
+                + "JOIN Employee ON [Inventory_Manager].Employee_ID = [Employee].Employee_ID\n"
+                + "JOIN [User] ON [Employee].User_ID = [User].User_ID\n"
+                + "JOIN [Employee_Role] ON [Employee].Employee_Role = [Employee_Role].Role_ID\n"
+                + "WHERE [Inventory_Manager].[Inventory_Manager_ID] = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, inventoryManagerId);
+            rs = ps.executeQuery();
+            Employee employee = null;
+            if (rs.next()) {
+                employee = generateFullyEmployeeByResultSet(rs);
+                System.out.println("employee name in DAO: " + employee.getName());
             }
             return employee;
         } catch (SQLException ex) {

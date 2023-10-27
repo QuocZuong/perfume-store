@@ -32,6 +32,7 @@
 
     Import importInfo = (Import) request.getAttribute("importInfo");
     List<ImportDetail> impDetailList = importInfo.getImportDetail();
+    int ListSize = 0;
 
 %>
 
@@ -84,9 +85,7 @@
                                 <table class="w-100">
                                 <c:choose>
                                     <c:when test='<%= impDetailList.size() > 0%>'>
-                                        <%
-                                            int ListSize = 0;
-                                        %>
+
                                         <c:forEach var="i" begin="0" end="<%= impDetailList.size() - 1%>">
                                             <%
                                                 Product p = pDAO.getProduct(impDetailList.get((int) pageContext.getAttribute("i")).getProductId());
@@ -121,7 +120,7 @@
                                                             <a href="/Admin/Import/DeleteDetail/ImportID/<%= importInfo.getId()%>/ProductID/<%= p.getId()%>">
                                                                 <img src="/RESOURCES/images/icons/close.png" alt="alt"/>
                                                             </a>
-                                                            <input type="hidden" name="<%= "ProductID" + pageContext.getAttribute("i")%>" value="<%= p.getId()%>" />
+                                                            <input type="hidden" name="<%= "ProductID" + ListSize%>" value="<%= p.getId()%>" />
                                                         </td>
                                                     </tr>
                                                     <%
@@ -172,6 +171,7 @@
                                 </c:choose>
                             </table>
                             <input type="hidden" name="ListSize" value="<%= ListSize%>" />
+                            <input type="hidden" name="ImportID" value="<%= importInfo.getId()%>" />
                             <c:choose>
                                 <c:when test='<%= impDetailList.size() > 0%>'>
 
@@ -212,7 +212,7 @@
                                         <hr/>
                                         <div class="flex-column align-items-start">
                                             <h5>Import Total Cost</h5>
-                                            <input class="w-100" type="number" readonly="true" value="<%= Converter.covertIntergerToMoney(importInfo.getTotalCost())%>">
+                                            <input class="w-100" type="text" readonly="true" value="<%= Converter.covertIntergerToMoney(importInfo.getTotalCost())%>">
                                         </div>
                                         <hr/>
                                         <div class="flex-column align-items-start">
@@ -221,7 +221,7 @@
                                         </div>
                                         <hr/>
                                         <div>
-                                            <button id="btn-checkout" type="submit" class="btn-checkout" name="btnCheckoutImportCart" value="Submit">Cập nhật hóa đơn</button>
+                                            <button id="btn-checkout" type="submit" class="btn-checkout" name="btnUpdateImport" value="Submit">Cập nhật hóa đơn</button>
                                         </div>
                                     </div>
                                     <c:if test='<%=isError%>'>

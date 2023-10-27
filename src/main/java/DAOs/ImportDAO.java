@@ -235,4 +235,50 @@ public class ImportDAO implements IImportDAO {
         }
         return 0;
     }
+
+    /* ------------------------- SEARCH ACTIVITY LOG SECTION ---------------------------- */
+    public List<Import> searchImportForActivityLog(String search) {
+        if (search == null || search.equals("")) {
+            search = "%";
+        } else {
+            search = "%" + search + "%";
+        }
+
+        ResultSet rs;
+        List<Import> importList = new ArrayList<>();
+
+        try {
+            String sql = "SELECT * FROM Import\n"
+                    + "JOIN [Inventory_Manager] ON [Import].Import_By_Inventory_Manager = [Inventory_Manager].[Inventory_Manager_ID]\n"
+                    + "JOIN Employee ON [Inventory_Manager].Employee_ID = [Employee].Employee_ID\n"
+                    + "JOIN [User] ON [Employee].[User_ID] = [User].[User_ID]\n"
+                    + "WHERE [User].User_Email LIKE ? OR [User].[User_Username] LIKE ? OR [Import].[Supplier_Name] LIKE ?";
+
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setString(1, search);
+            ps.setString(2, search);
+            ps.setNString(3, search);
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Import ip = new Import();
+                ip.setId(rs.getInt("Import_ID"));
+                ip.setTotalQuantity(rs.getInt("Import_Total_Quantity"));
+                ip.setTotalCost(rs.getInt("Import_Total_Cost"));
+                ip.setSupplierName(rs.getNString("Supplier_Name"));
+                ip.setImportAt(Converter.getNullOrValue(rs.getLong("Import_At")));
+                ip.setDeliveredAt(Converter.getNullOrValue(rs.getLong("Delivered_At")));
+                ip.setImportByInventoryManager(rs.getInt("Import_By_Inventory_Manager"));
+                ip.setModifiedAt(Converter.getNullOrValue(rs.getLong("Modified_At")));
+                ip.setModifiedByAdmin(rs.getInt("Modified_By_Admin"));
+                importList.add(ip);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return importList;
+    }
 }

@@ -57,7 +57,7 @@
                 <li class="py-2 text-dark"><a href="/Admin/User/List">Danh sách người dùng</a></li>
                 <li class="py-2 text-dark"><a href="/Admin/EmployeeActivityLog/Admin">Hoạt động admin</a></li>
                 <li class="py-2 text-dark"><a href="/Admin/EmployeeActivityLog/OrderManager">Hoạt động order manager</a></li>
-                <li class="py-2 text-dark"><a href="/Admin/Import/Store">Hoạt động inventory manager</a></li>
+                <li class="py-2 text-dark"><a href="/Admin/EmployeeActivityLog/InventoryManager">Hoạt động inventory manager</a></li>
             </ul>
 
             <a href="/Admin/User"><img src="/RESOURCES/images/icons/user.png" alt="" /></a>
