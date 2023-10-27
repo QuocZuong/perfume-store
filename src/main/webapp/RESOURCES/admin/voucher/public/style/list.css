@@ -125,3 +125,16 @@
   width: 60px;
   margin-left: auto;
 }
+
+.list input.searchBox {
+  padding-left: .625rem;
+}
+
+.list input.searchBox::-webkit-input-placeholder {
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+
+.list .searchBox:focus::-webkit-input-placeholder {
+  opacity: 0;
+}
