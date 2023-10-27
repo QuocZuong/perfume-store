@@ -1,3 +1,5 @@
+<%@page import="Models.Employee"%>
+<%@page import="DAOs.EmployeeDAO"%>
 <%@page import="Lib.Generator"%>
 <%@page import="Models.Import"%>
 <%@page import="DAOs.CustomerDAO"%>
@@ -21,9 +23,10 @@
 <%! int currentPage, numberOfPage;%>
 
 <%
-    importList = (List<Import>) request.getAttribute("importList");
+    importList = (List<Import>) request.getAttribute("listActivityLogs");
     currentPage = (int) request.getAttribute("page");
     numberOfPage = (int) request.getAttribute("numberOfPage");
+        System.out.println("listactivity: " + importList.size());
 
     String queryString = request.getQueryString();
     boolean isError = ExceptionUtils.isWebsiteError(queryString);
@@ -68,7 +71,7 @@
             <!--Navbar section-->
             <div class="row">
                 <div class="col-md-12 nav">
-                    <jsp:include page="/NAVBAR/InventoryManagerNavbar.jsp"></jsp:include>
+                    <jsp:include page="/NAVBAR/AdminNavbar.jsp"></jsp:include>
                     </div>
                 </div>
 
@@ -91,7 +94,8 @@
                         <thead>
                             <tr>
                                 <td>ID</td>
-                                <td>ID Người quản lý</td>
+                                <td>Username</td>
+                                <td>Email</td>
                                 <td>Tổng tiền</td>
                                 <td>Tổng số lượng</td>
                                 <td>Nhà cung cấp</td>
@@ -99,32 +103,31 @@
                                 <td>Ngày giao đến</td>
                                 <td>Ngày cập nhật</td>
                                 <td>Cập nhật bởi Admin</td>
-                                <td>Chi tiết</td>
                             </tr>
                         </thead>
                         <tbody>
                             <c:if test='<%= (importList.size() != 0)%>'>
                                 <c:forEach var="i" begin="0" end="<%= importList.size() - 1%>">
                                     <%
+                                        EmployeeDAO employeeDAO = new EmployeeDAO();
+                                        Employee employee = employeeDAO.getEmployeeByInventoryManagerId(importList.get((int) pageContext.getAttribute("i")).getImportByInventoryManager());
                                         Import ip = importList.get((int) pageContext.getAttribute("i"));
                                         String importAt = ip.getImportAt(Generator.DatePattern.DateForwardSlashPattern);
                                         String deliveredAt = ip.getDeliveredAt(Generator.DatePattern.DateForwardSlashPattern);
-                                        String modifiedAt = (ip.getModifiedAt() != 0 ? ip.getModifiedAt(Generator.DatePattern.DateForwardSlashPattern) : "");
+                                        String modifiedAt = (ip.getModifiedAt() != null ? ip.getModifiedAt(Generator.DatePattern.DateForwardSlashPattern) : "");
                                         String modifiedByAdmin = (ip.getModifiedByAdmin() != 0 ? ip.getModifiedByAdmin() + "" : "");
                                     %>
                                     <tr class="rowTable">
                                         <td><%= ip.getId()%></td>
-                                        <td><%= ip.getImportByInventoryManager()%></td>
-                                        <td><%= ip.getTotalCost()%></td>
+                                        <td><%= employee.getUsername()%></td>
+                                        <td><%= employee.getEmail()%></td>
+                                        <td><%= Converter.covertIntergerToMoney(ip.getTotalCost())%></td>
                                         <td><%= ip.getTotalQuantity()%></td>
                                         <td><%= ip.getSupplierName()%></td>
                                         <td><%= importAt%></td>
                                         <td><%= deliveredAt%></td>
-                                        <td><%= modifiedAt%></td>
+                                        <td><%= modifiedAt%></td>   
                                         <td><%= modifiedByAdmin%></td>
-                                        <td>
-                                            <a href="/InventoryManager/Import/Detail/ID/<%= ip.getId()%>" class="btn btn-outline-success rounded-0"></a>
-                                        </td>
                                     </tr>
 
                                 </c:forEach>
@@ -140,30 +143,31 @@
 
         <nav aria-label="...">
             <ul class="pagination">
-                <li class="page-item"><a class="page-link" href="/InventoryManager/Import/List/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-left" style="color: #000000;"></i></a></li>
-                <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>"><a class="page-link" href="/InventoryManager/Import/List/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></a></li>
+                <li class="page-item"><a class="page-link" href="/Admin/EmployeeActivityLog/InventoryManager/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-left" style="color: #000000;"></i></a></li>
+                <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>"><a class="page-link" href="/Admin/EmployeeActivityLog/InventoryManager/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></a></li>
                         <c:forEach var="i" begin="${page-2<0?0:page-2}" end="${page+2 +1}">
                             <c:choose>
                                 <c:when test="${i==page}">
-                            <li class="page-item active"><a href="/InventoryManager/Import/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
+                            <li class="page-item active"><a href="/Admin/EmployeeActivityLog/InventoryManager/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
                             </c:when>
                             <c:when test="${i>0 && i<=numberOfPage}"> 
-                            <li class="page-item"><a href="/InventoryManager/Import/List/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
+                            <li class="page-item"><a href="/Admin/EmployeeActivityLog/InventoryManager/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
                             </c:when>
                             <c:otherwise>
                             </c:otherwise>
                         </c:choose>
                     </c:forEach>
-                <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>"><a class="page-link" href="/InventoryManager/Import/List/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a></li>
-                <li class="page-item"><a class="page-link" href="/InventoryManager/Import/List/page/${numberOfPage}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-right" style="color: #000000;"></i></a></li>
+                <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>"><a class="page-link" href="/Admin/EmployeeActivityLog/InventoryManager/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a></li>
+                <li class="page-item"><a class="page-link" href="/Admin/EmployeeActivityLog/InventoryManager/page/${numberOfPage}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-right" style="color: #000000;"></i></a></li>
             </ul>
         </nav>
+        <script src="/RESOURCES/admin/user/public/js/main.js"></script>
         <script>
-            function changeLink() {
-                let SearchURL = document.getElementById("inputSearch").value;
-                SearchURL = encodeURIComponent(SearchURL);
-                document.getElementById("Search").href = "/InventoryManager/Import/List/page/1?txtSearch=" + SearchURL;
-            }
+                            function changeLink() {
+                                let SearchURL = document.getElementById("inputSearch").value;
+                                SearchURL = encodeURIComponent(SearchURL);
+                                document.getElementById("Search").href = "/Admin/EmployeeActivityLog/InventoryManager/page/1?txtSearch=" + SearchURL;
+                            }
         </script>
         <script
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
@@ -171,4 +175,5 @@
         crossorigin="anonymous"></script>
         <script src="/RESOURCES/admin/product/public/js/list.js"></script>
     </body>
+
 </html>
