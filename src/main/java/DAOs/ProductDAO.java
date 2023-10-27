@@ -228,6 +228,87 @@ public class ProductDAO implements IProductDAO {
         return productList;
     }
 
+    public List<Product> getBottom9tMaleProduct() {
+        ResultSet rs;
+        String sql = "SELECT TOP 9 * FROM Product p JOIN Stock stk \n"
+                + "		ON stk.Product_ID = p.Product_ID \n"
+                + "		WHERE p.Product_Gender = N\'Nam\'\n"
+                + "		ORDER BY p.Product_ID DESC";
+        List<Product> productList = new ArrayList<>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Product product = productFactory(rs, operation.GET);
+
+                Stock stock = new Stock();
+                stock.setProductID(rs.getInt(Table.Product_ID.toString()));
+                stock.setPrice(rs.getInt("Price"));
+                stock.setQuantity(rs.getInt("Quantity"));
+                product.setStock(stock);
+                productList.add(product);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return productList;
+    }
+
+    public List<Product> getBottom9tFemaleProduct() {
+        ResultSet rs;
+        String sql = "SELECT TOP 9 * FROM Product p JOIN Stock stk \n"
+                + "		ON stk.Product_ID = p.Product_ID \n"
+                + "		WHERE p.Product_Gender = N\'Nữ\'\n"
+                + "		ORDER BY p.Product_ID DESC";
+        List<Product> productList = new ArrayList<>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Product product = productFactory(rs, operation.GET);
+
+                Stock stock = new Stock();
+                stock.setProductID(rs.getInt(Table.Product_ID.toString()));
+                stock.setPrice(rs.getInt("Price"));
+                stock.setQuantity(rs.getInt("Quantity"));
+                product.setStock(stock);
+                productList.add(product);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return productList;
+    }
+
+    public List<Product> getBottom9tUnisexProduct() {
+        ResultSet rs;
+        String sql = "SELECT TOP 9 * FROM Product p JOIN Stock stk \n"
+                + "		ON stk.Product_ID = p.Product_ID \n"
+                + "		WHERE p.Product_Gender = N\'Unisex\'\n"
+                + "		ORDER BY p.Product_ID DESC";
+        List<Product> productList = new ArrayList<>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Product product = productFactory(rs, operation.GET);
+
+                Stock stock = new Stock();
+                stock.setProductID(rs.getInt(Table.Product_ID.toString()));
+                stock.setPrice(rs.getInt("Price"));
+                stock.setQuantity(rs.getInt("Quantity"));
+                product.setStock(stock);
+                productList.add(product);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return productList;
+    }
+
     public List<Product> getAllSimplified() {
         ResultSet rs;
         String sql = "SELECT * FROM Product p\n"
