@@ -19,8 +19,6 @@ $(document).ready(function () {
     const searchValue = searchBar.prop('value').toLowerCase().trim();
 
     if (searchValue !== "") {
-      console.log(`Searching value: "${searchValue}"`);
-
       currentItems.each(function () {
         const target = $(this);
         const rawData = target.attr(dataField);
@@ -35,25 +33,3 @@ $(document).ready(function () {
   });
 
 });
-
-// let brandStorage = document.getElementById("box-brand");
-// const brandNameForSearch = document.querySelectorAll(".brandNameForSearch");
-// const initialBrandStorageHTML = brandStorage.innerHTML;
-
-// searchBox.addEventListener("input", function (event) {
-//   const value = event.target.value.toLowerCase().trim();
-
-//   if (value === "") {
-//     brandStorage.innerHTML = initialBrandStorageHTML;
-//   } else {
-//     brandStorage.innerHTML = "";
-
-//     brandNameForSearch.forEach(function (brand) {
-//       const brandText = brand.textContent.toLowerCase();
-//       if (brandText.includes(value)) {
-//         const listItem = brand.closest("li");
-//         brandStorage.appendChild(listItem);
-//       }
-//     });
-//   }
-// });

@@ -344,28 +344,5 @@
         retireDate.classList.add('hidden');
       }
     </script>
-    <!-- <script>
-        $(document).ready(function () {
-            // Highlight items when enabled
-            const items = $('.item');
-
-            items.click(function (e) {
-                const item = $(this);
-
-                const checkbox = item.find('input[type="checkbox"]');
-                checkbox.prop('checked', !checkbox.prop('checked'));
-                const isChecked = checkbox.prop('checked');
-
-                console.log(`Is the input checked? ${isChecked}`);
-
-                if (isChecked === true) {
-                    item.addClass('enabled');
-                } else {
-                    item.removeClass('enabled');
-                }
-            });
-
-        });
-    </script> -->
   </body>
 </html>
