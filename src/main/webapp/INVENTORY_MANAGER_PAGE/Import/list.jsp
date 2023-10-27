@@ -100,13 +100,6 @@
                                 <td>Ngày cập nhật</td>
                                 <td>Cập nhật bởi Admin</td>
                                 <td>Chi tiết</td>
-                                <td>
-                                    <a href="/InventoryManager/Product/List" class="text-decoration-none">
-                                        <button class="btn btn-outline-dark d-flex justify-content-center align-items-center rounded-0 fn-btn">
-                                            <span class="">Nhập hàng</span>
-                                        </button>
-                                    </a>
-                                </td>
                             </tr>
                         </thead>
                         <tbody>

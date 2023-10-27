@@ -193,13 +193,14 @@ button:hover{
     height: 0px;
     overflow: hidden;
     transition: all 0.3s ease;
+    z-index: 999;
   }
   
   .nav .account #product-dropdown-btn + ul {
-     right: 105px;
+     right: 1.5625rem;
   }
   .nav .account #user-dropdown-btn + ul  {
-     right: 58px;
+     right: .3125rem;
   }
   
   .nav .account img {
@@ -212,7 +213,7 @@ button:hover{
   }
   
   .nav .account #product-dropdown-btn + ul.drop-down-show {
-    height: 108px !important;
+    height: 130px !important;
   }
   .nav .account #user-dropdown-btn + ul.drop-down-show {
     height: 61px !important;

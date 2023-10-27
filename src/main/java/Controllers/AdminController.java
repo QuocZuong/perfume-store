@@ -376,7 +376,7 @@ public class AdminController extends HttpServlet {
         }
 
         if (path.startsWith(ADMIN_IMPORT_DETAIL_URI)) {
-            System.out.println("Going Order Detail");
+            System.out.println("Going import Detail");
             int result = getImportDetail(request);
             if (result == State.Success.value) {
                 request.getRequestDispatcher("/ADMIN_PAGE/Import/importDetail.jsp").forward(request,
@@ -409,6 +409,7 @@ public class AdminController extends HttpServlet {
             }
             return;
         }
+
         // ---------------------------- IMPORT SECTION ----------------------------
         // ---------------------------- CHART SECTION ----------------------------
         if (path.startsWith(ADMIN_CHART_BEST_SELLING_PRODUCT_BY_GENDER)) {
@@ -546,18 +547,19 @@ public class AdminController extends HttpServlet {
         }
 
         if (path.startsWith(ADMIN_IMPORT_CONFIRM_UPDATE_URI)) {
-            if (request.getParameter("btnCheckoutImportCart") != null
-                    && request.getParameter("btnCheckoutImportCart").equals("Submit")) {
+            if (request.getParameter("btnUpdateImport") != null
+                    && request.getParameter("btnUpdateImport").equals("Submit")) {
                 System.out.println("Going update info");
                 int result = updateImportInformation(request);
                 if (result == State.Success.value) {
-                    response.sendRedirect(ADMIN_USER_URI);
+                    response.sendRedirect(ADMIN_IMPORT_DETAIL_URI + "/ID/" + (String) request.getAttribute("ImportID"));
                 } else if (result == State.Fail.value) {
-                    response.sendRedirect(ADMIN_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
+                    response.sendRedirect(ADMIN_IMPORT_UPDATE_URI + "/ID/" + ((String) request.getAttribute("ImportID") != null ? (String) request.getAttribute("ImportID") : "-1") + ExceptionUtils.generateExceptionQueryString(request));
                 }
                 return;
             }
         }
+
     }
 
     /* CRUD */
@@ -1647,7 +1649,73 @@ public class AdminController extends HttpServlet {
     }
 
     private int updateImportInformation(HttpServletRequest request) {
-        return 0;
+        int result;
+        ImportDetailDAO ipdDAO = new ImportDetailDAO();
+        ImportDAO ipDAO = new ImportDAO();
+        AdminDAO adDAO = new AdminDAO();
+        Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
+        String username = userCookie.getValue();
+        Admin ad = adDAO.getAdmin(username);
+
+        if (ad == null) {
+            System.out.println("Unknow Username to update import information");
+            request.setAttribute("exceptionType", "AccountNotFoundException");
+            return State.Fail.value;
+        }
+
+        if (request.getParameter("ImportID") == null) {
+            System.out.println("Unknow ImportID to update information");
+            request.setAttribute("exceptionType", "OperationEditFailedException");
+            return State.Fail.value;
+        }
+
+        int importId = Integer.parseInt(request.getParameter("ImportID"));
+        request.setAttribute("ImportID", importId + "");
+        Import ip = ipDAO.getImport(importId);
+
+        if (ip == null) {
+            System.out.println("Import not found to update");
+            request.setAttribute("exceptionType", "ImportNotFoundException");
+            return State.Fail.value;
+        }
+
+        String supplierName = request.getParameter("txtSupplier");
+        Long importAt = Converter.convertStringToEpochMilli(request.getParameter("txtImportAt"));
+        Long deliveredAt = Converter.convertStringToEpochMilli(request.getParameter("txtDeliveredAt"));
+
+        int listSize = Integer.parseInt(request.getParameter("ListSize"));
+        if (listSize != 0) {
+            for (int i = 0; i < listSize; i++) {
+                int ProductID = Integer.parseInt(request.getParameter("ProductID" + i));
+                int ProductQuan = Integer.parseInt(request.getParameter("ProductQuan" + i));
+                int ProductCost = Integer.parseInt(request.getParameter("ProductCost" + i));
+                ImportDetail ipD = new ImportDetail();
+                ipD.setImportId(ip.getId());
+                ipD.setProductId(ProductID);
+                ipD.setQuantity(ProductQuan);
+                ipD.setCost(ProductCost);
+                ipD.setStatus(ImportDetailDAO.Status.WAIT.toString());
+                result = ipdDAO.updateImportDetail(ipD);
+                if (result == 0) {
+                    System.out.println("update Import detail fail");
+                    request.setAttribute("exceptionType", "OperationEditFailedException");
+                    return State.Fail.value;
+                }
+            }
+        }
+        List<ImportDetail> ipDetailList = ipdDAO.getAllImportDetailOfImport(importId);
+        ip.setTotalQuantity(ipdDAO.getTotalQuantityImportDetail(ipDetailList));
+        ip.setTotalCost(ipdDAO.getTotalCostImportDetail(ipDetailList));
+        ip.setDeliveredAt(deliveredAt);
+        ip.setImportAt(importAt);
+        ip.setSupplierName(supplierName);
+        result = ipDAO.updateImport(ip, ad.getAdminId());
+        if (result == 0) {
+            System.out.println("Unknow ImportID to update information");
+            request.setAttribute("exceptionType", "OperationEditFailedException");
+            return State.Fail.value;
+        }
+        return State.Success.value;
     }
 
     private boolean updateAdminInfomation(HttpServletRequest request,
