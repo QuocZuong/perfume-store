@@ -228,7 +228,7 @@ public class ProductDAO implements IProductDAO {
         return productList;
     }
 
-    public List<Product> getBottom9tMaleProduct() {
+    public List<Product> getBottom9MaleProduct() {
         ResultSet rs;
         String sql = "SELECT TOP 9 * FROM Product p JOIN Stock stk \n"
                 + "		ON stk.Product_ID = p.Product_ID \n"
@@ -255,7 +255,7 @@ public class ProductDAO implements IProductDAO {
         return productList;
     }
 
-    public List<Product> getBottom9tFemaleProduct() {
+    public List<Product> getBottom9FemaleProduct() {
         ResultSet rs;
         String sql = "SELECT TOP 9 * FROM Product p JOIN Stock stk \n"
                 + "		ON stk.Product_ID = p.Product_ID \n"
@@ -282,7 +282,7 @@ public class ProductDAO implements IProductDAO {
         return productList;
     }
 
-    public List<Product> getBottom9tUnisexProduct() {
+    public List<Product> getBottom9UnisexProduct() {
         ResultSet rs;
         String sql = "SELECT TOP 9 * FROM Product p JOIN Stock stk \n"
                 + "		ON stk.Product_ID = p.Product_ID \n"
