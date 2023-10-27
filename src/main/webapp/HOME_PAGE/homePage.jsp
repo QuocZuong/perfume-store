@@ -22,22 +22,20 @@
         isAdmin = currentUserCookie.getName().equals("Admin");
     }
 
-    List<Product> productList = pdao.getAll();
+    List<Product> maleProductList = pdao.getBottom9MaleProduct();
+    List<Product> femaleProductList = pdao.getBottom9FemaleProduct();
+    List<Product> unisexProductList = pdao.getBottom9UnisexProduct();
 
-    List<Product> maleProductList = productList.stream()
-                    .filter(product -> product.getGender().equals("Nam"))
-                    .sorted(( p1,       p2) -> ((Integer) p1.getId()).compareTo((Integer) p2.getId()))
-                    .collect(Collectors.toList());
+    int index;
+    Product p;
+    BrandDAO bDAO = new BrandDAO();
+    Brand b;
 
-    List<Product> femaleProductList = productList.stream()
-                    .filter(product -> product.getGender().equals("Nữ"))
-                    .sorted(( p1,       p2) -> ((Integer) p1.getId()).compareTo((Integer) p2.getId()))
-                    .collect(Collectors.toList());
-
-    List<Product> unisexProductList = productList.stream()
-                    .filter(product -> product.getGender().equals("Unisex"))
-                    .sorted(( p1,       p2) -> ((Integer) p1.getId()).compareTo((Integer) p2.getId()))
-                    .collect(Collectors.toList());
+    int id;
+    String name;
+    String brand;
+    String imgUrl;
+    String price;
 %>
 
 <!DOCTYPE html>
@@ -151,17 +149,17 @@
               <c:if test='<%= maleProductList.size() != 0%>'>
                 <c:forEach var="i" begin='0' end="<%= maleProductList.size() > 9 ? 8 : maleProductList.size() - 1%>">
                   <%
-                                        int index = (int) pageContext.getAttribute("i");
-                                        Product p = maleProductList.get(index);
-                                        BrandDAO bDAO = new BrandDAO();
-                                        Brand b = bDAO.getBrand(p.getBrandId());
+                                        index = (int) pageContext.getAttribute("i");
+                                        p = maleProductList.get(index);
+                                        b = bDAO.getBrand(p.getBrandId());
 
-                                        String name = p.getName().equals(null) ? "" : p.getName();
-                                        String brand = b.getName().equals(null) ? "" : b.getName();
-                                        String imgUrl = p.getImgURL().equals(null) ? "" : p.getImgURL();
-                                        String price = Converter.covertIntergerToMoney(p.getStock().getPrice());
+                                        id = p.getId();
+                                        name = p.getName().equals(null) ? "" : p.getName();
+                                        brand = b.getName().equals(null) ? "" : b.getName();
+                                        imgUrl = p.getImgURL().equals(null) ? "" : p.getImgURL();
+                                        price = Converter.covertIntergerToMoney(p.getStock().getPrice());
                   %>
-                  <a href="/Product/Detail/ID/88">
+                  <a href="/Product/Detail/ID/<%= id%>">
                     <div class="card">
                       <img src="<%= imgUrl%>" alt="<%= name%>" class="product-img">
                       <span class="product-brand"><%= brand%></span>
@@ -172,108 +170,23 @@
                   </a>
                 </c:forEach>
               </c:if>
-
-              <%-- <a href="/Product/Detail/ID/88">
-                <div class="card">
-                  <img src="/RESOURCES/images/products/Nuoc-hoa-Creed-Aventus-600x600.png" alt="" class="product-img">
-                  <span class="product-brand">Creed</span>
-                  <hr>
-                  <span class="product-name">Aventus</span>
-                  <span class="product-price">6.000.000 <span>đ</span></span>
-                </div>
-              </a>
-              <a href="/Product/Detail/ID/39">
-                <div class="card">
-                  <img src="/RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
-                  <span class="product-brand">By Kilian</span>
-                  <hr>
-                  <span class="product-name">Angels` Share</span>
-                  <span class="product-price">4.800.000 <span>đ</span></span>
-                </div>
-              </a>
-              <a href="/Product/Detail/ID/128">
-                <div class="card">
-                  <img src="https://xxivstore.com/wp-content/uploads/2020/09/eau-de-minthe-eau-de-parfum-75ml-e87-600x600.png" alt="" class="product-img">
-                  <span class="product-brand">Diptyque</span>
-                  <hr>
-                  <span class="product-name">Eau de minthé</span>
-                  <span class="product-price">3.700.000 <span>đ</span></span>
-                </div>
-              </a>
-              <a href="/Product/Detail/ID/246">
-
-                <div class="card">
-                  <img src="/RESOURCES/images/products/baccarat540-600x600.png" alt="" class="product-img">
-                  <span class="product-brand">Maison Francis Kurkdijian</span>
-                  <hr>
-                  <span class="product-name">Baccarat Rouge 540</span>
-                  <span class="product-price">6.000.000 <span>đ</span></span>
-                </div>
-              </a>
-              <a href="/Product/Detail/ID/88">
-                <div class="card">
-                  <img src="/RESOURCES/images/products/Nuoc-hoa-Creed-Aventus-600x600.png" alt="" class="product-img">
-                  <span class="product-brand">Creed</span>
-                  <hr>
-                  <span class="product-name">Aventus</span>
-                  <span class="product-price">6.000.000 <span>đ</span></span>
-                </div>
-              </a>
-              <a href="/Product/Detail/ID/107">
-                <div class="card">
-                  <img src="https://xxivstore.com/wp-content/uploads/2020/06/bbda9ea512ea8b2187cf7ca60da01936-600x600.png" alt="" class="product-img">
-                  <span class="product-brand">Dior</span>
-                  <hr>
-                  <span class="product-name">Sauvage EDP</span>
-                  <span class="product-price">3.400.000 <span>đ</span></span>
-                </div>
-              </a>
-              <a href="/Product/Detail/ID/28">
-
-                <div class="card">
-                  <img src="/RESOURCES/images/products/Marie-Jeanne-Vetiver-Santal-600x600.png" alt="" class="product-img">
-                  <span class="product-brand">Burberry</span>
-                  <hr>
-                  <span class="product-name">Mr. Burberry EDP</span>
-                  <span class="product-price">2.600.000 <span>đ</span></span>
-                </div>
-              </a>
-              <a href="/Product/Detail/ID/39">
-                <div class="card">
-                  <img src="/RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
-                  <span class="product-brand">By Kilian</span>
-                  <hr>
-                  <span class="product-name">Angels` Share</span>
-                  <span class="product-price">4.800.000 <span>đ</span></span>
-                </div>
-              </a>
-              <a href="/Product/Detail/ID/3">
-
-                <div class="card">
-                  <img src="https://xxivstore.com/wp-content/uploads/2020/07/CIPRESSO-DI-TOSCANA-EDT-600x600.png" alt="" class="product-img">
-                  <span class="product-brand">Acqua di Parma</span>
-                  <hr>
-                  <span class="product-name">Cipresso di Toscana</span>
-                  <span class="product-price">3.100.000 <span>đ</span></span>
-                </div>
-              </a> --%>
             </div>
 
             <div class="item woman">
-                <c:if test='<%= femaleProductList.size() != 0%>'>
+              <c:if test='<%= femaleProductList.size() != 0%>'>
                 <c:forEach var="i" begin='0' end="<%= femaleProductList.size() > 9 ? 8 : femaleProductList.size() - 1%>">
                   <%
-                                        int index = (int) pageContext.getAttribute("i");
-                                        Product p = femaleProductList.get(index);
-                                        BrandDAO bDAO = new BrandDAO();
-                                        Brand b = bDAO.getBrand(p.getBrandId());
+                                        index = (int) pageContext.getAttribute("i");
+                                        p = femaleProductList.get(index);
+                                        b = bDAO.getBrand(p.getBrandId());
 
-                                        String name = p.getName().equals(null) ? "" : p.getName();
-                                        String brand = b.getName().equals(null) ? "" : b.getName();
-                                        String imgUrl = p.getImgURL().equals(null) ? "" : p.getImgURL();
-                                        String price = Converter.covertIntergerToMoney(p.getStock().getPrice());
+                                        id = p.getId();
+                                        name = p.getName().equals(null) ? "" : p.getName();
+                                        brand = b.getName().equals(null) ? "" : b.getName();
+                                        imgUrl = p.getImgURL().equals(null) ? "" : p.getImgURL();
+                                        price = Converter.covertIntergerToMoney(p.getStock().getPrice());
                   %>
-                  <a href="/Product/Detail/ID/88">
+                  <a href="/Product/Detail/ID/<%= id%>">
                     <div class="card">
                       <img src="<%= imgUrl%>" alt="<%= name%>" class="product-img">
                       <span class="product-brand"><%= brand%></span>
@@ -284,147 +197,23 @@
                   </a>
                 </c:forEach>
               </c:if>
-
-              <%-- <a href="/Product/Detail/ID/398">
-                <div class="card">
-                  <img src="https://xxivstore.com/wp-content/uploads/2020/07/afa315528ab34622c4184e035cc662f0-600x600.png" alt="" class="product-img">
-                  <span class="product-brand">Tom Ford</span>
-                  <hr>
-                  <span class="product-name">Santal Blush</span>
-                  <span class="product-price">5.800.000 <span>đ</span></span>
-                </div>
-              </a>
-              <a href="/Product/Detail/ID/89">
-                <div class="card">
-                  <img src="https://xxivstore.com/wp-content/uploads/2020/06/aventus-for-her-eau-de-parfum-75ml-8cd-600x600.png" alt="" class="product-img">
-                  <span class="product-brand">Creed</span>
-                  <hr>
-                  <span class="product-name">Aventus For Her</span>
-                  <span class="product-price">7.000.000 <span>đ</span></span>
-                </div>
-              </a>
-              <a href="/Product/Detail/ID/375">
-                <div class="card">
-                  <img src="https://xxivstore.com/wp-content/uploads/2020/07/1df87c53922b7304030d168cef3632ed-600x600.png" alt="" class="product-img">
-                  <span class="product-brand">Tom Ford</span>
-                  <hr>
-                  <span class="product-name">Jasmin Rouge EDP</span>
-                  <span class="product-price">5.500.000 <span>đ</span></span>
-                </div>
-              </a>
-
-              <a href="/Product/Detail/ID/89">
-                <div class="card">
-                  <img src="https://xxivstore.com/wp-content/uploads/2020/06/aventus-for-her-eau-de-parfum-75ml-8cd-600x600.png" alt="" class="product-img">
-                  <span class="product-brand">Creed</span>
-                  <hr>
-                  <span class="product-name">Aventus For Her</span>
-                  <span class="product-price">7.000.000 <span>đ</span></span>
-                </div>
-              </a>
-
-              <a href="/Product/Detail/ID/419">
-                <div class="card">
-                  <img src="https://xxivstore.com/wp-content/uploads/2021/12/Dama1-600x600.png" alt="" class="product-img">
-                  <span class="product-brand">Xerjoff</span>
-                  <hr>
-                  <span class="product-name">Dama Bianca</span>
-                  <span class="product-price">6.900.000 <span>đ</span></span>
-                </div>
-              </a>
-
-              <a href="/Product/Detail/ID/398">
-                <div class="card">
-                  <img src="https://xxivstore.com/wp-content/uploads/2020/07/afa315528ab34622c4184e035cc662f0-600x600.png" alt="" class="product-img">
-                  <span class="product-brand">Tom Ford</span>
-                  <hr>
-                  <span class="product-name">Santal Blush</span>
-                  <span class="product-price">5.800.000 <span>đ</span></span>
-                </div>
-              </a>
-              <a href="/Product/Detail/ID/39">
-                <div class="card">
-                  <img src="/RESOURCES/images/products/Kilian-Angels-Share-600x600.png" alt="" class="product-img">
-                  <span class="product-brand">Kilian</span>
-                  <hr>
-                  <span class="product-name">Angels Share</span>
-                  <span class="product-price">6.000.000 <span>đ</span></span>
-                </div>
-              </a>
-              <a href="/Product/Detail/ID/120">
-                <div class="card">
-                  <img src="https://xxivstore.com/wp-content/uploads/2020/07/558153_1_4-e1594898257731-600x530.png" alt="" class="product-img">
-                  <span class="product-brand">Dior</span>
-                  <hr>
-                  <span class="product-name">Miss Dior Blooming</span>
-                  <span class="product-price">3.600.000 <span>đ</span></span>
-                </div>
-              </a>
-              <a href="/Product/Detail/ID/127">
-
-                <div class="card">
-                  <img src="https://xxivstore.com/wp-content/uploads/2020/08/do-son-eau-de-toilette-100ml-99a-600x600.png" alt="" class="product-img">
-                  <span class="product-brand">Diptyque</span>
-                  <hr>
-                  <span class="product-name">Do Son</span>
-                  <span class="product-price">3.500.000 <span>đ</span></span>
-                </div>
-              </a>
-              <a href="/Product/Detail/ID/10">
-
-                <div class="card">
-                  <img src="https://xxivstore.com/wp-content/uploads/2023/01/Amouge-Meander-600x600.png" alt="" class="product-img">
-                  <span class="product-brand">Amouage</span>
-                  <hr>
-                  <span class="product-name">Meander</span>
-                  <span class="product-price">7.900.000 <span>đ</span></span>
-                </div>
-              </a>
-              <a href="/Product/Detail/ID/419">
-                <div class="card">
-                  <img src="https://xxivstore.com/wp-content/uploads/2021/12/Dama1-600x600.png" alt="" class="product-img">
-                  <span class="product-brand">Xerjoff</span>
-                  <hr>
-                  <span class="product-name">Dama Bianca</span>
-                  <span class="product-price">6.900.000 <span>đ</span></span>
-                </div>
-              </a>
-              <a href="/Product/Detail/ID/171">
-
-                <div class="card">
-                  <img src="https://xxivstore.com/wp-content/uploads/2020/08/hermes-twilly-d-hermes-hermes-twilly-d-hermes-eau-de-parfum-50-ml-3346133200014-copy-600x629.png" alt="" class="product-img">
-                  <span class="product-brand">Hermès</span>
-                  <hr>
-                  <span class="product-name">Twilly d`Hermès</span>
-                  <span class="product-price">2.950.000 <span>đ</span></span>
-                </div>
-              </a>
-              <a href="/Product/Detail/ID/191">
-                <div class="card">
-                  <img src="https://xxivstore.com/wp-content/uploads/2022/08/Imaginary-Authors-Fox-in-the-flowerbed-600x600.png" alt="" class="product-img">
-                  <span class="product-brand">Imaginary Authors</span>
-                  <hr>
-                  <span class="product-name">Fox in the Flowerbed</span>
-                  <span class="product-price">3.200.000 <span>đ</span></span>
-                </div>
-              </a> --%>
             </div>
 
             <div class="item unisex">
-                <c:if test='<%= unisexProductList.size() != 0%>'>
+              <c:if test='<%= unisexProductList.size() != 0%>'>
                 <c:forEach var="i" begin='0' end="<%= unisexProductList.size() > 9 ? 8 : unisexProductList.size() - 1%>">
                   <%
-                                        int index = (int) pageContext.getAttribute("i");
-                                        Product p = unisexProductList.get(index);
-                                        BrandDAO bDAO = new BrandDAO();
-                                        Brand b = bDAO.getBrand(p.getBrandId());
+                                        index = (int) pageContext.getAttribute("i");
+                                        p = unisexProductList.get(index);
+                                        b = bDAO.getBrand(p.getBrandId());
 
-                                        String name = p.getName().equals(null) ? "" : p.getName();
-                                        String brand = b.getName().equals(null) ? "" : b.getName();
-                                        String imgUrl = p.getImgURL().equals(null) ? "" : p.getImgURL();
-                                        String price = Converter.covertIntergerToMoney(p.getStock().getPrice());
+                                        id = p.getId();
+                                        name = p.getName().equals(null) ? "" : p.getName();
+                                        brand = b.getName().equals(null) ? "" : b.getName();
+                                        imgUrl = p.getImgURL().equals(null) ? "" : p.getImgURL();
+                                        price = Converter.covertIntergerToMoney(p.getStock().getPrice());
                   %>
-                  <a href="/Product/Detail/ID/88">
+                  <a href="/Product/Detail/ID/<%= id%>">
                     <div class="card">
                       <img src="<%= imgUrl%>" alt="<%= name%>" class="product-img">
                       <span class="product-brand"><%= brand%></span>
@@ -435,108 +224,6 @@
                   </a>
                 </c:forEach>
               </c:if>
-                
-              <%-- <a href="/Product/Detail/ID/392">
-                <div class="card">
-                  <img src="https://xxivstore.com/wp-content/uploads/2020/08/Mandarino-di-amalfi.png" alt="" class="product-img">
-                  <span class="product-brand">Tom Ford</span>
-                  <hr>
-                  <span class="product-name">Mandarino Di Amalfi</span>
-                  <span class="product-price">4.100.000 <span>đ</span></span>
-                </div>
-              </a>
-              <a href="/Product/Detail/ID/394">
-                <div class="card">
-                  <img src="https://xxivstore.com/wp-content/uploads/2020/08/tom-ford-lavender-extreme-eau-de-parfum-50ml.png" alt="" class="product-img">
-                  <span class="product-brand">Tom Ford</span>
-                  <hr>
-                  <span class="product-name">Lavender Extreme</span>
-                  <span class="product-price">6.000.000 <span>đ</span></span>
-                </div>
-              </a>
-              <a href="/Product/Detail/ID/256">
-                <div class="card">
-                  <img src="https://xxivstore.com/wp-content/uploads/2020/06/fire-600x600.png" alt="" class="product-img">
-                  <span class="product-brand">Maison Margiela</span>
-                  <hr>
-                  <span class="product-name">Replica By The Fireplace</span>
-                  <span class="product-price">3.500.000 <span>đ</span></span>
-                </div>
-              </a>
-              <a href="/Product/Detail/ID/246">
-                <div class="card">
-                  <img src="/RESOURCES/images/products/baccarat540-600x600.png" alt="" class="product-img">
-                  <span class="product-brand">Maison Francis Kurkdijian</span>
-                  <hr>
-                  <span class="product-name">Baccarat Rouge 540</span>
-                  <span class="product-price">6.000.000 <span>đ</span></span>
-                </div>
-              </a>
-              <a href="/Product/Detail/ID/256">
-                <div class="card">
-                  <img src="https://xxivstore.com/wp-content/uploads/2020/06/fire-600x600.png" alt="" class="product-img">
-                  <span class="product-brand">Maison Margiela</span>
-                  <hr>
-                  <span class="product-name">Replica By The Fireplace</span>
-                  <span class="product-price">3.500.000 <span>đ</span></span>
-                </div>
-              </a>
-
-              <a href="/Product/Detail/ID/325">
-                <div class="card">
-                  <img src="/RESOURCES/images/products/6bb559193c12a192157b071aa6c2f153-600x600.png" alt="" class="product-img">
-                  <span class="product-brand">Nasomatto</span>
-                  <hr>
-                  <span class="product-name">Nasomatto Blamage</span>
-                  <span class="product-price">3.850.000 <span>đ</span></span>
-                </div>
-              </a>
-
-              <a href="/Product/Detail/ID/329">
-                <div class="card">
-                  <img src="https://xxivstore.com/wp-content/uploads/2021/07/XXIV-Store-Nishane-Hacivat-600x600.png" alt="" class="product-img">
-                  <span class="product-brand">Nishane</span>
-                  <hr>
-                  <span class="product-name">Nishane Hacivat</span>
-                  <span class="product-price">5.500.000 <span>đ</span></span>
-                </div>
-              </a>
-              <a href="/Product/Detail/ID/339">
-                <div class="card">
-                  <img src="https://xxivstore.com/wp-content/uploads/2022/05/Orto-Parisi-Viride.png" alt="" class="product-img">
-                  <span class="product-brand">Orto Parisi</span>
-                  <hr>
-                  <span class="product-name">Orto Parisi Viride</span>
-                  <span class="product-price">5.300.000 <span>đ</span></span>
-                </div>
-              </a>
-              <a href="/Product/Detail/ID/392">
-                <div class="card">
-                  <img src="https://xxivstore.com/wp-content/uploads/2020/08/Mandarino-di-amalfi.png" alt="" class="product-img">
-                  <span class="product-brand">Tom Ford</span>
-                  <hr>
-                  <span class="product-name">Mandarino Di Amalfi</span>
-                  <span class="product-price">4.100.000 <span>đ</span></span>
-                </div>
-              </a>
-              <a href="/Product/Detail/ID/394">
-                <div class="card">
-                  <img src="https://xxivstore.com/wp-content/uploads/2020/08/tom-ford-lavender-extreme-eau-de-parfum-50ml.png" alt="" class="product-img">
-                  <span class="product-brand">Tom Ford</span>
-                  <hr>
-                  <span class="product-name">Lavender Extreme</span>
-                  <span class="product-price">6.000.000 <span>đ</span></span>
-                </div>
-              </a>
-              <a href="/Product/Detail/ID/426">
-                <div class="card">
-                  <img src="https://xxivstore.com/wp-content/uploads/2022/08/Zoologist-Seahorse-600x600.png" alt="" class="product-img">
-                  <span class="product-brand">Zoologist</span>
-                  <hr>
-                  <span class="product-name">Seahorse</span>
-                  <span class="product-price">5.200.000 <span>đ</span></span>
-                </div>
-              </a> --%>
             </div>
 
             <div class="dots">
