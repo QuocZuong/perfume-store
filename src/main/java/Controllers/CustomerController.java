@@ -148,10 +148,10 @@ public class CustomerController extends HttpServlet {
             System.out.println("Going Order Detail");
             int result = getCustomerOrderDetail(request);
             if (result == State.Success.value) {
-                request.getRequestDispatcher("/CUSTOMER_PAGE/order_detail.jsp").forward(request,
-                        response);
+                System.out.println("success");
+                request.getRequestDispatcher("/CUSTOMER_PAGE/order_detail.jsp").forward(request, response);
             } else {
-                request.getRequestDispatcher(CUSTOMER_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
+                response.sendRedirect(CUSTOMER_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
             }
             return;
         }
@@ -467,9 +467,9 @@ public class CustomerController extends HttpServlet {
     }
 
     private int getCustomerOrderDetail(HttpServletRequest request) {
-        String path = request.getRequestURI();
-        String[] data = path.split("/");
         try {
+            String path = request.getRequestURI();
+            String[] data = path.split("/");
             OrderDAO oDAO = new OrderDAO();
             VoucherDAO vDAO = new VoucherDAO();
             ProductDAO pDAO = new ProductDAO();
@@ -501,8 +501,6 @@ public class CustomerController extends HttpServlet {
                 request.setAttribute("approvedProductsList", approvedProductsList);
                 // Get the list of all product that is approviate for voucher discount.
             }
-            System.out.println("Get order detail list");
-            System.out.println(order.getOrderDetailList());
 
             request.setAttribute("OrderInfor", order);
             return State.Success.value;
@@ -511,6 +509,9 @@ public class CustomerController extends HttpServlet {
             return State.Fail.value;
         } catch (ProductNotFoundException ex) {
             request.setAttribute("exceptionType", "ProductNotFoundException");
+            return State.Fail.value;
+        } catch (Exception ex) {
+            request.setAttribute("exceptionType", "");
             return State.Fail.value;
         }
     }
