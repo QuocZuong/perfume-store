@@ -187,7 +187,7 @@
                         <div class="row">
                           <div class="col-sm-12 row">
                             <div class="col-6 d-flex align-items-center item-name"> <%= product.getName()%></div>
-                            <img class="col-2 me-5" src=<%= product.getImgURL()%> alt="<%= product.getName()%>">
+                            <a href="/Product/Detail/ID/<%= product.getId()%>" class="col-2 offset-4" target="_blank"><img src=<%= product.getImgURL()%> alt="<%= product.getName()%>"></a>
                           </div>
                         </div>
                       </div>
