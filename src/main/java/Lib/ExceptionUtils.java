@@ -49,6 +49,7 @@ public class ExceptionUtils {
         InvalidVoucherException,
         VoucherNotFoundException,
         NotEnoughVoucherQuantityException,
+        NoProductVoucherAppliedException,
         //Import
         ImportNotFoundException
 
@@ -91,6 +92,7 @@ public class ExceptionUtils {
                         new NotEnoughProductQuantityException());
                 put(ExceptionType.NotEnoughVoucherQuantityException.toString(),
                         new NotEnoughProductQuantityException());
+                put(ExceptionType.NoProductVoucherAppliedException.toString(), new NoProductVoucherAppliedException());
                 put(ExceptionType.ImportNotFoundException.toString(), new ImportNotFoundException());
             }
         };
@@ -267,6 +269,10 @@ public class ExceptionUtils {
 
     public static boolean isVoucherNotFound(String queryString) {
         return getExceptionNameByQueryString(queryString).equals(ExceptionType.VoucherNotFoundException.toString());
+    }
+
+    public static boolean NoProductVoucherAppliedException(String queryString) {
+        return getExceptionNameByQueryString(queryString).equals(ExceptionType.NoProductVoucherAppliedException.toString());
     }
 
     public static boolean isNotEnoughProductQuantityException(String queryString) {
