@@ -1938,7 +1938,6 @@ public class AdminController extends HttpServlet {
         ImportDAO ipDAO = new ImportDAO();
         AdminDAO adDAO = new AdminDAO();
         ImportDetailDAO ipDetailDAO = new ImportDetailDAO();
-        ProductDAO pDAO = new ProductDAO();
         String data[] = request.getRequestURI().split("/");
 
         Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
