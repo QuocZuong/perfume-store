@@ -81,7 +81,7 @@
       }
     </style>
 
-    <title>Cập nhật khách hàng</title>
+    <title>Cập nhật Voucher</title>
   </head>
   <body>
     <div class="container-fluid">
@@ -151,11 +151,10 @@
                 </c:when>
 
                 <c:otherwise>
+                  <input placeholder="Tìm kiếm nhanh" type="text" class="searchBox w-100">
                   <div class="scroll-list">
-                    <input placeholder="Tìm kiếm nhanh" type="text" name="" id="searchBox">
                     
                     <!-- Product List -->
-                    <div class="list-product">
                       <c:forEach var='i' begin='0' end="<%=productList.size() - 1%>">
                         <%
                                                   int index = (int) pageContext.getAttribute("i");
@@ -163,20 +162,17 @@
 
                                                   boolean isCheck = true;
                         %>
-                        <div>
-                          <div class="item fw-bold">
+                          <div class="item fw-bold" data-product-name="<%= product.getName()%>" >
                             <div class="row">
                               <div class="col-sm-12 row curso">
-                                <input type="checkbox" id="<%= "Product_Item_" + product.getId()%>" value="<%= product.getName()%>" class="d-none">
+                                <input type="checkbox" id="<%= "Product_Item_" + product.getId()%>" value="<%= product.getName()%>" class="d-none"">
                                 <label class="col-6 d-flex align-items-center" for="<%= "Product_Item_" + product.getId()%>"> <%= product.getName()%></label>
                                 <img class="col-2 me-5" src=<%= product.getImgURL()%> alt="<%= product.getName()%>">
                               </div>
                             </div>
                           </div>
-                        </div>   
                       </c:forEach>
                     </div>
-                  </div>
 
                 </c:otherwise>
 
@@ -193,6 +189,7 @@
       crossorigin="anonymous"
     ></script>
     <script src="/RESOURCES/admin/product/public/js/list.js"></script>
+    <script src="/RESOURCES/admin/voucher/public/js/filterList.js"></script>
 
     <!--Jquery Validation-->
     <script>
