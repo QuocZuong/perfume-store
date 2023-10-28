@@ -11,6 +11,7 @@ import Exceptions.EmailDuplicationException;
 import Exceptions.InvalidInputException;
 import Exceptions.NotEnoughProductQuantityException;
 import Exceptions.NotEnoughVoucherQuantityException;
+import Exceptions.OperationAddFailedException;
 import Exceptions.OperationEditFailedException;
 import Exceptions.ProductNotFoundException;
 import Exceptions.UsernameDuplicationException;
@@ -325,6 +326,9 @@ public class OrderManagerController extends HttpServlet {
             return State.Fail.value;
         } catch (NotEnoughVoucherQuantityException ex) {
             request.setAttribute("exceptionType", "NotEnoughVoucherQuantityException");
+            return State.Fail.value;
+        } catch (OperationAddFailedException ex) {
+            request.setAttribute("exceptionType", "OperationAddFailedException");
             return State.Fail.value;
         }
         return State.Fail.value;
