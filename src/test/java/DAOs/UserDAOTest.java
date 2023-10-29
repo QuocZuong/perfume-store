@@ -45,7 +45,7 @@ public class UserDAOTest {
     public void testUTCID01LoginByEmail() throws Exception {
         System.out.println("testUTCID01LoginByEmail");
         String loginString = "test@email.com";
-        String password = "test123456789";
+        String password = "test12345";
         IUserDAO.loginType Type = IUserDAO.loginType.Email;
         UserDAO instance = new UserDAO();
         User expResult = new User();
@@ -72,7 +72,7 @@ public class UserDAOTest {
     public void testUTCID02LoginByEmailInvalidInput() throws Exception {
         System.out.println("testUTCID02LoginByEmailInvalidInput");
         String loginString = "test@email.com";
-        String password = "test123456789";
+        String password = "test12345";
         IUserDAO.loginType Type = IUserDAO.loginType.Username;
         UserDAO instance = new UserDAO();
         assertThrows(InvalidInputException.class, () -> {
@@ -89,7 +89,7 @@ public class UserDAOTest {
     public void testUTCID03LoginByEmailTypeNull() throws Exception {
         System.out.println("testUTCID03LoginByEmailTypeNull");
         String loginString = "test@email.com";
-        String password = "test123456789";
+        String password = "test12345";
         IUserDAO.loginType Type = null;
         UserDAO instance = new UserDAO();
         assertNull(instance.login(loginString, password, Type));
@@ -170,7 +170,7 @@ public class UserDAOTest {
     public void testUTCID08LoginByInvalidEmail() throws Exception {
         System.out.println("testUTCID08LoginByInvalidEmail");
         String loginString = "test@gmail";
-        String password = "test123456789";
+        String password = "test12345";
         IUserDAO.loginType Type = IUserDAO.loginType.Email;
         UserDAO instance = new UserDAO();
         assertThrows(InvalidInputException.class, () -> {
@@ -187,7 +187,7 @@ public class UserDAOTest {
     public void testUTCID09LoginBy51LongEmail() throws Exception {
         System.out.println("testUTCID09LoginBy51LongEmail");
         String loginString = "12345678901234567890123456789012345678901@gmail.com";
-        String password = "test123456789";
+        String password = "test12345";
         IUserDAO.loginType Type = IUserDAO.loginType.Email;
         UserDAO instance = new UserDAO();
 
@@ -205,7 +205,7 @@ public class UserDAOTest {
     public void testUTCID10LoginBy50LongEmail() throws Exception {
         System.out.println("testUTCID10LoginBy50LongEmail");
         String loginString = "1234567890123456789012345678901234567890@gmail.com";
-        String password = "test123456789";
+        String password = "test12345";
         IUserDAO.loginType Type = IUserDAO.loginType.Email;
         UserDAO instance = new UserDAO();
         assertThrows(WrongPasswordException.class, () -> {
@@ -222,7 +222,7 @@ public class UserDAOTest {
     public void testUTCID11LoginByUsername() throws Exception {
         System.out.println("testUTCID11LoginByUsername");
         String loginString = "test12345";
-        String password = "test123456789";
+        String password = "test12345";
         IUserDAO.loginType Type = IUserDAO.loginType.Username;
         UserDAO instance = new UserDAO();
 
@@ -250,7 +250,7 @@ public class UserDAOTest {
     public void testUTCID12LoginByDigitUsername() throws Exception {
         System.out.println("testUTCID12LoginByDigitUsername");
         String loginString = "99999999";
-        String password = "test123456789";
+        String password = "test12345";
         IUserDAO.loginType Type = IUserDAO.loginType.Username;
         UserDAO instance = new UserDAO();
 
@@ -268,7 +268,7 @@ public class UserDAOTest {
     public void testUTCID13LoginByCharacterUsername() throws Exception {
         System.out.println("testUTCID13LoginByCharacterUsername");
         String loginString = "AAAAAAAA";
-        String password = "test123456789";
+        String password = "test12345";
         IUserDAO.loginType Type = IUserDAO.loginType.Username;
         UserDAO instance = new UserDAO();
 
@@ -286,7 +286,7 @@ public class UserDAOTest {
     public void testUTCID14LoginByUsernameNull() throws Exception {
         System.out.println("testUTCID11LoginByUsername");
         String loginString = null;
-        String password = "test123456789";
+        String password = "test12345";
         IUserDAO.loginType Type = IUserDAO.loginType.Username;
         UserDAO instance = new UserDAO();
         assertNull(instance.login(loginString, password, Type));
@@ -302,7 +302,7 @@ public class UserDAOTest {
     public void testUTCID15LoginByUTF8UsernameNull() throws Exception {
         System.out.println("testUTCID15LoginByUTF8UsernameNull");
         String loginString = "わたしわきれいです";
-        String password = "test123456789";
+        String password = "test12345";
         IUserDAO.loginType Type = IUserDAO.loginType.Username;
         UserDAO instance = new UserDAO();
 
@@ -320,7 +320,7 @@ public class UserDAOTest {
     public void testUTCID16LoginByUsername0char() throws Exception {
         System.out.println("testUTCID16LoginByUsername0char");
         String loginString = "";
-        String password = "test123456789";
+        String password = "test12345";
         IUserDAO.loginType Type = IUserDAO.loginType.Username;
         UserDAO instance = new UserDAO();
         assertThrows(InvalidInputException.class, () -> {
@@ -337,7 +337,7 @@ public class UserDAOTest {
     public void testUTCID17LoginBy1LongUsernamel() throws Exception {
         System.out.println("testUTCID17LoginBy1LongUsernamel");
         String loginString = "1";
-        String password = "test123456789";
+        String password = "test12345";
         IUserDAO.loginType Type = IUserDAO.loginType.Username;
         UserDAO instance = new UserDAO();
         assertThrows(WrongPasswordException.class, () -> {
