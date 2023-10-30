@@ -23,6 +23,7 @@ import Exceptions.AccountNotFoundException;
 import Exceptions.CitizenIDDuplicationException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.InvalidInputException;
+import Exceptions.OperationAddFailedException;
 import Exceptions.PhoneNumberDuplicationException;
 import Exceptions.ProductNotFoundException;
 import Exceptions.UsernameDuplicationException;
@@ -53,8 +54,10 @@ import jakarta.servlet.http.Part;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, // 1MB
         maxFileSize = 1024 * 1024 * 5, // 5MB
@@ -113,9 +116,6 @@ public class AdminController extends HttpServlet {
     public static final String ADMIN_CHART_TOTAL_ORDER = "/Admin/Chart/TotalOrder";
 
     public static final String ADMIN_UPDATE_INFO_URI = "/Admin/Update/Info";
-
-    public static final String IMGUR_API_ENDPOINT = "https://api.imgur.com/3/image";
-    public static final String IMGUR_CLIENT_ID = "87da474f87f4754";
 
     public enum State {
         Success(1),
@@ -534,13 +534,14 @@ public class AdminController extends HttpServlet {
             }
         }
         if (path.startsWith(ADMIN_VOUCHER_UPDATE_URI)) {
-            if (request.getParameter("btnUpdateInfo") != null
-                    && request.getParameter("btnUpdateInfo").equals("Submit")) {
+            if (request.getParameter("btnUpdateVoucher") != null
+                    && request.getParameter("btnUpdateVoucher").equals("Submit")) {
                 System.out.println("Going update info");
-                if (updateAdminInfomation(request, response)) {
-                    response.sendRedirect(ADMIN_USER_URI);
+                int result = updateVoucher(request);
+                if (result == State.Success.value) {
+                    response.sendRedirect(ADMIN_VOUCHER_LIST_URI);
                 } else {
-                    response.sendRedirect(ADMIN_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
+                    response.sendRedirect(ADMIN_VOUCHER_UPDATE_URI + "/ID/" + request.getAttribute("errorVoucherId") + ExceptionUtils.generateExceptionQueryString(request));
                 }
                 return;
             }
@@ -1476,6 +1477,66 @@ public class AdminController extends HttpServlet {
         return true;
     }
 
+    private int updateVoucher(HttpServletRequest request) {
+        try {
+
+            VoucherDAO vDAO = new VoucherDAO();
+
+            int id = Integer.parseInt(request.getParameter("txtId"));
+            //Make the response redirect to the right Id
+            request.setAttribute("errorVoucherId", id);
+
+            String code = request.getParameter("txtCode");
+            int quantity = Integer.parseInt(request.getParameter("txtQuantity"));
+            int discountPercent = Integer.parseInt(request.getParameter("txtDiscountPercent"));
+            String approveProducts[] = request.getParameter("txtApprovedProduct").split(", ");
+            List<Integer> aprroveProductsId = Arrays.stream(approveProducts)
+                    .map(String::trim)
+                    .map(Integer::valueOf)
+                    .collect(Collectors.toList());
+
+            int discountMax = Integer.parseInt(request.getParameter("txtDiscountMax"));
+            String createAt = request.getParameter("txtCreateAt");
+            String expiredAt = request.getParameter("txtExpiredAt");
+
+            System.out.println("|" + createAt + "|");
+
+            Voucher voucher = new Voucher();
+            voucher.setId(id);
+            voucher.setCode(code);
+            voucher.setQuantity(quantity);
+            voucher.setDiscountPercent(discountPercent);
+            voucher.setApprovedProductId(aprroveProductsId);
+            voucher.setDiscountMax(discountMax);
+            voucher.setCreatedAt(Converter.convertStringToEpochMilli(createAt));
+            voucher.setExpiredAt(Converter.convertStringToEpochMilli(expiredAt));
+
+            Cookie c = (Cookie) request.getSession().getAttribute("userCookie");
+            AdminDAO adDAO = new AdminDAO();
+            Admin admin = adDAO.getAdmin(c.getValue());
+
+            voucher.setCreatedByAdmin(admin.getAdminId());
+
+            int result = vDAO.updateVoucher(voucher);
+            if (result < 1) {
+                throw new Exception();
+            }
+            System.out.println("Update voucher successfully!");
+            return State.Success.value;
+        } catch (NumberFormatException e) {
+            //Default exception
+            System.out.println("NumberFormatException:" + e.getMessage());
+            request.setAttribute("exceptionType", "");
+        } catch (OperationAddFailedException ex) {
+            request.setAttribute("exceptionType", "OperationAddFailedException");
+        } catch (Exception ex) {
+            System.out.println("Exception:" + ex.getMessage());
+            //Default exception
+            request.setAttribute("exceptionType", "");
+        }
+        return State.Fail.value;
+    }
+
     private int restoreProduct(HttpServletRequest request, HttpServletResponse response) {
         // Admin/Restore/ID/1
         String path = request.getRequestURI();
@@ -1599,6 +1660,7 @@ public class AdminController extends HttpServlet {
                     Voucher v = vDAO.getVoucher(vId);
                     if (v != null) {
                         List<Integer> approvedProductId = vDAO.getAllApprovedProductIdByVoucherId(vId);
+                        System.out.println(approvedProductId);
                         request.setAttribute("VoucherUpdate", v);
                         request.setAttribute("ApprovedProductId", approvedProductId);
                         return State.Success.value;

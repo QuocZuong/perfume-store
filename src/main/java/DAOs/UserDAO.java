@@ -280,7 +280,7 @@ public class UserDAO implements IUserDAO {
 
     // Check input 2-side
     public boolean checkRegex(String loginString, loginType Type) {
-        if (loginString.length() >= 50) {
+        if (loginString.length() > 50) {
             return false;
         }
         final Pattern EMAIL_REGEX = Pattern.compile(
