@@ -114,7 +114,7 @@
                         </c:if>
                         <!--Execption Handling-->
 
-                        <form action="/Admin/Update/Info" method="POST" id="formUpdateAccount">
+                        <form action="/OrderManager/Update/Info" method="POST" id="formUpdateAccount">
                             <div class="fullname">
                                 <div>
                                     <label>
