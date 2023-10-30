@@ -518,8 +518,8 @@ public class OrderManagerController extends HttpServlet {
         response.addCookie(c);
 
         // Sending mail
-        boolean sendMail = false;
-        if (sendMail) {
+        boolean sendMailToggler = true;
+        if (sendMailToggler) {
             try {
                 EmailSender es = new EmailSender();
                 if (isChangedPassword) {
