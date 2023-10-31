@@ -10,7 +10,8 @@ public class Customer extends User {
     private List<DeliveryAddress> deliveryAddress;
 
     public Customer() {
-        super.setType("Customer");
+        setActive(true);
+        setType("Customer");
     }
 
     /**
@@ -23,7 +24,8 @@ public class Customer extends User {
         customerId = 0;
         customerCreditPoint = 0;
         deliveryAddress = new ArrayList<>();
-        super.setType("Customer");
+        setActive(user.isActive());
+        setType("Customer");
     }
 
     public int getCustomerId() {

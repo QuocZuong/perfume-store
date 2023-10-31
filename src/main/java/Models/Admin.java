@@ -6,6 +6,8 @@ public class Admin extends Employee {
     private int employeeId;
     
     public Admin() {
+        setActive(true);
+        setType("Employee");
     }
     
     public Admin(Employee emp) {

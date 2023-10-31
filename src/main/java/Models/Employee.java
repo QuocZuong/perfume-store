@@ -15,7 +15,8 @@ public class Employee extends User {
     private Long retireDate;
 
     public Employee() {
-
+        setActive(true);
+        setType("Employee");
     }
 
     public Employee(User user) {

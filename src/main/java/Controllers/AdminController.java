@@ -214,18 +214,10 @@ public class AdminController extends HttpServlet {
             }
             return;
         }
-        // Page chua co
         if (path.startsWith(ADMIN_VOUCHER_ADD_URI)) {
-            int result = getUpdateVoucher(request);
-
-            if (result == State.Success.value) {
-                request.getRequestDispatcher("/ADMIN_PAGE/Voucher/addVoucher.jsp").forward(request, response);
-            } else if (result == State.Fail.value) {
-                response.sendRedirect(ADMIN_VOUCHER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
-            }
+            request.getRequestDispatcher("/ADMIN_PAGE/Voucher/addVoucher.jsp").forward(request, response);
             return;
         }
-        // Page nhu cc
         if (path.startsWith(ADMIN_VOUCHER_UPDATE_URI)) {
             int result = getUpdateVoucher(request);
 
