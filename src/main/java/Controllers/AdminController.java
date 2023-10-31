@@ -27,6 +27,7 @@ import Exceptions.OperationAddFailedException;
 import Exceptions.PhoneNumberDuplicationException;
 import Exceptions.ProductNotFoundException;
 import Exceptions.UsernameDuplicationException;
+import Exceptions.VoucherCodeDuplication;
 import Exceptions.WrongPasswordException;
 import Interfaces.DAOs.IUserDAO;
 import Lib.Converter;
@@ -525,6 +526,7 @@ public class AdminController extends HttpServlet {
                 return;
             }
         }
+
         if (path.startsWith(ADMIN_VOUCHER_UPDATE_URI)) {
             if (request.getParameter("btnUpdateVoucher") != null
                     && request.getParameter("btnUpdateVoucher").equals("Submit")) {
@@ -534,6 +536,20 @@ public class AdminController extends HttpServlet {
                     response.sendRedirect(ADMIN_VOUCHER_LIST_URI);
                 } else {
                     response.sendRedirect(ADMIN_VOUCHER_UPDATE_URI + "/ID/" + request.getAttribute("errorVoucherId") + ExceptionUtils.generateExceptionQueryString(request));
+                }
+                return;
+            }
+        }
+
+        if (path.startsWith(ADMIN_VOUCHER_ADD_URI)) {
+            if (request.getParameter("btnAddVoucher") != null
+                    && request.getParameter("btnAddVoucher").equals("Submit")) {
+                System.out.println("Going update info");
+                int result = addVoucher(request);
+                if (result == State.Success.value) {
+                    response.sendRedirect(ADMIN_VOUCHER_LIST_URI);
+                } else {
+                    response.sendRedirect(ADMIN_VOUCHER_ADD_URI + ExceptionUtils.generateExceptionQueryString(request));
                 }
                 return;
             }
@@ -708,6 +724,62 @@ public class AdminController extends HttpServlet {
         }
 
         return true;
+    }
+
+    private int addVoucher(HttpServletRequest request) {
+        try {
+            VoucherDAO vDAO = new VoucherDAO();
+
+            String code = request.getParameter("txtCode");
+            int quantity = Integer.parseInt(request.getParameter("txtQuantity"));
+            int discountPercent = Integer.parseInt(request.getParameter("txtDiscountPercent"));
+            String approveProducts[] = request.getParameter("txtApprovedProduct").split(", ");
+            List<Integer> aprroveProductsId = Arrays.stream(approveProducts)
+                    .map(String::trim)
+                    .map(Integer::valueOf)
+                    .collect(Collectors.toList());
+
+            int discountMax = Integer.parseInt(request.getParameter("txtDiscountMax"));
+            String createAt = request.getParameter("txtCreateAt");
+            String expiredAt = request.getParameter("txtExpiredAt");
+
+            System.out.println("|" + createAt + "|");
+
+            Voucher voucher = new Voucher();
+            voucher.setCode(code);
+            voucher.setQuantity(quantity);
+            voucher.setDiscountPercent(discountPercent);
+            voucher.setApprovedProductId(aprroveProductsId);
+            voucher.setDiscountMax(discountMax);
+            voucher.setCreatedAt(Converter.convertStringToEpochMilli(createAt));
+            voucher.setExpiredAt(Converter.convertStringToEpochMilli(expiredAt));
+
+            Cookie c = (Cookie) request.getSession().getAttribute("userCookie");
+            AdminDAO adDAO = new AdminDAO();
+            Admin admin = adDAO.getAdmin(c.getValue());
+
+            voucher.setCreatedByAdmin(admin.getAdminId());
+
+            int result = vDAO.addVoucher(voucher);
+            if (result < 1) {
+                throw new Exception();
+            }
+            System.out.println("Add voucher successfully!");
+            return State.Success.value;
+        } catch (NumberFormatException e) {
+            //Default exception
+            System.out.println("NumberFormatException:" + e.getMessage());
+            request.setAttribute("exceptionType", "");
+        } catch (OperationAddFailedException ex) {
+            request.setAttribute("exceptionType", "OperationAddFailedException");
+        } catch (VoucherCodeDuplication ex) {
+            request.setAttribute("exceptionType", "VoucherCodeDuplication");
+        } catch (Exception ex) {
+            System.out.println("Exception:" + ex.getMessage());
+            //Default exception
+            request.setAttribute("exceptionType", "");
+        }
+        return State.Fail.value;
     }
 
     // ---------------------------- READ SECTION ----------------------------
@@ -1471,7 +1543,6 @@ public class AdminController extends HttpServlet {
 
     private int updateVoucher(HttpServletRequest request) {
         try {
-
             VoucherDAO vDAO = new VoucherDAO();
 
             int id = Integer.parseInt(request.getParameter("txtId"));
@@ -1521,6 +1592,8 @@ public class AdminController extends HttpServlet {
             request.setAttribute("exceptionType", "");
         } catch (OperationAddFailedException ex) {
             request.setAttribute("exceptionType", "OperationAddFailedException");
+        } catch (VoucherCodeDuplication ex) {
+            request.setAttribute("exceptionType", "VoucherCodeDuplication");
         } catch (Exception ex) {
             System.out.println("Exception:" + ex.getMessage());
             //Default exception

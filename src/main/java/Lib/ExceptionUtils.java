@@ -50,6 +50,7 @@ public class ExceptionUtils {
         VoucherNotFoundException,
         NotEnoughVoucherQuantityException,
         NoProductVoucherAppliedException,
+        VoucherCodeDuplication,
         //Import
         ImportNotFoundException
 
@@ -93,6 +94,8 @@ public class ExceptionUtils {
                 put(ExceptionType.NotEnoughVoucherQuantityException.toString(),
                         new NotEnoughProductQuantityException());
                 put(ExceptionType.NoProductVoucherAppliedException.toString(), new NoProductVoucherAppliedException());
+                put(ExceptionType.VoucherCodeDuplication.toString(), new VoucherCodeDuplication());
+
                 put(ExceptionType.ImportNotFoundException.toString(), new ImportNotFoundException());
             }
         };
@@ -112,7 +115,7 @@ public class ExceptionUtils {
     // Query String can be "errPNF=true&&otherAttribute=..."
     private static String getExceptionNameByQueryString(String queryString) {
         if (queryString == null) {
-            return "";
+            return null;
         }
         // Extract the exception attribute. Example: PNF instead of errPNF
         String attribute = extractExceptionQueryString(queryString);
@@ -126,6 +129,7 @@ public class ExceptionUtils {
                 return entry.getKey();
             }
         }
+        // if not, so it is default exception
         return "";
     }
 
@@ -135,7 +139,7 @@ public class ExceptionUtils {
         }
         String[] attributes = queryString.split("=");
         if (attributes.length == 0) {
-            return "";
+            return null;
         }
         String attribute = attributes[0];
         attribute = attribute.substring(3, attribute.length());
@@ -152,7 +156,7 @@ public class ExceptionUtils {
     // =================================== VALIDATION SECTION
     // =================================
     public static boolean isWebsiteError(String queryString) {
-        return !getExceptionNameByQueryString(queryString).isEmpty();
+        return getExceptionNameByQueryString(queryString) != null;
     }
 
     // put(ExceptionType.WrongPasswordException.toString(), new
@@ -283,6 +287,10 @@ public class ExceptionUtils {
     public static boolean isNotEnoughVoucherQuantityException(String queryString) {
         return getExceptionNameByQueryString(queryString)
                 .equals(ExceptionType.NotEnoughVoucherQuantityException.toString());
+    }
+       public static boolean isVoucherCodeDuplication(String queryString) {
+        return getExceptionNameByQueryString(queryString)
+                .equals(ExceptionType.VoucherCodeDuplication.toString());
     }
 
     public static boolean isOrderNotFound(String queryString) {

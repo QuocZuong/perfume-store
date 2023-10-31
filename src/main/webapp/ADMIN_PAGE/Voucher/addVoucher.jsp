@@ -16,7 +16,7 @@
 <%@ taglib  uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
 
 <%! String Tinh, QuanHuyen, PhuongXa;%>
-<%! ProductDAO pDAO = new ProductDAO(); %>
+<%! ProductDAO pDAO = new ProductDAO();%>
 
 <%
     // Handling execption
@@ -78,7 +78,7 @@
             }
         </style>
 
-        <title>Cập nhật Voucher</title>
+        <title>Thêm Voucher</title>
     </head>
     <body>
         <div class="container-fluid">
@@ -100,12 +100,8 @@
                 <div class="row">
                     <div class="col-sm-6">
 
-                        <h1>Update Voucher</h1>
-                        <form action="/Admin/Voucher/Update" method="POST" id="updateVoucher">
-                            <div class="id">
-                                <label>Voucher ID *</label>
-                                <input type="number" name="txtId" readonly="true"  />
-                            </div>
+                        <h1>Add Voucher</h1>
+                        <form action="/Admin/Voucher/Add" method="POST" id="addVoucher">
                             <div class="code">
                                 <label>Code *</label>
                                 <input type="text" name="txtCode"  />
@@ -134,8 +130,8 @@
                                 <label>Expired at *</label>
                                 <input type="date" name="txtExpiredAt"  />
                             </div>
-                            <button type="submit" name="btnUpdateVoucher" value="Submit" class="btnUpdateCustomer mb-3">
-                                Update Voucher
+                            <button type="submit" name="btnAddVoucher" value="Submit" class="btnAddVoucher mb-3">
+                                Add Voucher
                             </button>
                             <br />
                         </form>
@@ -212,7 +208,7 @@
                             return isNaN(value) && isNaN($(params).val())
                                     || (Number(value) > Number($(params).val()));
                         }, 'Must be greater than {0}.');
-                $("#updateVoucher").validate({
+                $("#addVoucher").validate({
                     rules: {
                         txtId: {
                             required: true

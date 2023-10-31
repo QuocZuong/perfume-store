@@ -148,7 +148,7 @@
                                 <label>Expired at *</label>
                                 <input type="date" name="txtExpiredAt" value="<%= Generator.getDateTime(voucher.getExpiredAt(), DatePattern.DateSqlPattern)%>" />
                             </div>
-                            <button type="submit" name="btnUpdateVoucher" value="Submit" class="btnUpdateCustomer mb-3">
+                            <button type="submit" name="btnUpdateVoucher" value="Submit" class="btnUpdateVoucher mb-3">
                                 Update Voucher
                             </button>
                             <br />

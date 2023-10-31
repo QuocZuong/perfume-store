@@ -30,6 +30,8 @@ public class DBContext {
     // \\
     static {
         try {
+            System.out.println("==============================================\n" + SERVER_NAME);
+
             Class.forName(DRIVER); // Tao doi tuong
             // Change this url if you want to connect to other server.
             conn = DriverManager.getConnection(URL);

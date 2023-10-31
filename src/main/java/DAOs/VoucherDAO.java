@@ -3,6 +3,7 @@ package DAOs;
 import Exceptions.InvalidVoucherException;
 import Exceptions.NotEnoughVoucherQuantityException;
 import Exceptions.OperationAddFailedException;
+import Exceptions.VoucherCodeDuplication;
 import Exceptions.VoucherNotFoundException;
 import Models.Voucher;
 import java.sql.Connection;
@@ -16,6 +17,7 @@ import java.util.logging.Logger;
 
 import Interfaces.DAOs.IVoucherDAO;
 import Lib.Converter;
+import Lib.DatabaseUtils;
 import Lib.Generator;
 import Models.Admin;
 
@@ -30,9 +32,16 @@ public class VoucherDAO implements IVoucherDAO {
     // CRUD
     /* ------------------------- CREATE SECTION ---------------------------- */
     @Override
-    public int addVoucher(Voucher v) throws OperationAddFailedException {
+    public int addVoucher(Voucher v) throws OperationAddFailedException, VoucherCodeDuplication {
+        if (v == null) {
+            throw new OperationAddFailedException();
+        }
+        if (getVoucher(v.getCode()) != null) {
+            throw new VoucherCodeDuplication();
+        }
+
         int result = 0;
-        String sql = "IINSERT INTO [Voucher] (\n"
+        String sql = "INSERT INTO [Voucher] (\n"
                 + "	Voucher_Code, \n"
                 + "	Voucher_Quantity, \n"
                 + "	Voucher_Discount_Percent, \n"
@@ -53,6 +62,8 @@ public class VoucherDAO implements IVoucherDAO {
             ps.setInt(7, v.getCreatedByAdmin());
             result = ps.executeUpdate();
             if (result != 0) {
+                v.setId(DatabaseUtils.getLastIndentityOf("Voucher"));
+
                 if (addApprovedProduct(v) == 0) {
                     removeAllVoucherOfVoucherId(v.getId());
                     System.out.println("remove all remain voucher product of voucher id" + v.getId());
@@ -325,7 +336,15 @@ public class VoucherDAO implements IVoucherDAO {
     }
 
     /* ------------------------- UPDATE SECTION ---------------------------- */
-    public int updateVoucher(Voucher voucher) throws OperationAddFailedException {
+    public int updateVoucher(Voucher voucher) throws OperationAddFailedException, VoucherCodeDuplication {
+        if (voucher == null) {
+            throw new OperationAddFailedException();
+        }
+        //fix later, this must be not identical to other except itself
+        if (getVoucher(voucher.getCode()) != null) {
+            throw new VoucherCodeDuplication();
+        }
+
         String sql = "UPDATE [Voucher]\n"
                 + "SET [Voucher_Code] = ?,\n" // 1
                 + "[Voucher_Quantity] = ?,\n" // 2
