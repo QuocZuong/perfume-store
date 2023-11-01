@@ -278,7 +278,7 @@ public class AdminController extends HttpServlet {
         }
 
         if (path.startsWith(ADMIN_USER_UPDATE_CUSTOMER_URI)) {
-            if (handleUpdateCustomer(request, response)) {
+            if (getUpdateCustomer(request, response)) {
                 request.getRequestDispatcher("/ADMIN_PAGE/User/updateCustomer.jsp").forward(request, response);
             } else {
                 response.sendRedirect(ADMIN_USER_LIST_URI);
@@ -287,7 +287,7 @@ public class AdminController extends HttpServlet {
         }
 
         if (path.startsWith(ADMIN_USER_UPDATE_EMPLOYEE_URI)) {
-            if (handleUpdateEmployee(request, response)) {
+            if (getUpdateEmployee(request, response)) {
                 request.getRequestDispatcher("/ADMIN_PAGE/User/updateEmployee.jsp").forward(request, response);
             } else {
                 response.sendRedirect(ADMIN_USER_LIST_URI);
@@ -1741,7 +1741,7 @@ public class AdminController extends HttpServlet {
         return State.Fail.value;
     }
 
-    private boolean handleUpdateCustomer(HttpServletRequest request, HttpServletResponse response) {
+    private boolean getUpdateCustomer(HttpServletRequest request, HttpServletResponse response) {
         String data[] = request.getRequestURI().split("/");
         for (int i = 0; i < data.length; i++) {
             if (data[i].equals("ID")) {
@@ -1756,7 +1756,7 @@ public class AdminController extends HttpServlet {
         return false;
     }
 
-    private boolean handleUpdateEmployee(HttpServletRequest request, HttpServletResponse response) {
+    private boolean getUpdateEmployee(HttpServletRequest request, HttpServletResponse response) {
         String data[] = request.getRequestURI().split("/");
         for (int i = 0; i < data.length; i++) {
             if (data[i].equals("ID")) {
