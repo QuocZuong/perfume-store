@@ -4,6 +4,8 @@
  */
 package Interfaces.DAOs;
 
+import Exceptions.OperationAddFailedException;
+import Exceptions.VoucherCodeDuplication;
 import Models.Voucher;
 import java.util.List;
 
@@ -13,9 +15,9 @@ import java.util.List;
  */
 public interface IVoucherDAO {
 
-    int addVoucher(Voucher v);
+    public int addVoucher(Voucher v) throws OperationAddFailedException, VoucherCodeDuplication;
 
-    int addApprovedProduct(Voucher v);
+    public int addApprovedProduct(Voucher v) throws OperationAddFailedException;
 
     Voucher getVoucher(int vId);
 

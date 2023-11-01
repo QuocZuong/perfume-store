@@ -91,104 +91,112 @@
                 </div>
             </div>
 
+            <c:if test='<%= orderInfor != null%>'>
 
-            <div class="main">
-                <div class="right">
-                    <div class="order-page">
-                        <c:if test='<%= CheckOutSuccess != null%>'>
-                            <div class="CheckOutSuccess">
-                                <h1 class="display-4 mb-10">THANH TOÁN THÀNH CÔNG</h1>
+                <div class="main">
+                    <div class="right">
+                        <div class="order-page">
+                            <c:if test='<%= CheckOutSuccess != null%>'>
+                                <div class="CheckOutSuccess">
+                                    <h1 class="display-4 mb-10">THANH TOÁN THÀNH CÔNG</h1>
+                                </div>
+                            </c:if>
+
+
+                            <h1 class="text-center display-4 mb-10">
+                                Chi tiết đơn hàng
+                            </h1>
+                            <div class="w-25 py-4">
+                                <a href="/Customer/Order/Receipt/ID/<%=orderInfor.getId()%>" class="text-decoration-none">
+                                    <button class="btn btn-outline-dark d-flex w-100 h-100 justify-content-center align-items-center rounded-0 fn-btn">
+                                        Xuất hoá đơn
+                                    </button>
+                                </a>
                             </div>
-                        </c:if>
 
-                        <h1 class="text-center display-4 mb-10">
-                            Chi tiết đơn hàng
-                        </h1>
-                        <div class="w-25 py-4">
-                            <a href="/Customer/Order/Receipt/ID/<%=orderInfor.getId()%>" class="text-decoration-none">
-                                <button class="btn btn-outline-dark d-flex w-100 h-100 justify-content-center align-items-center rounded-0 fn-btn">
-                                    Xuất hoá đơn
-                                </button>
-                            </a>
-                        </div>
+                            <table class="table">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <td scope="col">#</td>
+                                        <td scope="col">Sản phẩm</td>
+                                        <td scope="col">Hình ảnh</td>
+                                        <td scope="col" class="number">Số lượng</td>
+                                        <td scope="col">Đơn giá</td>
+                                        <td scope="col">Tổng tiền</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
 
-                        <table class="table">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <td scope="col">#</td>
-                                    <td scope="col">Sản phẩm</td>
-                                    <td scope="col">Hình ảnh</td>
-                                    <td scope="col" class="number">Số lượng</td>
-                                    <td scope="col">Đơn giá</td>
-                                    <td scope="col">Tổng tiền</td>
-                                </tr>
-                            </thead>
-                            <tbody>
+                                    <c:if test='<%=  orderDetailList.size() > 0%>'>
+                                        <c:forEach var="i" begin="0" end="<%= orderDetailList.size() - 1%>">
+                                            <%
+                                                OrderDetail orderDetail = orderDetailList.get((int) pageContext.getAttribute("i"));
+                                                Product product = pDAO.getProduct(orderDetail.getProductId());
 
-                                <c:if test='<%=  orderDetailList.size() > 0%>'>
-                                    <c:forEach var="i" begin="0" end="<%= orderDetailList.size() - 1%>">
-                                        <%
-                                            OrderDetail orderDetail = orderDetailList.get((int) pageContext.getAttribute("i"));
-                                            Product product = pDAO.getProduct(orderDetail.getProductId());
+                                                String productName = product.getName();
+                                                String quantity = orderDetail.getQuantity() + "";
+                                                String total = Converter.covertIntergerToMoney(orderDetail.getTotal());
 
-                                            String productName = product.getName();
-                                            String quantity = orderDetail.getQuantity() + "";
-                                            String total = Converter.covertIntergerToMoney(orderDetail.getTotal());
+                                                int sum = orderDetail.getQuantity() * product.getStock().getPrice();
+                                                String totalMoney = "";
+                                                String totalMoneyAfterDeducted = "";
 
-
-                                            int sum = orderDetail.getQuantity() * product.getStock().getPrice();
-                                                                String totalMoney = Converter.covertIntergerToMoney(sum);
-                                            String totalMoneyAfterDeducted = Converter.covertIntergerToMoney(sumDeductPrice < v.getDiscountMax() ? (sum - (product.getStock().getPrice() * v.getDiscountPercent() / 100)) : (sum - (product.getStock().getPrice() * v.getDiscountPercent() / 100) + ((sumDeductPrice - v.getDiscountMax()) / approvedProductsList.size())));
-
-                    %>
-                                        <tr>
-                                            <td scope="row"><%=(int) pageContext.getAttribute("i") + 1%></td>
-                                            <td><a src="/Product/Detail/ID/<%= product.getId()%>"><%= productName%></a></td>
-                                            <td><img src="<%= product.getImgURL()%>"></td>
-                                            <td><%= quantity%></td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="<%= (v != null && approvedProductsList != null && ProductDAO.isContain(product, approvedProductsList)) %>">  
-                                                        <span><%= Converter.covertIntergerToMoney(product.getStock().getPrice())%> <span>₫</span></span>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <span><%= Converter.covertIntergerToMoney(product.getStock().getPrice())%> <span>₫</span></span>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="<%= (v != null && approvedProductsList != null && ProductDAO.isContain(product, approvedProductsList))%>">  
-                                                        <span style="text-decoration: line-through;color: rgba(0,0,0,0.5);">Total:<%= totalMoney%> <span>₫</span></span>
-                                                        <span>Total: <%= totalMoneyAfterDeducted%> <span>₫</span></span>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <span>Total: <%= Converter.covertIntergerToMoney(sum)%> <span>₫</span></span>
-                                                    </c:otherwise>
-                                                </c:choose>
+                                                if (sumDeductPrice != null) {
+                                                    totalMoney = Converter.covertIntergerToMoney(sum);
+                                                    totalMoneyAfterDeducted = Converter.covertIntergerToMoney(sumDeductPrice < v.getDiscountMax()
+                                                            ? (sum - (product.getStock().getPrice() * v.getDiscountPercent() / 100))
+                                                            : (sum - (product.getStock().getPrice() * v.getDiscountPercent() / 100) + ((sumDeductPrice - v.getDiscountMax()) / approvedProductsList.size())));
+                                                }
+                                            %>
+                                            <tr>
+                                                <td scope="row"><%=(int) pageContext.getAttribute("i") + 1%></td>
+                                                <td><a src="/Product/Detail/ID/<%= product.getId()%>"><%= productName%></a></td>
+                                                <td><img src="<%= product.getImgURL()%>"></td>
+                                                <td><%= quantity%></td>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="<%= (v != null && approvedProductsList != null && ProductDAO.isContain(product, approvedProductsList))%>">  
+                                                            <span><%= Converter.covertIntergerToMoney(product.getStock().getPrice())%> <span>₫</span></span>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <span><%= Converter.covertIntergerToMoney(product.getStock().getPrice())%> <span>₫</span></span>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="<%= (v != null && approvedProductsList != null && ProductDAO.isContain(product, approvedProductsList))%>">  
+                                                            <span style="text-decoration: line-through;color: rgba(0,0,0,0.5);">Total:<%= totalMoney%> <span>₫</span></span>
+                                                            <span>Total: <%= totalMoneyAfterDeducted%> <span>₫</span></span>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <span>Total: <%= Converter.covertIntergerToMoney(sum)%> <span>₫</span></span>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                        <tr class="bottom-table">
+                                            <td colspan="6">
+                                                <p><img src="/RESOURCES/images/icons/smartphone.png" alt="alt"/><span class="info"><%=orderInfor.getPhoneNumber()%></span></p>
+                                                <p><img src="/RESOURCES/images/icons/location-pin.png" alt="alt"/><span class="info"><%=orderInfor.getDeliveryAddress()%></span></p>
+                                                    <c:if test='<%= (orderInfor.getNote() != null && !orderInfor.getNote().equals(""))%>'>
+                                                    <p><img src="/RESOURCES/images/icons/email.png" alt="alt"/><span class="info"><%=orderInfor.getNote()%></span></p>
+                                                    </c:if>
                                             </td>
                                         </tr>
-                                    </c:forEach>
-                                    <tr class="bottom-table">
-                                        <td colspan="6">
-                                            <p><img src="/RESOURCES/images/icons/smartphone.png" alt="alt"/><span class="info"><%=orderInfor.getPhoneNumber()%></span></p>
-                                            <p><img src="/RESOURCES/images/icons/location-pin.png" alt="alt"/><span class="info"><%=orderInfor.getDeliveryAddress()%></span></p>
-                                                <c:if test='<%= (orderInfor.getNote() != null && !orderInfor.getNote().equals(""))%>'>
-                                                <p><img src="/RESOURCES/images/icons/email.png" alt="alt"/><span class="info"><%=orderInfor.getNote()%></span></p>
-                                                </c:if>
-                                        </td>
-                                    </tr>
-                                </c:if>
-                            </tbody>
-                        </table>
-                        <!-- -->
-                        <c:if test='<%= CheckOutSuccess != null%>'> 
-                            <a href="/Product/List" class="btn btn-outline-dark rounded-0">QUAY LẠI TRANG SẢN PHẨM</a>
-                        </c:if>
-                    </div>
+                                    </c:if>
+                                </tbody>
+                            </table>
+                            <!-- -->
+                            <c:if test='<%= CheckOutSuccess != null%>'> 
+                                <a href="/Product/List" class="btn btn-outline-dark rounded-0">QUAY LẠI TRANG SẢN PHẨM</a>
+                            </c:if>
+                        </div>
 
+                    </div>
                 </div>
-            </div>
+            </c:if>
 
 
             <div class="row">

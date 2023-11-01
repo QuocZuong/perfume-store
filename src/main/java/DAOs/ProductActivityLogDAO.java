@@ -1,9 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package DAOs;
 
+import Lib.Converter;
 import Lib.Generator;
 import Models.Admin;
 import Models.Product;
@@ -18,10 +15,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-/**
- *
- * @author Acer
- */
 public class ProductActivityLogDAO {
 
     private Connection conn;
@@ -50,7 +43,7 @@ public class ProductActivityLogDAO {
                 pal.setAction(rs.getNString("Action"));
                 pal.setDescription(rs.getNString("Description"));
                 pal.setUpdatedByAdmin(rs.getInt("Updated_By_Admin"));
-                pal.setUpdatedAt(rs.getLong("Updated_At"));
+                pal.setUpdatedAt(Converter.getNullOrValue(rs.getLong("Updated_At")));
 
                 palList.add(pal);
             }
@@ -116,7 +109,7 @@ public class ProductActivityLogDAO {
                 pal.setAction(rs.getNString("Action"));
                 pal.setDescription(rs.getNString("Description"));
                 pal.setUpdatedByAdmin(rs.getInt("Updated_By_Admin"));
-                pal.setUpdatedAt(rs.getLong("Updated_At"));
+                pal.setUpdatedAt(Converter.getNullOrValue(rs.getLong("Updated_At")));
                 palList.add(pal);
             }
 

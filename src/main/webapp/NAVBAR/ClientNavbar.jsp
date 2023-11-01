@@ -1,8 +1,4 @@
-<%-- 
-    Document   : ClientNavbar
-    Created on : Sep 5, 2023, 8:36:18 PM
-    Author     : Acer
---%>
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>

@@ -6,6 +6,8 @@ public class OrderManager extends Employee {
     private int employeeId;
 
     public OrderManager() {
+        setActive(true);
+        setType("Employee");
     }
 
     public OrderManager(Employee emp) {

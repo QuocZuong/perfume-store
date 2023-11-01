@@ -82,84 +82,90 @@
                         <h1 class="alert alert-danger text-center"> <%= exceptionMessage%></h1>
                     </c:if>
                     <!--Execption Handling-->
-
-                    <div class="search-box-first">
-                        <a class="page-link" href="" id="Search" onclick="changeLink();"><img src="/RESOURCES/images/icons/search.png" alt=""></a>
-                        <input id="inputSearch" type="text" name="txtSearch" placeholder="Tìm kiếm" value="<%= (request.getParameter("txtSearch") != null ? request.getParameter("txtSearch") : "")%>" autofocus onkeydown="handleKeyDown(event)">
-                    </div>
+                    <c:if test='<%= orderList.size() != 0%>'>
+                        <div class="search-box-first">
+                            <a class="page-link" href="" id="Search" onclick="changeLink();"><img src="/RESOURCES/images/icons/search.png" alt=""></a>
+                            <input id="inputSearch" type="text" name="txtSearch" placeholder="Tìm kiếm" value="<%= (request.getParameter("txtSearch") != null ? request.getParameter("txtSearch") : "")%>" autofocus onkeydown="handleKeyDown(event)">
+                        </div>
+                    </c:if>
                 </div>
 
-        <div class="col-md-10 offset-1 d-flex justify-content-center align-items-center flex-column">
-          <table class="table" id="table">
-            <thead>
-              <tr>
-                <td>ID</td>
-                <td>Tên khách hàng</td>
-                <td>Tổng tiền</td>
-                <td>Giảm giá</td>
-                <td>Ngày tạo</td>
-                <td>Ngày thanh toán</td>
-                <td>Ngày cập nhật</td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-            </thead>
-            <tbody>
-              <c:if test='<%= (orderList.size() != 0)%>'>
-                <c:forEach var="i" begin="0" end="<%= orderList.size() - 1%>">
-                  <%
-                                        OrderManagerDAO omDAO = new OrderManagerDAO();
-                                        Order o = orderList.get((int) pageContext.getAttribute("i"));
-                                        Customer c = cDAO.getCustomer(o.getCustomerId());
-
-                                        String createAt = o.getCreatedAt(Generator.DatePattern.DateSqlPattern);
-                                        String checkoutAt = o.getCheckoutAt() == null ? "" : o.getCheckoutAt(Generator.DatePattern.DateSqlPattern);
-                                        String updateAt = o.getUpdateAt() == null ? "" : o.getUpdateAt(Generator.DatePattern.DateSqlPattern);
-
-                                        boolean isActive = !o.getStatus().equals("Rejected");
-                                        String status = o.getStatus();
-                                        boolean isRejected = status.equals("REJECTED");
-                                        boolean isAccepted = status.equals("ACCEPTED");
-                  %>
-                  <tr class="rowTable <%= isActive ? " " : "faded"%>">
-                    <td class="<%= isActive ? " " : "faded"%>"><%= o.getId()%></td>
-                    <td class="<%= isActive ? " " : "faded"%>"><%= c.getName()%></td>
-                    <td class="<%= isActive ? " " : "faded"%>"><%= o.getTotal()%></td>
-                    <td class="<%= isActive ? " " : "faded"%>"><%= o.getDeductedPrice()%></td>
-                    <td class="<%= isActive ? " " : "faded"%>"><%= createAt%></td>              
-                    <td class="<%= isActive ? " " : "faded"%>"><%= checkoutAt%></td>
-                    <td class="<%= isActive ? " " : "faded"%>"><%= updateAt%></td>
-
-                                        <td class="<%= isActive ? " " : "faded"%>">
-                                            <a href="/OrderManager/Order/Detail/ID/<%= o.getId()%>" class="<%= isActive ? "" : "disabled"%> btn btn-outline-primary rounded-0">Detail</a>
-                                        </td>
-                                        <c:choose>
-                                            <c:when test='<%= isAccepted%>'>
-                                                <td class="buttonStatus faded px-3" colspan=2>
-                                                    <a href="/OrderManager/OrderList/Pending/ACCEPT/Order/ID/<%= o.getId()%>" class="btn btn-outline-success btn-disabled rounded-0 w-100" tabindex="-1">Accepted</a>
-                                                </td>
-                                            </c:when>
-                                            <c:when test='<%= isRejected%>'>
-                                                <td class="buttonStatus faded px-3" colspan=2>
-                                                    <a href="/OrderManager/OrderList/Pending/REJECT/Order/ID/<%= o.getId()%>" class="btn btn-outline-danger btn-disabled rounded-0 w-100" tabindex="-1">Rejected</a>
-                                                </td>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <td class="buttonStatus">
-                                                    <a href="/OrderManager/OrderList/Pending/ACCEPT/Order/ID/<%= o.getId()%>" class="btn btn-outline-success rounded-0">Accept</a>
-                                                </td>
-                                                <td class="buttonStatus">
-                                                    <a href="/OrderManager/OrderList/Pending/REJECT/Order/ID/<%= o.getId()%>" class="btn btn-outline-danger rounded-0">Reject</a>
-                                                </td>
-                                            </c:otherwise>
-                                        </c:choose>
+                <div class="col-md-10 offset-1 d-flex justify-content-center align-items-center flex-column">
+                    <c:choose>
+                        <c:when test='<%= orderList.size() == 0%>'>
+                            <h3 class="display-6">Không còn đơn hàng chờ được xử lí </h3>
+                        </c:when>
+                        <c:otherwise>
+                            <table class="table" id="table">
+                                <thead>
+                                    <tr>
+                                        <td>ID</td>
+                                        <td>Tên khách hàng</td>
+                                        <td>Tổng tiền</td>
+                                        <td>Giảm giá</td>
+                                        <td>Ngày tạo</td>
+                                        <td>Ngày thanh toán</td>
+                                        <td>Ngày cập nhật</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
+                                </thead>
+                                <tbody>
+                                    <c:forEach var="i" begin="0" end="<%= orderList.size() - 1%>">
+                                        <%
+                                            OrderManagerDAO omDAO = new OrderManagerDAO();
+                                            Order o = orderList.get((int) pageContext.getAttribute("i"));
+                                            Customer c = cDAO.getCustomer(o.getCustomerId());
 
-                                </c:forEach>
-                            </c:if>
-                        </tbody>
-                    </table>
+                                            String createAt = o.getCreatedAt(Generator.DatePattern.DateSqlPattern);
+                                            String checkoutAt = o.getCheckoutAt() == null ? "" : o.getCheckoutAt(Generator.DatePattern.DateSqlPattern);
+                                            String updateAt = o.getUpdateAt() == null ? "" : o.getUpdateAt(Generator.DatePattern.DateSqlPattern);
+
+                                            boolean isActive = !o.getStatus().equals("Rejected");
+                                            String status = o.getStatus();
+                                            boolean isRejected = status.equals("REJECTED");
+                                            boolean isAccepted = status.equals("ACCEPTED");
+                                        %>
+                                        <tr class="rowTable <%= isActive ? " " : "faded"%>">
+                                            <td class="<%= isActive ? " " : "faded"%>"><%= o.getId()%></td>
+                                            <td class="<%= isActive ? " " : "faded"%>"><%= c.getName()%></td>
+                                            <td class="<%= isActive ? " " : "faded"%>"><%= o.getTotal()%></td>
+                                            <td class="<%= isActive ? " " : "faded"%>"><%= o.getDeductedPrice()%></td>
+                                            <td class="<%= isActive ? " " : "faded"%>"><%= createAt%></td>              
+                                            <td class="<%= isActive ? " " : "faded"%>"><%= checkoutAt%></td>
+                                            <td class="<%= isActive ? " " : "faded"%>"><%= updateAt%></td>
+
+                                            <td class="<%= isActive ? " " : "faded"%>">
+                                                <a href="/OrderManager/Order/Detail/ID/<%= o.getId()%>" class="<%= isActive ? "" : "disabled"%> btn btn-outline-primary rounded-0">Detail</a>
+                                            </td>
+                                            <c:choose>
+                                                <c:when test='<%= isAccepted%>'>
+                                                    <td class="buttonStatus faded px-3" colspan=2>
+                                                        <a href="/OrderManager/OrderList/Pending/ACCEPT/Order/ID/<%= o.getId()%>" class="btn btn-outline-success btn-disabled rounded-0 w-100" tabindex="-1">Accepted</a>
+                                                    </td>
+                                                </c:when>
+                                                <c:when test='<%= isRejected%>'>
+                                                    <td class="buttonStatus faded px-3" colspan=2>
+                                                        <a href="/OrderManager/OrderList/Pending/REJECT/Order/ID/<%= o.getId()%>" class="btn btn-outline-danger btn-disabled rounded-0 w-100" tabindex="-1">Rejected</a>
+                                                    </td>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <td class="buttonStatus">
+                                                        <a href="/OrderManager/OrderList/Pending/ACCEPT/Order/ID/<%= o.getId()%>" class="btn btn-outline-success rounded-0">Accept</a>
+                                                    </td>
+                                                    <td class="buttonStatus">
+                                                        <a href="/OrderManager/OrderList/Pending/REJECT/Order/ID/<%= o.getId()%>" class="btn btn-outline-danger rounded-0">Reject</a>
+                                                    </td>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </tr>
+
+                                    </c:forEach>
+                                </tbody>
+                            </table>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
             </div>
         </div>
@@ -167,26 +173,30 @@
         <h1 class="d-none">num page: ${numberOfPage}</h1>
         <h1 class="d-none">page:  <%= currentPage%> </h1>
 
-        <nav aria-label="...">
-            <ul class="pagination">
-                <li class="page-item"><a class="page-link" href="/OrderManager/Order/List/Pending/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-left" style="color: #000000;"></i></a></li>
-                <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>"><a class="page-link" href="/OrderManager/Order/List/Pending/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></a></li>
-                        <c:forEach var="i" begin="${page-2<0?0:page-2}" end="${page+2 +1}">
-                            <c:choose>
-                                <c:when test="${i==page}">
-                            <li class="page-item active"><a href="/OrderManager/Order/List/Pending/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
-                            </c:when>
-                            <c:when test="${i>0 && i<=numberOfPage}"> 
-                            <li class="page-item"><a href="/OrderManager/Order/List/Pending/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
-                            </c:when>
-                            <c:otherwise>
-                            </c:otherwise>
-                        </c:choose>
-                    </c:forEach>
-                <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>"><a class="page-link" href="/OrderManager/Order/List/Pending/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a></li>
-                <li class="page-item"><a class="page-link" href="/OrderManager/Order/List/Pending/page/${numberOfPage}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-right" style="color: #000000;"></i></a></li>
-            </ul>
-        </nav>
+        <c:if test="<%= orderList.size() != 0%>">
+
+            <nav aria-label="...">
+                <ul class="pagination">
+                    <li class="page-item"><a class="page-link" href="/OrderManager/Order/List/Pending/page/1<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-left" style="color: #000000;"></i></a></li>
+                    <li class="page-item<%= currentPage == 1 ? " disabled" : ""%>"><a class="page-link" href="/OrderManager/Order/List/Pending/page/<%=currentPage - 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></a></li>
+                            <c:forEach var="i" begin="${page-2<0?0:page-2}" end="${page+2 +1}">
+                                <c:choose>
+                                    <c:when test="${i==page}">
+                                <li class="page-item active"><a href="/OrderManager/Order/List/Pending/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
+                                </c:when>
+                                <c:when test="${i>0 && i<=numberOfPage}"> 
+                                <li class="page-item"><a href="/OrderManager/Order/List/Pending/page/${i}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>" class="page-link"> ${i}</a></li>
+                                </c:when>
+                                <c:otherwise>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                    <li class="page-item<%= currentPage == numberOfPage ? " disabled" : ""%>"><a class="page-link" href="/OrderManager/Order/List/Pending/page/<%=currentPage + 1%><%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a></li>
+                    <li class="page-item"><a class="page-link" href="/OrderManager/Order/List/Pending/page/${numberOfPage}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-right" style="color: #000000;"></i></a></li>
+                </ul>
+            </nav>
+        </c:if>
+
         <script>
             function changeLink() {
                 let SearchURL = document.getElementById("inputSearch").value;

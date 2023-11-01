@@ -179,7 +179,7 @@
                                             <hr/>
                                             <div class="flex-column align-items-start">
                                                 <h5>Import Total Cost</h5>
-                                                <input class="w-100" type="number" readonly="true" value="<%= TotalCost%>">
+                                                <input class="w-100" type="text" readonly="true" value="<%= Converter.covertIntergerToMoney(TotalCost)%>">
                                             </div>
                                             <hr/>
                                             <div class="flex-column align-items-start">
@@ -342,7 +342,7 @@
                     }
                     return true;
                 }, "Vui lòng nhập đúng định dạng email");
-
+                
                 $("form[action='/home/subscribe']").validate({
                     rules: {
                         txtEmailSubscribe: {
@@ -356,14 +356,14 @@
                             email: "Vui lòng nhập đúng định dạng email"
                         }
                     },
-
+                    
                     errorPlacement: function (error, element) {
                         error.addClass("text-danger d-block mt-3");
                         error.insertAfter(element.next());
                     }
-
+                    
                 });
-
+                
                 $("#importCheckout").validate({
                     rules: {
                         txtSupplier: {
@@ -389,8 +389,8 @@
                     }
                 });
             });
-
-
+            
+            
         </script>
 
         <script

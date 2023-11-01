@@ -2,6 +2,8 @@ package DAOs;
 
 import Exceptions.InvalidVoucherException;
 import Exceptions.NotEnoughVoucherQuantityException;
+import Exceptions.OperationAddFailedException;
+import Exceptions.VoucherCodeDuplication;
 import Exceptions.VoucherNotFoundException;
 import Models.Voucher;
 import java.sql.Connection;
@@ -12,8 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import Interfaces.DAOs.IVoucherDAO;
+import Lib.Converter;
+import Lib.DatabaseUtils;
 import Lib.Generator;
+import Models.Admin;
 
 public class VoucherDAO implements IVoucherDAO {
 
@@ -26,9 +32,16 @@ public class VoucherDAO implements IVoucherDAO {
     // CRUD
     /* ------------------------- CREATE SECTION ---------------------------- */
     @Override
-    public int addVoucher(Voucher v) {
+    public int addVoucher(Voucher v) throws OperationAddFailedException, VoucherCodeDuplication {
+        if (v == null) {
+            throw new OperationAddFailedException();
+        }
+        if (getVoucher(v.getCode()) != null) {
+            throw new VoucherCodeDuplication();
+        }
+
         int result = 0;
-        String sql = "IINSERT INTO [Voucher] (\n"
+        String sql = "INSERT INTO [Voucher] (\n"
                 + "	Voucher_Code, \n"
                 + "	Voucher_Quantity, \n"
                 + "	Voucher_Discount_Percent, \n"
@@ -49,6 +62,8 @@ public class VoucherDAO implements IVoucherDAO {
             ps.setInt(7, v.getCreatedByAdmin());
             result = ps.executeUpdate();
             if (result != 0) {
+                v.setId(DatabaseUtils.getLastIndentityOf("Voucher"));
+
                 if (addApprovedProduct(v) == 0) {
                     removeAllVoucherOfVoucherId(v.getId());
                     System.out.println("remove all remain voucher product of voucher id" + v.getId());
@@ -63,7 +78,7 @@ public class VoucherDAO implements IVoucherDAO {
     }
 
     @Override
-    public int addApprovedProduct(Voucher v) {
+    public int addApprovedProduct(Voucher v) throws OperationAddFailedException {
         String sql = "INSERT INTO [Voucher_Product] (Voucher_ID, Product_ID) VALUES (?, ?)";
         int result = 0;
         if (v != null && v.getApprovedProductId() != null && !v.getApprovedProductId().isEmpty()) {
@@ -88,6 +103,9 @@ public class VoucherDAO implements IVoucherDAO {
                 Logger.getLogger(VoucherDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        if (result == 0) {
+            throw new OperationAddFailedException();
+        }
         return result;
     }
 
@@ -108,8 +126,8 @@ public class VoucherDAO implements IVoucherDAO {
                 v.setQuantity(rs.getInt("Voucher_Quantity"));
                 v.setDiscountPercent(rs.getInt("Voucher_Discount_Percent"));
                 v.setDiscountMax(rs.getInt("Voucher_Discount_Max"));
-                v.setCreatedAt(rs.getLong("Voucher_Created_At"));
-                v.setExpiredAt(rs.getLong("Voucher_Expired_At"));
+                v.setCreatedAt(Converter.getNullOrValue(rs.getLong("Voucher_Created_At")));
+                v.setExpiredAt(Converter.getNullOrValue(rs.getLong("Voucher_Expired_At")));
                 v.setCreatedByAdmin(rs.getInt("Voucher_Created_By_Admin"));
                 v.setApprovedProductId(getAllApprovedProductIdByVoucherId(vId));
                 return v;
@@ -134,8 +152,8 @@ public class VoucherDAO implements IVoucherDAO {
                 v.setQuantity(rs.getInt("Voucher_Quantity"));
                 v.setDiscountPercent(rs.getInt("Voucher_Discount_Percent"));
                 v.setDiscountMax(rs.getInt("Voucher_Discount_Max"));
-                v.setCreatedAt(rs.getLong("Voucher_Created_At"));
-                v.setExpiredAt(rs.getLong("Voucher_Expired_At"));
+                v.setCreatedAt(Converter.getNullOrValue(rs.getLong("Voucher_Created_At")));
+                v.setExpiredAt(Converter.getNullOrValue(rs.getLong("Voucher_Expired_At")));
                 v.setCreatedByAdmin(rs.getInt("Voucher_Created_By_Admin"));
                 v.setApprovedProductId(getAllApprovedProductIdByVoucherId(v.getId()));
                 return v;
@@ -163,8 +181,8 @@ public class VoucherDAO implements IVoucherDAO {
                 v.setQuantity(rs.getInt("Voucher_Quantity"));
                 v.setDiscountPercent(rs.getInt("Voucher_Discount_Percent"));
                 v.setDiscountMax(rs.getInt("Voucher_Discount_Max"));
-                v.setCreatedAt(rs.getLong("Voucher_Created_At"));
-                v.setExpiredAt(rs.getLong("Voucher_Expired_At"));
+                v.setCreatedAt(Converter.getNullOrValue(rs.getLong("Voucher_Created_At")));
+                v.setExpiredAt(Converter.getNullOrValue(rs.getLong("Voucher_Expired_At")));
                 v.setCreatedByAdmin(rs.getInt("Voucher_Created_By_Admin"));
                 v.setApprovedProductId(getAllApprovedProductIdByVoucherId(vId));
                 arrVoucher.add(v);
@@ -205,8 +223,8 @@ public class VoucherDAO implements IVoucherDAO {
                 v.setQuantity(rs.getInt("Voucher_Quantity"));
                 v.setDiscountPercent(rs.getInt("Voucher_Discount_Percent"));
                 v.setDiscountMax(rs.getInt("Voucher_Discount_Max"));
-                v.setCreatedAt(rs.getLong("Voucher_Created_At"));
-                v.setExpiredAt(rs.getLong("Voucher_Expired_At"));
+                v.setCreatedAt(Converter.getNullOrValue(rs.getLong("Voucher_Created_At")));
+                v.setExpiredAt(Converter.getNullOrValue(rs.getLong("Voucher_Expired_At")));
                 v.setCreatedByAdmin(rs.getInt("Voucher_Created_By_Admin"));
                 v.setApprovedProductId(getAllApprovedProductIdByVoucherId(vId));
                 voucherList.add(v);
@@ -271,8 +289,8 @@ public class VoucherDAO implements IVoucherDAO {
                 v.setQuantity(rs.getInt("Voucher_Quantity"));
                 v.setDiscountPercent(rs.getInt("Voucher_Discount_Percent"));
                 v.setDiscountMax(rs.getInt("Voucher_Discount_Max"));
-                v.setCreatedAt(rs.getLong("Voucher_Created_At"));
-                v.setExpiredAt(rs.getLong("Voucher_Expired_At"));
+                v.setCreatedAt(Converter.getNullOrValue(rs.getLong("Voucher_Created_At")));
+                v.setExpiredAt(Converter.getNullOrValue(rs.getLong("Voucher_Expired_At")));
                 v.setCreatedByAdmin(rs.getInt("Voucher_Created_By_Admin"));
                 arrVoucher.add(v);
             }
@@ -318,7 +336,15 @@ public class VoucherDAO implements IVoucherDAO {
     }
 
     /* ------------------------- UPDATE SECTION ---------------------------- */
-    public int updateVoucher(Voucher voucher) {
+    public int updateVoucher(Voucher voucher) throws OperationAddFailedException, VoucherCodeDuplication {
+        if (voucher == null) {
+            throw new OperationAddFailedException();
+        }
+        //fix later, this must be not identical to other except itself
+        if (getVoucher(voucher.getCode()) != null) {
+            throw new VoucherCodeDuplication();
+        }
+
         String sql = "UPDATE [Voucher]\n"
                 + "SET [Voucher_Code] = ?,\n" // 1
                 + "[Voucher_Quantity] = ?,\n" // 2
@@ -340,11 +366,20 @@ public class VoucherDAO implements IVoucherDAO {
 
             result = ps.executeUpdate();
 
+            result += updateApproveProduct(voucher);
+
         } catch (SQLException ex) {
             Logger.getLogger(VoucherDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
     }
+
+    public int updateApproveProduct(Voucher v) throws OperationAddFailedException {
+        removeAllVoucherOfVoucherId(v.getId());
+        //return 1 so that the voucher can have no approveProducts
+        return addApprovedProduct(v);
+    }
+
 
     /* ------------------------- DELETE SECTION ---------------------------- */
     public int removeVoucherOnly(int vId) {

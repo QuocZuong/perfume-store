@@ -1,7 +1,9 @@
 package DAOs;
 
 import Exceptions.EmailDuplicationException;
+import Exceptions.OperationAddFailedException;
 import Interfaces.DAOs.ICustomerDAO;
+import Lib.Converter;
 import Lib.Generator;
 import Models.Customer;
 import Models.User;
@@ -21,7 +23,7 @@ public class CustomerDAO extends UserDAO implements ICustomerDAO {
     }
 
     @Override
-    public int addCustomer(Customer customer) {
+    public int addCustomer(Customer customer) throws OperationAddFailedException {
         /*
          * BEGIN TRANSACTION
          * GO
@@ -93,13 +95,16 @@ public class CustomerDAO extends UserDAO implements ICustomerDAO {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setNString(1, customer.getName());
             ps.setNString(2, customer.getUsername());
-            ps.setString(3, customer.getPassword());
+            ps.setString(3, Converter.convertToMD5Hash(customer.getPassword()));
             ps.setString(4, customer.getEmail());
             ps.setInt(5, customer.getCustomerCreditPoint());
 
             result = ps.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(CustomerDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (result == 0) {
+            throw new OperationAddFailedException();
         }
         return result;
     }
@@ -175,7 +180,7 @@ public class CustomerDAO extends UserDAO implements ICustomerDAO {
     }
 
     @Override
-    public boolean register(String email) throws EmailDuplicationException {
+    public Customer register(String email) throws EmailDuplicationException {
         if (super.getUserByEmail(email) != null) {
             throw new EmailDuplicationException();
         }
@@ -187,14 +192,14 @@ public class CustomerDAO extends UserDAO implements ICustomerDAO {
         customer.setEmail(email);
         customer.setCustomerCreditPoint(0);
 
-        return addCustomer(customer) > 0;
+        return customer;
     }
 
     /**
      * Create a new {@link Customer} object from a {@link ResultSet}.
      *
      * @param queryResult The {@code ResultSet} containing the customer's
-     *                    information.
+     * information.
      * @return An {@code Customer} object containing the customer's information.
      * @throws SQLException If an error occurs while retrieving the data.
      */

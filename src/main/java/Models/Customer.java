@@ -10,6 +10,8 @@ public class Customer extends User {
     private List<DeliveryAddress> deliveryAddress;
 
     public Customer() {
+        setActive(true);
+        setType("Customer");
     }
 
     /**
@@ -22,6 +24,8 @@ public class Customer extends User {
         customerId = 0;
         customerCreditPoint = 0;
         deliveryAddress = new ArrayList<>();
+        setActive(user.isActive());
+        setType("Customer");
     }
 
     public int getCustomerId() {
@@ -47,5 +51,5 @@ public class Customer extends User {
     public void setDeliveryAddress(List<DeliveryAddress> deliveryAddress) {
         this.deliveryAddress = deliveryAddress;
     }
-    
+
 }

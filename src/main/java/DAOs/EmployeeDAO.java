@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.persistence.Convert;
+
 import Exceptions.CitizenIDDuplicationException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.PhoneNumberDuplicationException;
@@ -124,19 +126,16 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
 
         employee.setId(rs.getInt("Employee_ID"));
         employee.setCitizenId(rs.getNString("Employee_Citizen_ID"));
-        employee.setDateOfBirth(rs.getLong("Employee_DoB"));
+        employee.setDateOfBirth(Converter.getNullOrValue(rs.getLong("Employee_DoB")));
         employee.setPhoneNumber(rs.getString("Employee_Phone_Number"));
         employee.setAddress(rs.getNString("Employee_Address"));
         Role role = new Role();
         role.setId(rs.getInt("Role_ID"));
         role.setName(rs.getString("Role_Name"));
         employee.setRole(role);
-        employee.setJoinDate(rs.getLong("Employee_Join_Date"));
-        if (rs.getLong("Employee_Retire_Date") == 0) {
-            employee.setRetireDate(null);
-        } else {
-            employee.setRetireDate(rs.getLong("Employee_Retire_Date"));
-        }
+        employee.setJoinDate(Converter.getNullOrValue(rs.getLong("Employee_Join_Date")));
+        employee.setRetireDate(Converter.getNullOrValue(rs.getLong("Employee_Retire_Date")));
+
         return employee;
     }
 
@@ -162,19 +161,15 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
 
         employee.setEmployeeId(rs.getInt("Employee_ID"));
         employee.setCitizenId(rs.getNString("Employee_Citizen_ID"));
-        employee.setDateOfBirth(rs.getLong("Employee_DoB"));
+        employee.setDateOfBirth(Converter.getNullOrValue(rs.getLong("Employee_DoB")));
         employee.setPhoneNumber(rs.getString("Employee_Phone_Number"));
         employee.setAddress(rs.getNString("Employee_Address"));
         Role role = new Role();
         role.setId(rs.getInt("Role_ID"));
         role.setName(rs.getString("Role_Name"));
         employee.setRole(role);
-        employee.setJoinDate(rs.getLong("Employee_Join_Date"));
-        if (rs.getLong("Employee_Retire_Date") == 0) {
-            employee.setRetireDate(null);
-        } else {
-            employee.setRetireDate(rs.getLong("Employee_Retire_Date"));
-        }
+        employee.setJoinDate(Converter.getNullOrValue(rs.getLong("Employee_Join_Date")));
+        employee.setRetireDate(Converter.getNullOrValue(rs.getLong("Employee_Retire_Date")));
 
         return employee;
     }
@@ -290,6 +285,33 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, username);
+            rs = ps.executeQuery();
+            Employee employee = null;
+            if (rs.next()) {
+                employee = generateFullyEmployeeByResultSet(rs);
+            }
+            return employee;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public Employee getEmployeeByInventoryManagerId(int inventoryManagerId) {
+        if (inventoryManagerId <= 0) {
+            throw new IllegalArgumentException("inventoryManagerId cannot be less than or equal to 0");
+        }
+
+        ResultSet rs;
+
+        String sql = "SELECT * FROM Inventory_Manager\n"
+                + "JOIN Employee ON [Inventory_Manager].Employee_ID = [Employee].Employee_ID\n"
+                + "JOIN [User] ON [Employee].User_ID = [User].User_ID\n"
+                + "JOIN [Employee_Role] ON [Employee].Employee_Role = [Employee_Role].Role_ID\n"
+                + "WHERE [Inventory_Manager].[Inventory_Manager_ID] = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, inventoryManagerId);
             rs = ps.executeQuery();
             Employee employee = null;
             if (rs.next()) {

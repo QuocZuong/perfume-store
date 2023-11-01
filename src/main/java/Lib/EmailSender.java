@@ -5,6 +5,7 @@ import DAOs.DeliveryAddressDAO;
 import DAOs.OrderDetailDao;
 import DAOs.ProductDAO;
 import DAOs.UserDAO;
+import Exceptions.ProductNotFoundException;
 import Models.Customer;
 import Models.DeliveryAddress;
 import Models.Order;
@@ -54,6 +55,7 @@ public class EmailSender {
                 }
             }
         });
+
         thread.start();
     }
 
@@ -87,7 +89,7 @@ public class EmailSender {
 
     public String generatePasswordEmailHTML(String generatePassword) {
         String username = EmailTo.substring(0, EmailTo.indexOf("@"));
-        String ClientURL = "http://localhost:8080/Client/User";
+        String ClientURL = "http://localhost:8080/Customer/User";
 
         String html = "<!DOCTYPE html>\n"
                 + "<html lang=\"vi\">\n"
@@ -270,8 +272,9 @@ public class EmailSender {
         return html;
     }
 
-    public String changePasswordNotifcation() {
-        String username = EmailTo.substring(0, EmailTo.indexOf("@"));
+    public String changePasswordNotifcation(User user) {
+        String email = EmailTo;
+        String username = user.getUsername();
         String ShopURL = "http://localhost:8080";
 
         String html = "<!DOCTYPE html>\n"
@@ -321,18 +324,16 @@ public class EmailSender {
                 + "														<div id=\"body_content_inner\"\n"
                 + "															style='color: #636363; font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; font-size: 14px; line-height: 150%; text-align: left;'>\n"
                 + "\n"
-                + "															<p style=\"margin: 0 0 16px;\">Xin chào "
-                + username + ",</p>\n"
+                + "															<p style=\"margin: 0 0 16px;\">Xin chào " + username + ",</p>\n"
                 + "															<p style=\"margin: 0 0 16px;\">Thông báo này xác nhận rằng mật khẩu của bạn đã được thay đổi\n"
                 + "																trên XXVI STORE. Nếu bạn không thay đổi mật khẩu, vui lòng liên hệ người quản trị\n"
                 + "																website qua email <a href=\"mailto:"
                 + ACCOUNT + "\">" + ACCOUNT + "</a>.\n"
                 + "															</p>\n"
                 + "															<p style=\"margin: 0 0 16px;\">Email này đã được gửi đến <a\n"
-                + "																	href=\"mailto:" + username
-                + "@fpt.edu.vn\">" + username + "@fpt.edu.vn</a></strong></p>\n"
+                + "																	href=\"mailto:" + email + "\">" + email + "</a></strong></p>\n"
                 + "\n"
-                + "															<p style=\"margin: 0 0 16px;\">Xin cảm ơn\n"
+                + "															<p style=\"margin: 0 0 16px;\">Thân ái,\n"
                 + "																<br>XXVI STORE\n"
                 + "																<br><a href=\"" + ShopURL + "\">"
                 + ShopURL + "</a>\n"
@@ -682,7 +683,7 @@ public class EmailSender {
         return html;
     }
 
-    public String exportEmailReceipt(Order order) {
+    public String exportEmailReceipt(Order order) throws ProductNotFoundException {
         CustomerDAO cusDAO = new CustomerDAO();
         OrderDetailDao orderDetailDao = new OrderDetailDao();
         ProductDAO productDAO = new ProductDAO();

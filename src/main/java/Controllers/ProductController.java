@@ -2,6 +2,7 @@ package Controllers;
 
 import DAOs.BrandDAO;
 import DAOs.ProductDAO;
+import Exceptions.ProductNotFoundException;
 import Lib.ExceptionUtils;
 import Lib.Generator;
 import Models.Brand;
@@ -12,6 +13,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ProductController extends HttpServlet {
 
@@ -135,18 +138,22 @@ public class ProductController extends HttpServlet {
         System.out.println("brandId:" + brandId);
         System.out.println("currentPage:" + currentPage);
 
-        List<Product> searchProductList = pDAO.searchProduct(search);
-
-        // Then filter
-        List<Product> filteredProductList = pDAO.filterActiveProduct(searchProductList, brandId, gender, price);
+        List<Product> searchProductList;
+        List<Product> filteredProductList;
+        int numberOfPages;
         int rows = 20;
+        try {
+            searchProductList = pDAO.searchProduct(search);
 
-        int numberOfPages = (filteredProductList.size() / rows) + (filteredProductList.size() % rows == 0 ? 0 : 1);
-        if (filteredProductList.isEmpty()) {
+            // Then filter
+            filteredProductList = pDAO.filterActiveProduct(searchProductList, brandId, gender, price);
+
+            numberOfPages = (filteredProductList.size() / rows) + (filteredProductList.size() % rows == 0 ? 0 : 1);
+
+        } catch (ProductNotFoundException ex) {
             request.setAttribute("exceptionType", "ProductNotFoundException");
             return Action.Throw404.value;
         }
-
         // If user in the page the greater than numberOfPages then reset it back to 1
         if (numberOfPages < currentPage && !filteredProductList.isEmpty()) {
             String redirectPath = path;
@@ -191,12 +198,17 @@ public class ProductController extends HttpServlet {
 
         for (int i = 0; i < data.length; i++) {
             if (data[i].equals("ID")) {
-                int id = Integer.parseInt(data[i + 1]);
-                Product p = pDAO.getActiveProduct(id);
+                try {
+                    int id = Integer.parseInt(data[i + 1]);
+                    Product p = pDAO.getActiveProduct(id);
 
-                if (p != null) {
-                    request.setAttribute("product", p);
-                    return true;
+                    if (p != null) {
+                        request.setAttribute("product", p);
+                        return true;
+                    }
+                } catch (ProductNotFoundException ex) {
+                    request.setAttribute("exceptionType", "ProductNotFoundException");
+                    return false;
                 }
             }
         }

@@ -10,11 +10,13 @@ import Exceptions.WrongPasswordException;
 import DAOs.UserDAO;
 import Exceptions.EmailDoesntExist;
 import Exceptions.InvalidInputException;
+import Exceptions.OperationAddFailedException;
 import Interfaces.DAOs.IUserDAO;
 import Lib.Converter;
 import Lib.EmailSender;
 import Lib.ExceptionUtils;
 import Lib.Generator;
+import Models.Customer;
 import Models.Employee;
 import Models.User;
 
@@ -182,8 +184,9 @@ public class LogController extends HttpServlet {
         CustomerDAO cusDAO = new CustomerDAO();
 
         try {
-            if (cusDAO.register(email)) {
-                String username = cusDAO.getUserByEmail(email).getUsername();
+            Customer customer = cusDAO.register(email);
+            if (customer != null) {
+                String username = customer.getUsername();
 
                 Cookie c = new Cookie("Customer", username);
                 c.setMaxAge(3 * 24 * 60 * 60);
@@ -191,10 +194,27 @@ public class LogController extends HttpServlet {
 
                 response.addCookie(c);
 
+                String generatedPassword = customer.getPassword();
+                
+                //Add customer
+                cusDAO.addCustomer(customer);
+
+                //Sending email
+                EmailSender es = new EmailSender();
+                es.setEmailTo(email);
+                es.sendEmailByThread(es.GENERATE_PASSWORD_SUBJECT, es.generatePasswordEmailHTML(generatedPassword));
+
                 return true;
             }
         } catch (EmailDuplicationException e) {
             request.setAttribute("exceptionType", "EmailDuplicationException");
+            return false;
+        } catch (UnsupportedEncodingException ex) {
+            request.setAttribute("exceptionType", "");
+            return false;
+        } catch (OperationAddFailedException ex) {
+            request.setAttribute("exceptionType", "OperationAddFailedException");
+            return false;
         }
 
         return false;

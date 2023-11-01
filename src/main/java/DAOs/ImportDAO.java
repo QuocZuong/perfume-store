@@ -1,7 +1,9 @@
 package DAOs;
 
 import Interfaces.DAOs.IImportDAO;
+import Lib.Converter;
 import Lib.DatabaseUtils;
+import Lib.Generator;
 import Models.Import;
 import Models.ImportDetail;
 import java.sql.Connection;
@@ -12,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.faces.webapp.ConverterTag;
 
 public class ImportDAO implements IImportDAO {
 
@@ -75,10 +79,10 @@ public class ImportDAO implements IImportDAO {
                 ip.setTotalQuantity(total_quan);
                 ip.setTotalCost(total_cost);
                 ip.setSupplierName(rs.getNString("Supplier_Name"));
-                ip.setImportAt(rs.getLong("Import_At"));
-                ip.setDeliveredAt(rs.getLong("Delivered_At"));
+                ip.setImportAt(Converter.getNullOrValue(rs.getLong("Import_At")));
+                ip.setDeliveredAt(Converter.getNullOrValue(rs.getLong("Delivered_At")));
                 ip.setImportByInventoryManager(rs.getInt("Import_By_Inventory_Manager"));
-                ip.setModifiedAt(rs.getInt("Modified_At"));
+                ip.setModifiedAt(Converter.getNullOrValue(rs.getLong("Modified_At")));
                 ip.setModifiedByAdmin(rs.getInt("Modified_By_Admin"));
                 ip.setImportDetail(ipD);
                 arrImport.add(ip);
@@ -107,10 +111,10 @@ public class ImportDAO implements IImportDAO {
                 ip.setTotalQuantity(rs.getInt("Import_Total_Quantity"));
                 ip.setTotalCost(rs.getInt("Import_Total_Cost"));
                 ip.setSupplierName(rs.getNString("Supplier_Name"));
-                ip.setImportAt(rs.getLong("Import_At"));
-                ip.setDeliveredAt(rs.getLong("Delivered_At"));
+                ip.setImportAt(Converter.getNullOrValue(rs.getLong("Import_At")));
+                ip.setDeliveredAt(Converter.getNullOrValue(rs.getLong("Delivered_At")));
                 ip.setImportByInventoryManager(rs.getInt("Import_By_Inventory_Manager"));
-                ip.setModifiedAt(rs.getInt("Modified_At"));
+                ip.setModifiedAt(Converter.getNullOrValue(rs.getLong("Modified_At")));
                 ip.setModifiedByAdmin(rs.getInt("Modified_By_Admin"));
                 ip.setImportDetail(ipDList);
             }
@@ -159,10 +163,10 @@ public class ImportDAO implements IImportDAO {
                 ip.setTotalQuantity(rs.getInt("Import_Total_Quantity"));
                 ip.setTotalCost(rs.getInt("Import_Total_Cost"));
                 ip.setSupplierName(rs.getNString("Supplier_Name"));
-                ip.setImportAt(rs.getLong("Import_At"));
-                ip.setDeliveredAt(rs.getLong("Delivered_At"));
+                ip.setImportAt(Converter.getNullOrValue(rs.getLong("Import_At")));
+                ip.setDeliveredAt(Converter.getNullOrValue(rs.getLong("Delivered_At")));
                 ip.setImportByInventoryManager(rs.getInt("Import_By_Inventory_Manager"));
-                ip.setModifiedAt(rs.getInt("Modified_At"));
+                ip.setModifiedAt(Converter.getNullOrValue(rs.getLong("Modified_At")));
                 ip.setModifiedByAdmin(rs.getInt("Modified_By_Admin"));
                 impList.add(ip);
             }
@@ -198,4 +202,83 @@ public class ImportDAO implements IImportDAO {
         return result;
     }
 
+    /* ------------------------- DELETE SECTION ---------------------------- */
+    public int updateImport(Import ip, int adminId) {
+        if (ip == null) {
+            return 0;
+        }
+        String sql = "UPDATE [Import] SET\n"
+                + "Import_Total_Quantity = ?,\n"
+                + "Import_Total_Cost = ?,\n"
+                + "Supplier_Name = ?,\n"
+                + "Import_At = ?,\n"
+                + "Delivered_At = ?,\n"
+                + "Import_By_Inventory_Manager = ?,\n"
+                + "Modified_At = ?,\n"
+                + "Modified_By_Admin = ?\n"
+                + "\n"
+                + "WHERE Import_ID = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, ip.getTotalQuantity());
+            ps.setInt(2, ip.getTotalCost());
+            ps.setNString(3, ip.getSupplierName());
+            ps.setLong(4, ip.getImportAt());
+            ps.setLong(5, ip.getDeliveredAt());
+            ps.setInt(6, ip.getImportByInventoryManager());
+            ps.setLong(7, Generator.getCurrentTimeFromEpochMilli());
+            ps.setInt(8, adminId);
+            ps.setInt(9, ip.getId());
+            return ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ImportDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
+    /* ------------------------- SEARCH ACTIVITY LOG SECTION ---------------------------- */
+    public List<Import> searchImportForActivityLog(String search) {
+        if (search == null || search.equals("")) {
+            search = "%";
+        } else {
+            search = "%" + search + "%";
+        }
+
+        ResultSet rs;
+        List<Import> importList = new ArrayList<>();
+
+        try {
+            String sql = "SELECT * FROM Import\n"
+                    + "JOIN [Inventory_Manager] ON [Import].Import_By_Inventory_Manager = [Inventory_Manager].[Inventory_Manager_ID]\n"
+                    + "JOIN Employee ON [Inventory_Manager].Employee_ID = [Employee].Employee_ID\n"
+                    + "JOIN [User] ON [Employee].[User_ID] = [User].[User_ID]\n"
+                    + "WHERE [User].User_Email LIKE ? OR [User].[User_Username] LIKE ? OR [Import].[Supplier_Name] LIKE ?";
+
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setString(1, search);
+            ps.setString(2, search);
+            ps.setNString(3, search);
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Import ip = new Import();
+                ip.setId(rs.getInt("Import_ID"));
+                ip.setTotalQuantity(rs.getInt("Import_Total_Quantity"));
+                ip.setTotalCost(rs.getInt("Import_Total_Cost"));
+                ip.setSupplierName(rs.getNString("Supplier_Name"));
+                ip.setImportAt(Converter.getNullOrValue(rs.getLong("Import_At")));
+                ip.setDeliveredAt(Converter.getNullOrValue(rs.getLong("Delivered_At")));
+                ip.setImportByInventoryManager(rs.getInt("Import_By_Inventory_Manager"));
+                ip.setModifiedAt(Converter.getNullOrValue(rs.getLong("Modified_At")));
+                ip.setModifiedByAdmin(rs.getInt("Modified_By_Admin"));
+                importList.add(ip);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return importList;
+    }
 }

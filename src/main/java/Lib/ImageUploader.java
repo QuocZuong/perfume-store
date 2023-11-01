@@ -4,8 +4,6 @@
  */
 package Lib;
 
-import static Controllers.AdminController.IMGUR_API_ENDPOINT;
-import static Controllers.AdminController.IMGUR_CLIENT_ID;
 import jakarta.servlet.http.Part;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -24,6 +22,9 @@ import java.nio.charset.StandardCharsets;
  * @author Acer
  */
 public class ImageUploader {
+
+    public static final String IMGUR_API_ENDPOINT = "https://api.imgur.com/3/image";
+    public static final String IMGUR_CLIENT_ID = "87da474f87f4754";
 
     public static String uploadImageToCloud(Part imagePart) throws IOException {
         String imgURL = "/RESOURCES/images/icons/default-perfume.png";

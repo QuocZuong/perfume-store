@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import Lib.Converter;
+
 public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
 
     final String TABLE_NAME = "DeliveryAddress";
@@ -41,8 +43,8 @@ public class DeliveryAddressDAO implements Interfaces.DAOs.IDeliveryAddressDAO {
         deliveryAddress.setPhoneNumber(rs.getString("Phone_Number"));
         deliveryAddress.setAddress(rs.getNString("Address"));
         deliveryAddress.setStatus(rs.getNString("Status"));
-        deliveryAddress.setCreateAt(rs.getLong("Create_At"));
-        deliveryAddress.setModifiedAt(rs.getLong("Modified_At"));
+        deliveryAddress.setCreateAt(Converter.getNullOrValue(rs.getLong("Create_At")));
+        deliveryAddress.setModifiedAt(Converter.getNullOrValue(rs.getLong("Modified_At")));
 
         return deliveryAddress;
     }

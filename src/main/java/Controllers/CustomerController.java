@@ -17,8 +17,10 @@ import Exceptions.AccountDeactivatedException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.InvalidInputException;
 import Exceptions.InvalidVoucherException;
+import Exceptions.NoProductVoucherAppliedException;
 import Exceptions.NotEnoughInformationException;
 import Exceptions.NotEnoughVoucherQuantityException;
+import Exceptions.ProductNotFoundException;
 import Exceptions.UsernameDuplicationException;
 import Exceptions.VoucherNotFoundException;
 import Exceptions.WrongPasswordException;
@@ -147,10 +149,10 @@ public class CustomerController extends HttpServlet {
             System.out.println("Going Order Detail");
             int result = getCustomerOrderDetail(request);
             if (result == State.Success.value) {
-                request.getRequestDispatcher("/CUSTOMER_PAGE/order_detail.jsp").forward(request,
-                        response);
+                System.out.println("success");
+                request.getRequestDispatcher("/CUSTOMER_PAGE/order_detail.jsp").forward(request, response);
             } else {
-                request.getRequestDispatcher(CUSTOMER_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
+                response.sendRedirect(CUSTOMER_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
             }
             return;
         }
@@ -215,7 +217,7 @@ public class CustomerController extends HttpServlet {
                 if (updateClientInfomation(request, response)) {
                     response.sendRedirect(CUSTOMER_USER_URI);
                 } else {
-                    response.sendRedirect(CUSTOMER_USER_URI + checkException(request));
+                    response.sendRedirect(CUSTOMER_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
                 }
                 return;
             }
@@ -430,12 +432,17 @@ public class CustomerController extends HttpServlet {
                     List<Product> approvedProduct = new ArrayList<>();
                     int sumDeductPrice = 0;
                     Product p;
+                    boolean hasProductVoucherApplied = false;
                     for (int i = 0; i < cartItemList.size(); i++) {
                         if (v.getApprovedProductId().contains(cartItemList.get(i).getProductId())) {
                             p = pDAO.getProduct(cartItemList.get(i).getProductId());
                             approvedProduct.add(p);
                             sumDeductPrice += p.getStock().getPrice() * v.getDiscountPercent() / 100;
+                            hasProductVoucherApplied = true;
                         }
+                    }
+                    if (!hasProductVoucherApplied) {
+                        throw new NoProductVoucherAppliedException();
                     }
 
                     request.setAttribute("sumDeductPrice", sumDeductPrice);
@@ -457,15 +464,21 @@ public class CustomerController extends HttpServlet {
                 Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);
                 return State.Fail.value;
 
+            } catch (ProductNotFoundException ex) {
+                request.setAttribute("exceptionType", "ProductNotFoundException");
+                return State.Fail.value;
+            } catch (NoProductVoucherAppliedException ex) {
+                request.setAttribute("exceptionType", "NoProductVoucherAppliedException");
+                return State.Fail.value;
             }
         }
         return State.Success.value;
     }
 
     private int getCustomerOrderDetail(HttpServletRequest request) {
-        String path = request.getRequestURI();
-        String[] data = path.split("/");
         try {
+            String path = request.getRequestURI();
+            String[] data = path.split("/");
             OrderDAO oDAO = new OrderDAO();
             VoucherDAO vDAO = new VoucherDAO();
             ProductDAO pDAO = new ProductDAO();
@@ -497,12 +510,17 @@ public class CustomerController extends HttpServlet {
                 request.setAttribute("approvedProductsList", approvedProductsList);
                 // Get the list of all product that is approviate for voucher discount.
             }
-            System.out.println("Get order detail list");
-            System.out.println(order.getOrderDetailList());
 
             request.setAttribute("OrderInfor", order);
             return State.Success.value;
         } catch (NumberFormatException e) {
+            request.setAttribute("exceptionType", "");
+            return State.Fail.value;
+        } catch (ProductNotFoundException ex) {
+            request.setAttribute("exceptionType", "ProductNotFoundException");
+            return State.Fail.value;
+        } catch (Exception ex) {
+            request.setAttribute("exceptionType", "");
             return State.Fail.value;
         }
     }
@@ -611,7 +629,7 @@ public class CustomerController extends HttpServlet {
                 System.out.println("Detect password change");
                 System.out.println("sending mail changing password");
                 es.setEmailTo(email);
-                es.sendEmailByThread(es.CHANGE_PASSWORD_NOTFICATION, es.changePasswordNotifcation());
+                es.sendEmailByThread(es.CHANGE_PASSWORD_NOTFICATION, es.changePasswordNotifcation(updateCustomer));
             }
             if (isChangedEmail) {
                 System.out.println("Detect email change");
@@ -903,6 +921,9 @@ public class CustomerController extends HttpServlet {
                 Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);
                 return State.Fail.value;
 
+            } catch (ProductNotFoundException ex) {
+                request.setAttribute("exceptionType", "ProductNotFoundException");
+                return State.Fail.value;
             }
         }
 
@@ -1004,6 +1025,9 @@ public class CustomerController extends HttpServlet {
                 request.setAttribute("exceptionType", "NotEnoughVoucherException");
                 Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);
                 return State.Fail.value;
+            } catch (ProductNotFoundException ex) {
+                request.setAttribute("exceptionType", "ProductNotFoundException");
+                return State.Fail.value;
             }
         }
 
@@ -1015,7 +1039,12 @@ public class CustomerController extends HttpServlet {
             Product p;
             for (int i = 0; i < cartItemList.size(); i++) {
                 if (v.getApprovedProductId().contains(cartItemList.get(i).getProductId())) {
-                    p = pDAO.getProduct(cartItemList.get(i).getProductId());
+                    try {
+                        p = pDAO.getProduct(cartItemList.get(i).getProductId());
+                    } catch (ProductNotFoundException ex) {
+                        request.setAttribute("exceptionType", "ProductNotFoundException");
+                        return State.Fail.value;
+                    }
                     sumDeductPrice += p.getStock().getPrice() * v.getDiscountPercent() / 100;
                 }
             }
@@ -1133,7 +1162,6 @@ public class CustomerController extends HttpServlet {
     }
 
     private void exportReceipt(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException, IOException {
-        System.out.println("vao export");
         OrderDAO orderDAO = new OrderDAO();
         CustomerDAO customerDAO = new CustomerDAO();
         EmailSender emailSender = new EmailSender();
@@ -1148,17 +1176,13 @@ public class CustomerController extends HttpServlet {
         Order order = orderDAO.getOrderByOrderId(orderId);
         Customer customer = customerDAO.getCustomer(order.getCustomerId());
         emailSender.setEmailTo(customer.getEmail());
-        emailSender.sendEmailByThread(emailSender.EXPORT_RECEIPT_NOTFICATION, emailSender.exportEmailReceipt(order));
+        try {
+            emailSender.sendEmailByThread(emailSender.EXPORT_RECEIPT_NOTFICATION, emailSender.exportEmailReceipt(order));
+        } catch (ProductNotFoundException ex) {
+            request.setAttribute("exceptionType", "ProductNotFoundException");
+            return;
+        }
         System.out.println("email to export: " + customer.getEmail());
         response.sendRedirect(CUSTOMER_ORDER_DETAIL_URI + "/" + order.getId());
-    }
-
-    // ------------------------- EXEPTION HANDLING SECTION -------------------------
-    private String checkException(HttpServletRequest request) {
-        if (request.getAttribute("exceptionType") == null) {
-            return "";
-        }
-        return null;
-
     }
 }

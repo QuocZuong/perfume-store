@@ -1,5 +1,5 @@
-<%-- Document : AdminNavbar.jsp Created on : Sep 5, 2023, 8:41:33 PM Author : Acer --%> <%@page contentType="text/html"
-                                                                                                pageEncoding="UTF-8"%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -57,7 +57,7 @@
                 <li class="py-2 text-dark"><a href="/Admin/User/List">Danh sách người dùng</a></li>
                 <li class="py-2 text-dark"><a href="/Admin/EmployeeActivityLog/Admin">Hoạt động admin</a></li>
                 <li class="py-2 text-dark"><a href="/Admin/EmployeeActivityLog/OrderManager">Hoạt động order manager</a></li>
-                <li class="py-2 text-dark"><a href="/Admin/Import/Store">Hoạt động inventory manager</a></li>
+                <li class="py-2 text-dark"><a href="/Admin/EmployeeActivityLog/InventoryManager">Hoạt động inventory manager</a></li>
             </ul>
 
             <a href="/Admin/User"><img src="/RESOURCES/images/icons/user.png" alt="" /></a>

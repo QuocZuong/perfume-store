@@ -1,15 +1,23 @@
 
 
+<%@page import="Lib.ExceptionUtils"%>
 <%@page import="Lib.Converter"%>
 <%@page import="DAOs.ProductDAO"%>
 <%@page import="DAOs.BrandDAO"%>
 <%@page import="Models.Product"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib  uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
 <%! BrandDAO bDAO = new BrandDAO();  %>
 <%! ProductDAO pDAO = new ProductDAO(); %>
 <%! Product pd;%>
 <% pd = (Product) request.getAttribute("ProductUpdate");%>
+<%
+    String queryString = request.getQueryString();
+    boolean isError = ExceptionUtils.isWebsiteError(queryString);
+    String exceptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
 
+%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -55,11 +63,18 @@
 
                 <div class="container">
                     <div class="row">
-                        <h1>Update Product</h1>
-                        <form action="/Admin/Product/Update" method="POST" enctype="multipart/form-data">
-                            <div class="id">
-                                <label class="required">Product ID</label>
-                                <input type="number" name="txtProductID" readonly="true" value="<%= pd.getId()%>">
+
+                        <!--Execption Handling-->
+                    <c:if test='<%= isError%>'>
+                        <h1 class="alert alert-danger text-center"> <%= exceptionMessage%></h1>
+                    </c:if>
+                    <!--Execption Handling-->
+
+                    <h1>Update Product</h1>
+                    <form action="/Admin/Product/Update" method="POST" enctype="multipart/form-data">
+                        <div class="id">
+                            <label class="required">Product ID</label>
+                            <input type="number" name="txtProductID" readonly="true" value="<%= pd.getId()%>">
                         </div>
                         <div class="name">
                             <label class="required">Product name</label>
@@ -194,7 +209,7 @@
                         },
                         txtProductPrice: {
                             required: true,
-                            number: true
+                            digits: true
                         },
                         rdoGender: {
                             required: true
@@ -233,7 +248,7 @@
                         },
                         txtProductPrice: {
                             required: "Vui lòng nhập giá sản phẩm",
-                            number: "Giá sản phẩm phải là số"
+                            digits: "Giá sản phẩm phải là số nguyên"
                         },
                         rdoGender: {
                             required: "Vui lòng chọn giới tính"

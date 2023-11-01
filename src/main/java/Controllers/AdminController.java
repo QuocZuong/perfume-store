@@ -4,6 +4,7 @@ import DAOs.AdminDAO;
 import DAOs.BrandDAO;
 import DAOs.CustomerDAO;
 import DAOs.EmployeeDAO;
+import DAOs.ImportDAO;
 import DAOs.ImportDetailDAO;
 import DAOs.OrderDAO;
 import DAOs.ProductActivityLogDAO;
@@ -22,9 +23,11 @@ import Exceptions.AccountNotFoundException;
 import Exceptions.CitizenIDDuplicationException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.InvalidInputException;
+import Exceptions.OperationAddFailedException;
 import Exceptions.PhoneNumberDuplicationException;
 import Exceptions.ProductNotFoundException;
 import Exceptions.UsernameDuplicationException;
+import Exceptions.VoucherCodeDuplication;
 import Exceptions.WrongPasswordException;
 import Interfaces.DAOs.IUserDAO;
 import Lib.Converter;
@@ -36,6 +39,7 @@ import Models.Admin;
 import Models.Stock;
 import Models.Customer;
 import Models.Employee;
+import Models.Import;
 import Models.ImportDetail;
 import Models.Order;
 import Models.OrderDetail;
@@ -51,8 +55,10 @@ import jakarta.servlet.http.Part;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, // 1MB
         maxFileSize = 1024 * 1024 * 5, // 5MB
@@ -77,6 +83,10 @@ public class AdminController extends HttpServlet {
 
     public static final String ADMIN_IMPORT_LIST_URI = "/Admin/Import/List";
     public static final String ADMIN_IMPORT_DETAIL_URI = "/Admin/Import/Detail";
+    public static final String ADMIN_IMPORT_UPDATE_URI = "/Admin/Import/Update";
+    public static final String ADMIN_IMPORT_CONFIRM_UPDATE_URI = "/Admin/Import/ConfirmUpdate";
+
+    public static final String ADMIN_IMPORT_DELETE_DETAIL_URI = "/Admin/Import/DeleteDetail";
     public static final String ADMIN_IMPORT_STORE = "/Admin/Import/Store";
     public static final String ADMIN_IMPORT_BRING_TO_STOCK = "/Admin/Import/Bring";
 
@@ -107,9 +117,6 @@ public class AdminController extends HttpServlet {
     public static final String ADMIN_CHART_TOTAL_ORDER = "/Admin/Chart/TotalOrder";
 
     public static final String ADMIN_UPDATE_INFO_URI = "/Admin/Update/Info";
-
-    public static final String IMGUR_API_ENDPOINT = "https://api.imgur.com/3/image";
-    public static final String IMGUR_CLIENT_ID = "87da474f87f4754";
 
     public enum State {
         Success(1),
@@ -208,18 +215,10 @@ public class AdminController extends HttpServlet {
             }
             return;
         }
-        // Page chua co
         if (path.startsWith(ADMIN_VOUCHER_ADD_URI)) {
-            int result = getUpdateVoucher(request);
-
-            if (result == State.Success.value) {
-                request.getRequestDispatcher("/ADMIN_PAGE/Voucher/addVoucher.jsp").forward(request, response);
-            } else if (result == State.Fail.value) {
-                response.sendRedirect(ADMIN_VOUCHER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
-            }
+            request.getRequestDispatcher("/ADMIN_PAGE/Voucher/addVoucher.jsp").forward(request, response);
             return;
         }
-        // Page nhu cc
         if (path.startsWith(ADMIN_VOUCHER_UPDATE_URI)) {
             int result = getUpdateVoucher(request);
 
@@ -268,7 +267,7 @@ public class AdminController extends HttpServlet {
         }
 
         if (path.startsWith(ADMIN_INVENTORY_MANAGER_ACTIVITY_LOG_URI)) {
-            adminActivityLog(request, response);
+            inventoryManagerActivityLog(request, response);
             request.getRequestDispatcher("/ADMIN_PAGE/User/inventoryManagerActivityLog.jsp").forward(request, response);
             return;
         }
@@ -279,7 +278,7 @@ public class AdminController extends HttpServlet {
         }
 
         if (path.startsWith(ADMIN_USER_UPDATE_CUSTOMER_URI)) {
-            if (handleUpdateCustomer(request, response)) {
+            if (getUpdateCustomer(request, response)) {
                 request.getRequestDispatcher("/ADMIN_PAGE/User/updateCustomer.jsp").forward(request, response);
             } else {
                 response.sendRedirect(ADMIN_USER_LIST_URI);
@@ -288,7 +287,7 @@ public class AdminController extends HttpServlet {
         }
 
         if (path.startsWith(ADMIN_USER_UPDATE_EMPLOYEE_URI)) {
-            if (handleUpdateEmployee(request, response)) {
+            if (getUpdateEmployee(request, response)) {
                 request.getRequestDispatcher("/ADMIN_PAGE/User/updateEmployee.jsp").forward(request, response);
             } else {
                 response.sendRedirect(ADMIN_USER_LIST_URI);
@@ -350,6 +349,60 @@ public class AdminController extends HttpServlet {
             }
             return;
         }
+
+        if (path.startsWith(ADMIN_IMPORT_LIST_URI)
+                || path.startsWith(ADMIN_IMPORT_LIST_URI + "/page")) {
+            System.out.println("Going Import List");
+            int result = -1;
+            if (!path.endsWith("?errAccNF=true") && !path.endsWith("?errImpNF")) {
+                result = searchImport(request);
+            }
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/ADMIN_PAGE/Import/list.jsp").forward(request, response);
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(
+                        ADMIN_IMPORT_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+            } else if (result == -1) {
+                response.sendRedirect(ADMIN_IMPORT_LIST_URI);
+            }
+            return;
+        }
+
+        if (path.startsWith(ADMIN_IMPORT_DETAIL_URI)) {
+            System.out.println("Going import Detail");
+            int result = getImportDetail(request);
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/ADMIN_PAGE/Import/importDetail.jsp").forward(request,
+                        response);
+            } else if (result == State.Fail.value) {
+                request.getRequestDispatcher(ADMIN_IMPORT_DETAIL_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
+
+        if (path.startsWith(ADMIN_IMPORT_DELETE_DETAIL_URI)) {
+            System.out.println("Going delete");
+            int result = deleteImportDetail(request);
+            if (result == State.Success.value) {
+                response.sendRedirect(ADMIN_IMPORT_UPDATE_URI + "/ID/" + (String) request.getAttribute("ImportID"));
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(ADMIN_IMPORT_UPDATE_URI + "/ID/" + ((String) request.getAttribute("ImportID") != null ? (String) request.getAttribute("ImportID") : "-1") + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
+
+        if (path.startsWith(ADMIN_IMPORT_UPDATE_URI)) {
+            System.out.println("Going import update");
+            int result = getUpdateImport(request);
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/ADMIN_PAGE/Import/update.jsp").forward(request,
+                        response);
+            } else if (result == State.Fail.value) {
+                request.getRequestDispatcher(ADMIN_IMPORT_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
+
         // ---------------------------- IMPORT SECTION ----------------------------
         // ---------------------------- CHART SECTION ----------------------------
         if (path.startsWith(ADMIN_CHART_BEST_SELLING_PRODUCT_BY_GENDER)) {
@@ -407,8 +460,9 @@ public class AdminController extends HttpServlet {
                 if (result == State.Success.value) {
                     response.sendRedirect(ADMIN_PRODUCT_LIST_URI);
                 } else {
+                    int pID = Integer.parseInt(request.getParameter("txtProductID"));
                     response.sendRedirect(
-                            ADMIN_PRODUCT_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+                            ADMIN_PRODUCT_UPDATE_URI + "/ID/" + pID + ExceptionUtils.generateExceptionQueryString(request));
                 }
             }
             return;
@@ -472,18 +526,49 @@ public class AdminController extends HttpServlet {
                 return;
             }
         }
+
         if (path.startsWith(ADMIN_VOUCHER_UPDATE_URI)) {
-            if (request.getParameter("btnUpdateInfo") != null
-                    && request.getParameter("btnUpdateInfo").equals("Submit")) {
+            if (request.getParameter("btnUpdateVoucher") != null
+                    && request.getParameter("btnUpdateVoucher").equals("Submit")) {
                 System.out.println("Going update info");
-                if (updateAdminInfomation(request, response)) {
-                    response.sendRedirect(ADMIN_USER_URI);
+                int result = updateVoucher(request);
+                if (result == State.Success.value) {
+                    response.sendRedirect(ADMIN_VOUCHER_LIST_URI);
                 } else {
-                    response.sendRedirect(ADMIN_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
+                    response.sendRedirect(ADMIN_VOUCHER_UPDATE_URI + "/ID/" + request.getAttribute("errorVoucherId") + ExceptionUtils.generateExceptionQueryString(request));
                 }
                 return;
             }
         }
+
+        if (path.startsWith(ADMIN_VOUCHER_ADD_URI)) {
+            if (request.getParameter("btnAddVoucher") != null
+                    && request.getParameter("btnAddVoucher").equals("Submit")) {
+                System.out.println("Going update info");
+                int result = addVoucher(request);
+                if (result == State.Success.value) {
+                    response.sendRedirect(ADMIN_VOUCHER_LIST_URI);
+                } else {
+                    response.sendRedirect(ADMIN_VOUCHER_ADD_URI + ExceptionUtils.generateExceptionQueryString(request));
+                }
+                return;
+            }
+        }
+
+        if (path.startsWith(ADMIN_IMPORT_CONFIRM_UPDATE_URI)) {
+            if (request.getParameter("btnUpdateImport") != null
+                    && request.getParameter("btnUpdateImport").equals("Submit")) {
+                System.out.println("Going update info");
+                int result = updateImportInformation(request);
+                if (result == State.Success.value) {
+                    response.sendRedirect(ADMIN_IMPORT_DETAIL_URI + "/ID/" + (String) request.getAttribute("ImportID"));
+                } else if (result == State.Fail.value) {
+                    response.sendRedirect(ADMIN_IMPORT_UPDATE_URI + "/ID/" + ((String) request.getAttribute("ImportID") != null ? (String) request.getAttribute("ImportID") : "-1") + ExceptionUtils.generateExceptionQueryString(request));
+                }
+                return;
+            }
+        }
+
     }
 
     /* CRUD */
@@ -494,9 +579,7 @@ public class AdminController extends HttpServlet {
         BrandDAO bDAO = new BrandDAO();
         String pName = request.getParameter("txtProductName");
         String bName = request.getParameter("txtBrandName");
-        int pPrice = Integer.parseInt(
-                Converter.covertIntergerToMoney(
-                        Integer.parseInt(request.getParameter("txtProductPrice").replace(",", ""))));
+        int pPrice = Integer.parseInt(request.getParameter("txtProductPrice").replace(",", ""));
         String gender = request.getParameter("rdoGender");
         String smell = request.getParameter("txtProductSmell");
         int quantity = Integer.parseInt(request.getParameter("txtProductQuantity").replace(",", ""));
@@ -521,6 +604,7 @@ public class AdminController extends HttpServlet {
         Stock stock = new Stock();
         stock.setPrice(pPrice);
         stock.setQuantity(quantity);
+        product.setStock(stock);
 
         Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
         String username = userCookie.getValue();
@@ -528,12 +612,19 @@ public class AdminController extends HttpServlet {
         Admin admin = adDAO.getAdmin(username);
 
         // Upload data to db
-        int kq = pDAO.addProduct(product, admin);
-        if (kq == 0) {
-            System.out.println("Add failed, Some attribute may be duplicate");
-            request.setAttribute("exceptionType", "OperationAddFailedException");
+        int kq;
+        try {
+            kq = pDAO.addProduct(product, admin);
+            if (kq == 0) {
+                System.out.println("Add failed, Some attribute may be duplicate");
+                request.setAttribute("exceptionType", "OperationAddFailedException");
+                return State.Fail.value;
+            }
+        } catch (InvalidInputException ex) {
+            request.setAttribute("exceptionType", "InvalidInputException");
             return State.Fail.value;
         }
+
         System.out.println("Add successfully");
         return State.Success.value;
     }
@@ -635,7 +726,184 @@ public class AdminController extends HttpServlet {
         return true;
     }
 
+    private int addVoucher(HttpServletRequest request) {
+        try {
+            VoucherDAO vDAO = new VoucherDAO();
+
+            String code = request.getParameter("txtCode");
+            int quantity = Integer.parseInt(request.getParameter("txtQuantity"));
+            int discountPercent = Integer.parseInt(request.getParameter("txtDiscountPercent"));
+            String approveProducts[] = request.getParameter("txtApprovedProduct").split(", ");
+            List<Integer> aprroveProductsId = Arrays.stream(approveProducts)
+                    .map(String::trim)
+                    .map(Integer::valueOf)
+                    .collect(Collectors.toList());
+
+            int discountMax = Integer.parseInt(request.getParameter("txtDiscountMax"));
+            String createAt = request.getParameter("txtCreateAt");
+            String expiredAt = request.getParameter("txtExpiredAt");
+
+            System.out.println("|" + createAt + "|");
+
+            Voucher voucher = new Voucher();
+            voucher.setCode(code);
+            voucher.setQuantity(quantity);
+            voucher.setDiscountPercent(discountPercent);
+            voucher.setApprovedProductId(aprroveProductsId);
+            voucher.setDiscountMax(discountMax);
+            voucher.setCreatedAt(Converter.convertStringToEpochMilli(createAt));
+            voucher.setExpiredAt(Converter.convertStringToEpochMilli(expiredAt));
+
+            Cookie c = (Cookie) request.getSession().getAttribute("userCookie");
+            AdminDAO adDAO = new AdminDAO();
+            Admin admin = adDAO.getAdmin(c.getValue());
+
+            voucher.setCreatedByAdmin(admin.getAdminId());
+
+            int result = vDAO.addVoucher(voucher);
+            if (result < 1) {
+                throw new Exception();
+            }
+            System.out.println("Add voucher successfully!");
+            return State.Success.value;
+        } catch (NumberFormatException e) {
+            //Default exception
+            System.out.println("NumberFormatException:" + e.getMessage());
+            request.setAttribute("exceptionType", "");
+        } catch (OperationAddFailedException ex) {
+            request.setAttribute("exceptionType", "OperationAddFailedException");
+        } catch (VoucherCodeDuplication ex) {
+            request.setAttribute("exceptionType", "VoucherCodeDuplication");
+        } catch (Exception ex) {
+            System.out.println("Exception:" + ex.getMessage());
+            //Default exception
+            request.setAttribute("exceptionType", "");
+        }
+        return State.Fail.value;
+    }
+
     // ---------------------------- READ SECTION ----------------------------
+    private int getImportDetail(HttpServletRequest request) {
+        ImportDAO ipDAO = new ImportDAO();
+        AdminDAO adDAO = new AdminDAO();
+
+        String data[] = request.getRequestURI().split("/");
+
+        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+        String username = currentUserCookie.getValue();
+        Admin ad = adDAO.getAdmin(username);
+
+        if (ad == null) {
+            System.out.println("Unknow Username to view import detail");
+            request.setAttribute("exceptionType", "AccountNotFoundException");
+            return State.Fail.value;
+        }
+
+        try {
+            Import ip = null;
+            for (int i = 0; i < data.length; i++) {
+                if (data[i].equals("ID")) {
+                    int importId = Integer.parseInt(data[i + 1]);
+                    ip = ipDAO.getImport(importId);
+                }
+            }
+            if (ip == null) {
+                System.out.println("not found import detail");
+                request.setAttribute("exceptionType", "ImportNotFoundException");
+                return State.Fail.value;
+            }
+            if (ip.getImportDetail() == null || ip.getImportDetail().isEmpty()) {
+                System.out.println("import has no import detail");
+                request.setAttribute("exceptionType", "ImportNotFoundException");
+                return State.Fail.value;
+            }
+            request.setAttribute("importInfo", ip);
+            return State.Success.value;
+        } catch (NumberFormatException e) {
+            request.setAttribute("exceptionType", "ImportNotFoundException");
+            return State.Fail.value;
+        }
+    }
+
+    private int getUpdateImport(HttpServletRequest request) {
+        ImportDAO ipDAO = new ImportDAO();
+        AdminDAO adDAO = new AdminDAO();
+
+        String data[] = request.getRequestURI().split("/");
+
+        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+        String username = currentUserCookie.getValue();
+        Admin ad = adDAO.getAdmin(username);
+
+        if (ad == null) {
+            System.out.println("Unknow Username to update import");
+            request.setAttribute("exceptionType", "AccountNotFoundException");
+            return State.Fail.value;
+        }
+
+        try {
+            Import ip = null;
+            for (int i = 0; i < data.length; i++) {
+                if (data[i].equals("ID")) {
+                    int importId = Integer.parseInt(data[i + 1]);
+                    ip = ipDAO.getImport(importId);
+                }
+            }
+            if (ip == null) {
+                System.out.println("not found import detail");
+                request.setAttribute("exceptionType", "ImportNotFoundException");
+                return State.Fail.value;
+            }
+            if (ip.getImportDetail() == null || ip.getImportDetail().isEmpty()) {
+                System.out.println("import has no import detail");
+                request.setAttribute("exceptionType", "ImportNotFoundException");
+                return State.Fail.value;
+            }
+            request.setAttribute("importInfo", ip);
+            return State.Success.value;
+        } catch (NumberFormatException e) {
+            request.setAttribute("exceptionType", "ImportNotFoundException");
+            return State.Fail.value;
+        }
+    }
+
+    private int searchImport(HttpServletRequest request) {
+        AdminDAO adDAO = new AdminDAO();
+        ImportDAO ipDAO = new ImportDAO();
+        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+        String username = currentUserCookie.getValue();
+        Admin ad = adDAO.getAdmin(username);
+
+        if (ad == null) {
+            System.out.println("Unknow Username to view import");
+            request.setAttribute("exceptionType", "AccountNotFoundException");
+            return State.Fail.value;
+        }
+        String URI = request.getRequestURI();
+        String data[] = URI.split("/");
+        int page = 1;
+        int rows = 20;
+        String search = request.getParameter("txtSearch");
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("page")) {
+                page = Integer.parseInt(data[i + 1]);
+            }
+        }
+        List<Import> importList = ipDAO.searchImport(search);
+        if (importList.isEmpty()) {
+            System.out.println("Empty import list");
+            request.setAttribute("exceptionType", "ImportNotFoundException");
+            return State.Fail.value;
+        }
+        int numberOfPage = (importList.size() / rows) + (importList.size() % rows == 0 ? 0 : 1);
+        importList = Generator.pagingList(importList, page, rows);
+        request.setAttribute("page", page);
+        request.setAttribute("numberOfPage", numberOfPage);
+        request.setAttribute("importList", importList);
+        request.setAttribute("search", search);
+        return State.Success.value;
+    }
+
     private int searchProduct(HttpServletRequest request, HttpServletResponse response) {
         String URI = request.getRequestURI();
         String data[] = URI.split("/");
@@ -654,11 +922,14 @@ public class AdminController extends HttpServlet {
         } else {
             search = "%" + search + "%";
         }
-        List<Product> productList = pDAO.searchProduct(search);
-        if (productList.isEmpty()) {
+        List<Product> productList = new ArrayList<>();
+        try {
+            productList = pDAO.searchProduct(search);
+        } catch (ProductNotFoundException ex) {
             request.setAttribute("exceptionType", "ProductNotFoundException");
             return State.Fail.value;
         }
+
         int numberOfPage = (productList.size() / rows) + (productList.size() % rows == 0 ? 0 : 1);
         productList = Generator.pagingList(productList, page, rows);
 
@@ -828,6 +1099,36 @@ public class AdminController extends HttpServlet {
         request.setAttribute("Search", Search);
     }
 
+    private void inventoryManagerActivityLog(HttpServletRequest request, HttpServletResponse response) {
+        String URI = request.getRequestURI();
+        String data[] = URI.split("/");
+        int page = 1;
+        int rows = 20;
+        String Search = request.getParameter("txtSearch");
+        ImportDAO importDAO = new ImportDAO();
+
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("page")) {
+                page = Integer.parseInt(data[i + 1]);
+            }
+        }
+
+        if (Search == null || Search.equals("")) {
+            Search = "%";
+        }
+
+        List<Import> inventoryActivityLogsFromSearch = importDAO.searchImportForActivityLog(Search);
+        List<Import> listImportActivityLogs = Generator.pagingList(inventoryActivityLogsFromSearch, page, rows);
+
+        final int ROWS = 20;
+        int NumberOfPage = inventoryActivityLogsFromSearch.size() / ROWS;
+        NumberOfPage = (inventoryActivityLogsFromSearch.size() % ROWS == 0 ? NumberOfPage : NumberOfPage + 1);
+        request.setAttribute("page", page);
+        request.setAttribute("numberOfPage", NumberOfPage);
+        request.setAttribute("listActivityLogs", listImportActivityLogs);
+        request.setAttribute("Search", Search);
+    }
+
     private void userInfo(HttpServletRequest request, HttpServletResponse response) {
         String URI = request.getRequestURI();
         String data[] = URI.split("/");
@@ -882,6 +1183,9 @@ public class AdminController extends HttpServlet {
             return State.Success.value;
         } catch (NumberFormatException e) {
             return State.Fail.value;
+        } catch (ProductNotFoundException ex) {
+            request.setAttribute("exceptionType", "ProductNotFoundException");
+            return State.Fail.value;
         }
     }
 
@@ -892,7 +1196,13 @@ public class AdminController extends HttpServlet {
         ProductDAO pDAO = new ProductDAO();
         BrandDAO bDAO = new BrandDAO();
         int pID = Integer.parseInt(request.getParameter("txtProductID"));
-        Product oldProduct = pDAO.getProduct(pID);
+        Product oldProduct;
+        try {
+            oldProduct = pDAO.getProduct(pID);
+        } catch (ProductNotFoundException ex) {
+            request.setAttribute("exceptionType", "ProductNotFoundException");
+            return State.Fail.value;
+        }
         String pName = request.getParameter("txtProductName");
         String bName = request.getParameter("txtBrandName");
         String gender = request.getParameter("rdoGender");
@@ -940,12 +1250,19 @@ public class AdminController extends HttpServlet {
         String username = userCookie.getValue();
         AdminDAO adDAO = new AdminDAO();
         Admin admin = adDAO.getAdmin(username);
-        int kq = pDAO.updateProduct(product, admin);
-        if (kq == 0) {
-            System.out.println("Update Failed, The Product is not in the database");
-            request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.OperationEditFailedException.toString());
+        int kq;
+        try {
+            kq = pDAO.updateProduct(product, admin);
+            if (kq == 0) {
+                System.out.println("Update Failed, The Product is not in the database");
+                request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.OperationEditFailedException.toString());
+                return State.Fail.value;
+            }
+        } catch (InvalidInputException ex) {
+            request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.InvalidInputException.toString());
             return State.Fail.value;
         }
+
         System.out.println("Update Product with ID: " + pID + " successfully!");
         return State.Success.value;
     }
@@ -1038,7 +1355,7 @@ public class AdminController extends HttpServlet {
                 System.out.println("sending mail changing password");
                 es.setEmailTo(uEmail);
                 es.sendEmailByThread(es.CHANGE_PASSWORD_NOTFICATION,
-                        es.changePasswordNotifcation());
+                        es.changePasswordNotifcation(userForUpdate));
             }
             if (isChangedEmail) {
                 System.out.println("Detect email change");
@@ -1201,7 +1518,7 @@ public class AdminController extends HttpServlet {
                 System.out.println("sending mail changing password");
                 es.setEmailTo(uEmail);
                 es.sendEmailByThread(es.CHANGE_PASSWORD_NOTFICATION,
-                        es.changePasswordNotifcation());
+                        es.changePasswordNotifcation(userForUpdate));
             }
             if (isChangedEmail) {
                 System.out.println("Detect email change");
@@ -1222,6 +1539,67 @@ public class AdminController extends HttpServlet {
         System.out.println("update account with ID " + employeeForUpdate.getId() + " successfully");
 
         return true;
+    }
+
+    private int updateVoucher(HttpServletRequest request) {
+        try {
+            VoucherDAO vDAO = new VoucherDAO();
+
+            int id = Integer.parseInt(request.getParameter("txtId"));
+            //Make the response redirect to the right Id
+            request.setAttribute("errorVoucherId", id);
+
+            String code = request.getParameter("txtCode");
+            int quantity = Integer.parseInt(request.getParameter("txtQuantity"));
+            int discountPercent = Integer.parseInt(request.getParameter("txtDiscountPercent"));
+            String approveProducts[] = request.getParameter("txtApprovedProduct").split(", ");
+            List<Integer> aprroveProductsId = Arrays.stream(approveProducts)
+                    .map(String::trim)
+                    .map(Integer::valueOf)
+                    .collect(Collectors.toList());
+
+            int discountMax = Integer.parseInt(request.getParameter("txtDiscountMax"));
+            String createAt = request.getParameter("txtCreateAt");
+            String expiredAt = request.getParameter("txtExpiredAt");
+
+            System.out.println("|" + createAt + "|");
+
+            Voucher voucher = new Voucher();
+            voucher.setId(id);
+            voucher.setCode(code);
+            voucher.setQuantity(quantity);
+            voucher.setDiscountPercent(discountPercent);
+            voucher.setApprovedProductId(aprroveProductsId);
+            voucher.setDiscountMax(discountMax);
+            voucher.setCreatedAt(Converter.convertStringToEpochMilli(createAt));
+            voucher.setExpiredAt(Converter.convertStringToEpochMilli(expiredAt));
+
+            Cookie c = (Cookie) request.getSession().getAttribute("userCookie");
+            AdminDAO adDAO = new AdminDAO();
+            Admin admin = adDAO.getAdmin(c.getValue());
+
+            voucher.setCreatedByAdmin(admin.getAdminId());
+
+            int result = vDAO.updateVoucher(voucher);
+            if (result < 1) {
+                throw new Exception();
+            }
+            System.out.println("Update voucher successfully!");
+            return State.Success.value;
+        } catch (NumberFormatException e) {
+            //Default exception
+            System.out.println("NumberFormatException:" + e.getMessage());
+            request.setAttribute("exceptionType", "");
+        } catch (OperationAddFailedException ex) {
+            request.setAttribute("exceptionType", "OperationAddFailedException");
+        } catch (VoucherCodeDuplication ex) {
+            request.setAttribute("exceptionType", "VoucherCodeDuplication");
+        } catch (Exception ex) {
+            System.out.println("Exception:" + ex.getMessage());
+            //Default exception
+            request.setAttribute("exceptionType", "");
+        }
+        return State.Fail.value;
     }
 
     private int restoreProduct(HttpServletRequest request, HttpServletResponse response) {
@@ -1260,6 +1638,9 @@ public class AdminController extends HttpServlet {
             return State.Fail.value;
         } catch (ProductNotFoundException ex) {
             request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.ProductNotFoundException.toString());
+            return State.Fail.value;
+        } catch (InvalidInputException ex) {
+            request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.InvalidInputException.toString());
             return State.Fail.value;
         }
         System.out.println("Restore Product with ID: " + productId + "successfully!");
@@ -1325,6 +1706,9 @@ public class AdminController extends HttpServlet {
         } catch (NumberFormatException e) {
             request.setAttribute("exceptionType", "");
             return State.Fail.value;
+        } catch (ProductNotFoundException ex) {
+            request.setAttribute("exceptionType", "ProductNotFoundException");
+            return State.Fail.value;
         }
 
         request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.ProductNotFoundException.toString());
@@ -1340,7 +1724,10 @@ public class AdminController extends HttpServlet {
                     int vId = Integer.parseInt(data[i + 1]);
                     Voucher v = vDAO.getVoucher(vId);
                     if (v != null) {
+                        List<Integer> approvedProductId = vDAO.getAllApprovedProductIdByVoucherId(vId);
+                        System.out.println(approvedProductId);
                         request.setAttribute("VoucherUpdate", v);
+                        request.setAttribute("ApprovedProductId", approvedProductId);
                         return State.Success.value;
                     }
                 }
@@ -1354,7 +1741,7 @@ public class AdminController extends HttpServlet {
         return State.Fail.value;
     }
 
-    private boolean handleUpdateCustomer(HttpServletRequest request, HttpServletResponse response) {
+    private boolean getUpdateCustomer(HttpServletRequest request, HttpServletResponse response) {
         String data[] = request.getRequestURI().split("/");
         for (int i = 0; i < data.length; i++) {
             if (data[i].equals("ID")) {
@@ -1369,7 +1756,7 @@ public class AdminController extends HttpServlet {
         return false;
     }
 
-    private boolean handleUpdateEmployee(HttpServletRequest request, HttpServletResponse response) {
+    private boolean getUpdateEmployee(HttpServletRequest request, HttpServletResponse response) {
         String data[] = request.getRequestURI().split("/");
         for (int i = 0; i < data.length; i++) {
             if (data[i].equals("ID")) {
@@ -1386,6 +1773,76 @@ public class AdminController extends HttpServlet {
         }
 
         return false;
+    }
+
+    private int updateImportInformation(HttpServletRequest request) {
+        int result;
+        ImportDetailDAO ipdDAO = new ImportDetailDAO();
+        ImportDAO ipDAO = new ImportDAO();
+        AdminDAO adDAO = new AdminDAO();
+        Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
+        String username = userCookie.getValue();
+        Admin ad = adDAO.getAdmin(username);
+
+        if (ad == null) {
+            System.out.println("Unknow Username to update import information");
+            request.setAttribute("exceptionType", "AccountNotFoundException");
+            return State.Fail.value;
+        }
+
+        if (request.getParameter("ImportID") == null) {
+            System.out.println("Unknow ImportID to update information");
+            request.setAttribute("exceptionType", "OperationEditFailedException");
+            return State.Fail.value;
+        }
+
+        int importId = Integer.parseInt(request.getParameter("ImportID"));
+        request.setAttribute("ImportID", importId + "");
+        Import ip = ipDAO.getImport(importId);
+
+        if (ip == null) {
+            System.out.println("Import not found to update");
+            request.setAttribute("exceptionType", "ImportNotFoundException");
+            return State.Fail.value;
+        }
+
+        String supplierName = request.getParameter("txtSupplier");
+        Long importAt = Converter.convertStringToEpochMilli(request.getParameter("txtImportAt"));
+        Long deliveredAt = Converter.convertStringToEpochMilli(request.getParameter("txtDeliveredAt"));
+
+        int listSize = Integer.parseInt(request.getParameter("ListSize"));
+        if (listSize != 0) {
+            for (int i = 0; i < listSize; i++) {
+                int ProductID = Integer.parseInt(request.getParameter("ProductID" + i));
+                int ProductQuan = Integer.parseInt(request.getParameter("ProductQuan" + i));
+                int ProductCost = Integer.parseInt(request.getParameter("ProductCost" + i));
+                ImportDetail ipD = new ImportDetail();
+                ipD.setImportId(ip.getId());
+                ipD.setProductId(ProductID);
+                ipD.setQuantity(ProductQuan);
+                ipD.setCost(ProductCost);
+                ipD.setStatus(ImportDetailDAO.Status.WAIT.toString());
+                result = ipdDAO.updateImportDetail(ipD);
+                if (result == 0) {
+                    System.out.println("update Import detail fail");
+                    request.setAttribute("exceptionType", "OperationEditFailedException");
+                    return State.Fail.value;
+                }
+            }
+        }
+        List<ImportDetail> ipDetailList = ipdDAO.getAllImportDetailOfImport(importId);
+        ip.setTotalQuantity(ipdDAO.getTotalQuantityImportDetail(ipDetailList));
+        ip.setTotalCost(ipdDAO.getTotalCostImportDetail(ipDetailList));
+        ip.setDeliveredAt(deliveredAt);
+        ip.setImportAt(importAt);
+        ip.setSupplierName(supplierName);
+        result = ipDAO.updateImport(ip, ad.getAdminId());
+        if (result == 0) {
+            System.out.println("Unknow ImportID to update information");
+            request.setAttribute("exceptionType", "OperationEditFailedException");
+            return State.Fail.value;
+        }
+        return State.Success.value;
     }
 
     private boolean updateAdminInfomation(HttpServletRequest request,
@@ -1489,7 +1946,7 @@ public class AdminController extends HttpServlet {
                 System.out.println("Detect password change");
                 System.out.println("sending mail changing password");
                 es.setEmailTo(email);
-                es.sendEmailByThread(es.CHANGE_PASSWORD_NOTFICATION, es.changePasswordNotifcation());
+                es.sendEmailByThread(es.CHANGE_PASSWORD_NOTFICATION, es.changePasswordNotifcation(admin));
             }
             if (isChangedEmail) {
                 System.out.println("Detect email change");
@@ -1553,6 +2010,9 @@ public class AdminController extends HttpServlet {
         } catch (ProductNotFoundException ex) {
             request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.ProductNotFoundException.toString());
             return State.Fail.value;
+        } catch (InvalidInputException ex) {
+            request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.InvalidInputException.toString());
+            return State.Fail.value;
         }
 
         System.out.println("Delete Product with ID: " + productId + "successfully!");
@@ -1599,6 +2059,69 @@ public class AdminController extends HttpServlet {
             return;
         }
         System.out.println("Deactivated User with ID: " + userId + " successfully!");
+    }
+
+    private int deleteImportDetail(HttpServletRequest request) {
+        ImportDAO ipDAO = new ImportDAO();
+        AdminDAO adDAO = new AdminDAO();
+        ImportDetailDAO ipDetailDAO = new ImportDetailDAO();
+        String data[] = request.getRequestURI().split("/");
+
+        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+        String username = currentUserCookie.getValue();
+        Admin ad = adDAO.getAdmin(username);
+
+        if (ad == null) {
+            System.out.println("Unknow Username to delete import detail");
+            request.setAttribute("exceptionType", "AccountNotFoundException");
+            return State.Fail.value;
+        }
+
+        try {
+            ImportDetail ipD = null;
+            int importId = -1;
+            int productId = -1;
+            for (int i = 0; i < data.length; i++) {
+                if (data[i].equals("ImportID")) {
+                    importId = Integer.parseInt(data[i + 1]);
+                }
+                if (data[i].equals("ProductID")) {
+                    productId = Integer.parseInt(data[i + 1]);
+                }
+            }
+            request.setAttribute("ImportID", importId + "");
+            ipD = ipDetailDAO.getImportDetail(importId, productId);
+            if (ipD == null) {
+                System.out.println("not found import detail");
+                request.setAttribute("exceptionType", "ImportNotFoundException");
+                return State.Fail.value;
+            }
+            if (ipD.getStatus().equals(ImportDetailDAO.Status.USED.toString())) {
+                System.out.println("import detail is used so cannot delete");
+                request.setAttribute("exceptionType", "OperationDeleteFailedException");
+                return State.Fail.value;
+            }
+            int result = ipDetailDAO.deleteImportDetail(ipD);
+            if (result == 0) {
+                System.out.println("delete import detail fail");
+                request.setAttribute("exceptionType", "OperationDeleteFailedException");
+                return State.Fail.value;
+            }
+            Import ip = ipDAO.getImport(importId);
+            ip.setTotalCost(ip.getTotalCost() - ipD.getCost() * ipD.getQuantity());
+            ip.setTotalQuantity(ip.getTotalQuantity() - ipD.getQuantity());
+            result = ipDAO.updateImport(ip, ad.getAdminId());
+            if (result == 0) {
+                System.out.println("update import fail so cannot delete");
+                ipDetailDAO.addImportDetail(ipD);
+                request.setAttribute("exceptionType", "OperationDeleteFailedException");
+                return State.Fail.value;
+            }
+            return State.Success.value;
+        } catch (NumberFormatException e) {
+            request.setAttribute("exceptionType", "OperationDeleteFailedException");
+            return State.Fail.value;
+        }
     }
 
     private int deleteVoucher(HttpServletRequest request) {
@@ -1716,6 +2239,14 @@ public class AdminController extends HttpServlet {
         } catch (NumberFormatException e) {
             request.setAttribute("exceptionType", "OperationEditFailedException");
             return State.Fail.value;
+        } catch (InvalidInputException ex) {
+            request.setAttribute("exceptionType", "InvalidInputException");
+            return State.Fail.value;
+
+        } catch (ProductNotFoundException ex) {
+            request.setAttribute("exceptionType", "ProductNotFoundException");
+            return State.Fail.value;
+
         }
     }
 

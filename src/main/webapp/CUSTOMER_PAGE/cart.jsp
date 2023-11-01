@@ -141,7 +141,7 @@
                                                     </td>
                                                     <td>
                                                         <input type="hidden" name="<%= "ProductID" + pageContext.getAttribute("i")%>" value="<%= p.getId()%>" />
-                                                        <c:if test='<%= false%>'><span class="ProductMaxQuantity" > <%= p.getStock().getQuantity()%> </span></c:if>
+                                                        <span class="ProductMaxQuantity d-none" > <%= p.getStock().getQuantity()%> </span>
                                                         <input type="number" name="<%= "ProductQuan" + pageContext.getAttribute("i")%>" value="<%= CartQuan%>" /> 
                                                         <input type="hidden" name="<%= "ProductPrice" + pageContext.getAttribute("i")%>" value="<%= CartPrice%>" /> 
                                                         <a href="/Customer/Cart/Delete/ProductID/<%= p.getId()%>/CustomerID/<%= CustomerID%>">

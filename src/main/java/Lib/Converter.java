@@ -135,4 +135,16 @@ public class Converter {
 
         return null;
     }
+
+    /**
+     * Convert a {@code Long} object to either its value or null if the value is 0.
+     * @param val the {@code Long} object to be converted.
+     * @return the value of the {@code Long} object if it is not 0, null otherwise.
+     */
+    public static Long getNullOrValue(Long val) {
+        if (val == 0) {
+            return null;
+        }
+        return val;
+    }
 }

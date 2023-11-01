@@ -98,7 +98,7 @@
                     <h1 class="alert alert-danger text-center"><%=exeptionMessage%></h1>
                 </c:if>
                 <!--Execption Handling-->
-                </div>
+            </div>
             <div class="container mt-5">
                 <div class="row">
                     <h1>Update Employee</h1>
@@ -109,8 +109,8 @@
                         </div>
                         <div class="name">
                             <label>Name *</label>
-                            <input type="text" name="txtName" value="<%= employee.getName() == null ? ""
-                                           : employee.getName()%>">
+                                   <input type="text" name="txtName" value="<%= employee.getName() == null ? ""
+                                    : employee.getName()%>">
                         </div>
                         <div class="username">
                             <label>Username *</label>
@@ -134,8 +134,8 @@
                         </div>
                         <div class="phone">
                             <label>Phone Number *</label>
-                            <input type="text" name="txtPhoneNumber" value="<%= employee.getPhoneNumber() == null ? ""
-                                           : employee.getPhoneNumber()%>">
+                                   <input type="text" name="txtPhoneNumber" value="<%= employee.getPhoneNumber() == null ? ""
+                                    : employee.getPhoneNumber()%>">
                         </div>
                         <div class="address">
                             <label>Address *</label>
@@ -279,7 +279,7 @@
             };
         </script>
         <!--Jquery Validation-->
-
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
         <script>
             $(document).ready(function () {
                 //                $.validator.addMethod("regex", function (value, regex) {
@@ -290,79 +290,79 @@
                     rules: {
                         txtName: {
                             required: true,
-                            maxlength: 50,
+                            maxlength: 50
                         },
                         txtUsername: {
                             required: true,
-                            maxlength: 50,
+                            maxlength: 50
                         },
                         txtPassword: {
                             required: true,
-                            minlength: 6,
+                            minlength: 6
                         },
                         txtEmail: {
                             required: true,
                             email: true,
-                            maxlength: 100,
+                            maxlength: 100
                         },
                         txtCitizenId: {
                             required: true,
-                            maxlength: 20,
+                            maxlength: 20
                         },
                         txtDOB: {
-                            required: true,
+                            required: true
                         },
                         txtPhoneNumber: {
                             required: true,
                             digits: true,
                             maxlength: 10,
-                            minlength: 10,
+                            minlength: 10
                         },
                         txtAddress: {
-                            maxlength: 500,
+                            maxlength: 500
                         },
                         txtJoinDate: {
-                            required: true,
-                        },
+                            required: true
+                        }
                     },
                     messages: {
                         txtName: {
                             required: "Tên không được để trống.",
-                            maxlength: "Tên không được vượt quá 50 ký tự.",
+                            maxlength: "Tên không được vượt quá 50 ký tự."
                         },
                         txtUsername: {
                             required: "Tên đăng nhập không được để trống.",
-                            maxlength: "Tên đăng nhập không được vượt quá 50 ký tự.",
+                            maxlength: "Tên đăng nhập không được vượt quá 50 ký tự."
                         },
                         txtPassword: {
                             required: "Mật khẩu không được để trống.",
-                            minlength: "Mật khẩu phải có ít nhất 6 ký tự.",
+                            minlength: "Mật khẩu phải có ít nhất 6 ký tự."
                         },
                         txtEmail: {
                             required: "Email không được để trống.",
                             email: "Email không hợp lệ.",
-                            maxlength: "Email không được vượt quá 100 ký tự.",
+                            maxlength: "Email không được vượt quá 100 ký tự."
                         },
                         txtCitizenId: {
                             required: "Số CMND không được để trống.",
-                            maxlength: "Số CMND không được vượt quá 20 ký tự.",
+                            maxlength: "Số CMND không được vượt quá 20 ký tự."
                         },
                         txtDOB: {
-                            required: "Ngày tháng năm sinh không được để trống",
+                            required: "Ngày tháng năm sinh không được để trống"
                         },
                         txtPhoneNumber: {
                             required: "Số điện thoại không được để trống",
                             digits: "Số điện thoại không hợp lệ",
                             maxlength: "Số điện thoại phải là 10 chữ số",
-                            minlength: "Số điện thoại phải là 10 chữ số",
+                            minlength: "Số điện thoại phải là 10 chữ số"
                         },
                         txtAddress: {
-                            maxlength: "Địa chỉ không được vượt quá 500 ký tự.",
+                            maxlength: "Địa chỉ không được vượt quá 500 ký tự."
                         },
                         txtJoinDate: {
-                            required: "Ngày tham gia không được để trống.",
-                        },
-                    },
+                            required: "Ngày tham gia không được để trống."
+                        }
+                    }
                 });
             });
         </script>

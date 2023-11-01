@@ -1,11 +1,13 @@
 package Models;
 
 public class InventoryManager extends Employee {
-    
+
     private int inventoryManagerId;
     private int employeeId;
 
     public InventoryManager() {
+        setActive(true);
+        setType("Employee");
     }
 
     public InventoryManager(Employee emp) {
