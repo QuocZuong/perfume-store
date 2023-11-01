@@ -16,28 +16,14 @@
 <%@ taglib  uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
 
 <%! String Tinh, QuanHuyen, PhuongXa;%>
-<%!Voucher voucher;%>
-<%! ProductDAO pDAO = new ProductDAO(); %>
-<%! List<Integer> approvedProductId;%>
+<%! ProductDAO pDAO = new ProductDAO();%>
 
 <%
-    approvedProductId = request.getAttribute("ApprovedProductId") == null ? null : (List<Integer>) request.getAttribute("ApprovedProductId");
-    voucher = (Voucher) request.getAttribute("VoucherUpdate");
     // Handling execption
     String queryString = request.getQueryString();
     boolean isErr = ExceptionUtils.isWebsiteError(queryString);
     String exeptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
     String productListString = "";
-    for (int i = 0; i < approvedProductId.size(); i++) {
-        Product product = pDAO.getProduct(approvedProductId.get(i));
-        if (product.getName() != null && i != approvedProductId.size() - 1) {
-            productListString += product.getName() + ", ";
-        } else {
-            productListString += product.getName();
-        }
-    }
-
-
 %>
 
 <!DOCTYPE html>
@@ -92,7 +78,7 @@
             }
         </style>
 
-        <title>Cập nhật Voucher</title>
+        <title>Thêm Voucher</title>
     </head>
     <body>
         <div class="container-fluid">
@@ -114,23 +100,19 @@
                 <div class="row">
                     <div class="col-sm-6">
 
-                        <h1>Update Voucher</h1>
-                        <form action="/Admin/Voucher/Update" method="POST" id="updateVoucher">
-                            <div class="id">
-                                <label>Voucher ID *</label>
-                                <input type="number" name="txtId" readonly="true" value="<%= voucher.getId()%>" />
-                            </div>
+                        <h1>Add Voucher</h1>
+                        <form action="/Admin/Voucher/Add" method="POST" id="addVoucher">
                             <div class="code">
                                 <label>Code *</label>
-                                <input type="text" name="txtCode" value="<%= voucher.getCode()%>" />
+                                <input type="text" name="txtCode"  />
                             </div>
                             <div class="quantity">
                                 <label>Quantity *</label>
-                                <input type="number" name="txtQuantity" value="<%= voucher.getQuantity()%>" />
+                                <input type="number" name="txtQuantity"  />
                             </div>
                             <div class="discount-percent">
                                 <label>Discount percent *</label>
-                                <input type="number" name="txtDiscountPercent" value="<%= voucher.getDiscountPercent()%>" />
+                                <input type="number" name="txtDiscountPercent"  />
                             </div>
                             <div class="discount-max">
                                 <label>Product to apply *</label>
@@ -138,18 +120,18 @@
                             </div>
                             <div class="discount-max">
                                 <label>Discount max *</label>
-                                <input type="number" name="txtDiscountMax" value="<%= voucher.getDiscountMax()%>" />
+                                <input type="number" name="txtDiscountMax" />
                             </div>
                             <div class="created-at">
                                 <label>Created at *</label>
-                                <input type="date" name="txtCreateAt" value="<%=  Generator.getDateTime(voucher.getCreatedAt(), DatePattern.DateSqlPattern)%>" />
+                                <input type="date" name="txtCreateAt"  />
                             </div>
                             <div class="expired-at">
                                 <label>Expired at *</label>
-                                <input type="date" name="txtExpiredAt" value="<%= Generator.getDateTime(voucher.getExpiredAt(), DatePattern.DateSqlPattern)%>" />
+                                <input type="date" name="txtExpiredAt"  />
                             </div>
-                            <button type="submit" name="btnUpdateVoucher" value="Submit" class="btnUpdateVoucher mb-3">
-                                Update Voucher
+                            <button type="submit" name="btnAddVoucher" value="Submit" class="btnAddVoucher mb-3">
+                                Add Voucher
                             </button>
                             <br />
                         </form>
@@ -226,7 +208,7 @@
                             return isNaN(value) && isNaN($(params).val())
                                     || (Number(value) > Number($(params).val()));
                         }, 'Must be greater than {0}.');
-                $("#updateVoucher").validate({
+                $("#addVoucher").validate({
                     rules: {
                         txtId: {
                             required: true

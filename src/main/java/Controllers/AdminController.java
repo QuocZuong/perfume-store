@@ -23,9 +23,11 @@ import Exceptions.AccountNotFoundException;
 import Exceptions.CitizenIDDuplicationException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.InvalidInputException;
+import Exceptions.OperationAddFailedException;
 import Exceptions.PhoneNumberDuplicationException;
 import Exceptions.ProductNotFoundException;
 import Exceptions.UsernameDuplicationException;
+import Exceptions.VoucherCodeDuplication;
 import Exceptions.WrongPasswordException;
 import Interfaces.DAOs.IUserDAO;
 import Lib.Converter;
@@ -53,8 +55,10 @@ import jakarta.servlet.http.Part;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, // 1MB
         maxFileSize = 1024 * 1024 * 5, // 5MB
@@ -113,9 +117,6 @@ public class AdminController extends HttpServlet {
     public static final String ADMIN_CHART_TOTAL_ORDER = "/Admin/Chart/TotalOrder";
 
     public static final String ADMIN_UPDATE_INFO_URI = "/Admin/Update/Info";
-
-    public static final String IMGUR_API_ENDPOINT = "https://api.imgur.com/3/image";
-    public static final String IMGUR_CLIENT_ID = "87da474f87f4754";
 
     public enum State {
         Success(1),
@@ -214,18 +215,10 @@ public class AdminController extends HttpServlet {
             }
             return;
         }
-        // Page chua co
         if (path.startsWith(ADMIN_VOUCHER_ADD_URI)) {
-            int result = getUpdateVoucher(request);
-
-            if (result == State.Success.value) {
-                request.getRequestDispatcher("/ADMIN_PAGE/Voucher/addVoucher.jsp").forward(request, response);
-            } else if (result == State.Fail.value) {
-                response.sendRedirect(ADMIN_VOUCHER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
-            }
+            request.getRequestDispatcher("/ADMIN_PAGE/Voucher/addVoucher.jsp").forward(request, response);
             return;
         }
-        // Page nhu cc
         if (path.startsWith(ADMIN_VOUCHER_UPDATE_URI)) {
             int result = getUpdateVoucher(request);
 
@@ -285,7 +278,7 @@ public class AdminController extends HttpServlet {
         }
 
         if (path.startsWith(ADMIN_USER_UPDATE_CUSTOMER_URI)) {
-            if (handleUpdateCustomer(request, response)) {
+            if (getUpdateCustomer(request, response)) {
                 request.getRequestDispatcher("/ADMIN_PAGE/User/updateCustomer.jsp").forward(request, response);
             } else {
                 response.sendRedirect(ADMIN_USER_LIST_URI);
@@ -294,7 +287,7 @@ public class AdminController extends HttpServlet {
         }
 
         if (path.startsWith(ADMIN_USER_UPDATE_EMPLOYEE_URI)) {
-            if (handleUpdateEmployee(request, response)) {
+            if (getUpdateEmployee(request, response)) {
                 request.getRequestDispatcher("/ADMIN_PAGE/User/updateEmployee.jsp").forward(request, response);
             } else {
                 response.sendRedirect(ADMIN_USER_LIST_URI);
@@ -533,14 +526,30 @@ public class AdminController extends HttpServlet {
                 return;
             }
         }
+
         if (path.startsWith(ADMIN_VOUCHER_UPDATE_URI)) {
-            if (request.getParameter("btnUpdateInfo") != null
-                    && request.getParameter("btnUpdateInfo").equals("Submit")) {
+            if (request.getParameter("btnUpdateVoucher") != null
+                    && request.getParameter("btnUpdateVoucher").equals("Submit")) {
                 System.out.println("Going update info");
-                if (updateAdminInfomation(request, response)) {
-                    response.sendRedirect(ADMIN_USER_URI);
+                int result = updateVoucher(request);
+                if (result == State.Success.value) {
+                    response.sendRedirect(ADMIN_VOUCHER_LIST_URI);
                 } else {
-                    response.sendRedirect(ADMIN_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
+                    response.sendRedirect(ADMIN_VOUCHER_UPDATE_URI + "/ID/" + request.getAttribute("errorVoucherId") + ExceptionUtils.generateExceptionQueryString(request));
+                }
+                return;
+            }
+        }
+
+        if (path.startsWith(ADMIN_VOUCHER_ADD_URI)) {
+            if (request.getParameter("btnAddVoucher") != null
+                    && request.getParameter("btnAddVoucher").equals("Submit")) {
+                System.out.println("Going update info");
+                int result = addVoucher(request);
+                if (result == State.Success.value) {
+                    response.sendRedirect(ADMIN_VOUCHER_LIST_URI);
+                } else {
+                    response.sendRedirect(ADMIN_VOUCHER_ADD_URI + ExceptionUtils.generateExceptionQueryString(request));
                 }
                 return;
             }
@@ -715,6 +724,62 @@ public class AdminController extends HttpServlet {
         }
 
         return true;
+    }
+
+    private int addVoucher(HttpServletRequest request) {
+        try {
+            VoucherDAO vDAO = new VoucherDAO();
+
+            String code = request.getParameter("txtCode");
+            int quantity = Integer.parseInt(request.getParameter("txtQuantity"));
+            int discountPercent = Integer.parseInt(request.getParameter("txtDiscountPercent"));
+            String approveProducts[] = request.getParameter("txtApprovedProduct").split(", ");
+            List<Integer> aprroveProductsId = Arrays.stream(approveProducts)
+                    .map(String::trim)
+                    .map(Integer::valueOf)
+                    .collect(Collectors.toList());
+
+            int discountMax = Integer.parseInt(request.getParameter("txtDiscountMax"));
+            String createAt = request.getParameter("txtCreateAt");
+            String expiredAt = request.getParameter("txtExpiredAt");
+
+            System.out.println("|" + createAt + "|");
+
+            Voucher voucher = new Voucher();
+            voucher.setCode(code);
+            voucher.setQuantity(quantity);
+            voucher.setDiscountPercent(discountPercent);
+            voucher.setApprovedProductId(aprroveProductsId);
+            voucher.setDiscountMax(discountMax);
+            voucher.setCreatedAt(Converter.convertStringToEpochMilli(createAt));
+            voucher.setExpiredAt(Converter.convertStringToEpochMilli(expiredAt));
+
+            Cookie c = (Cookie) request.getSession().getAttribute("userCookie");
+            AdminDAO adDAO = new AdminDAO();
+            Admin admin = adDAO.getAdmin(c.getValue());
+
+            voucher.setCreatedByAdmin(admin.getAdminId());
+
+            int result = vDAO.addVoucher(voucher);
+            if (result < 1) {
+                throw new Exception();
+            }
+            System.out.println("Add voucher successfully!");
+            return State.Success.value;
+        } catch (NumberFormatException e) {
+            //Default exception
+            System.out.println("NumberFormatException:" + e.getMessage());
+            request.setAttribute("exceptionType", "");
+        } catch (OperationAddFailedException ex) {
+            request.setAttribute("exceptionType", "OperationAddFailedException");
+        } catch (VoucherCodeDuplication ex) {
+            request.setAttribute("exceptionType", "VoucherCodeDuplication");
+        } catch (Exception ex) {
+            System.out.println("Exception:" + ex.getMessage());
+            //Default exception
+            request.setAttribute("exceptionType", "");
+        }
+        return State.Fail.value;
     }
 
     // ---------------------------- READ SECTION ----------------------------
@@ -1476,6 +1541,67 @@ public class AdminController extends HttpServlet {
         return true;
     }
 
+    private int updateVoucher(HttpServletRequest request) {
+        try {
+            VoucherDAO vDAO = new VoucherDAO();
+
+            int id = Integer.parseInt(request.getParameter("txtId"));
+            //Make the response redirect to the right Id
+            request.setAttribute("errorVoucherId", id);
+
+            String code = request.getParameter("txtCode");
+            int quantity = Integer.parseInt(request.getParameter("txtQuantity"));
+            int discountPercent = Integer.parseInt(request.getParameter("txtDiscountPercent"));
+            String approveProducts[] = request.getParameter("txtApprovedProduct").split(", ");
+            List<Integer> aprroveProductsId = Arrays.stream(approveProducts)
+                    .map(String::trim)
+                    .map(Integer::valueOf)
+                    .collect(Collectors.toList());
+
+            int discountMax = Integer.parseInt(request.getParameter("txtDiscountMax"));
+            String createAt = request.getParameter("txtCreateAt");
+            String expiredAt = request.getParameter("txtExpiredAt");
+
+            System.out.println("|" + createAt + "|");
+
+            Voucher voucher = new Voucher();
+            voucher.setId(id);
+            voucher.setCode(code);
+            voucher.setQuantity(quantity);
+            voucher.setDiscountPercent(discountPercent);
+            voucher.setApprovedProductId(aprroveProductsId);
+            voucher.setDiscountMax(discountMax);
+            voucher.setCreatedAt(Converter.convertStringToEpochMilli(createAt));
+            voucher.setExpiredAt(Converter.convertStringToEpochMilli(expiredAt));
+
+            Cookie c = (Cookie) request.getSession().getAttribute("userCookie");
+            AdminDAO adDAO = new AdminDAO();
+            Admin admin = adDAO.getAdmin(c.getValue());
+
+            voucher.setCreatedByAdmin(admin.getAdminId());
+
+            int result = vDAO.updateVoucher(voucher);
+            if (result < 1) {
+                throw new Exception();
+            }
+            System.out.println("Update voucher successfully!");
+            return State.Success.value;
+        } catch (NumberFormatException e) {
+            //Default exception
+            System.out.println("NumberFormatException:" + e.getMessage());
+            request.setAttribute("exceptionType", "");
+        } catch (OperationAddFailedException ex) {
+            request.setAttribute("exceptionType", "OperationAddFailedException");
+        } catch (VoucherCodeDuplication ex) {
+            request.setAttribute("exceptionType", "VoucherCodeDuplication");
+        } catch (Exception ex) {
+            System.out.println("Exception:" + ex.getMessage());
+            //Default exception
+            request.setAttribute("exceptionType", "");
+        }
+        return State.Fail.value;
+    }
+
     private int restoreProduct(HttpServletRequest request, HttpServletResponse response) {
         // Admin/Restore/ID/1
         String path = request.getRequestURI();
@@ -1599,6 +1725,7 @@ public class AdminController extends HttpServlet {
                     Voucher v = vDAO.getVoucher(vId);
                     if (v != null) {
                         List<Integer> approvedProductId = vDAO.getAllApprovedProductIdByVoucherId(vId);
+                        System.out.println(approvedProductId);
                         request.setAttribute("VoucherUpdate", v);
                         request.setAttribute("ApprovedProductId", approvedProductId);
                         return State.Success.value;
@@ -1614,7 +1741,7 @@ public class AdminController extends HttpServlet {
         return State.Fail.value;
     }
 
-    private boolean handleUpdateCustomer(HttpServletRequest request, HttpServletResponse response) {
+    private boolean getUpdateCustomer(HttpServletRequest request, HttpServletResponse response) {
         String data[] = request.getRequestURI().split("/");
         for (int i = 0; i < data.length; i++) {
             if (data[i].equals("ID")) {
@@ -1629,7 +1756,7 @@ public class AdminController extends HttpServlet {
         return false;
     }
 
-    private boolean handleUpdateEmployee(HttpServletRequest request, HttpServletResponse response) {
+    private boolean getUpdateEmployee(HttpServletRequest request, HttpServletResponse response) {
         String data[] = request.getRequestURI().split("/");
         for (int i = 0; i < data.length; i++) {
             if (data[i].equals("ID")) {

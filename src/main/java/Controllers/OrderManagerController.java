@@ -11,9 +11,11 @@ import Exceptions.EmailDuplicationException;
 import Exceptions.InvalidInputException;
 import Exceptions.NotEnoughProductQuantityException;
 import Exceptions.NotEnoughVoucherQuantityException;
+import Exceptions.OperationAddFailedException;
 import Exceptions.OperationEditFailedException;
 import Exceptions.ProductNotFoundException;
 import Exceptions.UsernameDuplicationException;
+import Exceptions.VoucherCodeDuplication;
 import Exceptions.WrongPasswordException;
 import Interfaces.DAOs.IUserDAO.loginType;
 import Lib.ExceptionUtils;
@@ -326,6 +328,12 @@ public class OrderManagerController extends HttpServlet {
         } catch (NotEnoughVoucherQuantityException ex) {
             request.setAttribute("exceptionType", "NotEnoughVoucherQuantityException");
             return State.Fail.value;
+        } catch (OperationAddFailedException ex) {
+            request.setAttribute("exceptionType", "OperationAddFailedException");
+            return State.Fail.value;
+        } catch (VoucherCodeDuplication ex) {
+            request.setAttribute("exceptionType", "VoucherCodeDuplication");
+            return State.Fail.value;
         }
         return State.Fail.value;
     }
@@ -443,6 +451,7 @@ public class OrderManagerController extends HttpServlet {
         boolean isChangedEmail = true;
         boolean isChangedPassword = true;
         boolean isChangedUsername = true;
+        
         // Username, email, phone number is unique
         try {
             if (!email.equals(user.getEmail())) {
@@ -486,12 +495,9 @@ public class OrderManagerController extends HttpServlet {
             return State.Fail.value;
         }
 
-        System.out.println("change password is " + isChangedPassword);
-        System.out.println("New password is before if: " + request.getParameter("pwdNew"));
         if (isChangedPassword && request.getParameter("pwdNew") != null
                 && !request.getParameter("pwdNew").equals("")) {
             newPassword = request.getParameter("pwdNew");
-            System.out.println("New password is before MD5: " + newPassword);
             newPassword = Converter.convertToMD5Hash(newPassword);
         } else {
             newPassword = user.getPassword();
@@ -518,10 +524,12 @@ public class OrderManagerController extends HttpServlet {
         response.addCookie(c);
 
         // Sending mail
-        boolean sendMail = false;
-        if (sendMail) {
+        boolean sendMailToggler = true;
+        
+        if (sendMailToggler) {
             try {
                 EmailSender es = new EmailSender();
+
                 if (isChangedPassword) {
                     System.out.println("Detect password change");
                     System.out.println("sending mail changing password");
@@ -529,6 +537,7 @@ public class OrderManagerController extends HttpServlet {
                     es.sendEmailByThread(es.CHANGE_PASSWORD_NOTFICATION,
                             es.changePasswordNotifcation(updateUser));
                 }
+
                 if (isChangedEmail) {
                     System.out.println("Detect email change");
                     System.out.println("sending mail changing email");
@@ -536,6 +545,7 @@ public class OrderManagerController extends HttpServlet {
                     es.sendEmailByThread(es.CHANGE_EMAIL_NOTFICATION,
                             es.changeEmailNotification(email));
                 }
+                
                 if (isChangedUsername) {
                     System.out.println("Detect username change");
                     System.out.println("sending mail changing username");
@@ -549,11 +559,11 @@ public class OrderManagerController extends HttpServlet {
         }
 
         if (result < 1) {
-            System.out.println("update account with ID " + user.getId() + "failed");
+            System.out.println("update account with ID " + user.getId() + " failed");
             return State.Fail.value;
         }
 
-        System.out.println("update account with ID " + user.getId() + "successfully");
+        System.out.println("update account with ID " + user.getId() + " successfully");
         return State.Success.value;
     }
 
