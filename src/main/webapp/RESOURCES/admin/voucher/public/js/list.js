@@ -20,7 +20,6 @@ items.forEach((item) => {
             } else {
                 productListInput.value = productListInput.value.replace(", " + productId, "");
             }
-
         } else {
             item.classList.add("enabled");
 
@@ -31,15 +30,13 @@ items.forEach((item) => {
             }
         }
     });
-
 });
 
 items.forEach((item) => {
     if (item.classList.contains("enabled")) {
         const label = item.querySelector(".item-name");
         const productId = label.getAttribute("data-id");
-        if (productListInput.value === "")
-            productListInput.value += productListInput.value + productId;
+        if (productListInput.value === "") productListInput.value += productListInput.value + productId;
         else {
             productListInput.value = productListInput.value + ", " + productId;
         }

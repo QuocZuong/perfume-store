@@ -1162,7 +1162,6 @@ public class CustomerController extends HttpServlet {
     }
 
     private void exportReceipt(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException, IOException {
-        System.out.println("vao export");
         OrderDAO orderDAO = new OrderDAO();
         CustomerDAO customerDAO = new CustomerDAO();
         EmailSender emailSender = new EmailSender();
