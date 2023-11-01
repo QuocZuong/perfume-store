@@ -3,7 +3,7 @@ const productListInput = document.querySelector("#productList");
 
 items.forEach((item, index) => {
     const label = item.querySelector(".item-name");
-    
+
     item.addEventListener("click", () => {
         if (item.classList.contains("enabled")) {
             item.classList.remove("enabled");
@@ -18,7 +18,6 @@ items.forEach((item, index) => {
             }
         }
     });
-
 });
 
 items.forEach((item, index) => {
