@@ -15,6 +15,7 @@ import Exceptions.OperationAddFailedException;
 import Exceptions.OperationEditFailedException;
 import Exceptions.ProductNotFoundException;
 import Exceptions.UsernameDuplicationException;
+import Exceptions.VoucherCodeDuplication;
 import Exceptions.WrongPasswordException;
 import Interfaces.DAOs.IUserDAO.loginType;
 import Lib.ExceptionUtils;
@@ -329,6 +330,9 @@ public class OrderManagerController extends HttpServlet {
             return State.Fail.value;
         } catch (OperationAddFailedException ex) {
             request.setAttribute("exceptionType", "OperationAddFailedException");
+            return State.Fail.value;
+        } catch (VoucherCodeDuplication ex) {
+            request.setAttribute("exceptionType", "VoucherCodeDuplication");
             return State.Fail.value;
         }
         return State.Fail.value;
