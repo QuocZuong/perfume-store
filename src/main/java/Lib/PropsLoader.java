@@ -15,6 +15,7 @@ public class PropsLoader {
             noData = false;
 
             String filePath = String.format("%s/%s", System.getProperty("user.dir").replace("\\", "/"), "db.properties");
+            // String filePath = String.format("%s/%s", "/opt/tomcat/apache-tomcat-10.1.13/bin", "db.properties");
             System.out.println("File: " + filePath);
             FileInputStream in = new FileInputStream(filePath);
 
