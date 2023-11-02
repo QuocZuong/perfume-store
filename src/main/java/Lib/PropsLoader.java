@@ -19,7 +19,7 @@ public class PropsLoader {
 
             String osName = System.getProperty("os.name");
             if (osName.equals("Linux")) {
-                filePath = String.format("%s/%s","/opt/tomcat/update/bin", "db.properties");
+                filePath = String.format("%s/%s","/opt/tomcat/updated/bin", "db.properties");
             }
 
             System.out.println("File: " + filePath);
