@@ -94,7 +94,6 @@
                                 <td>Brand ID</td>
                                 <td>Brand Name</td>
                                 <td></td> 
-                                <td></td> 
                             </tr>
                         </thead>
                         <tbody>
@@ -109,9 +108,6 @@
 
                                         <td>
                                             <a href="/Admin/Brand/Update/ID/<%= br.getId()%>" class="btn btn-outline-primary rounded-0">Update</a>
-                                        </td>
-                                        <td class="buttonStatus">
-                                            <a href="/Admin/Brand/Delete/ID/<%=  br.getId()%>" class="btn btn-outline-danger rounded-0">Delete</a>
                                         </td>
                                     </tr>
 

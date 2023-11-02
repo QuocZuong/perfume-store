@@ -23,6 +23,7 @@ import Exceptions.CitizenIDDuplicationException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.InvalidInputException;
 import Exceptions.OperationAddFailedException;
+import Exceptions.OperationDeleteBrandFailedCauseOfExistedProduct;
 import Exceptions.OperationEditFailedException;
 import Exceptions.PhoneNumberDuplicationException;
 import Exceptions.ProductNotFoundException;
@@ -217,17 +218,18 @@ public class AdminController extends HttpServlet {
             }
             return;
         }
-        if (path.startsWith(ADMIN_BRAND_DELETE_URI + "/ID")) {
-            int result = deleteBrand(request);
 
-            if (result == State.Success.value) {
-                response.sendRedirect(ADMIN_BRAND_LIST_URI);
-            } else {
-                response.sendRedirect(ADMIN_BRAND_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
-            }
-            return;
-        }
-
+// Not logical so I remove this
+//        if (path.startsWith(ADMIN_BRAND_DELETE_URI + "/ID")) {
+//            int result = deleteBrand(request);
+//
+//            if (result == State.Success.value) {
+//                response.sendRedirect(ADMIN_BRAND_LIST_URI);
+//            } else {
+//                response.sendRedirect(ADMIN_BRAND_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+//            }
+//            return;
+//        }
         // ---------------------------- ORDER SECTION ----------------------------
         if (path.startsWith(ADMIN_ORDER_LIST_URI)
                 || path.startsWith(ADMIN_ORDER_LIST_URI + "/page")) {
@@ -2200,43 +2202,45 @@ public class AdminController extends HttpServlet {
         System.out.println("Deactivated User with ID: " + userId + " successfully!");
     }
 
-    private int deleteBrand(HttpServletRequest request) {
-
-        try {
-            // Admin/Delete/ID/1
-            String path = request.getRequestURI();
-            String data[] = path.split("/");
-            BrandDAO brDAO = new BrandDAO();
-            String brandId = null;
-            for (int i = 0; i < data.length; i++) {
-                if (data[i].equals("ID")) {
-                    brandId = data[i + 1];
-                }
-            }
-            if (brandId == null) {
-                throw new BrandNotFoundException();
-            }
-            Brand brand = brDAO.getBrand(Integer.parseInt(brandId));
-            if (brand == null) {
-                throw new BrandNotFoundException();
-            }
-
-            brDAO.deleteBrand(brand);
-        } catch (NumberFormatException e) {
-            // default exception
-            request.setAttribute("exceptionType", "");
-            return State.Fail.value;
-        } catch (BrandNotFoundException ex) {
-            request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.BrandNotFoundException.toString());
-            return State.Fail.value;
-        } catch (OperationEditFailedException ex) {
-            request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.OperationEditFailedException.toString());
-            return State.Fail.value;
-        }
-
-        return State.Success.value;
-    }
-
+//    private int deleteBrand(HttpServletRequest request) {
+//
+//        try {
+//            // Admin/Delete/ID/1
+//            String path = request.getRequestURI();
+//            String data[] = path.split("/");
+//            BrandDAO brDAO = new BrandDAO();
+//            String brandId = null;
+//            for (int i = 0; i < data.length; i++) {
+//                if (data[i].equals("ID")) {
+//                    brandId = data[i + 1];
+//                }
+//            }
+//            if (brandId == null) {
+//                throw new BrandNotFoundException();
+//            }
+//            Brand brand = brDAO.getBrand(Integer.parseInt(brandId));
+//            if (brand == null) {
+//                throw new BrandNotFoundException();
+//            }
+//
+//            brDAO.deleteBrand(brand);
+//        } catch (NumberFormatException e) {
+//            // default exception
+//            request.setAttribute("exceptionType", "");
+//            return State.Fail.value;
+//        } catch (BrandNotFoundException ex) {
+//            request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.BrandNotFoundException.toString());
+//            return State.Fail.value;
+//        } catch (OperationEditFailedException ex) {
+//            request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.OperationEditFailedException.toString());
+//            return State.Fail.value;
+//        } catch (OperationDeleteBrandFailedCauseOfExistedProduct ex) {
+//            request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.OperationDeleteBrandFailedCauseOfExistedProduct.toString());
+//            return State.Fail.value;
+//        }
+//
+//        return State.Success.value;
+//    }
     private int deleteImportDetail(HttpServletRequest request) {
         ImportDAO ipDAO = new ImportDAO();
         AdminDAO adDAO = new AdminDAO();

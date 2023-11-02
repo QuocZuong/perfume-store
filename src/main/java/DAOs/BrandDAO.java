@@ -1,6 +1,7 @@
 package DAOs;
 
 import Exceptions.BrandNotFoundException;
+import Exceptions.OperationDeleteBrandFailedCauseOfExistedProduct;
 import Exceptions.OperationEditFailedException;
 import Interfaces.DAOs.IBrandDAO;
 import Models.Brand;
@@ -148,6 +149,24 @@ public class BrandDAO implements IBrandDAO {
         return null;
     }
 
+    public int getBrandTotalProduct(int brandId) {
+        ResultSet rs = null;
+
+        try {
+            String sql = "SELECT COUNT(Product_ID) as Total_Product FROM [Product]\n"
+                    + "WHERE Brand_ID = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, brandId);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("Total_Product");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
     @Override
     public int updateBrand(Brand brand) throws OperationEditFailedException, BrandNotFoundException {
         if (brand == null || getBrand(brand.getId()) == null) {
@@ -176,26 +195,30 @@ public class BrandDAO implements IBrandDAO {
         return result;
     }
 
-    public int deleteBrand(Brand brand) throws OperationEditFailedException, BrandNotFoundException {
-        if (brand == null || getBrand(brand.getId()) == null) {
-            throw new BrandNotFoundException();
-        }
-
-        int result = 0;
-        try {
-            String sql = "DELETE FROM [Brand]\n"
-                    + "WHERE Brand_ID = ?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, brand.getId());
-            result = ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        if (result < 1) {
-            throw new OperationEditFailedException();
-        }
-        return result;
-    }
+//    public int deleteBrand(Brand brand) throws OperationEditFailedException, BrandNotFoundException, OperationDeleteBrandFailedCauseOfExistedProduct {
+//        if (brand == null || getBrand(brand.getId()) == null) {
+//            throw new BrandNotFoundException();
+//        }
+//        int total = getBrandTotalProduct(brand.getId());
+//        System.out.println("Total product: " + total);
+//        if (total == -1 || total > 0) {
+//            throw new OperationDeleteBrandFailedCauseOfExistedProduct();
+//        }
+//        int result = 0;
+//        try {
+//            String sql = "DELETE FROM [Brand]\n"
+//                    + "WHERE Brand_ID = ?";
+//            PreparedStatement ps = conn.prepareStatement(sql);
+//            ps.setInt(1, brand.getId());
+//            result = ps.executeUpdate();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        if (result < 1) {
+//            throw new OperationEditFailedException();
+//        }
+//        return result;
+//    }
 
     public List<Brand> searchBrand(String search) throws BrandNotFoundException {
         ResultSet rs;

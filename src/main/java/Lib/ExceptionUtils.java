@@ -33,6 +33,7 @@ public class ExceptionUtils {
         CitizenIDDuplicationException,
         // Brand
         BrandNotFoundException,
+        OperationDeleteBrandFailedCauseOfExistedProduct,
         // Product
         ProductNotFoundException,
         ProductDeactivatedException,
@@ -75,6 +76,7 @@ public class ExceptionUtils {
                 put(ExceptionType.CitizenIDDuplicationException.toString(), new CitizenIDDuplicationException());
                 // Brand
                 put(ExceptionType.BrandNotFoundException.toString(), new BrandNotFoundException());
+                put(ExceptionType.OperationDeleteBrandFailedCauseOfExistedProduct.toString(), new OperationDeleteBrandFailedCauseOfExistedProduct());
                 // Product
                 put(ExceptionType.ProductNotFoundException.toString(), new ProductNotFoundException());
                 put(ExceptionType.ProductDeactivatedException.toString(), new ProductDeactivatedException());
@@ -158,8 +160,7 @@ public class ExceptionUtils {
         return exception.getMessage();
     }
 
-    // =================================== VALIDATION SECTION
-    // =================================
+    // =================================== VALIDATION SECTION =================================
     public static boolean isWebsiteError(String queryString) {
         return getExceptionNameByQueryString(queryString) != null;
     }
@@ -243,6 +244,11 @@ public class ExceptionUtils {
     public static boolean isBrandNotFound(String queryString) {
         return getExceptionNameByQueryString(queryString) != null
                 && getExceptionNameByQueryString(queryString).equals(ExceptionType.BrandNotFoundException.toString());
+    }
+
+    public static boolean isOperationDeleteBrandFailedCauseOfExistedProduct(String queryString) {
+        return getExceptionNameByQueryString(queryString) != null
+                && getExceptionNameByQueryString(queryString).equals(ExceptionType.ProductNotFoundException.toString());
     }
 
     // Product
