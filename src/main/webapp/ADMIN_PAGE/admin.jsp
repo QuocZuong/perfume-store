@@ -423,14 +423,21 @@
                     return regex.test(value);
                 }, "Mật khẩu phải có ít nhất 6 kí tự.");
 
+                $.validator.addMethod("atLeastOneLetter", function (value, element) {
+                    // Use a regular expression to check if the value contains at least one alphabet letter
+                    return /[A-Za-z]/.test(value);
+                }, "Phải có ký tự chữ cái.");
+
                 $("#formUpdateAccount").validate({
                     rules: {
                         txtFullname: {
-                            maxlength: 50
+                            maxlength: 50,
+                            atLeastOneLetter: true
                         },
                         txtUserName: {
                             required: true,
-                            maxlength: 50
+                            maxlength: 50,
+                            atLeastOneLetter: true
                         },
                         txtEmail: {
                             required: true,
@@ -439,11 +446,13 @@
                     },
                     messages: {
                         txtFullname: {
-                            maxlength: "Họ và tên không được vượt quá 50 kí tự."
+                            maxlength: "Họ và tên không được vượt quá 50 kí tự.",
+                            atLeastOneLetter: "Tên không hợp lệ."
                         },
                         txtUserName: {
                             required: "Tên hiển thị không được để trống.",
-                            maxlength: "Tên hiển thị không được vượt quá 50 kí tự."
+                            maxlength: "Tên hiển thị không được vượt quá 50 kí tự.",
+                            atLeastOneLetter: "Username không hợp lệ."
                         },
                         txtEmail: {
                             required: "Email không được để trống.",
