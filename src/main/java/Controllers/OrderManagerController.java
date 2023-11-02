@@ -282,20 +282,18 @@ public class OrderManagerController extends HttpServlet {
             OrderDAO orDAO = new OrderDAO();
             Order order = orDAO.getOrderByOrderId(orderId);
             System.out.println("\n" + orderManager.getOrderManagerId() + " | " + orderManager.getName() + "\n");
-            if (op == Operation.REJECT) {
-                orDAO.rejectOrder(order, orderManager.getOrderManagerId());
+            if (op == Operation.ACCEPT) {
+                orDAO.acceptOrder(order, orderManager.getOrderManagerId());
                 return State.Success.value;
             }
-            if (op == Operation.ACCEPT) {
+
+            if (op == Operation.REJECT) {
                 // Check quantity for voucher
                 VoucherDAO voucherDAO = new VoucherDAO();
                 Voucher voucher = voucherDAO.getVoucher(order.getVoucherId());
                 if (voucher != null) {
-                    if (voucher.getQuantity() == 0) {
-                        throw new NotEnoughVoucherQuantityException();
-                    }
-                    // Proceed to minus voucher quantity
-                    voucher.setQuantity(voucher.getQuantity() - 1);
+                    // Proceed to add voucher quantity
+                    voucher.setQuantity(voucher.getQuantity() + 1);
                     voucherDAO.updateVoucher(voucher);
                 }
 
@@ -304,29 +302,20 @@ public class OrderManagerController extends HttpServlet {
                 // Check if the quantity stock is less than the order detail
                 for (OrderDetail orderDetail : orderDetailList) {
                     Stock stk = stkDAO.getStock(orderDetail.getProductId());
-                    if (stk.getQuantity() < orderDetail.getQuantity()) {
-                        throw new NotEnoughProductQuantityException();
-                    }
-                    // Proceed to minus the product
-                    stk.setQuantity(stk.getQuantity() - orderDetail.getQuantity());
+                    // Proceed to add the product
+                    stk.setQuantity(stk.getQuantity() + orderDetail.getQuantity());
                     int result = stkDAO.updateStock(stk);
                     if (result < 1) {
                         System.out.println("Update stock fail!");
                         throw new OperationEditFailedException();
                     }
                 }
-                orDAO.acceptOrder(order, orderManager.getOrderManagerId());
+                orDAO.rejectOrder(order, orderManager.getOrderManagerId());
                 return State.Success.value;
             }
 
         } catch (OperationEditFailedException ex) {
             request.setAttribute("exceptionType", "OperationEditFailedException");
-            return State.Fail.value;
-        } catch (NotEnoughProductQuantityException ex) {
-            request.setAttribute("exceptionType", "NotEnoughProductQuantityException");
-            return State.Fail.value;
-        } catch (NotEnoughVoucherQuantityException ex) {
-            request.setAttribute("exceptionType", "NotEnoughVoucherQuantityException");
             return State.Fail.value;
         } catch (OperationAddFailedException ex) {
             request.setAttribute("exceptionType", "OperationAddFailedException");
@@ -451,7 +440,7 @@ public class OrderManagerController extends HttpServlet {
         boolean isChangedEmail = true;
         boolean isChangedPassword = true;
         boolean isChangedUsername = true;
-        
+
         // Username, email, phone number is unique
         try {
             if (!email.equals(user.getEmail())) {
@@ -525,7 +514,7 @@ public class OrderManagerController extends HttpServlet {
 
         // Sending mail
         boolean sendMailToggler = true;
-        
+
         if (sendMailToggler) {
             try {
                 EmailSender es = new EmailSender();
@@ -545,7 +534,7 @@ public class OrderManagerController extends HttpServlet {
                     es.sendEmailByThread(es.CHANGE_EMAIL_NOTFICATION,
                             es.changeEmailNotification(email));
                 }
-                
+
                 if (isChangedUsername) {
                     System.out.println("Detect username change");
                     System.out.println("sending mail changing username");
