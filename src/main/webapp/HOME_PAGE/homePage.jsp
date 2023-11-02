@@ -66,7 +66,7 @@
           <video id="bg-video" autoplay loop muted>
             <source src="/RESOURCES/videos/header.mp4" type="video/mp4">
           </video>
-          <h1>xxiv store</h1>
+          <h1>xxiv Store</h1>
           <h2>You deserve to be happy</h2>
           <button>FOLLOW ME</button>
           <p>Chào mừng các bạn đến với XXIII store - một tiệm nước hoa
