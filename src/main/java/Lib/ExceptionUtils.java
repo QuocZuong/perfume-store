@@ -122,7 +122,7 @@ public class ExceptionUtils {
         if (attribute == null) {
             return null;
         }
-
+        System.out.println("Attribute exception: " + attribute);
         // Iterate through a map entry to compare query string
         for (Map.Entry<String, ICustomException> entry : exceptionMap.entrySet()) {
             if (entry.getValue().getQueryString().equals(attribute)) {
@@ -141,7 +141,12 @@ public class ExceptionUtils {
         if (attributes.length == 0) {
             return null;
         }
+
         String attribute = attributes[0];
+        if (!attribute.startsWith("err")) {
+            return null;
+        }
+        System.out.println("attribute start with err: " + attribute);
         attribute = attribute.substring(3, attribute.length());
         return attribute;
     }
@@ -205,121 +210,121 @@ public class ExceptionUtils {
 
     public static boolean isPhoneNumberDuplication(String queryString) {
         return getExceptionNameByQueryString(queryString) != null
-                &&getExceptionNameByQueryString(queryString).equals(ExceptionType.PhoneNumberDuplicationException.toString());
+                && getExceptionNameByQueryString(queryString).equals(ExceptionType.PhoneNumberDuplicationException.toString());
     }
 
     public static boolean isUsernameDuplication(String queryString) {
         return getExceptionNameByQueryString(queryString) != null
-                &&getExceptionNameByQueryString(queryString).equals(ExceptionType.UsernameDuplicationException.toString());
+                && getExceptionNameByQueryString(queryString).equals(ExceptionType.UsernameDuplicationException.toString());
     }
 
     public static boolean isEmailDuplication(String queryString) {
         return getExceptionNameByQueryString(queryString) != null
-                &&getExceptionNameByQueryString(queryString).equals(ExceptionType.EmailDuplicationException.toString());
+                && getExceptionNameByQueryString(queryString).equals(ExceptionType.EmailDuplicationException.toString());
     }
 
     public static boolean isDefaultDeliveryAddressNotFound(String queryString) {
         return getExceptionNameByQueryString(queryString) != null
-                &&getExceptionNameByQueryString(queryString).equals(ExceptionType.DefaultDeliveryAddressNotFoundException.toString());
+                && getExceptionNameByQueryString(queryString).equals(ExceptionType.DefaultDeliveryAddressNotFoundException.toString());
     }
 
     public static boolean isDefaultDeliveryAddressWillBeNotFound(String queryString) {
         return getExceptionNameByQueryString(queryString) != null
-                &&getExceptionNameByQueryString(queryString).equals(ExceptionType.DefaultDeliveryAddressWillBeNotFoundException.toString());
+                && getExceptionNameByQueryString(queryString).equals(ExceptionType.DefaultDeliveryAddressWillBeNotFoundException.toString());
     }
     // Employee info
 
     public static boolean isCitizenIDDuplication(String queryString) {
         return getExceptionNameByQueryString(queryString) != null
-                &&getExceptionNameByQueryString(queryString).equals(ExceptionType.CitizenIDDuplicationException.toString());
+                && getExceptionNameByQueryString(queryString).equals(ExceptionType.CitizenIDDuplicationException.toString());
     }
     // Brand
 
     public static boolean isBrandNotFound(String queryString) {
         return getExceptionNameByQueryString(queryString) != null
-                &&getExceptionNameByQueryString(queryString).equals(ExceptionType.BrandNotFoundException.toString());
+                && getExceptionNameByQueryString(queryString).equals(ExceptionType.BrandNotFoundException.toString());
     }
 
     // Product
     public static boolean isProductNotFound(String queryString) {
         return getExceptionNameByQueryString(queryString) != null
-                &&getExceptionNameByQueryString(queryString).equals(ExceptionType.ProductNotFoundException.toString());
+                && getExceptionNameByQueryString(queryString).equals(ExceptionType.ProductNotFoundException.toString());
     }
 
     public static boolean isProductDeactivated(String queryString) {
         return getExceptionNameByQueryString(queryString) != null
-                &&getExceptionNameByQueryString(queryString).equals(ExceptionType.ProductDeactivatedException.toString());
+                && getExceptionNameByQueryString(queryString).equals(ExceptionType.ProductDeactivatedException.toString());
     }
     // Other
 
     public static boolean isNotEnoughInformation(String queryString) {
         return getExceptionNameByQueryString(queryString) != null
-                &&getExceptionNameByQueryString(queryString)
-                .equals(ExceptionType.NotEnoughInformationException.toString());
+                && getExceptionNameByQueryString(queryString)
+                        .equals(ExceptionType.NotEnoughInformationException.toString());
     }
 
     public static boolean isOperationAddFailed(String queryString) {
         return getExceptionNameByQueryString(queryString) != null
-                &&getExceptionNameByQueryString(queryString).equals(ExceptionType.OperationAddFailedException.toString());
+                && getExceptionNameByQueryString(queryString).equals(ExceptionType.OperationAddFailedException.toString());
     }
 
     public static boolean isOperationDeleteFailed(String queryString) {
         return getExceptionNameByQueryString(queryString) != null
-                &&getExceptionNameByQueryString(queryString)
-                .equals(ExceptionType.OperationDeleteFailedException.toString());
+                && getExceptionNameByQueryString(queryString)
+                        .equals(ExceptionType.OperationDeleteFailedException.toString());
     }
 
     public static boolean isOperationEditFailed(String queryString) {
         return getExceptionNameByQueryString(queryString) != null
-                &&getExceptionNameByQueryString(queryString).equals(ExceptionType.OperationEditFailedException.toString());
+                && getExceptionNameByQueryString(queryString).equals(ExceptionType.OperationEditFailedException.toString());
     }
 
     public static boolean isInvalidInput(String queryString) {
         return getExceptionNameByQueryString(queryString) != null
-                &&getExceptionNameByQueryString(queryString).equals(ExceptionType.InvalidInputException.toString());
+                && getExceptionNameByQueryString(queryString).equals(ExceptionType.InvalidInputException.toString());
     }
     // Voucher
 
     public static boolean isInvalidVoucher(String queryString) {
         return getExceptionNameByQueryString(queryString) != null
-                &&getExceptionNameByQueryString(queryString).equals(ExceptionType.InvalidVoucherException.toString());
+                && getExceptionNameByQueryString(queryString).equals(ExceptionType.InvalidVoucherException.toString());
     }
 
     public static boolean isVoucherNotFound(String queryString) {
         return getExceptionNameByQueryString(queryString) != null
-                &&getExceptionNameByQueryString(queryString).equals(ExceptionType.VoucherNotFoundException.toString());
+                && getExceptionNameByQueryString(queryString).equals(ExceptionType.VoucherNotFoundException.toString());
     }
 
     public static boolean NoProductVoucherAppliedException(String queryString) {
         return getExceptionNameByQueryString(queryString) != null
-                &&getExceptionNameByQueryString(queryString).equals(ExceptionType.NoProductVoucherAppliedException.toString());
+                && getExceptionNameByQueryString(queryString).equals(ExceptionType.NoProductVoucherAppliedException.toString());
     }
 
     public static boolean isNotEnoughProductQuantityException(String queryString) {
         return getExceptionNameByQueryString(queryString) != null
-                &&getExceptionNameByQueryString(queryString)
-                .equals(ExceptionType.NotEnoughProductQuantityException.toString());
+                && getExceptionNameByQueryString(queryString)
+                        .equals(ExceptionType.NotEnoughProductQuantityException.toString());
     }
 
     public static boolean isNotEnoughVoucherQuantityException(String queryString) {
         return getExceptionNameByQueryString(queryString) != null
-                &&getExceptionNameByQueryString(queryString)
-                .equals(ExceptionType.NotEnoughVoucherQuantityException.toString());
+                && getExceptionNameByQueryString(queryString)
+                        .equals(ExceptionType.NotEnoughVoucherQuantityException.toString());
     }
 
     public static boolean isVoucherCodeDuplication(String queryString) {
         return getExceptionNameByQueryString(queryString) != null
-                &&getExceptionNameByQueryString(queryString)
-                .equals(ExceptionType.VoucherCodeDuplication.toString());
+                && getExceptionNameByQueryString(queryString)
+                        .equals(ExceptionType.VoucherCodeDuplication.toString());
     }
 
     public static boolean isOrderNotFound(String queryString) {
         return getExceptionNameByQueryString(queryString) != null
-                &&getExceptionNameByQueryString(queryString).equals(ExceptionType.OrderNotFoundException.toString());
+                && getExceptionNameByQueryString(queryString).equals(ExceptionType.OrderNotFoundException.toString());
     }
 
     public static boolean isImportNotFound(String queryString) {
         return getExceptionNameByQueryString(queryString) != null
-                &&getExceptionNameByQueryString(queryString).equals(ExceptionType.ImportNotFoundException.toString());
+                && getExceptionNameByQueryString(queryString).equals(ExceptionType.ImportNotFoundException.toString());
     }
 }

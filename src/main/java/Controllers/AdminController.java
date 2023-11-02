@@ -36,6 +36,7 @@ import Lib.ExceptionUtils;
 import Lib.Generator;
 import Lib.ImageUploader;
 import Models.Admin;
+import Models.Brand;
 import Models.Stock;
 import Models.Customer;
 import Models.Employee;
@@ -590,10 +591,19 @@ public class AdminController extends HttpServlet {
 
         // Upload to Imgur database
         String imgURL = ImageUploader.uploadImageToCloud(imgPart);
-
+        
+        BrandDAO brDAO = new BrandDAO();
+        // Check if exist brand name
+        if (brDAO.getBrand(bName) == null) {
+            Brand brand = new Brand();
+            brand.setName(bName);
+            brDAO.addBrand(brand);
+        }
+        int brandId = brDAO.getBrand(bName).getId();
+        
         Product product = new Product();
         product.setName(pName);
-        product.setBrandId(bDAO.getBrand(bName).getId());
+        product.setBrandId(brandId);
         product.setGender(gender);
         product.setSmell(smell);
         product.setReleaseYear(releaseYear);
