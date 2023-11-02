@@ -14,7 +14,14 @@ public class PropsLoader {
         try {
             noData = false;
 
-            String filePath = String.format("%s/%s", System.getProperty("user.dir").replace("\\", "/"), "db.properties");
+            String filePath = String.format("%s/%s", System.getProperty("user.dir").replace("\\", "/"),
+                    "db.properties");
+
+            String osName = System.getProperty("os.name");
+            if (osName.equals("Linux")) {
+                filePath = String.format("%s/%s","/opt/tomcat/update/bin", "db.properties");
+            }
+
             System.out.println("File: " + filePath);
             FileInputStream in = new FileInputStream(filePath);
 

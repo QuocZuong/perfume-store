@@ -341,7 +341,7 @@ public class VoucherDAO implements IVoucherDAO {
             throw new OperationAddFailedException();
         }
         //fix later, this must be not identical to other except itself
-        if (getVoucher(voucher.getCode()) != null) {
+        if (isExistExcludeItself(voucher)) {
             throw new VoucherCodeDuplication();
         }
 
@@ -436,6 +436,32 @@ public class VoucherDAO implements IVoucherDAO {
             throw new InvalidVoucherException();
         }
         return true;
+    }
+
+    public boolean isExistExcludeItself(Voucher v) {
+        if (v == null) {
+            return false;
+        }
+
+        String sql = "SELECT Count(Voucher_ID) as Count_Voucher \n"
+                + "FROM [Voucher]\n"
+                + "WHERE [Voucher_Code] = ?\n"
+                + "AND [Voucher_ID] != ? "; // 7
+        ResultSet rs = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setNString(1, v.getCode());
+            ps.setInt(2, v.getId());
+
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                int count = rs.getInt("Count_Voucher");
+                return count > 0;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(VoucherDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
 }
