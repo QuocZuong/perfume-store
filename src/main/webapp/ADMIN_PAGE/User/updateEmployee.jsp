@@ -279,90 +279,104 @@
             };
         </script>
         <!--Jquery Validation-->
-        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+
         <script>
             $(document).ready(function () {
                 //                $.validator.addMethod("regex", function (value, regex) {
                 //                    return regex.test(value);
                 //                }, "Wrong input.");
+                $.validator.addMethod("atLeastOneLetter", function (value, element) {
+                    // Use a regular expression to check if the value contains at least one alphabet letter
+                    return /[A-Za-z]/.test(value);
+                }, "Phải có ký tự chữ cái.");
 
                 $("#updateEmployee").validate({
                     rules: {
                         txtName: {
                             required: true,
-                            maxlength: 50
+                            maxlength: 50,
+                            atLeastOneLetter: true
                         },
                         txtUsername: {
                             required: true,
-                            maxlength: 50
+                            maxlength: 50,
+                            atLeastOneLetter: true
                         },
                         txtPassword: {
                             required: true,
-                            minlength: 6
+                            minlength: 6,
                         },
                         txtEmail: {
                             required: true,
                             email: true,
-                            maxlength: 100
+                            maxlength: 100,
                         },
                         txtCitizenId: {
                             required: true,
+                            digits: true,
+                            minlength: 9,
                             maxlength: 20
                         },
                         txtDOB: {
-                            required: true
+                            required: true,
                         },
                         txtPhoneNumber: {
                             required: true,
                             digits: true,
                             maxlength: 10,
-                            minlength: 10
+                            minlength: 10,
                         },
                         txtAddress: {
-                            maxlength: 500
+                            maxlength: 500,
                         },
                         txtJoinDate: {
-                            required: true
-                        }
+                            required: true,
+                        },
                     },
                     messages: {
                         txtName: {
                             required: "Tên không được để trống.",
-                            maxlength: "Tên không được vượt quá 50 ký tự."
+                            maxlength: "Tên không được vượt quá 50 ký tự.",
+                            atLeastOneLetter: "Tên không hợp lệ."
+
                         },
                         txtUsername: {
                             required: "Tên đăng nhập không được để trống.",
-                            maxlength: "Tên đăng nhập không được vượt quá 50 ký tự."
+                            maxlength: "Tên đăng nhập không được vượt quá 50 ký tự.",
+                            atLeastOneLetter: "Username không hợp lệ."
+
                         },
                         txtPassword: {
                             required: "Mật khẩu không được để trống.",
-                            minlength: "Mật khẩu phải có ít nhất 6 ký tự."
+                            minlength: "Mật khẩu phải có ít nhất 6 ký tự.",
                         },
                         txtEmail: {
                             required: "Email không được để trống.",
                             email: "Email không hợp lệ.",
-                            maxlength: "Email không được vượt quá 100 ký tự."
+                            maxlength: "Email không được vượt quá 100 ký tự.",
                         },
                         txtCitizenId: {
                             required: "Số CMND không được để trống.",
+                            digits: "Số CMND không hợp lệ",
+                            minlength: "Số CMND phải có ít nhất 9 ký tự.",
                             maxlength: "Số CMND không được vượt quá 20 ký tự."
                         },
                         txtDOB: {
-                            required: "Ngày tháng năm sinh không được để trống"
+                            required: "Ngày tháng năm sinh không được để trống",
                         },
                         txtPhoneNumber: {
                             required: "Số điện thoại không được để trống",
                             digits: "Số điện thoại không hợp lệ",
                             maxlength: "Số điện thoại phải là 10 chữ số",
-                            minlength: "Số điện thoại phải là 10 chữ số"
+                            minlength: "Số điện thoại phải là 10 chữ số",
                         },
                         txtAddress: {
-                            maxlength: "Địa chỉ không được vượt quá 500 ký tự."
+                            maxlength: "Địa chỉ không được vượt quá 500 ký tự.",
                         },
                         txtJoinDate: {
-                            required: "Ngày tham gia không được để trống."
-                        }
-                    }
+                            required: "Ngày tham gia không được để trống.",
+                        },
+                    },
                 });
             });
         </script>
