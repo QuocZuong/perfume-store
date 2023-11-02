@@ -1,5 +1,7 @@
 package DAOs;
 
+import Exceptions.BrandNotFoundException;
+import Exceptions.OperationEditFailedException;
 import Interfaces.DAOs.IBrandDAO;
 import Models.Brand;
 import java.sql.Connection;
@@ -147,7 +149,11 @@ public class BrandDAO implements IBrandDAO {
     }
 
     @Override
-    public int updateBrand(Brand brand) {
+    public int updateBrand(Brand brand) throws OperationEditFailedException, BrandNotFoundException {
+        if (brand == null || getBrand(brand.getId()) == null) {
+            throw new BrandNotFoundException();
+        }
+
         int result = 0;
         try {
             String sql = "UPDATE Brand\n"
@@ -164,8 +170,58 @@ public class BrandDAO implements IBrandDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+        if (result < 1) {
+            throw new OperationEditFailedException();
+        }
         return result;
     }
 
+    public int deleteBrand(Brand brand) throws OperationEditFailedException, BrandNotFoundException {
+        if (brand == null || getBrand(brand.getId()) == null) {
+            throw new BrandNotFoundException();
+        }
+
+        int result = 0;
+        try {
+            String sql = "DELETE FROM [Brand]\n"
+                    + "WHERE Brand_ID = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, brand.getId());
+            result = ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        if (result < 1) {
+            throw new OperationEditFailedException();
+        }
+        return result;
+    }
+
+    public List<Brand> searchBrand(String search) throws BrandNotFoundException {
+        ResultSet rs;
+        List<Brand> brandList = new ArrayList<>();
+        try {
+            String sql = "SELECT * FROM Brand\n"
+                    + "WHERE Brand_Name LIKE ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setNString(1, search);
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Brand brand = new Brand();
+                brand.setId(rs.getInt("Brand_ID"));
+                brand.setName(rs.getNString("Brand_Name"));
+
+                brandList.add(brand);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (brandList.isEmpty()) {
+            throw new BrandNotFoundException();
+        }
+        return brandList;
+    }
 }
