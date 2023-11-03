@@ -1,6 +1,6 @@
 use projectPRJ
 
--- searchProductActivityLog(search)
+-- searchImportForActivityLog(search)
 SELECT * FROM Import
 JOIN [Inventory_Manager] ON [Import].Import_By_Inventory_Manager = [Inventory_Manager].[Inventory_Manager_ID]
 JOIN Employee ON [Inventory_Manager].Employee_ID = [Employee].Employee_ID

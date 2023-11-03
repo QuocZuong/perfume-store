@@ -35,23 +35,23 @@ public class OrderDAO implements IOrderDAO {
         switch (op) {
             default:
                 try {
-                    order.setId(rs.getInt(ORDER_Id));
-                    order.setCustomerId(rs.getInt(CUSTOMER_Id));
-                    order.setVoucherId(rs.getInt(VOUCHER_Id));
-                    order.setReceiverName(rs.getNString(ORDER_RECEIVER_NAME));
-                    order.setDeliveryAddress(rs.getNString(ORDER_DELIVERY_ADDRESS));
-                    order.setPhoneNumber(rs.getString(ORDER_PHONE_NUMBER));
-                    order.setNote(rs.getNString(ORDER_NOTE));
-                    order.setTotal(rs.getInt(ORDER_TOTAL));
-                    order.setDeductedPrice(rs.getInt(ORDER_DEDUCTED_PRICE));
-                    order.setStatus(rs.getString(ORDER_STATUS));
-                    order.setCreatedAt(Converter.getNullOrValue(rs.getLong(ORDER_CREATED_AT)));
-                    order.setCheckoutAt(Converter.getNullOrValue(rs.getLong(ORDER_CHECKOUT_AT)));
-                    order.setUpdateAt(Converter.getNullOrValue(rs.getLong(ORDER_UPDATE_AT)));
-                    order.setUpdateByOrderManager(rs.getInt(ORDER_UPDATE_BY_ORDER_MANAGER));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                order.setId(rs.getInt(ORDER_Id));
+                order.setCustomerId(rs.getInt(CUSTOMER_Id));
+                order.setVoucherId(rs.getInt(VOUCHER_Id));
+                order.setReceiverName(rs.getNString(ORDER_RECEIVER_NAME));
+                order.setDeliveryAddress(rs.getNString(ORDER_DELIVERY_ADDRESS));
+                order.setPhoneNumber(rs.getString(ORDER_PHONE_NUMBER));
+                order.setNote(rs.getNString(ORDER_NOTE));
+                order.setTotal(rs.getInt(ORDER_TOTAL));
+                order.setDeductedPrice(rs.getInt(ORDER_DEDUCTED_PRICE));
+                order.setStatus(rs.getString(ORDER_STATUS));
+                order.setCreatedAt(Converter.getNullOrValue(rs.getLong(ORDER_CREATED_AT)));
+                order.setCheckoutAt(Converter.getNullOrValue(rs.getLong(ORDER_CHECKOUT_AT)));
+                order.setUpdateAt(Converter.getNullOrValue(rs.getLong(ORDER_UPDATE_AT)));
+                order.setUpdateByOrderManager(rs.getInt(ORDER_UPDATE_BY_ORDER_MANAGER));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         return order;
@@ -550,18 +550,6 @@ public class OrderDAO implements IOrderDAO {
     }
 
     public List<Order> searchOrderActivityLog(String search) {
-        // String sql = "SELECT [Order].Order_Update_At,
-        // [User].[User_Name],[User].[User_Email], [Order].Order_Created_At,
-        // [Order].Order_Receiver_Name, [Order].Order_Phone_Number, [Order].Order_Status
-        // FROM [Order]\n"
-        // + "JOIN [Order_Manager] ON [Order].[Order_Update_By_Order_Manager] =
-        // [Order_Manager].[Order_Manager_ID]\n"
-        // + "JOIN [Employee] ON [Order_Manager].[Employee_ID] =
-        // [Employee].[Employee_ID]\n"
-        // + "JOIN [User] ON [Employee].[User_ID] = [User].[User_ID]\n"
-        // + "WHERE [User].[User_Name] LIKE ? OR [User].[User_Username] LIKE ? OR
-        // [User].[User_Email] LIKE ? OR [Order].Order_Phone_Number LIKE ? OR
-        // [Order].Order_Receiver_Name LIKE ? ORDER BY [Order].Order_Update_At DESC";
 
         String sql = "SELECT * FROM [Order]\n"
                 + "JOIN [Order_Manager] ON [Order].[Order_Update_By_Order_Manager] = [Order_Manager].[Order_Manager_ID]\n"

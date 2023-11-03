@@ -302,7 +302,7 @@ public class AdminController extends HttpServlet {
         }
 
         if (path.startsWith(ADMIN_ORDER_MANAGER_ACTIVITY_LOG_URI)) {
-            orderManagerActivityLog(request, response);
+            orderManagerActivityLog(request);
             request.getRequestDispatcher("/ADMIN_PAGE/User/orderManagerActivityLog.jsp").forward(request, response);
             return;
         }
@@ -1266,7 +1266,7 @@ public class AdminController extends HttpServlet {
         request.setAttribute("Search", Search);
     }
 
-    private void orderManagerActivityLog(HttpServletRequest request, HttpServletResponse response) {
+    private void orderManagerActivityLog(HttpServletRequest request) {
         String URI = request.getRequestURI();
         String data[] = URI.split("/");
         int page = 1;
@@ -1284,12 +1284,12 @@ public class AdminController extends HttpServlet {
             Search = "%";
         }
 
-        List<Order> adminActivityLogsFromSearch = orderDAO.searchOrderActivityLog(Search);
-        List<Order> listOrderActivityLogs = Generator.pagingList(adminActivityLogsFromSearch, page, rows);
+        List<Order> orderActivityLogsFromSearch = orderDAO.searchOrderActivityLog(Search);
+        List<Order> listOrderActivityLogs = Generator.pagingList(orderActivityLogsFromSearch, page, rows);
 
         final int ROWS = 20;
-        int NumberOfPage = adminActivityLogsFromSearch.size() / ROWS;
-        NumberOfPage = (adminActivityLogsFromSearch.size() % ROWS == 0 ? NumberOfPage : NumberOfPage + 1);
+        int NumberOfPage = orderActivityLogsFromSearch.size() / ROWS;
+        NumberOfPage = (orderActivityLogsFromSearch.size() % ROWS == 0 ? NumberOfPage : NumberOfPage + 1);
         request.setAttribute("page", page);
         request.setAttribute("numberOfPage", NumberOfPage);
         request.setAttribute("listActivityLogs", listOrderActivityLogs);
