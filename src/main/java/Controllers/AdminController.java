@@ -296,7 +296,7 @@ public class AdminController extends HttpServlet {
         }
 
         if (path.startsWith(ADMIN_ADMIN_ACTIVITY_LOG_URI)) {
-            adminActivityLog(request, response);
+            adminActivityLog(request);
             request.getRequestDispatcher("/ADMIN_PAGE/User/adminActivityLog.jsp").forward(request, response);
             return;
         }
@@ -1235,7 +1235,7 @@ public class AdminController extends HttpServlet {
         request.setAttribute("Search", Search);
     }
 
-    private void adminActivityLog(HttpServletRequest request, HttpServletResponse response) {
+    private void adminActivityLog(HttpServletRequest request) {
         String URI = request.getRequestURI();
         String data[] = URI.split("/");
         int page = 1;
