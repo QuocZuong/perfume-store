@@ -337,7 +337,7 @@ public class AdminController extends HttpServlet {
         }
 
         if (path.startsWith(ADMIN_USER_DELETE_URI)) {
-            deleteUser(request, response);
+            deleteUser(request);
             response.sendRedirect(ADMIN_USER_LIST_URI);
             return;
         }
@@ -2160,7 +2160,7 @@ public class AdminController extends HttpServlet {
         return State.Success.value;
     }
 
-    private void deleteUser(HttpServletRequest request, HttpServletResponse response) {
+    private void deleteUser(HttpServletRequest request) {
         // Admin/User/Delete/ID/1/currentUsername
         String path = request.getRequestURI();
         String data[] = path.split("/");
