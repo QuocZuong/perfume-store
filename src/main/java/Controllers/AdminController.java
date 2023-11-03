@@ -308,7 +308,7 @@ public class AdminController extends HttpServlet {
         }
 
         if (path.startsWith(ADMIN_INVENTORY_MANAGER_ACTIVITY_LOG_URI)) {
-            inventoryManagerActivityLog(request, response);
+            inventoryManagerActivityLog(request);
             request.getRequestDispatcher("/ADMIN_PAGE/User/inventoryManagerActivityLog.jsp").forward(request, response);
             return;
         }
@@ -1296,7 +1296,7 @@ public class AdminController extends HttpServlet {
         request.setAttribute("Search", Search);
     }
 
-    private void inventoryManagerActivityLog(HttpServletRequest request, HttpServletResponse response) {
+    private void inventoryManagerActivityLog(HttpServletRequest request) {
         String URI = request.getRequestURI();
         String data[] = URI.split("/");
         int page = 1;
