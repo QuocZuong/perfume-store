@@ -39,7 +39,6 @@
     email = customer.getEmail();
     
     orders = od.getOrderByCustomerId(customer.getCustomerId());
-    orders.sort((o1, o2) -> -((Integer) o1.getId()).compareTo((Integer) o2.getId()));
 
     deliveryAddress = customer.getDeliveryAddress();
 

@@ -225,7 +225,7 @@ public class OrderDAO implements IOrderDAO {
         }
 
         List<Order> orders = new ArrayList<>();
-        String sql = "SELECT * FROM [Order] where Customer_ID = ?";
+        String sql = "SELECT * FROM [Order] where Customer_ID = ? ORDER BY Order_ID DESC";
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
