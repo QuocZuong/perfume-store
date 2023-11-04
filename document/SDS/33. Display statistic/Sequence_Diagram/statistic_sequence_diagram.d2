@@ -1,0 +1,63 @@
+vars: {
+  page-name: Statistic page
+  controller-name: AdminController
+  od-dao: odDAO:OrderDAO
+}
+
+label.style.font-color: black
+
+classes: {
+  text-black: {
+    style: {
+      font-color: black
+    }
+  }
+
+  return arrow: {
+    style: {
+      stroke-dash: 3
+      stroke: black
+      font-color: black
+    }
+  }
+
+  frame: {
+    style: {
+      fill: '#EAEDF0'
+      stroke-width: 1
+    }
+  }
+
+  label right: {
+    style.font-color: black
+  }
+}
+
+shape: sequence_diagram
+
+Admin: {
+  shape: image
+  width: 50
+  height: 60
+  icon: https://upload.wikimedia.org/wikipedia/commons/5/5b/Robustness_Diagram_Actor.svg
+}
+
+page: ${page-name}
+controller: ${controller-name}
+odDAO: ${od-dao}
+
+db: DB {
+  width: 100
+  height: 50
+  shape: cylinder
+}
+
+Admin -> page.view: 1. click on view statistic button {class: text-black}
+page.view -> controller.doGet: 2. doGet() {class: text-black}
+controller.doGet -> controller.doGet.bestSellingProductByPrice: 3. bestSellingProductByPrice() {class: label right}
+controller.doGet.bestSellingProductByPrice -> odDAO.getOrderForChartByOrderIdByPrice: 4. getOrderForChartByOrderIdByPrice() {class: text-black}
+odDAO.getOrderForChartByOrderIdByPrice -> db.query: 5. executeQuery() {class: text-black}
+odDAO.getOrderForChartByOrderIdByPrice <- db.query: 6. return result {class: return arrow}
+controller.doGet.bestSellingProductByPrice <- odDAO.getOrderForChartByOrderIdByPrice: 7. return list of product {class: return arrow}
+page.view <- controller.doGet: 8. return statistic page {class: return arrow}
+Admin <- page.view: 9. return statistic page {class: return arrow}
