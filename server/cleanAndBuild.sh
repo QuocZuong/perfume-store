@@ -1,5 +1,6 @@
 #!/bin/sh
 
+echo
 echo "-------------------------------"
 echo
 echo "Clean and build process started"
