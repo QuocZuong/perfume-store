@@ -1812,7 +1812,7 @@ public class AdminController extends HttpServlet {
 
             brDAO.updateBrand(brand);
 
-            System.out.println("Update voucher successfully!");
+            System.out.println("Update brand successfully!");
             return State.Success.value;
         } catch (NumberFormatException e) {
             //Default exception

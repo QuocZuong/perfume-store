@@ -44,7 +44,7 @@ user: {
 
 page: ${page-name}
 controller: ${controller-name}
-cDao: ${dao-name}
+brDAO: ${dao-name}
 db: DB {
   width: 100
   height: 50
@@ -55,10 +55,10 @@ user -> page.view: 1. Fill all brand's attribute and\n click on update button {c
 page.view -> controller.doGet: 2. doGet() {class: text-black}
 
 controller.doGet -> controller.doGet.updateBrand: 3. updateBrand {class: label right}
-controller.doGet.updateBrand -> cDao.updateBrand: 4. updateBrand {class: text-black}
-cDao.updateBrand -> db.query: 5. executeUpdate {class: text-black}
-cDao.updateBrand <- db.query: 6. return result {class: return arrow}
-controller.doGet.updateBrand <- cDao.updateBrand: 7. return affected row {class: text-black}
+controller.doGet.updateBrand -> brDAO.updateBrand: 4. updateBrand {class: text-black}
+brDAO.updateBrand -> db.query: 5. executeUpdate {class: text-black}
+brDAO.updateBrand <- db.query: 6. return result {class: return arrow}
+controller.doGet.updateBrand <- brDAO.updateBrand: 7. return affected row {class: text-black}
 alt: {
   affected row = 0: {
     page.view <- controller.doGet: 8. return to Controller {class: text-black}

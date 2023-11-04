@@ -1,0 +1,104 @@
+vars: {
+  page-name: DeliveryAddressListPage
+  controller-name: CustomerController
+  daDAO-name: daDAO:DeliveryAddressDAO
+  cusDAO-name: cusDAO:CustomerDAO
+}
+
+label.style.font-color: black
+
+classes: {
+  text-black: {
+    style: {
+      font-color: black
+    }
+  }
+
+  return arrow: {
+    style: {
+      stroke-dash: 3
+      stroke: black
+      font-color: black
+    }
+  }
+
+  frame: {
+    style: {
+      fill: '#EAEDF0'
+      stroke-width: 1
+    }
+  }
+
+  label right: {
+    style.font-color: black
+  }
+}
+
+shape: sequence_diagram
+
+user: {
+  shape: image
+  width: 50
+  height: 60
+  icon: https://upload.wikimedia.org/wikipedia/commons/5/5b/Robustness_Diagram_Actor.svg
+}
+
+page: ${page-name}
+controller: ${controller-name}
+cDAO: ${cusDAO-name}
+daDAO: ${daDAO-name}
+db: DB {
+  width: 100
+  height: 50
+  shape: cylinder
+}
+
+user -> page.view: 1. Fill all delivery address attribute and\n click on add button {class: text-black}
+page.view -> controller.doPost: 2. doPost() {class: text-black}
+# getCustomer
+controller.doPost -> controller.doPost.addDeliveryAddress: 3. addDeliveryAddress() {class: text-black}
+controller.doPost.addDeliveryAddress -> cDAO.getCustomer: 4. getCustomer() {class: text-black}
+cDAO.getCustomer -> db.query: 5. excecuteQuery() {class: text-black}
+cDAO.getCustomer <- db.query: 6. return ResultSet {class: return arrow}
+alt1: "alt" {
+  class: frame
+  ResultSet is null: {
+    controller.doPost.addDeliveryAddress <- cDAO.getCustomer: 7. return null {class: return arrow}
+    page.view <- controller.doPost.addDeliveryAddress: 7.1. return to page {class: return arrow}
+    user <- page.view: 7.2. show error to user {class: return arrow}
+  }
+  else1: "else" {
+    controller.doPost.addDeliveryAddress <- cDAO.getCustomer: 8. return Customer {class: return arrow}
+    opt: "opt" {
+      class: frame
+      if delivery address is set to default: {
+        class: frame
+        controller.doPost.addDeliveryAddress -> daDAO.getAll: 8.1. getAll {class: text-black}
+        controller.doPost.addDeliveryAddress <- daDAO.getAll: 8.2. return a list delivery address {class: return arrow}
+        loop: {
+          class: frame
+          while index less than list size: {
+            controller.doPost.addDeliveryAddress -> daDAO.updateDeliveryAddress: 8.2.1. updateDeliveryAddress {class: text-black}
+            controller.doPost.addDeliveryAddress <- daDAO.updateDeliveryAddress: 8.2.2. return number of afftect row {class: return arrow}
+          }
+        }
+      }
+    }
+    controller.doPost.addDeliveryAddress -> daDAO.addDeliveryAddress: 9. addDeliveryAddress {class: text-black}
+    daDAO.addDeliveryAddress -> db.add: 10. executeUpdate {class: text-black}
+    daDAO.addDeliveryAddress <- db.add: 11. return number of affected rows {class: return arrow}
+    alt2: "alt" {
+      affected row = 0: {
+        controller.doPost.addDeliveryAddress <- daDAO.addDeliveryAddress: 12. return 0 affected row {class: return arrow}
+        page.view <- controller.doPost: 12.1. return to page {class: return arrow}
+        user <- page.view: 12.2. Show error that add delivery address failed {class: return arrow}
+      }
+      else2: "else" {
+        controller.doPost.addDeliveryAddress <- daDAO.addDeliveryAddress: 13. return affected rows {class: return arrow}
+        page.view <- controller.doPost: 13.1. return to page {class: return arrow}
+        user <- page.view: 13.2. return to delivery address list page {class: return arrow}
+      }
+    }
+  }
+}
+
