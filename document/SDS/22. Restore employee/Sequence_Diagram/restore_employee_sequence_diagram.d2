@@ -1,0 +1,76 @@
+vars: {
+  page-name: UserManagementPage
+  controller-name: AdminController
+  dao-name: uDAO:UserDAO
+}
+
+label.style.font-color: black
+
+classes: {
+  text-black: {
+    style: {
+      font-color: black
+    }
+  }
+
+  return arrow: {
+    style: {
+      stroke-dash: 3
+      stroke: black
+      font-color: black
+    }
+  }
+
+  frame: {
+    style: {
+      fill: '#EAEDF0'
+      stroke-width: 1
+    }
+  }
+
+  label right: {
+    style.font-color: black
+  }
+}
+
+shape: sequence_diagram
+
+user: {
+  shape: image
+  width: 50
+  height: 60
+  icon: https://upload.wikimedia.org/wikipedia/commons/5/5b/Robustness_Diagram_Actor.svg
+}
+
+page: ${page-name}
+controller: ${controller-name}
+uDAO: ${dao-name}
+db: DB {
+  width: 100
+  height: 50
+  shape: cylinder
+}
+
+user -> page.view: 1. Select a deleted employee\n and click restore button {class: text-black}
+page.view -> controller.doGet: 2. doGet() {class: text-black}
+
+controller.doGet -> controller.doGet.restoreUser: 3. restoreUser {class: label right}
+controller.doGet.restoreUser -> uDAO.restoreUser: 4. restoreUser {class: text-black}
+uDAO.restoreUser -> uDAO.restoreUser.updateUser: 5. updateUser {class:text-black}
+
+uDAO.restoreUser.updateUser -> db.query: 6. executeUpdate {class: text-black}
+uDAO.restoreUser.updateUser <- db.query: 7. return result {class: return arrow}
+
+alt: {
+    class: frame
+    affected row = 0: {
+      controller.doGet.restoreUser <- uDAO.restoreUser: 8. return 0 affected row {class: text-black}
+    page.view <- controller.doGet: 8.1. return to page {class: text-black}
+    user <- page.view: 8.1.1. Return to update brand\n and show error message {class: text-black}
+  }
+  else: {
+    controller.doGet.restoreUser <- uDAO.restoreUser: 8. return affected rows {class: text-black}
+    page.view <- controller.doGet: 8.2. return to page {class: text-black}
+    user <- page.view: 8.2.1. Redirect to brand list {class: text-black}
+  }
+}
