@@ -51,7 +51,7 @@ db: DB {
   shape: cylinder
 }
 
-user -> page.view: 1. Fill all brand's attribute and\n click on update button {class: text-black}
+user -> page.view: 1. Fill all brand attributes and\n click on update button {class: text-black}
 page.view -> controller.doGet: 2. doGet() {class: text-black}
 
 controller.doGet -> controller.doGet.updateBrand: 3. updateBrand {class: label right}
@@ -61,12 +61,12 @@ brDAO.updateBrand <- db.query: 6. return result {class: return arrow}
 controller.doGet.updateBrand <- brDAO.updateBrand: 7. return affected row {class: text-black}
 alt: {
   affected row = 0: {
-    page.view <- controller.doGet: 8. return to Controller {class: text-black}
-    user <- page.view: 8.1. Return to update brand\n and show error message {class: text-black}
+    page.view <- controller.doGet: 7.1. return to Controller {class: text-black}
+    user <- page.view: 7.1.1. Return to update brand\n and show error message {class: text-black}
   }
   else: {
-    page.view <- controller.doGet: 9. return to Controller {class: text-black}
-    user <- page.view: 9.1. Redirect to brand list {class: text-black}
+    page.view <- controller.doGet: 7.2. return to Controller {class: text-black}
+    user <- page.view: 7.2.1. Redirect to brand list {class: text-black}
   }
 }
 
