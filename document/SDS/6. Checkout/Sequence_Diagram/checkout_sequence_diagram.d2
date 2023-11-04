@@ -42,7 +42,7 @@ Customer: {
   shape: image
   width: 50
   height: 60
-  icon: https://i.imgur.com/xixpu1z.png
+  icon: https://upload.wikimedia.org/wikipedia/commons/5/5b/Robustness_Diagram_Actor.svg
 }
 
 page: ${page-name}
@@ -62,32 +62,42 @@ Customer -> page.view: 1. Fill all checkout page attribute and\n click on checko
 page.view -> controller.doPost: 2. doPost() {class: text-black}
 controller.doPost -> controller.doPost.customerCheckout: 3. customerCheckout() {class: label right}
 controller.doPost.customerCheckout -> cusDAO.getCustomer: 4. getCustomer() {class: text-black}
-cusDAO.getCustomer -> db.query: 5. executeQuery() {class: text-black}
-cusDAO.getCustomer <- db.query: 6. return result {class: return arrow}
+cusDAO.getCustomer -> db.getCustomer: 5. executeQuery() {class: text-black}
+cusDAO.getCustomer <- db.getCustomer: 6. return result {class: return arrow}
 
-alt: {
+alt1: alt {
+  class: frame
   customer = null: {
-    controller.doPost.customerCheckout <- cusDAO.getCustomer: 7. return null {class: return arrow}
-    page.view <- controller.doPost: 7.1. return checkout error {class: return arrow}
-    Customer <- page.view: 7.2. return checkout error {class: return arrow}
+    controller.doPost.customerCheckout <- cusDAO.getCustomer: 7.1.1. return null {class: return arrow}
+    page.view <- controller.doPost: 7.1.2. return checkout error {class: return arrow}
+    Customer <- page.view: 7.1.3. return checkout error {class: return arrow}
   }
-  else: {
-    controller.doPost.customerCheckout <- cusDAO.getCustomer: 8. return customer {class: return arrow}
-    controller.doPost.customerCheckout -> ciDAO.getAllCartItemOfCustomer: 9. getAllCartItemOfCustomer() {class: text-black}
-    ciDAO.getAllCartItemOfCustomer -> db.query: 10. executeQuery() {class: text-black}
-    ciDAO.getAllCartItemOfCustomer <- db.query: 11. return result {class: return arrow}
-    controller.doPost.customerCheckout <- ciDAO.getAllCartItemOfCustomer: 12. return cart items of customer {class: text-black}
-    controller.doPost.customerCheckout -> vDAO.getVoucer: 13. getVoucher() {class: text-back}
-    vDAO.getVoucer -> db.query: 14. executeQuery() {class: text-black}
-    vDAO.getVoucer <- db.query: 15. return result {class: return arrow}
-    controller.doPost.customerCheckout <- vDAO.getVoucer: 16. return voucher {class: return arrow}
-    controller.doPost.customerCheckout -> odDAO.addOrder: 17. addOrder() {class: text-black}
-    odDAO.addOrder -> db.query: 18. executeQuery() {class: text-black}
-    odDAO.addOrder <- db.query: 19. return result {class: return arrow}
-    controller.doPost.customerCheckout <- odDAO.addOrder: 20. return add order result {class: return arrow}
-    page.view <- controller.doPost: 21. return add order status {class: return arrow}
-    Customer <- page.view: 22. return add order status {class: return arrow}
+  else1: else {
+    class: frame
+    controller.doPost.customerCheckout <- cusDAO.getCustomer: 7.2.1. return customer {class: return arrow}
+    controller.doPost.customerCheckout -> ciDAO.getAllCartItemOfCustomer: 7.2.2. getAllCartItemOfCustomer() {class: text-black}
+    ciDAO.getAllCartItemOfCustomer -> db.getAllCartItemOfCustomer: 7.2.3. executeQuery() {class: text-black}
+    ciDAO.getAllCartItemOfCustomer <- db.getAllCartItemOfCustomer: 7.2.4. return result {class: return arrow}
+    controller.doPost.customerCheckout <- ciDAO.getAllCartItemOfCustomer: 7.2.5. return cart items of customer {class: text-black}
+    controller.doPost.customerCheckout -> vDAO.getVoucer: 7.2.6. getVoucher() {class: text-back}
+    vDAO.getVoucer -> db.getVoucer: 7.2.7. executeQuery() {class: text-black}
+    vDAO.getVoucer <- db.getVoucer: 7.2.8. return result {class: return arrow}
+    controller.doPost.customerCheckout <- vDAO.getVoucer: 7.2.9. return voucher {class: return arrow}
+    controller.doPost.customerCheckout -> odDAO.addOrder: 7.2.10. addOrder() {class: text-black}
+    odDAO.addOrder -> db.addOrder: 7.2.11. executeQuery() {class: text-black}
+    odDAO.addOrder <- db.addOrder: 7.2.12. return result {class: return arrow}
+    controller.doPost.customerCheckout <- odDAO.addOrder: 7.2.13. return add order result {class: return arrow}
+    alt2: alt {
+      class: frame
+      add order fail: {
+        page.view <- controller.doPost: 7.2.14.1.1. return add order fail {class: return arrow}
+        Customer <- page.view: 7.2.14.1.2. return add order fail {class: return arrow}
+      }
+      else2: else {
+        class: frame
+        page.view <- controller.doPost: 7.2.14.2.1. return add order susscess {class: return arrow}
+        Customer <- page.view: 7.2.14.2.2. return add order susscess {class: return arrow}
+      }
+    }
   }
 }
-
-alt.class: frame
