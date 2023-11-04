@@ -40,7 +40,7 @@ classes: {
 
 shape: sequence_diagram
 
-user: {
+Customer: {
   shape: image
   width: 50
   height: 60
@@ -58,12 +58,12 @@ db: DB {
   shape: cylinder
 }
 
-user -> page.view: 1. Fill all delivery address attribute and\n click on add button {class: text-black}
+Customer -> page.view: 1. Fill all delivery address attribute and\n click on add button {class: text-black}
 page.view -> controller.doPost: 2. doPost() {class: text-black}
 
 # x="652.000000"
 controller.doPost -> controller.doPost.updateCustomerDeliveryAddress: 3. updateCustomerDeliveryAddress(request) {class: text-black}
-controller.doPost.updateCustomerDeliveryAddress -> cDAO.getCustomer: 4. getCustomer(username) {class: text-black}
+controller.doPost.updateCustomerDeliveryAddress -> cDAO.getCustomer: 4. getCustomer(Customername) {class: text-black}
 
 cDAO.getCustomer -> db.getCustomer: 5. excecuteQuery() {class: text-black}
 cDAO.getCustomer <- db.getCustomer: 6. return ResultSet {class: return arrow}
@@ -75,7 +75,7 @@ alt1: "alt" {
     class: frame
     controller.doPost.updateCustomerDeliveryAddress <- cDAO.getCustomer: 7. return null {class: return arrow}
     page.view <- controller.doPost.updateCustomerDeliveryAddress: 7.1. return to page {class: return arrow}
-    user <- page.view: 7.2. show error to user {class: return arrow}
+    Customer <- page.view: 7.2. show error to Customer {class: return arrow}
   }
 
   else1: "else" {

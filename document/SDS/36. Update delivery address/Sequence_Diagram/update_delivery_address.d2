@@ -40,7 +40,7 @@ classes: {
 
 shape: sequence_diagram
 
-user: {
+Customer: {
   shape: image
   width: 50
   height: 60
@@ -70,7 +70,7 @@ alt2: "alt" {
     class: frame
     controller.doPost.updateCustomerDeliveryAddress <- daDAO.getDeliveryAdress: 11. return null {class: return arrow}
     page.view <- controller.doPost.updateCustomerDeliveryAddress: 11.1. return to page {class: return arrow}
-    user <- page.view: 11.2. show error to user {class: return arrow}
+    Customer <- page.view: 11.2. show error to Customer {class: return arrow}
   }
   else2: "else" {
     class: frame
@@ -82,7 +82,7 @@ alt2: "alt" {
       All delivery address is non-default \n(including the one that will be updated): {
         class: frame
         page.view <- controller.doPost.updateCustomerDeliveryAddress: 11.1. return to page {class: return arrow}
-        user <- page.view: 11.2. show error to user {class: return arrow}
+        Customer <- page.view: 11.2. show error to Customer {class: return arrow}
       }
 
       else3: "else" {
@@ -100,7 +100,7 @@ alt2: "alt" {
 
             controller.doPost.updateCustomerDeliveryAddress <- daDAO.updateDeliveryAddress: 15. return false {class: return arrow}
             page.view <- controller.doPost.updateCustomerDeliveryAddress: 15.1. return to page {class: return arrow}
-            user <- page.view: 15.2. show error to user {class: return arrow}
+            Customer <- page.view: 15.2. show error to Customer {class: return arrow}
           }
 
           else4: "else" {
@@ -113,7 +113,7 @@ alt2: "alt" {
             }
 
             page.view <- controller.doPost.updateCustomerDeliveryAddress: 24. return to page {class: return arrow}
-            user <- page.view: 25. show the new list to user {class: return arrow}
+            Customer <- page.view: 25. show the new list to Customer {class: return arrow}
           }
         }
       }
