@@ -1,5 +1,7 @@
 package Interfaces.DAOs;
 
+import Exceptions.BrandNotFoundException;
+import Exceptions.OperationEditFailedException;
 import Models.Brand;
 import java.util.List;
 
@@ -15,6 +17,6 @@ public interface IBrandDAO {
 
     public Brand getBrand(String BrandName);
 
-    public int updateBrand(Brand brand);
+    public int updateBrand(Brand brand) throws OperationEditFailedException, BrandNotFoundException;
 
 }

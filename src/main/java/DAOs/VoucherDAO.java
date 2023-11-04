@@ -346,23 +346,25 @@ public class VoucherDAO implements IVoucherDAO {
         }
 
         String sql = "UPDATE [Voucher]\n"
-                + "SET [Voucher_Code] = ?,\n" // 1
-                + "[Voucher_Quantity] = ?,\n" // 2
-                + "[Voucher_Discount_Percent] = ?,\n" // 3
-                + "[Voucher_Created_At] = ?,\n" // 4
-                + "[Voucher_Expired_At] = ?,\n" // 5
-                + "[Voucher_Created_By_Admin] = ?\n" // 6
-                + "WHERE [Voucher_ID] = ? "; // 7
+                + "                 SET [Voucher_Code] = ?,  \n" //1
+                + "                 [Voucher_Quantity] = ?,\n" // 2
+                + "                 [Voucher_Discount_Percent] = ?,  \n"//3
+                + "                 [Voucher_Discount_Max] = ?,\n"//4
+                + "                 [Voucher_Created_At] = ?,  \n"//5
+                + "                 [Voucher_Expired_At] = ?,\n"//6
+                + "                 [Voucher_Created_By_Admin] = ? \n"//7
+                + "                 WHERE [Voucher_ID] = ?  "; // 8
         int result = 0;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setNString(1, voucher.getCode());
             ps.setInt(2, voucher.getQuantity());
             ps.setInt(3, voucher.getDiscountPercent());
-            ps.setLong(4, voucher.getCreatedAt());
-            ps.setLong(5, voucher.getExpiredAt());
-            ps.setInt(6, voucher.getCreatedByAdmin());
-            ps.setInt(7, voucher.getId());
+            ps.setInt(4, voucher.getDiscountMax());
+            ps.setLong(5, voucher.getCreatedAt());
+            ps.setLong(6, voucher.getExpiredAt());
+            ps.setInt(7, voucher.getCreatedByAdmin());
+            ps.setInt(8, voucher.getId());
 
             result = ps.executeUpdate();
 

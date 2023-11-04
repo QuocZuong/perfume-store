@@ -7,19 +7,19 @@ body {
 
 body::-webkit-scrollbar {
     width: 10px;
-  }
-  
-  body::-webkit-scrollbar-track {
+}
+
+body::-webkit-scrollbar-track {
     background: #f1f1f1;
-  }
-  
-  body::-webkit-scrollbar-thumb {
+}
+
+body::-webkit-scrollbar-thumb {
     background: #888;
-  }
-  
-  body::-webkit-scrollbar-thumb:hover {
+}
+
+body::-webkit-scrollbar-thumb:hover {
     background: #555;
-  }
+}
 
 .container {
     display: flex;
@@ -58,7 +58,8 @@ form fieldset legend {
 }
 
 form fieldset legend span{
-    color: red;;
+    color: red;
+    ;
 }
 
 form fieldset label {
@@ -73,13 +74,6 @@ form textarea {
     padding: 5px 10px;
 }
 
-form .btnUpdateUser {
-    margin-top: 15px;
-    padding: 5px 20px 3px 20px;
-    background-color: transparent;
-    border: 1px solid rgba(0, 0, 0, 0.3);
-    font-size: 1.3rem;
-}
 
 form .btnUpdateProduct {
     margin-top: 15px;
@@ -97,9 +91,7 @@ form button:hover {
     border: 1px solid black;
 }
 
-input[type="file"] {
-   visibility:hidden;
-}
+
 
 .image img {
     width: 20px;

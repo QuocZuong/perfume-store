@@ -15,15 +15,16 @@ import java.util.List;
 
 import Models.Product;
 import DAOs.ProductDAO;
-import DAOs.StockDAO;
 import DAOs.UserDAO;
 import DAOs.VoucherDAO;
 import Exceptions.AccountDeactivatedException;
-import Exceptions.AccountNotFoundException;
+import Exceptions.BrandNotFoundException;
 import Exceptions.CitizenIDDuplicationException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.InvalidInputException;
 import Exceptions.OperationAddFailedException;
+import Exceptions.OperationDeleteBrandFailedCauseOfExistedProduct;
+import Exceptions.OperationEditFailedException;
 import Exceptions.PhoneNumberDuplicationException;
 import Exceptions.ProductNotFoundException;
 import Exceptions.UsernameDuplicationException;
@@ -75,6 +76,11 @@ public class AdminController extends HttpServlet {
     public static final String ADMIN_PRODUCT_UPDATE_URI = "/Admin/Product/Update";
     public static final String ADMIN_PRODUCT_DELETE_URI = "/Admin/Product/Delete";
     public static final String ADMIN_PRODUCT_RESTORE_URI = "/Admin/Product/Restore";
+    //Brand
+    public static final String ADMIN_BRAND_LIST_URI = "/Admin/Brand/List";
+    public static final String ADMIN_BRAND_UPDATE_URI = "/Admin/Brand/Update";
+    public static final String ADMIN_BRAND_DELETE_URI = "/Admin/Brand/Delete";
+
     // Order
     public static final String ADMIN_ORDER_LIST_URI = "/Admin/Order/List";
     public static final String ADMIN_ORDER_REQUEST_URI = "/Admin/Order/Request";
@@ -189,7 +195,41 @@ public class AdminController extends HttpServlet {
             }
             return;
         }
+        // ---------------------------- BRAND SECTION ----------------------------
+        if (path.startsWith(ADMIN_BRAND_LIST_URI)
+                || path.startsWith(ADMIN_BRAND_LIST_URI + "/page")) {
+            int result = searchBrand(request);
 
+            if (result == State.Success.value) {
+                request.getRequestDispatcher("/ADMIN_PAGE/Brand/list.jsp").forward(request, response);
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(ADMIN_BRAND_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+
+            return;
+        }
+        if (path.startsWith(ADMIN_BRAND_UPDATE_URI + "/ID")) {
+            boolean result = getUpdateBrand(request);
+
+            if (result) {
+                request.getRequestDispatcher("/ADMIN_PAGE/Brand/update.jsp").forward(request, response);
+            } else {
+                response.sendRedirect(ADMIN_BRAND_UPDATE_URI + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
+
+// Not logical so I remove this
+//        if (path.startsWith(ADMIN_BRAND_DELETE_URI + "/ID")) {
+//            int result = deleteBrand(request);
+//
+//            if (result == State.Success.value) {
+//                response.sendRedirect(ADMIN_BRAND_LIST_URI);
+//            } else {
+//                response.sendRedirect(ADMIN_BRAND_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+//            }
+//            return;
+//        }
         // ---------------------------- ORDER SECTION ----------------------------
         if (path.startsWith(ADMIN_ORDER_LIST_URI)
                 || path.startsWith(ADMIN_ORDER_LIST_URI + "/page")) {
@@ -256,19 +296,19 @@ public class AdminController extends HttpServlet {
         }
 
         if (path.startsWith(ADMIN_ADMIN_ACTIVITY_LOG_URI)) {
-            adminActivityLog(request, response);
+            adminActivityLog(request);
             request.getRequestDispatcher("/ADMIN_PAGE/User/adminActivityLog.jsp").forward(request, response);
             return;
         }
 
         if (path.startsWith(ADMIN_ORDER_MANAGER_ACTIVITY_LOG_URI)) {
-            orderManagerActivityLog(request, response);
+            orderManagerActivityLog(request);
             request.getRequestDispatcher("/ADMIN_PAGE/User/orderManagerActivityLog.jsp").forward(request, response);
             return;
         }
 
         if (path.startsWith(ADMIN_INVENTORY_MANAGER_ACTIVITY_LOG_URI)) {
-            inventoryManagerActivityLog(request, response);
+            inventoryManagerActivityLog(request);
             request.getRequestDispatcher("/ADMIN_PAGE/User/inventoryManagerActivityLog.jsp").forward(request, response);
             return;
         }
@@ -297,7 +337,7 @@ public class AdminController extends HttpServlet {
         }
 
         if (path.startsWith(ADMIN_USER_DELETE_URI)) {
-            deleteUser(request, response);
+            deleteUser(request);
             response.sendRedirect(ADMIN_USER_LIST_URI);
             return;
         }
@@ -569,7 +609,16 @@ public class AdminController extends HttpServlet {
                 return;
             }
         }
+        if (path.startsWith(ADMIN_BRAND_UPDATE_URI)) {
+            int result = updateBrand(request);
 
+            if (result == State.Success.value) {
+                response.sendRedirect(ADMIN_BRAND_LIST_URI);
+            } else if (result == State.Fail.value) {
+                response.sendRedirect(ADMIN_BRAND_UPDATE_URI + "/ID" + request.getAttribute("errorBrandId") + ExceptionUtils.generateExceptionQueryString(request));
+            }
+            return;
+        }
     }
 
     /* CRUD */
@@ -591,7 +640,7 @@ public class AdminController extends HttpServlet {
 
         // Upload to Imgur database
         String imgURL = ImageUploader.uploadImageToCloud(imgPart);
-        
+
         BrandDAO brDAO = new BrandDAO();
         // Check if exist brand name
         if (brDAO.getBrand(bName) == null) {
@@ -600,7 +649,7 @@ public class AdminController extends HttpServlet {
             brDAO.addBrand(brand);
         }
         int brandId = brDAO.getBrand(bName).getId();
-        
+
         Product product = new Product();
         product.setName(pName);
         product.setBrandId(brandId);
@@ -877,6 +926,107 @@ public class AdminController extends HttpServlet {
         }
     }
 
+    private int getUpdateProduct(HttpServletRequest request, HttpServletResponse response) {
+        ProductDAO pDAO = new ProductDAO();
+        try {
+            String data[] = request.getRequestURI().split("/");
+            for (int i = 0; i < data.length; i++) {
+                if (data[i].equals("ID")) {
+                    int ProductID = Integer.parseInt(data[i + 1]);
+                    Product pd = pDAO.getProduct(ProductID);
+                    if (pd != null) {
+                        request.setAttribute("ProductUpdate", pd);
+                        return State.Success.value;
+                    }
+                }
+            }
+        } catch (NumberFormatException e) {
+            request.setAttribute("exceptionType", "");
+            return State.Fail.value;
+        } catch (ProductNotFoundException ex) {
+            request.setAttribute("exceptionType", "ProductNotFoundException");
+            return State.Fail.value;
+        }
+
+        request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.ProductNotFoundException.toString());
+        return State.Fail.value;
+    }
+
+    private int getUpdateVoucher(HttpServletRequest request) {
+        VoucherDAO vDAO = new VoucherDAO();
+        try {
+            String data[] = request.getRequestURI().split("/");
+            for (int i = 0; i < data.length; i++) {
+                if (data[i].equals("ID")) {
+                    int vId = Integer.parseInt(data[i + 1]);
+                    Voucher v = vDAO.getVoucher(vId);
+                    if (v != null) {
+                        List<Integer> approvedProductId = vDAO.getAllApprovedProductIdByVoucherId(vId);
+                        System.out.println(approvedProductId);
+                        request.setAttribute("VoucherUpdate", v);
+                        request.setAttribute("ApprovedProductId", approvedProductId);
+                        return State.Success.value;
+                    }
+                }
+            }
+        } catch (NumberFormatException e) {
+            request.setAttribute("exceptionType", "");
+            return State.Fail.value;
+        }
+
+        request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.ProductNotFoundException.toString());
+        return State.Fail.value;
+    }
+
+    private boolean getUpdateCustomer(HttpServletRequest request, HttpServletResponse response) {
+        String data[] = request.getRequestURI().split("/");
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("ID")) {
+                int UserId = Integer.parseInt(data[i + 1]);
+                CustomerDAO customerDAO = new CustomerDAO();
+                Customer customer = customerDAO.getCustomerByUserId(UserId);
+                request.setAttribute("CustomerUpdate", customer);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean getUpdateEmployee(HttpServletRequest request, HttpServletResponse response) {
+        String data[] = request.getRequestURI().split("/");
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("ID")) {
+                int UserId = Integer.parseInt(data[i + 1]);
+                EmployeeDAO employeeDAO = new EmployeeDAO();
+                Employee employee = employeeDAO.getEmployeeByUserId(UserId);
+                if (employee.getRole().getName().equals("Admin")) {
+                    System.out.println("Can't update Admin");
+                    return false;
+                }
+                request.setAttribute("EmployeeUpdate", employee);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean getUpdateBrand(HttpServletRequest request) {
+        String data[] = request.getRequestURI().split("/");
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("ID")) {
+                int brandId = Integer.parseInt(data[i + 1]);
+                BrandDAO brDAO = new BrandDAO();
+                Brand brand = brDAO.getBrand(brandId);
+                request.setAttribute("BrandUpdate", brand);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private int searchImport(HttpServletRequest request) {
         AdminDAO adDAO = new AdminDAO();
         ImportDAO ipDAO = new ImportDAO();
@@ -946,6 +1096,43 @@ public class AdminController extends HttpServlet {
         request.setAttribute("page", page);
         request.setAttribute("numberOfPage", numberOfPage);
         request.setAttribute("productList", productList);
+        request.setAttribute("search", search);
+
+        return State.Success.value;
+    }
+
+    private int searchBrand(HttpServletRequest request) {
+        String URI = request.getRequestURI();
+        String data[] = URI.split("/");
+        int page = 1;
+        int rows = 20;
+        String search = request.getParameter("txtSearch");
+        BrandDAO bDAO = new BrandDAO();
+
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals("page")) {
+                page = Integer.parseInt(data[i + 1]);
+            }
+        }
+        if (search == null || search.equals("")) {
+            search = "%";
+        } else {
+            search = "%" + search + "%";
+        }
+        List<Brand> brandList;
+        try {
+            brandList = bDAO.searchBrand(search);
+        } catch (BrandNotFoundException ex) {
+            request.setAttribute("exceptionType", "BrandNotFoundException");
+            return State.Fail.value;
+        }
+
+        int numberOfPage = (brandList.size() / rows) + (brandList.size() % rows == 0 ? 0 : 1);
+        brandList = Generator.pagingList(brandList, page, rows);
+
+        request.setAttribute("page", page);
+        request.setAttribute("numberOfPage", numberOfPage);
+        request.setAttribute("brandList", brandList);
         request.setAttribute("search", search);
 
         return State.Success.value;
@@ -1048,7 +1235,7 @@ public class AdminController extends HttpServlet {
         request.setAttribute("Search", Search);
     }
 
-    private void adminActivityLog(HttpServletRequest request, HttpServletResponse response) {
+    private void adminActivityLog(HttpServletRequest request) {
         String URI = request.getRequestURI();
         String data[] = URI.split("/");
         int page = 1;
@@ -1079,7 +1266,7 @@ public class AdminController extends HttpServlet {
         request.setAttribute("Search", Search);
     }
 
-    private void orderManagerActivityLog(HttpServletRequest request, HttpServletResponse response) {
+    private void orderManagerActivityLog(HttpServletRequest request) {
         String URI = request.getRequestURI();
         String data[] = URI.split("/");
         int page = 1;
@@ -1097,19 +1284,19 @@ public class AdminController extends HttpServlet {
             Search = "%";
         }
 
-        List<Order> adminActivityLogsFromSearch = orderDAO.searchOrderActivityLog(Search);
-        List<Order> listOrderActivityLogs = Generator.pagingList(adminActivityLogsFromSearch, page, rows);
+        List<Order> orderActivityLogsFromSearch = orderDAO.searchOrderActivityLog(Search);
+        List<Order> listOrderActivityLogs = Generator.pagingList(orderActivityLogsFromSearch, page, rows);
 
         final int ROWS = 20;
-        int NumberOfPage = adminActivityLogsFromSearch.size() / ROWS;
-        NumberOfPage = (adminActivityLogsFromSearch.size() % ROWS == 0 ? NumberOfPage : NumberOfPage + 1);
+        int NumberOfPage = orderActivityLogsFromSearch.size() / ROWS;
+        NumberOfPage = (orderActivityLogsFromSearch.size() % ROWS == 0 ? NumberOfPage : NumberOfPage + 1);
         request.setAttribute("page", page);
         request.setAttribute("numberOfPage", NumberOfPage);
         request.setAttribute("listActivityLogs", listOrderActivityLogs);
         request.setAttribute("Search", Search);
     }
 
-    private void inventoryManagerActivityLog(HttpServletRequest request, HttpServletResponse response) {
+    private void inventoryManagerActivityLog(HttpServletRequest request) {
         String URI = request.getRequestURI();
         String data[] = URI.split("/");
         int page = 1;
@@ -1612,6 +1799,36 @@ public class AdminController extends HttpServlet {
         return State.Fail.value;
     }
 
+    private int updateBrand(HttpServletRequest request) {
+        try {
+            BrandDAO brDAO = new BrandDAO();
+            int id = Integer.parseInt(request.getParameter("txtBrandID"));
+            String brandName = request.getParameter("txtBrandName");
+            //Make the response redirect to the right Id
+            request.setAttribute("errorBrandId", id);
+            Brand brand = new Brand();
+            brand.setId(id);
+            brand.setName(brandName);
+
+            brDAO.updateBrand(brand);
+
+            System.out.println("Update voucher successfully!");
+            return State.Success.value;
+        } catch (NumberFormatException e) {
+            //Default exception
+            System.out.println("NumberFormatException:" + e.getMessage());
+            request.setAttribute("exceptionType", "");
+        } catch (BrandNotFoundException ex) {
+            request.setAttribute("exceptionType", "BrandNotFoundException");
+        } catch (OperationEditFailedException ex) {
+            request.setAttribute("exceptionType", "OperationEditFailedException");
+        } catch (Exception ex) {
+            //Default exception
+            request.setAttribute("exceptionType", "");
+        }
+        return State.Fail.value;
+    }
+
     private int restoreProduct(HttpServletRequest request, HttpServletResponse response) {
         // Admin/Restore/ID/1
         String path = request.getRequestURI();
@@ -1697,92 +1914,6 @@ public class AdminController extends HttpServlet {
             return;
         }
         System.out.println("Restore User with ID: " + userId + " successfully!");
-    }
-
-    private int getUpdateProduct(HttpServletRequest request, HttpServletResponse response) {
-        ProductDAO pDAO = new ProductDAO();
-        try {
-            String data[] = request.getRequestURI().split("/");
-            for (int i = 0; i < data.length; i++) {
-                if (data[i].equals("ID")) {
-                    int ProductID = Integer.parseInt(data[i + 1]);
-                    Product pd = pDAO.getProduct(ProductID);
-                    if (pd != null) {
-                        request.setAttribute("ProductUpdate", pd);
-                        return State.Success.value;
-                    }
-                }
-            }
-        } catch (NumberFormatException e) {
-            request.setAttribute("exceptionType", "");
-            return State.Fail.value;
-        } catch (ProductNotFoundException ex) {
-            request.setAttribute("exceptionType", "ProductNotFoundException");
-            return State.Fail.value;
-        }
-
-        request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.ProductNotFoundException.toString());
-        return State.Fail.value;
-    }
-
-    private int getUpdateVoucher(HttpServletRequest request) {
-        VoucherDAO vDAO = new VoucherDAO();
-        try {
-            String data[] = request.getRequestURI().split("/");
-            for (int i = 0; i < data.length; i++) {
-                if (data[i].equals("ID")) {
-                    int vId = Integer.parseInt(data[i + 1]);
-                    Voucher v = vDAO.getVoucher(vId);
-                    if (v != null) {
-                        List<Integer> approvedProductId = vDAO.getAllApprovedProductIdByVoucherId(vId);
-                        System.out.println(approvedProductId);
-                        request.setAttribute("VoucherUpdate", v);
-                        request.setAttribute("ApprovedProductId", approvedProductId);
-                        return State.Success.value;
-                    }
-                }
-            }
-        } catch (NumberFormatException e) {
-            request.setAttribute("exceptionType", "");
-            return State.Fail.value;
-        }
-
-        request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.ProductNotFoundException.toString());
-        return State.Fail.value;
-    }
-
-    private boolean getUpdateCustomer(HttpServletRequest request, HttpServletResponse response) {
-        String data[] = request.getRequestURI().split("/");
-        for (int i = 0; i < data.length; i++) {
-            if (data[i].equals("ID")) {
-                int UserId = Integer.parseInt(data[i + 1]);
-                CustomerDAO customerDAO = new CustomerDAO();
-                Customer customer = customerDAO.getCustomerByUserId(UserId);
-                request.setAttribute("CustomerUpdate", customer);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private boolean getUpdateEmployee(HttpServletRequest request, HttpServletResponse response) {
-        String data[] = request.getRequestURI().split("/");
-        for (int i = 0; i < data.length; i++) {
-            if (data[i].equals("ID")) {
-                int UserId = Integer.parseInt(data[i + 1]);
-                EmployeeDAO employeeDAO = new EmployeeDAO();
-                Employee employee = employeeDAO.getEmployeeByUserId(UserId);
-                if (employee.getRole().getName().equals("Admin")) {
-                    System.out.println("Can't update Admin");
-                    return false;
-                }
-                request.setAttribute("EmployeeUpdate", employee);
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private int updateImportInformation(HttpServletRequest request) {
@@ -1979,7 +2110,7 @@ public class AdminController extends HttpServlet {
         return true;
     }
 
-    // // ---------------------------- DELETE SECTION ----------------------------
+    // ---------------------------- DELETE SECTION ----------------------------
     private int deleteProduct(HttpServletRequest request, HttpServletResponse response) {
         // Admin/Delete/ID/1
         String path = request.getRequestURI();
@@ -2029,7 +2160,7 @@ public class AdminController extends HttpServlet {
         return State.Success.value;
     }
 
-    private void deleteUser(HttpServletRequest request, HttpServletResponse response) {
+    private void deleteUser(HttpServletRequest request) {
         // Admin/User/Delete/ID/1/currentUsername
         String path = request.getRequestURI();
         String data[] = path.split("/");
@@ -2071,6 +2202,45 @@ public class AdminController extends HttpServlet {
         System.out.println("Deactivated User with ID: " + userId + " successfully!");
     }
 
+//    private int deleteBrand(HttpServletRequest request) {
+//
+//        try {
+//            // Admin/Delete/ID/1
+//            String path = request.getRequestURI();
+//            String data[] = path.split("/");
+//            BrandDAO brDAO = new BrandDAO();
+//            String brandId = null;
+//            for (int i = 0; i < data.length; i++) {
+//                if (data[i].equals("ID")) {
+//                    brandId = data[i + 1];
+//                }
+//            }
+//            if (brandId == null) {
+//                throw new BrandNotFoundException();
+//            }
+//            Brand brand = brDAO.getBrand(Integer.parseInt(brandId));
+//            if (brand == null) {
+//                throw new BrandNotFoundException();
+//            }
+//
+//            brDAO.deleteBrand(brand);
+//        } catch (NumberFormatException e) {
+//            // default exception
+//            request.setAttribute("exceptionType", "");
+//            return State.Fail.value;
+//        } catch (BrandNotFoundException ex) {
+//            request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.BrandNotFoundException.toString());
+//            return State.Fail.value;
+//        } catch (OperationEditFailedException ex) {
+//            request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.OperationEditFailedException.toString());
+//            return State.Fail.value;
+//        } catch (OperationDeleteBrandFailedCauseOfExistedProduct ex) {
+//            request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.OperationDeleteBrandFailedCauseOfExistedProduct.toString());
+//            return State.Fail.value;
+//        }
+//
+//        return State.Success.value;
+//    }
     private int deleteImportDetail(HttpServletRequest request) {
         ImportDAO ipDAO = new ImportDAO();
         AdminDAO adDAO = new AdminDAO();
