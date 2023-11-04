@@ -418,7 +418,7 @@
             </ul>
           </div>
           <div>
-            <h2>chính sách bán hàng</h2>
+            <h2>Chính sách bán hàng</h2>
             <ul>
               <li><a href="">phương thức vận chuyển</a></li>
               <li><a href="">câu hỏi thường gặp</a></li>
@@ -428,7 +428,7 @@
             </ul>
           </div>
           <div>
-            <h2>thông tin chung</h2>
+            <h2>Thông tin chung</h2>
             <ul>
               <li><a href="">giới thiệu</a></li>
               <li><a href="">blog</a></li>
