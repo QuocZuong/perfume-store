@@ -57,6 +57,7 @@
                 height: 50px;
             }
         </style>
+        <script src="/RESOURCES/inventoryManager/Product/public/js/list.js"></script>
 
 
     </head>
@@ -108,7 +109,7 @@
                                         <td class="<%= pd.isActive() ? " " : "faded"%>"><%= bDAO.getBrand(pd.getBrandId()).getName()%></td>
                                         <td class="<%= pd.isActive() ? " " : "faded"%>"><img src="<%= pd.getImgURL()%>" alt="<%= pd.getName()%>"/></td>
                                         <td class="<%= pd.isActive() ? " " : "faded"%>">
-                                            <input type="number" min="1" name="txtQuantity<%=pd.getId()%>" id="txtQuantity<%=pd.getId()%>">
+                                            <input type="number" min="1" name="<%= "txtQuantity" + pd.getId()%>" id="<%="txtQuantity" + pd.getId()%>">
                                         </td>
                                         <td class="<%= pd.isActive() ? " " : "faded"%>">
                                             <a id="ImportClick<%= pd.getId()%>" href="/InventoryManager/ProductImport/ProductID/<%= pd.getId()%>" class="<%= pd.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0 import-click">Add to import cart</a>
@@ -151,7 +152,7 @@
                 SearchURL = encodeURIComponent(SearchURL);
                 document.getElementById("Search").href = "/InventoryManager/Product/List/page/1?txtSearch=" + SearchURL;
             }
-            
+
             $(".import-click").on("click", function () {
                 let selectedId = this.id;
                 selectedId = selectedId.replace("ImportClick", "");
@@ -160,13 +161,12 @@
                 if (quantity === null || quantity === "") {
                     quantity = 1;
                 }
-                this.href = this.href + "/Quantity/"+quantity+"/";
+                this.href = this.href + "/Quantity/" + quantity + "/";
             });
         </script>
         <script
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>
-        <script src="/RESOURCES/admin/product/public/js/list.js"></script>
     </body>
 </html>

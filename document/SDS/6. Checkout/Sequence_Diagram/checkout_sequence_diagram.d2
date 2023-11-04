@@ -1,0 +1,93 @@
+vars: {
+  page-name: Checkout page
+  controller-name: CustomerController
+  cus-dao: cusDAO:CustomerDAO
+  ci-dao: ciDAO:CartItemDAO
+  v-dao: vDAO:VoucherDAO
+  od-dao: odDAO:OrderDAO
+}
+
+label.style.font-color: black
+
+classes: {
+  text-black: {
+    style: {
+      font-color: black
+    }
+  }
+
+  return arrow: {
+    style: {
+      stroke-dash: 3
+      stroke: black
+      font-color: black
+    }
+  }
+
+  frame: {
+    style: {
+      fill: '#EAEDF0'
+      stroke-width: 1
+    }
+  }
+
+  label right: {
+    style.font-color: black
+  }
+}
+
+shape: sequence_diagram
+
+Customer: {
+  shape: image
+  width: 50
+  height: 60
+  icon: https://i.imgur.com/xixpu1z.png
+}
+
+page: ${page-name}
+controller: ${controller-name}
+cusDAO: ${cus-dao}
+ciDAO: ${ci-dao}
+vDAO: ${v-dao}
+odDAO: ${od-dao}
+
+db: DB {
+  width: 100
+  height: 50
+  shape: cylinder
+}
+
+Customer -> page.view: 1. Fill all checkout page attribute and\n click on checkout button {class: text-black}
+page.view -> controller.doPost: 2. doPost() {class: text-black}
+controller.doPost -> controller.doPost.customerCheckout: 3. customerCheckout() {class: label right}
+controller.doPost.customerCheckout -> cusDAO.getCustomer: 4. getCustomer() {class: text-black}
+cusDAO.getCustomer -> db.query: 5. executeQuery() {class: text-black}
+cusDAO.getCustomer <- db.query: 6. return result {class: return arrow}
+
+alt: {
+  customer = null: {
+    controller.doPost.customerCheckout <- cusDAO.getCustomer: 7. return null {class: return arrow}
+    page.view <- controller.doPost: 7.1. return checkout error {class: return arrow}
+    Customer <- page.view: 7.2. return checkout error {class: return arrow}
+  }
+  else: {
+    controller.doPost.customerCheckout <- cusDAO.getCustomer: 8. return customer {class: return arrow}
+    controller.doPost.customerCheckout -> ciDAO.getAllCartItemOfCustomer: 9. getAllCartItemOfCustomer() {class: text-black}
+    ciDAO.getAllCartItemOfCustomer -> db.query: 10. executeQuery() {class: text-black}
+    ciDAO.getAllCartItemOfCustomer <- db.query: 11. return result {class: return arrow}
+    controller.doPost.customerCheckout <- ciDAO.getAllCartItemOfCustomer: 12. return cart items of customer {class: text-black}
+    controller.doPost.customerCheckout -> vDAO.getVoucer: 13. getVoucher() {class: text-back}
+    vDAO.getVoucer -> db.query: 14. executeQuery() {class: text-black}
+    vDAO.getVoucer <- db.query: 15. return result {class: return arrow}
+    controller.doPost.customerCheckout <- vDAO.getVoucer: 16. return voucher {class: return arrow}
+    controller.doPost.customerCheckout -> odDAO.addOrder: 17. addOrder() {class: text-black}
+    odDAO.addOrder -> db.query: 18. executeQuery() {class: text-black}
+    odDAO.addOrder <- db.query: 19. return result {class: return arrow}
+    controller.doPost.customerCheckout <- odDAO.addOrder: 20. return add order result {class: return arrow}
+    page.view <- controller.doPost: 21. return add order status {class: return arrow}
+    Customer <- page.view: 22. return add order status {class: return arrow}
+  }
+}
+
+alt.class: frame

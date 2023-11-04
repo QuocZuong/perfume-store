@@ -5,11 +5,10 @@ let ProductMaxQuantityInputs = document.querySelectorAll("span.ProductMaxQuantit
 
 for (let i = 0; i < ProductQuantInputs.length; i++) {
     ProductQuantInputs[i].addEventListener("input", function () {
-        console.log(ProductMaxQuantityInputs[i].innerText);
-        if (ProductQuantInputs[i].value > parseInt(ProductMaxQuantityInputs[i].innerText)) {
-            ProductQuantInputs[i].value = parseInt(ProductMaxQuantityInputs[i].innerText);
-        }
-        if (ProductQuantInputs[i].value < 1 && ProductQuantInputs[i].value !== "") {
+//        if (ProductQuantInputs[i].value > parseInt(ProductMaxQuantityInputs[i].value)) {
+//            ProductQuantInputs[i].value = parseInt(ProductMaxQuantityInputs[i].value);
+//        }
+        if (ProductQuantInputs[i].value < 1) {
             ProductQuantInputs[i].value = 1;
         }
     });
