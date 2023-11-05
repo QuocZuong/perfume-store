@@ -1,0 +1,497 @@
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Josefin Sans", sans-serif;
+  text-align: center;
+}
+
+body::-webkit-scrollbar {
+  width: 10px;
+}
+
+body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.container {
+  width: 100vw;
+  margin: 0;
+}
+
+h1 {
+  min-width: 200px;
+}
+
+.header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: #ffffff;
+  width: 100%;
+  height: 525px;
+}
+
+.header h1 {
+  padding-top: 53vh;
+  font-size: 7vw;
+  margin-bottom: 10px;
+  z-index: 1;
+}
+
+.header h2,
+.header button {
+  z-index: 1;
+  margin: 0;
+}
+
+.header button {
+  margin: 5rem 0;
+  border: none;
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.6);
+  padding: 10px 30px 5px 30px;
+  font-size: 1.1rem;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  width: 100%;
+  border-bottom: 1px solid black;
+}
+
+.nav ul {
+  float: left;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding-left: 2rem;
+}
+
+.nav li a {
+  font-size: 1.2rem;
+  margin: 0 10px;
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+  transition: border-bottom 0.3s ease-in-out;
+  color: black;
+  list-style-type: none;
+  text-decoration: none;
+}
+
+.nav li a:first-child {
+  border-bottom: 1px solid transparent;
+}
+
+.nav li a:hover {
+  border-bottom: 1px solid black;
+  transition: border-bottom 0.3s ease-in-out;
+}
+
+.nav a {
+  margin-left: -290px;
+}
+
+.nav .account {
+  display: flex;
+  align-items: center;
+  padding-right: 2rem;
+
+}
+
+.nav .account a {
+  margin: 0 10px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.main {
+  display: flex;
+  margin-top: 100px;
+
+
+}
+
+.main .left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-left: 70px;
+  width: 20%;
+  text-align: left;
+}
+
+.main .left h1 {
+  font-size: 2rem;
+}
+
+.main .left .list ul {
+  font-size: 1.2rem;
+  padding: 0;
+  margin-top: 40px;
+}
+
+.main .left .list ul li {
+  list-style-type: none;
+  font-size: 1.5rem;
+}
+
+
+.main .left .list ul li a {
+  color: black;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-bottom 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+
+.main .left .list ul li a:hover {
+  border-bottom: 1px solid black;
+  transition: border-bottom 0.3s ease-in-out;
+  font-weight: bold;
+}
+
+.main .right {
+  width: 80%;
+  margin-top: 100px;
+  max-width: 1500px;
+}
+
+.main .right strong {
+  font-family: sans-serif;
+  font-weight: 400;
+}
+
+.main .right p {
+  font-size: 1.2rem;
+}
+
+.main .right p a {
+  text-decoration: none;
+}
+
+.main .right .order-page {
+  font-size: 1.2rem;
+  text-align: left;
+  display: none;
+}
+
+.main .right .order-page table thead tr th {
+  min-width: 125px;
+}
+
+.main .right .order-page table thead tr th:first-child {
+  min-width: 35px;
+}
+
+.main .right .order-page table tbody tr td {
+  word-break: break-word;
+}
+
+.main .right .order-page table tbody tr td a{
+  text-decoration: none;
+}
+
+.main .right .order-page img {
+  width: 100px;
+  height: 100px;
+}
+
+.main .right .address-page {
+  text-align: left;
+  display: none;
+}
+
+.main .right .address-page .default {
+  width: 50%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.main .right .address-page .default a {
+  text-decoration: none;
+}
+
+.main .right .address-page .address p {
+  margin: 0;
+}
+
+.main .right .address-page .default form select {
+  border-color: rgb(222, 226, 230);
+  transition: border-color 0.2s ease;
+}
+
+.main .right .address-page .default form select:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: black;
+}
+
+.main .right .address-page .default form input[type="text"] {
+  height: 40px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  padding-left: .6rem;
+}
+
+.main .right .address-page form {
+  width: 700px;
+  text-align: left;
+}
+
+.main .right .address-page form button h4 {
+  padding-top: .5rem;
+}
+
+.main .right .address-page form button[type="submit"] {
+  margin-top: 20px;
+  background-color: transparent;
+  padding: 5px 20px 3px 20px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  font-size: 1.3rem;
+  transition: background-color 0.3s ease;
+}
+
+.main .right .address-page form button[type="submit"]:hover {
+  border-color: black;
+}
+
+.main .right .manager-page {
+  display: none;
+  height: 600px;
+}
+
+.main .right .info-page {
+  display: none;
+}
+
+.main .right .info-page form {
+  width: 700px;
+  text-align: left;
+}
+
+.main .right .info-page form button {
+  margin-top: 30px;
+  background-color: transparent;
+  padding: 5px 20px 3px 20px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  font-size: 1.3rem;
+}
+
+.main .right .info-page form button:hover {
+  border: 1px solid black;
+}
+
+.main .right .info-page input {
+  height: 40px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.main .right .info-page .fullname {
+  display: flex;
+  justify-content: space-between;
+}
+
+.main .right .info-page .fullname div {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.main .right .info-page .fullname div input {
+  width: 100%;
+}
+
+.main .right .info-page .display-name {
+  margin: 20px 0;
+  text-align: left;
+  width: 100%;
+}
+
+.main .right .info-page .display-name input {
+  width: 100%;
+}
+
+.main .right .info-page .email {
+  margin: 20px 0;
+  text-align: left;
+  width: 100%;
+}
+
+.main .right .info-page .email input {
+  width: 100%;
+}
+
+.main .right .info-page fieldset {
+  border: 1px solid black;
+  padding: 10px;
+  text-align: left;
+}
+
+.main .right .info-page fieldset legend {
+  font-weight: bold;
+  margin-bottom: 10px;
+  float: none;
+  width: 190px;
+}
+
+.main .right .info-page fieldset input {
+  width: 100%;
+  margin-top: 5px;
+}
+
+.main .right .info-page legend {
+  font-weight: bold;
+  margin-bottom: 10px;
+  /* Add more styles as desired */
+}
+
+
+
+.main .right .info-page {
+}
+
+.main .right .info-page {
+}
+
+.main .right .info-page {
+}
+
+.register {
+  text-align: center;
+  margin: 100px 0 100px 0;
+  background-color: #fffcfc;
+  padding: 100px 0;
+}
+
+.register h1 {
+  font-size: 3vw;
+  min-width: 300px;
+}
+
+.register p {
+  font-size: 2vw;
+}
+
+.register input {
+  border: none;
+  border-bottom: 1px solid black;
+  margin-right: 20px;
+  padding-right: 70px;
+  outline: none;
+}
+
+.register button {
+  margin-right: 20px;
+  background-color: transparent;
+  outline: none;
+  cursor: pointer;
+  border: 1px solid black;
+  padding: 7px 70px 1px 70px;
+  border-radius: 2px;
+}
+
+.register button:hover {
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+.social {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.social a+a {
+  margin-left: 7px;
+}
+
+.social img {
+  height: 32px;
+}
+
+.footer {
+  text-align: center;
+  display: flex;
+  background-color: black;
+  padding: 70px 0 50px 0;
+  justify-content: center;
+}
+
+.footer div {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.footer div:nth-child(1) {
+  margin-right: 110px;
+  margin-left: 80px;
+}
+
+.footer div:nth-child(2) {
+  margin-right: 80px;
+}
+
+.footer ul {
+  padding: 0;
+
+}
+
+.footer h2 {
+  color: #fff;
+  font-size: 3vw;
+
+}
+
+.footer li {
+  list-style-type: none;
+  margin: 5px 0;
+}
+
+.footer a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.5vw;
+  width: 100%;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+  text-decoration-color: white;
+  transition: text-decoration 0.3s ease-in-out;
+}
+
+.copyright {
+  margin-top: 25px;
+}
+
+.copyright p {
+  font-size: 1.2rem;
+}
+
+@media screen and (max-width: 700px) {
+  h1 {
+    font-size: 100px;
+  }
+}

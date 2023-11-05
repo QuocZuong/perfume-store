@@ -266,16 +266,22 @@
                 //                $.validator.addMethod("regex", function (value, regex) {
                 //                    return regex.test(value);
                 //                }, "Wrong input.");
+                $.validator.addMethod("atLeastOneLetter", function (value, element) {
+                    // Use a regular expression to check if the value contains at least one alphabet letter
+                    return /[A-Za-z]/.test(value);
+                }, "Phải có ký tự chữ cái.");
 
                 $("#addEmployee").validate({
                     rules: {
                         txtName: {
                             required: true,
                             maxlength: 50,
+                            atLeastOneLetter: true
                         },
                         txtUsername: {
                             required: true,
                             maxlength: 50,
+                            atLeastOneLetter: true
                         },
                         txtPassword: {
                             required: true,
@@ -288,7 +294,9 @@
                         },
                         txtCitizenId: {
                             required: true,
-                            maxlength: 20,
+                            digits: true,
+                            minlength: 9,
+                            maxlength: 20
                         },
                         txtDOB: {
                             required: true,
@@ -310,10 +318,14 @@
                         txtName: {
                             required: "Tên không được để trống.",
                             maxlength: "Tên không được vượt quá 50 ký tự.",
+                            atLeastOneLetter: "Tên không hợp lệ."
+
                         },
                         txtUsername: {
                             required: "Tên đăng nhập không được để trống.",
                             maxlength: "Tên đăng nhập không được vượt quá 50 ký tự.",
+                            atLeastOneLetter: "Username không hợp lệ."
+
                         },
                         txtPassword: {
                             required: "Mật khẩu không được để trống.",
@@ -326,7 +338,9 @@
                         },
                         txtCitizenId: {
                             required: "Số CMND không được để trống.",
-                            maxlength: "Số CMND không được vượt quá 20 ký tự.",
+                            digits: "Số CMND không hợp lệ",
+                            minlength: "Số CMND phải có ít nhất 9 ký tự.",
+                            maxlength: "Số CMND không được vượt quá 20 ký tự."
                         },
                         txtDOB: {
                             required: "Ngày tháng năm sinh không được để trống",

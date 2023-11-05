@@ -5,11 +5,10 @@ let ProductMaxQuantityInputs = document.querySelectorAll("span.ProductMaxQuantit
 
 for (let i = 0; i < ProductQuantInputs.length; i++) {
     ProductQuantInputs[i].addEventListener("input", function () {
-        console.log(ProductMaxQuantityInputs[i].innerText);
-        if (ProductQuantInputs[i].value > parseInt(ProductMaxQuantityInputs[i].innerText)) {
-            ProductQuantInputs[i].value = parseInt(ProductMaxQuantityInputs[i].innerText);
-        }
-        if (ProductQuantInputs[i].value < 1 && ProductQuantInputs[i].value !== "") {
+//        if (ProductQuantInputs[i].value > parseInt(ProductMaxQuantityInputs[i].value)) {
+//            ProductQuantInputs[i].value = parseInt(ProductMaxQuantityInputs[i].value);
+//        }
+        if (ProductQuantInputs[i].value < 1) {
             ProductQuantInputs[i].value = 1;
         }
     });
@@ -32,6 +31,57 @@ for (let i = 0; i < ProductCostInputs.length; i++) {
         }
     });
 }
+
+// Dropdown product button for admin
+const dropdownProductBtn = document.querySelector("#product-dropdown-btn");
+
+const dropdownProductList = document.querySelector("#product-dropdown-btn + ul");
+
+
+dropdownProductBtn.addEventListener('click', function () {
+  dropdownProductList.classList.toggle("drop-down-show");
+});
+
+
+// If clicked outside when the dropdown is active, deactivate it.
+document.addEventListener('click', function (event) {
+
+  if (dropdownProductList.classList.contains("drop-down-show")) {
+    if (isClickedOutside(event, "#product-dropdown-btn") && isClickedOutside(event, "#product-dropdown-btn + ul")) {
+      dropdownProductList.classList.toggle("drop-down-show");
+    }
+  }
+
+});
+
+function isClickedOutside(event, element) {
+  if (event.target.closest(element)) {
+    return false;
+  }
+
+  return true;
+}
+
+// Hide/Show div depending on button clicked
+
+const accountLinks = document.querySelectorAll('.account-link');
+
+accountLinks.forEach((link) => {
+  link.addEventListener('click', (e) => {
+    console.log("clicked");
+
+    const targetPage = link.getAttribute('data-page');
+    if (targetPage === "manager-page") {
+      hideAllPage();
+      currentActiveLink = showPage(1, currentActiveLink);
+    }
+    if (targetPage === "info-page") {
+      hideAllPage();
+      currentActiveLink = showPage(2, currentActiveLink);
+    }
+  });
+});
+
 
 
 const buttons = document.querySelectorAll(".btnDropDown");

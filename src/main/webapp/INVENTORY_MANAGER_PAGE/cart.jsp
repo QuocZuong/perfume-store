@@ -108,11 +108,11 @@
                                                     <td>
                                                         <h4>Quantity</h4>
                                                         <span>
-                                                            <input type="number" min="1" name="<%= "ProductQuan" + pageContext.getAttribute("i")%>" value="<%= CartQuan%>" /> 
+                                                            <input type="number" min="1" name="<%= "ProductQuan" + pageContext.getAttribute("i")%>" id="<%= "ProductQuan" + pageContext.getAttribute("i")%>" value="<%= CartQuan%>"/> 
                                                         </span>
                                                         <h4>Cost</h4>
                                                         <span>
-                                                            <input type="number" min="0" name="<%= "ProductCost" + pageContext.getAttribute("i")%>" value="<%= CartCost%>" /> 
+                                                            <input type="number" min="0" name="<%= "ProductCost" + pageContext.getAttribute("i")%>" id="<%= "ProductCost" + pageContext.getAttribute("i")%>" value="<%= CartCost%>" /> 
                                                         </span>
                                                         <a href="/InventoryManager/ImportCart/Delete/ProductID/<%= p.getId()%>/InventoryManagerID/<%=ivtrManaId%>">
                                                             <img src="/RESOURCES/images/icons/close.png" alt="" />
@@ -342,7 +342,7 @@
                     }
                     return true;
                 }, "Vui lòng nhập đúng định dạng email");
-                
+
                 $("form[action='/home/subscribe']").validate({
                     rules: {
                         txtEmailSubscribe: {
@@ -356,14 +356,14 @@
                             email: "Vui lòng nhập đúng định dạng email"
                         }
                     },
-                    
+
                     errorPlacement: function (error, element) {
                         error.addClass("text-danger d-block mt-3");
                         error.insertAfter(element.next());
                     }
-                    
+
                 });
-                
+
                 $("#importCheckout").validate({
                     rules: {
                         txtSupplier: {
@@ -388,9 +388,26 @@
                         }
                     }
                 });
+                $("button[type='submit']").on("click", function () {
+            <c:if test='<%= listImportItem.size() > 0%>'>
+                <c:forEach var="i" begin="0" end="<%= listImportItem.size() - 1%>">
+                    <%
+                        Product pd = pDAO.getProduct(listImportItem.get((int) pageContext.getAttribute("i")).getProductId());
+                    %>
+                    let oCost<%=pageContext.getAttribute("i")%> = <%= pd.getStock().getPrice()%>
+                    let cost<%=pageContext.getAttribute("i")%> = document.getElementById("ProductCost<%= pageContext.getAttribute("i")%>").value;
+                    if (cost<%=pageContext.getAttribute("i")%> < (oCost<%=pageContext.getAttribute("i")%> * 0.8) || cost<%=pageContext.getAttribute("i")%> > (oCost<%=pageContext.getAttribute("i")%> * 1.2)){
+                        var result = confirm("Sản phẩm <%= pd.getName()%> có giá <%= Converter.covertIntergerToMoney(pd.getStock().getPrice())%>, giá bạn nhập vào đang chênh lệch 20%. Bạn có chắc muốn nhập vào không?");
+                        if (result === false) {
+                            event.preventDefault();
+                        }
+                    }
+                </c:forEach>
+            </c:if>
+                });
             });
-            
-            
+
+
         </script>
 
         <script

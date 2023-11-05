@@ -11,6 +11,7 @@ import java.util.List;
 
 import DAOs.OrderDAO;
 import DAOs.ProductDAO;
+import DAOs.StockDAO;
 import DAOs.UserDAO;
 import DAOs.VoucherDAO;
 import Exceptions.AccountDeactivatedException;
@@ -19,9 +20,13 @@ import Exceptions.InvalidInputException;
 import Exceptions.InvalidVoucherException;
 import Exceptions.NoProductVoucherAppliedException;
 import Exceptions.NotEnoughInformationException;
+import Exceptions.NotEnoughProductQuantityException;
 import Exceptions.NotEnoughVoucherQuantityException;
+import Exceptions.OperationAddFailedException;
+import Exceptions.OperationEditFailedException;
 import Exceptions.ProductNotFoundException;
 import Exceptions.UsernameDuplicationException;
+import Exceptions.VoucherCodeDuplication;
 import Exceptions.VoucherNotFoundException;
 import Exceptions.WrongPasswordException;
 import Interfaces.DAOs.IUserDAO;
@@ -46,6 +51,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import Interfaces.DAOs.IOrderDAO;
 import Models.OrderDetail;
+import Models.Stock;
 
 public class CustomerController extends HttpServlet {
 
@@ -227,7 +233,7 @@ public class CustomerController extends HttpServlet {
             if (request.getParameter("btnUpdateAddress") != null
                     && request.getParameter("btnUpdateAddress").equals("Submit")) {
                 System.out.println("Going update address");
-                if (updateCustomerDeliveryAddress(request, response) > 0) {
+                if (updateCustomerDeliveryAddress(request) > 0) {
                     response.sendRedirect(CUSTOMER_USER_URI);
                 } else {
                     response.sendRedirect(CUSTOMER_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
@@ -269,7 +275,7 @@ public class CustomerController extends HttpServlet {
                     response.sendRedirect(CUSTOMER_ORDER_DETAIL_URI + "/" + (Integer) request.getAttribute("OrderID")
                             + (String) request.getAttribute("CheckOutSuccess"));
                 } else {
-                    response.sendRedirect(CUSTOMER_USER_URI + ExceptionUtils.generateExceptionQueryString(request));
+                    response.sendRedirect(CUSTOMER_CART_URI + ExceptionUtils.generateExceptionQueryString(request));
                 }
             }
         }
@@ -360,11 +366,11 @@ public class CustomerController extends HttpServlet {
             return State.Fail.value;
         }
 
-        final DeliveryAddressDAO daDao = new DeliveryAddressDAO();
-        final CustomerDAO cDao = new CustomerDAO();
+        final DeliveryAddressDAO daDAO = new DeliveryAddressDAO();
+        final CustomerDAO cDAO = new CustomerDAO();
 
         final DeliveryAddress da = new DeliveryAddress();
-        final int customerID = cDao.getCustomer(username).getCustomerId();
+        final int customerID = cDAO.getCustomer(username).getCustomerId();
 
         da.setCustomerId(customerID);
         da.setAddress(address);
@@ -376,17 +382,17 @@ public class CustomerController extends HttpServlet {
 
         // If the address is set to default, set all other addresses to non-default
         if (da.getStatus().equals("Default")) {
-            final List<DeliveryAddress> temp = daDao.getAll(customerID);
+            final List<DeliveryAddress> temp = daDAO.getAll(customerID);
 
             for (int i = 0; i < temp.size(); i++) {
                 if (temp.get(i).getStatus().equals("Default")) {
                     temp.get(i).setStatus("non");
-                    daDao.updateDeliveryAddress(temp.get(i));
+                    daDAO.updateDeliveryAddress(temp.get(i));
                 }
             }
         }
 
-        final int result = daDao.addDeliveryAddress(da) > 0 ? State.Success.value : State.Fail.value;
+        final int result = daDAO.addDeliveryAddress(da) > 0 ? State.Success.value : State.Fail.value;
 
         return result;
     }
@@ -659,13 +665,13 @@ public class CustomerController extends HttpServlet {
      * @param response The response object
      * @return 1 if the operation is successful, 0 otherwise
      */
-    private int updateCustomerDeliveryAddress(HttpServletRequest request, HttpServletResponse response) {
+    private int updateCustomerDeliveryAddress(HttpServletRequest request) {
         final Cookie userCookie = ((Cookie) request.getSession().getAttribute("userCookie"));
-        final CustomerDAO cDao = new CustomerDAO();
-        final DeliveryAddressDAO daDao = new DeliveryAddressDAO();
+        final CustomerDAO cDAO = new CustomerDAO();
+        final DeliveryAddressDAO daDAO = new DeliveryAddressDAO();
 
         final String username = userCookie.getValue();
-        final Customer c = cDao.getCustomer(username);
+        final Customer c = cDAO.getCustomer(username);
         final int customerID = c.getCustomerId();
 
         final String addressId = request.getParameter("txtAddressId");
@@ -732,7 +738,7 @@ public class CustomerController extends HttpServlet {
         }
 
         final DeliveryAddress da = new DeliveryAddress();
-        final DeliveryAddress existingDa = daDao.getDeliveryAdress(id);
+        final DeliveryAddress existingDa = daDAO.getDeliveryAdress(id);
 
         try {
             da.setId(id);
@@ -759,7 +765,7 @@ public class CustomerController extends HttpServlet {
         System.out.println("Status: " + da.getStatus());
         if (!da.getStatus().equals("Default")) {
             System.out.println("Checking if all addresses are non-default");
-            final List<DeliveryAddress> temp = daDao.getAll(customerID);
+            final List<DeliveryAddress> temp = daDAO.getAll(customerID);
             boolean isAllNonDefault = true;
 
             for (int i = 0; i < temp.size(); i++) {
@@ -780,7 +786,7 @@ public class CustomerController extends HttpServlet {
         }
 
         int result = State.Fail.value;
-        if (daDao.updateDeliveryAddress(da)) {
+        if (daDAO.updateDeliveryAddress(da)) {
             result = State.Success.value;
         }
 
@@ -791,14 +797,14 @@ public class CustomerController extends HttpServlet {
 
         // If the address is set to default, set all other addresses to non-default
         if (da.getStatus().equals("Default")) {
-            List<DeliveryAddress> temp = daDao.getAll(c.getCustomerId());
+            List<DeliveryAddress> temp = daDAO.getAll(c.getCustomerId());
 
             for (int i = 0; i < temp.size(); i++) {
                 DeliveryAddress tempDa = temp.get(i);
 
                 if (tempDa.getId() != da.getId() && tempDa.getStatus().equals("Default")) {
                     temp.get(i).setStatus("non");
-                    daDao.updateDeliveryAddress(temp.get(i));
+                    daDAO.updateDeliveryAddress(temp.get(i));
                 }
             }
         }
@@ -933,69 +939,70 @@ public class CustomerController extends HttpServlet {
 
     //
     private int customerCheckout(HttpServletRequest request) {
-        CartItemDAO ciDAO = new CartItemDAO();
-        ProductDAO pDAO = new ProductDAO();
-        OrderDAO oDAO = new OrderDAO();
-        CustomerDAO cusDAO = new CustomerDAO();
+        try {
 
-        Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
-        String username = currentUserCookie.getValue();
-        Customer cus = cusDAO.getCustomer(username);
+            CartItemDAO ciDAO = new CartItemDAO();
+            ProductDAO pDAO = new ProductDAO();
+            OrderDAO oDAO = new OrderDAO();
+            CustomerDAO cusDAO = new CustomerDAO();
 
-        if (cus == null) {
-            System.out.println("unknow customer to checkout");
-            request.setAttribute("exceptionType", "AccountNotFoundException");
-            return State.Fail.value;
-        }
+            Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
+            String username = currentUserCookie.getValue();
+            Customer cus = cusDAO.getCustomer(username);
 
-        int CustomerID = cus.getCustomerId();
-        List<CartItem> cartItemList = ciDAO.getAllCartItemOfCustomer(CustomerID);
-
-        if (cartItemList.isEmpty()) {
-            System.out.println("The cart is empty to checkout");
-            request.setAttribute("exceptionType", "OperationAddFailedException");
-            return State.Fail.value;
-        }
-
-        List<Product> outOfStockToCheckoutProduct = ciDAO.getAllOutOfStockProductFromCart(CustomerID);
-        if (!outOfStockToCheckoutProduct.isEmpty()) {
-            for (int i = 0; i < outOfStockToCheckoutProduct.size(); i++) {
-                System.out.println("Khong du so luong cua san pham:" + outOfStockToCheckoutProduct.get(i).getName());
+            if (cus == null) {
+                System.out.println("unknow customer to checkout");
+                request.setAttribute("exceptionType", "AccountNotFoundException");
+                return State.Fail.value;
             }
-            request.setAttribute("exceptionType", "NotEnoughProductQuantityException");
-            return State.Fail.value;
-        }
 
-        String newAddress = request.getParameter("txtNewAddress");
-        String newPhone = request.getParameter("txtNewPhone");
-        String Address = request.getParameter("txtAddress");
-        String Phone = request.getParameter("txtPhone");
+            int CustomerID = cus.getCustomerId();
+            List<CartItem> cartItemList = ciDAO.getAllCartItemOfCustomer(CustomerID);
 
-        if (newAddress != null && !newAddress.equals("")) {
-            Address = newAddress;
-        }
-        if (newPhone != null && !newPhone.equals("")) {
-            Phone = newPhone;
-        }
-        String receiverName = request.getParameter("txtReceiverName");
-        if (receiverName == null || receiverName.equals("")) {
-            System.out.println("Receiver name is null");
-            request.setAttribute("exceptionType", "OperationAddFailedException");
-            return State.Fail.value;
-        }
-        String Note = request.getParameter("txtNote");
-        if (Note == null) {
-            Note = "";
-        }
+            if (cartItemList.isEmpty()) {
+                System.out.println("The cart is empty to checkout");
+                request.setAttribute("exceptionType", "OperationAddFailedException");
+                return State.Fail.value;
+            }
 
-        String voucherCode = request.getParameter("txtVoucher");
-        // Co su dung voucher
-        Voucher v = null;
-        int voucherID = 0;
-        if (voucherCode != null && !voucherCode.equals("")) {
-            VoucherDAO vDAO = new VoucherDAO();
-            v = vDAO.getVoucher(voucherCode);
-            try {
+            List<Product> outOfStockToCheckoutProduct = ciDAO.getAllOutOfStockProductFromCart(CustomerID);
+            if (!outOfStockToCheckoutProduct.isEmpty()) {
+                for (int i = 0; i < outOfStockToCheckoutProduct.size(); i++) {
+                    System.out.println("Khong du so luong cua san pham:" + outOfStockToCheckoutProduct.get(i).getName());
+                }
+                request.setAttribute("exceptionType", "NotEnoughProductQuantityException");
+                return State.Fail.value;
+            }
+
+            String newAddress = request.getParameter("txtNewAddress");
+            String newPhone = request.getParameter("txtNewPhone");
+            String Address = request.getParameter("txtAddress");
+            String Phone = request.getParameter("txtPhone");
+
+            if (newAddress != null && !newAddress.equals("")) {
+                Address = newAddress;
+            }
+            if (newPhone != null && !newPhone.equals("")) {
+                Phone = newPhone;
+            }
+            String receiverName = request.getParameter("txtReceiverName");
+            if (receiverName == null || receiverName.equals("")) {
+                System.out.println("Receiver name is null");
+                request.setAttribute("exceptionType", "OperationAddFailedException");
+                return State.Fail.value;
+            }
+            String Note = request.getParameter("txtNote");
+            if (Note == null) {
+                Note = "";
+            }
+
+            String voucherCode = request.getParameter("txtVoucher");
+            // Co su dung voucher
+            Voucher v = null;
+            int voucherID = 0;
+            if (voucherCode != null && !voucherCode.equals("")) {
+                VoucherDAO vDAO = new VoucherDAO();
+                v = vDAO.getVoucher(voucherCode);
                 // Kiem tra tinh hop le va quang exception
                 if (vDAO.checkValidVoucher(v, cus.getCustomerId())) {
                     List<Product> approveVoucherProduct = new ArrayList<>();
@@ -1011,69 +1018,85 @@ public class CustomerController extends HttpServlet {
                     }
                 }
                 voucherID = v.getId();
-            } catch (VoucherNotFoundException ex) {
-                request.setAttribute("exceptionType", "VoucherNotFoundException");
-                Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);
-                return State.Fail.value;
 
-            } catch (InvalidVoucherException ex) {
-                request.setAttribute("exceptionType", "InvalidVoucherException");
-                Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);
-                return State.Fail.value;
-
-            } catch (NotEnoughVoucherQuantityException ex) {
-                request.setAttribute("exceptionType", "NotEnoughVoucherException");
-                Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);
-                return State.Fail.value;
-            } catch (ProductNotFoundException ex) {
-                request.setAttribute("exceptionType", "ProductNotFoundException");
-                return State.Fail.value;
             }
-        }
 
-        int Total = ciDAO.getCartTotal(cartItemList);
-        int sumDeductPrice = 0;
+            int Total = ciDAO.getCartTotal(cartItemList);
+            int sumDeductPrice = 0;
 
-        if (v != null) {
-            System.out.println("cus id add voucher:" + CustomerID);
-            Product p;
-            for (int i = 0; i < cartItemList.size(); i++) {
-                if (v.getApprovedProductId().contains(cartItemList.get(i).getProductId())) {
-                    try {
-                        p = pDAO.getProduct(cartItemList.get(i).getProductId());
-                    } catch (ProductNotFoundException ex) {
-                        request.setAttribute("exceptionType", "ProductNotFoundException");
-                        return State.Fail.value;
+            if (v != null) {
+                System.out.println("cus id add voucher:" + CustomerID);
+                Product p;
+                for (int i = 0; i < cartItemList.size(); i++) {
+                    if (v.getApprovedProductId().contains(cartItemList.get(i).getProductId())) {
+                        try {
+                            p = pDAO.getProduct(cartItemList.get(i).getProductId());
+                        } catch (ProductNotFoundException ex) {
+                            request.setAttribute("exceptionType", "ProductNotFoundException");
+                            return State.Fail.value;
+                        }
+                        sumDeductPrice += p.getStock().getPrice() * v.getDiscountPercent() / 100;
                     }
-                    sumDeductPrice += p.getStock().getPrice() * v.getDiscountPercent() / 100;
                 }
+                sumDeductPrice = (sumDeductPrice < v.getDiscountMax() ? sumDeductPrice : v.getDiscountMax());
+                System.out.println("sumdeducttprice:" + sumDeductPrice);
             }
-            sumDeductPrice = (sumDeductPrice < v.getDiscountMax() ? sumDeductPrice : v.getDiscountMax());
-            System.out.println("sumdeducttprice:" + sumDeductPrice);
-        }
 
-        long nowDate = Generator.getCurrentTimeFromEpochMilli();
+            long nowDate = Generator.getCurrentTimeFromEpochMilli();
 
-        boolean result = checkout(CustomerID, voucherID, receiverName, Address, Phone, Note, Total, sumDeductPrice,
-                nowDate, cartItemList);
+            boolean result = checkout(CustomerID, voucherID, receiverName, Address, Phone, Note, Total, sumDeductPrice,
+                    nowDate, cartItemList);
 
-        if (result == false) {
-            System.out.println("Khong thanh toan duoc");
+            if (result == false) {
+                System.out.println("Khong thanh toan duoc");
+                return State.Fail.value;
+            } else {
+                System.out.println("Thanh toan thanh cong");
+                request.setAttribute("OrderID",
+                        oDAO.getOrderByOrderId(DatabaseUtils.getLastIndentityOf("[Order]")).getId());
+                request.setAttribute("CheckOutSuccess", "?CheckOutSuccess=true");
+                ciDAO.deleteAllCartItemOfCustomer(CustomerID);
+                return State.Success.value;
+            }
+        } catch (VoucherNotFoundException ex) {
+            request.setAttribute("exceptionType", "VoucherNotFoundException");
+            Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);
             return State.Fail.value;
-        } else {
-            System.out.println("Thanh toan thanh cong");
-            request.setAttribute("OrderID",
-                    oDAO.getOrderByOrderId(DatabaseUtils.getLastIndentityOf("[Order]")).getId());
-            request.setAttribute("CheckOutSuccess", "?CheckOutSuccess=true");
-            ciDAO.deleteAllCartItemOfCustomer(CustomerID);
-            return State.Success.value;
-        }
 
+        } catch (InvalidVoucherException ex) {
+            request.setAttribute("exceptionType", "InvalidVoucherException");
+            Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);
+            return State.Fail.value;
+
+        } catch (NotEnoughVoucherQuantityException ex) {
+            request.setAttribute("exceptionType", "NotEnoughVoucherException");
+            Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);
+            return State.Fail.value;
+        } catch (ProductNotFoundException ex) {
+            request.setAttribute("exceptionType", "ProductNotFoundException");
+            return State.Fail.value;
+        } catch (NullPointerException ex) {
+            request.setAttribute("exceptionType", "");
+            return State.Fail.value;
+        } catch (OperationEditFailedException ex) {
+            request.setAttribute("exceptionType", "OperationEditFailedException");
+            return State.Fail.value;
+        } catch (NotEnoughProductQuantityException ex) {
+            request.setAttribute("exceptionType", "NotEnoughProductQuantityException");
+            return State.Fail.value;
+        } catch (OperationAddFailedException ex) {
+            request.setAttribute("exceptionType", "OperationAddFailedException");
+            return State.Fail.value;
+        } catch (VoucherCodeDuplication ex) {
+            request.setAttribute("exceptionType", "VoucherCodeDuplication");
+            return State.Fail.value;
+        }
     }
 
     public boolean checkout(int customerId, int voucherId, String orderReceiverName, String orderDeliveryAddress,
             String orderPhoneNumber, String orderNote, int orderTotal, int orderDeductPrice, long orderCreateAt,
-            List<CartItem> itemsCheckout) {
+            List<CartItem> itemsCheckout)
+            throws NullPointerException, OperationEditFailedException, NotEnoughProductQuantityException, OperationAddFailedException, VoucherCodeDuplication, NotEnoughVoucherQuantityException {
 
         Order od = new Order();
         od.setCustomerId(customerId);
@@ -1107,6 +1130,37 @@ public class CustomerController extends HttpServlet {
         od.setOrderDetailList(orderDetailList);
         OrderDAO odDAO = new OrderDAO();
         boolean result = odDAO.addOrder(od);
+
+        if (result) {
+            VoucherDAO voucherDAO = new VoucherDAO();
+            Voucher voucher = voucherDAO.getVoucher(od.getVoucherId());
+            if (voucher != null) {
+                if (voucher.getQuantity() == 0) {
+                    throw new NotEnoughVoucherQuantityException();
+                }
+                // Proceed to minus voucher quantity
+                voucher.setQuantity(voucher.getQuantity() - 1);
+                voucherDAO.updateVoucher(voucher);
+            }
+
+            List<OrderDetail> odList = od.getOrderDetailList();
+            StockDAO stkDAO = new StockDAO();
+            // Check if the quantity stock is less than the order detail
+            for (OrderDetail orderDetail : odList) {
+                Stock stk = stkDAO.getStock(orderDetail.getProductId());
+                if (stk.getQuantity() < orderDetail.getQuantity()) {
+                    throw new NotEnoughProductQuantityException();
+                }
+                // Proceed to minus the product
+                stk.setQuantity(stk.getQuantity() - orderDetail.getQuantity());
+                int rs = stkDAO.updateStock(stk);
+                if (rs < 1) {
+                    System.out.println("Update stock fail!");
+                    throw new OperationEditFailedException();
+                }
+            }
+        }
+
         return result;
     }
 
@@ -1134,12 +1188,12 @@ public class CustomerController extends HttpServlet {
         final Cookie currentUserCookie = (Cookie) request.getSession().getAttribute("userCookie");
         final String username = currentUserCookie.getValue();
 
-        final CustomerDAO cDao = new CustomerDAO();
-        final DeliveryAddressDAO daDao = new DeliveryAddressDAO();
-        final DeliveryAddress da = daDao.getDeliveryAdress(id);
+        final CustomerDAO cDAO = new CustomerDAO();
+        final DeliveryAddressDAO daDAO = new DeliveryAddressDAO();
+        final DeliveryAddress da = daDAO.getDeliveryAdress(id);
 
         System.out.println("Delete address with ID " + id);
-        boolean result = daDao.deleteDeliveryAddress(id);
+        boolean result = daDAO.deleteDeliveryAddress(id);
 
         if (!result) { // TODO: Show the error to the customer's screen
             System.out.println("Delete address failed");
@@ -1148,12 +1202,12 @@ public class CustomerController extends HttpServlet {
 
         // If the default address is deleted, set another address to default
         if (da.getStatus().equals("Default")) {
-            Customer c = cDao.getCustomer(username);
-            List<DeliveryAddress> temp = daDao.getAll(c.getCustomerId());
+            Customer c = cDAO.getCustomer(username);
+            List<DeliveryAddress> temp = daDAO.getAll(c.getCustomerId());
 
             if (!temp.isEmpty()) {
                 temp.get(0).setStatus("Default");
-                daDao.updateDeliveryAddress(temp.get(0));
+                daDAO.updateDeliveryAddress(temp.get(0));
             }
         }
 

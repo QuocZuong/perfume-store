@@ -1,0 +1,104 @@
+vars: {
+  page-name: PendingOrderListPage
+  controller-name: AdminController
+  oDAO-name: oDAO:OrderDAO
+  omDAO-name: omDAO:OrderManagerDAO
+  stkDAO-name: stkDAO:StockDAO
+  vDAO-name: vDAO:VoucherDAO
+}
+
+label.style.font-color: black
+
+classes: {
+  text-black: {
+    style: {
+      font-color: black
+    }
+  }
+
+  return arrow: {
+    style: {
+      stroke-dash: 3
+      stroke: black
+      font-color: black
+    }
+  }
+
+  frame: {
+    style: {
+      fill: '#EAEDF0'
+      stroke-width: 1
+    }
+  }
+
+  label right: {
+    style.font-color: black
+  }
+  ref: {
+    style.multiple: true
+  }
+}
+
+shape: sequence_diagram
+
+user: Order manager {
+  shape: image
+  width: 50
+  height: 60
+  icon: https://upload.wikimedia.org/wikipedia/commons/5/5b/Robustness_Diagram_Actor.svg
+}
+
+page: ${page-name}
+controller: ${controller-name}
+omDAO: ${omDAO-name}
+oDAO: ${oDAO-name}
+stkDAO: ${stkDAO-name}
+vDAO: ${vDAO-name}
+db: DB {
+  width: 100
+  height: 50
+  shape: cylinder
+}
+
+user -> page.view: 1. Order manager click accept\n or reject button on the pending order {class: text-black}
+page.view -> controller.doPost: 2. doPost() {class: text-black}
+
+controller.doPost -> controller.doPost.getOrderManager: 3. getOrderManager {class: label right}
+controller.doPost.getOrderManager -> omDAO.getOrderManager: 4. getOrderManager {class: text-black}
+omDAO.getOrderManager -> db.getOrderManager: 5. executeQuery() {class: text-black}
+omDAO.getOrderManager <- db.getOrderManager: 6. return ResultSet {class: return arrow}
+alt1: alt {
+  class: frame
+  OrderManager didn't exist: {
+    class: frame
+    controller.doPost.getOrderManager <- omDAO.getOrderManager: 6.1. return null {class: return arrow}
+    page.view <- controller.doPost: 6.1.1. return to page {class: return arrow}
+    user <- page.view: 6.1.2. Show error to user {class: return arrow}
+  }
+  else1: else {
+    class: frame
+    controller.doPost.getOrderManager <- omDAO.getOrderManager: 6.2. return OrderManager {class: return arrow}
+    controller.doPost.getOrderManager -> oDAO.getOrder: 6.2.1. getOrderByOrderId() {class: text-black}
+    oDAO.getOrder -> db.getOrder: 6.2.2. executeQuery {class: text-black}
+    oDAO.getOrder <- db.getOrder: 6.2.3. return ResultSet {class: return arrow}
+    alt2: alt {
+      class: frame
+      Order didn't exist: {
+        class: frame
+        controller.doPost.getOrderManager <- oDAO.getOrder: 6.2.3.1. return null {class: return arrow}
+        page.view <- controller.doPost: 6.2.3.1.1. return to page {class: return arrow}
+        user <- page.view: 6.2.3.1.2. Show error to user {class: return arrow}
+      }
+      else2: else {
+        class: frame
+        controller.doPost.getOrderManager <- oDAO.getOrder: 6.2.3.2. return Order {class: return arrow}
+        controller.doPost.getOrderManager."Accept Order": {
+          class: ref
+        }
+        controller.doPost.getOrderManager."Reject Order": {
+          class: ref
+        }
+      }
+    }
+  }
+}

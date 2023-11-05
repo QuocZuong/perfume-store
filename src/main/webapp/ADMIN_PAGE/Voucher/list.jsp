@@ -97,7 +97,7 @@
                                 <th>Ngày tạo</th>
                                 <th>Ngày hết hạn</th>
                                 <th>Admin cập nhật</th>
-                                <th></th>
+                                <th><a href="/Admin/Voucher/Add" class="btn btn-outline-dark rounded-0">Add voucher</a></th>
                                 <th></th>
                             </tr>
                         </thead>

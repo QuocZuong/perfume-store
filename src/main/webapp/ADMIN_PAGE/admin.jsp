@@ -132,6 +132,17 @@
                             </div>
 
                             <div class="w-25 h-25">
+                                <a href="/Admin/Brand/List" class="text-decoration-none">
+                                    <button class="btn btn-outline-dark d-flex w-100 h-100 justify-content-center align-items-center rounded-0 fn-btn">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
+                                        <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
+                                        </svg>
+                                        <span class="h2">&nbsp;&nbsp;Quản lí<br>&nbsp;&nbsp;thương hiệu</span>
+                                    </button>
+                                </a>
+                            </div>
+
+                            <div class="w-25 h-25">
                                 <a href="/Admin/User/List" class="text-decoration-none">
                                     <button class="btn btn-outline-dark d-flex w-100 h-100 justify-content-center align-items-center rounded-0 fn-btn">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
@@ -423,14 +434,21 @@
                     return regex.test(value);
                 }, "Mật khẩu phải có ít nhất 6 kí tự.");
 
+                $.validator.addMethod("atLeastOneLetter", function (value, element) {
+                    // Use a regular expression to check if the value contains at least one alphabet letter
+                    return /[A-Za-z]/.test(value);
+                }, "Phải có ký tự chữ cái.");
+
                 $("#formUpdateAccount").validate({
                     rules: {
                         txtFullname: {
-                            maxlength: 50
+                            maxlength: 50,
+                            atLeastOneLetter: true
                         },
                         txtUserName: {
                             required: true,
-                            maxlength: 50
+                            maxlength: 50,
+                            atLeastOneLetter: true
                         },
                         txtEmail: {
                             required: true,
@@ -439,11 +457,13 @@
                     },
                     messages: {
                         txtFullname: {
-                            maxlength: "Họ và tên không được vượt quá 50 kí tự."
+                            maxlength: "Họ và tên không được vượt quá 50 kí tự.",
+                            atLeastOneLetter: "Tên không hợp lệ."
                         },
                         txtUserName: {
                             required: "Tên hiển thị không được để trống.",
-                            maxlength: "Tên hiển thị không được vượt quá 50 kí tự."
+                            maxlength: "Tên hiển thị không được vượt quá 50 kí tự.",
+                            atLeastOneLetter: "Username không hợp lệ."
                         },
                         txtEmail: {
                             required: "Email không được để trống.",

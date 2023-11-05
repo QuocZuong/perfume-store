@@ -126,8 +126,8 @@
                                                     <td>
                                                         <a src="/Product/Detail/ID/<%= product.getId()%>"><%= productName%></a>
                                                     </td>
-                                                    <td><img src="<%= product.getImgURL()%>"></td>
                                                     <td><%= quantity%></td>
+                                                    <td><img src="<%= product.getImgURL()%>"></td>
                                                     <td><%= cost%></td>
                                                     <td>
                                                         Total cost: <%= sumCost%>₫

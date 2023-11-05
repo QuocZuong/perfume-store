@@ -1,0 +1,99 @@
+vars: {
+  page-name: OrderListPage
+  controller-name: OrderManagerController
+  omDAO-name: omDAO:OrderManagerDAO
+  orDAO-name: orDAO:OrderDAO
+  voucherDAO-name: voucherDAO:VoucherDAO
+  stkDAO-name: stkDAO:StockDAO
+}
+
+label.style.font-color: black
+
+classes: {
+  text-black: {
+    style: {
+      font-color: black
+    }
+  }
+
+  return arrow: {
+    style: {
+      stroke-dash: 3
+      stroke: black
+      font-color: black
+    }
+  }
+
+  frame: {
+    style: {
+      fill: '#EAEDF0'
+      stroke-width: 1
+    }
+  }
+
+  label right: {
+    style.font-color: black
+  }
+
+  ref: {
+    style.multiple: true
+  }
+}
+
+shape: sequence_diagram
+
+actor: "Order Manager" {
+  shape: image
+  width: 50
+  height: 60
+  icon: https://upload.wikimedia.org/wikipedia/commons/5/5b/Robustness_Diagram_Actor.svg
+}
+
+page: ${page-name}
+controller: ${controller-name}
+omDAO: ${omDAO-name}
+orDAO: ${orDAO-name}
+voucherDAO: ${voucherDAO-name}
+stkDAO: ${stkDAO-name}
+
+db: DB {
+  width: 100
+  height: 50
+  shape: cylinder
+}
+
+actor -> page.view: 1. Click on accept button or reject button {class: text-black}
+page.view -> controller.doPost: 2. doPost() {class: text-black}
+
+controller.doPost -> controller.doPost.updateOrderStatus: 3. updateOrderStatus(request, response) {class: text-black}
+
+controller.doPost.updateOrderStatus -> omDAO.getOrderManager: 4. getOrderManager(username) {class: text-black}
+omDAO.getOrderManager -> db.getCustomer: 5. executeQuery() {class: text-black}
+omDAO.getOrderManager <- db.getCustomer: 6. return ResultSet {class: return arrow}
+controller.doPost.updateOrderStatus <- omDAO.getOrderManager: 7. return OrderManager {class: return arrow}
+
+alt1: "alt" {
+  class: frame
+
+  If Order Manager object is null: {
+    class: frame
+    page.view <- controller.doPost.updateOrderStatus: 7.1.1 Return result {class: return arrow}
+    actor <- page.view: 7.1.2. Show error {class: return arrow}
+  }
+
+  else1: "else" {
+    class: frame
+    controller.doPost.updateOrderStatus -> orDAO.getOrderByOrderId: 7.2.1. getOrderByOrderId(id) {class: text-black}
+    orDAO.getOrderByOrderId -> db.getOrderByOrderId: 7.2.2. executeQuery() {class: text-black}
+    orDAO.getOrderByOrderId <- db.getOrderByOrderId: 7.2.3. return ResultSet {class: return arrow}
+    controller.doPost.updateOrderStatus <- orDAO.getOrderByOrderId: 7.2.4. return Order {class: return arrow}
+
+    controller.doPost.updateOrderStatus.REF\:\n Update order status {
+      class: ref
+      shape: page
+    }
+  }
+
+  page.view <- controller.doPost.updateOrderStatus: Return result {class: return arrow}
+  actor <- page.view: 35. Show the new order list {class: return arrow}
+}

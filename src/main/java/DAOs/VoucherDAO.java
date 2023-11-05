@@ -341,28 +341,30 @@ public class VoucherDAO implements IVoucherDAO {
             throw new OperationAddFailedException();
         }
         //fix later, this must be not identical to other except itself
-        if (getVoucher(voucher.getCode()) != null) {
+        if (isExistExcludeItself(voucher)) {
             throw new VoucherCodeDuplication();
         }
 
         String sql = "UPDATE [Voucher]\n"
-                + "SET [Voucher_Code] = ?,\n" // 1
-                + "[Voucher_Quantity] = ?,\n" // 2
-                + "[Voucher_Discount_Percent] = ?,\n" // 3
-                + "[Voucher_Created_At] = ?,\n" // 4
-                + "[Voucher_Expired_At] = ?,\n" // 5
-                + "[Voucher_Created_By_Admin] = ?\n" // 6
-                + "WHERE [Voucher_ID] = ? "; // 7
+                + "                 SET [Voucher_Code] = ?,  \n" //1
+                + "                 [Voucher_Quantity] = ?,\n" // 2
+                + "                 [Voucher_Discount_Percent] = ?,  \n"//3
+                + "                 [Voucher_Discount_Max] = ?,\n"//4
+                + "                 [Voucher_Created_At] = ?,  \n"//5
+                + "                 [Voucher_Expired_At] = ?,\n"//6
+                + "                 [Voucher_Created_By_Admin] = ? \n"//7
+                + "                 WHERE [Voucher_ID] = ?  "; // 8
         int result = 0;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setNString(1, voucher.getCode());
             ps.setInt(2, voucher.getQuantity());
             ps.setInt(3, voucher.getDiscountPercent());
-            ps.setLong(4, voucher.getCreatedAt());
-            ps.setLong(5, voucher.getExpiredAt());
-            ps.setInt(6, voucher.getCreatedByAdmin());
-            ps.setInt(7, voucher.getId());
+            ps.setInt(4, voucher.getDiscountMax());
+            ps.setLong(5, voucher.getCreatedAt());
+            ps.setLong(6, voucher.getExpiredAt());
+            ps.setInt(7, voucher.getCreatedByAdmin());
+            ps.setInt(8, voucher.getId());
 
             result = ps.executeUpdate();
 
@@ -436,6 +438,32 @@ public class VoucherDAO implements IVoucherDAO {
             throw new InvalidVoucherException();
         }
         return true;
+    }
+
+    public boolean isExistExcludeItself(Voucher v) {
+        if (v == null) {
+            return false;
+        }
+
+        String sql = "SELECT Count(Voucher_ID) as Count_Voucher \n"
+                + "FROM [Voucher]\n"
+                + "WHERE [Voucher_Code] = ?\n"
+                + "AND [Voucher_ID] != ? "; // 7
+        ResultSet rs = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setNString(1, v.getCode());
+            ps.setInt(2, v.getId());
+
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                int count = rs.getInt("Count_Voucher");
+                return count > 0;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(VoucherDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
 }

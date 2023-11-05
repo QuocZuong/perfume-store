@@ -71,7 +71,7 @@
             <!--Navbar section-->
             <div class="row">
                 <div class="col-md-12 nav">
-                    <jsp:include page="/NAVBAR/InventoryManagerNavbar.jsp"></jsp:include>
+                    <jsp:include page="/NAVBAR/AdminNavbar.jsp"></jsp:include>
                     </div>
                 </div>
 
@@ -111,11 +111,11 @@
                                                         <td>
                                                             <h4>Quantity</h4>
                                                             <span>
-                                                                <input type="number" min="1" name="<%= "ProductQuan" + ListSize%>" value="<%= CartQuan%>" /> 
+                                                                <input type="number" min="1" name="<%= "ProductQuan" + ListSize%>" id="<%= "ProductQuan" + ListSize%>" value="<%= CartQuan%>" oninput="this.value = Math.abs(this.value)"/> 
                                                             </span>
                                                             <h4>Cost</h4>
                                                             <span>
-                                                                <input type="number" min="0" name="<%= "ProductCost" + ListSize%>" value="<%= CartCost%>" /> 
+                                                                <input type="number" min="0" name="<%= "ProductCost" + ListSize%>" id="<%= "ProductCost" + ListSize%>" value="<%= CartCost%>" oninput="this.value = Math.abs(this.value)"/> 
                                                             </span>
                                                             <a href="/Admin/Import/DeleteDetail/ImportID/<%= importInfo.getId()%>/ProductID/<%= p.getId()%>">
                                                                 <img src="/RESOURCES/images/icons/close.png" alt="alt"/>
@@ -419,6 +419,27 @@
                             required: "Vui lòng nhập ngày vận chuyển đến"
                         }
                     }
+                });
+                $("button[type='submit']").on("click", function () {
+            <c:if test='<%= impDetailList.size() > 0%>'>
+                <% int sizeAlert = 0;%>
+                <c:forEach var="i" begin="0" end="<%= impDetailList.size() - 1%>">
+                    <c:if test='<%= impDetailList.get((int) pageContext.getAttribute("i")).getStatus().equals("WAIT")%>'>
+                        <%
+                            Product pd = pDAO.getProduct(impDetailList.get((int) pageContext.getAttribute("i")).getProductId());
+                        %>
+                    let oCost<%=sizeAlert%> = <%= pd.getStock().getPrice()%>
+                    let cost<%=sizeAlert%> = document.getElementById("ProductCost<%= sizeAlert%>").value;
+                    if (cost<%=sizeAlert%> < (oCost<%=sizeAlert%> * 0.8) || cost<%=sizeAlert%> > (oCost<%=sizeAlert%> * 1.2)) {
+                        var result = confirm("Sản phẩm <%= pd.getName()%> có giá <%= Converter.covertIntergerToMoney(pd.getStock().getPrice())%>, giá bạn nhập vào đang chênh lệch 20%. Bạn có chắc muốn nhập vào không?");
+                        if (result === false) {
+                            event.preventDefault();
+                        }
+                    }
+                        <%sizeAlert++;%>
+                    </c:if>
+                </c:forEach>
+            </c:if>
                 });
             });
 

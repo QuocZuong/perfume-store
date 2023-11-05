@@ -167,6 +167,7 @@
                                                     <c:choose>
                                                         <c:when test="<%= (v != null && approvedProductsList != null && ProductDAO.isContain(product, approvedProductsList))%>">  
                                                             <span style="text-decoration: line-through;color: rgba(0,0,0,0.5);">Total:<%= totalMoney%> <span>₫</span></span>
+                                                            <br>
                                                             <span>Total: <%= totalMoneyAfterDeducted%> <span>₫</span></span>
                                                         </c:when>
                                                         <c:otherwise>
