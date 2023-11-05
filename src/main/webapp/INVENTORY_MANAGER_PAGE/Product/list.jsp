@@ -109,7 +109,7 @@
                                         <td class="<%= pd.isActive() ? " " : "faded"%>"><%= bDAO.getBrand(pd.getBrandId()).getName()%></td>
                                         <td class="<%= pd.isActive() ? " " : "faded"%>"><img src="<%= pd.getImgURL()%>" alt="<%= pd.getName()%>"/></td>
                                         <td class="<%= pd.isActive() ? " " : "faded"%>">
-                                            <input type="number" min="1" name="<%= "txtQuantity" + pd.getId()%>" id="<%="txtQuantity" + pd.getId()%>">
+                                            <input type="number" min="1" name="<%= "txtQuantity" + pd.getId()%>" id="<%="txtQuantity" + pd.getId()%>" oninput="this.value = Math.abs(this.value)">
                                         </td>
                                         <td class="<%= pd.isActive() ? " " : "faded"%>">
                                             <a id="ImportClick<%= pd.getId()%>" href="/InventoryManager/ProductImport/ProductID/<%= pd.getId()%>" class="<%= pd.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0 import-click">Add to import cart</a>
