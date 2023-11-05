@@ -224,7 +224,8 @@
                         },
                         txtProductReleaseYear: {
                             required: true,
-                            range: [1900, (new Date().getFullYear())]
+                            range: [1900, (new Date().getFullYear())],
+                            digits: true
                         },
                         txtProductVolume: {
                             required: true,
@@ -263,7 +264,8 @@
                         },
                         txtProductReleaseYear: {
                             required: "Vui lòng nhập năm phát hành",
-                            range: "Năm phát hành phải nằm trong khoảng 1900 đến năm hiện tại"
+                            range: "Năm phát hành phải nằm trong khoảng 1900 đến năm hiện tại",
+                            digits: "Năm phát hành phải là số nguyên"
                         },
                         txtProductVolume: {
                             required: "Vui lòng nhập dung tích",

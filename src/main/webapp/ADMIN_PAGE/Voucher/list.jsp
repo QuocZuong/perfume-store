@@ -165,7 +165,7 @@
             function changeLink() {
                 let SearchURL = document.getElementById("inputSearch").value;
                 SearchURL = encodeURIComponent(SearchURL);
-                document.getElementById("Search").href = "/Admin/Order/List/page/1?txtSearch=" + SearchURL;
+                document.getElementById("Search").href = "/Admin/Voucher/List/page/1?txtSearch=" + SearchURL;
             }
         </script>
         <script

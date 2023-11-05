@@ -18,7 +18,7 @@
 <%
     us = (User) request.getAttribute("UserInfo");
     Customer customer = null;
-    Employee employee= null;
+    Employee employee = null;
     if (us.getType().equals("Customer")) {
         CustomerDAO customerDAO = new CustomerDAO();
         customer = customerDAO.getCustomerByUserId(us.getId());
@@ -26,7 +26,7 @@
         EmployeeDAO employeeDAO = new EmployeeDAO();
         employee = employeeDAO.getEmployeeByUserId(us.getId());
     }
-    
+
 %>
 
 <!DOCTYPE html>
@@ -46,19 +46,29 @@
         <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css"
               rel="stylesheet" type="text/css" />
 
-        <!--Custom Style-->
-        <link rel="stylesheet" href="/RESOURCES/admin/user/public/style/info.css">
-        <link rel="icon" href="/RESOURCES/images/icons/icon.webp">
-
+        <link rel="stylesheet" href="/RESOURCES/admin/user/public/style/update.css" />
+        <link rel="icon" href="/RESOURCES/images/icons/icon.webp" />
+        <script src="/RESOURCES/plugin/jquery-3.7.1.min.js"></script>
+        <script src="/RESOURCES/plugin/jquery-validation-1.19.5/dist/jquery.validate.min.js"></script>
         <style>
-            #preview-img{
-                width:20%;
+            #preview-img {
+                width: 20%;
                 height: 20%;
             }
-            .alert{
-                z-index:-99 !important;
+            .alert {
+                z-index: -99 !important;
             }
 
+            span.arrow {
+                margin-left: 6px;
+                height: 17px;
+            }
+            label.error {
+                color: red;
+                margin-top: 5px;
+                height: 17px;
+                width: fit-content;
+            }
         </style>
 
         <title>Chi tiết người dùng</title>
@@ -76,77 +86,78 @@
                 <div class="container mt-5">
                     <div class="row">
                         <h1>User Information</h1>
-                        <div class="wrapper">
+                        <form action="/Admin/User/Update/Customer" method="POST" id="updateCustomer">
                             <div class="id">
-                                <label>User ID: </label>
-                                <p><%= us.getId()%></p>
-                            </div>
-                            <div class="name">
-                                <label>Name: </label>
-                                <p><%= us.getName()%></p>
-                            </div>
-                            <div class="username">
-                                <label>Username: </label>
-                                <p><%= us.getUsername()%></p>
-                            </div>
-                            <div class="email">
-                                <label>Email: </label>
-                                <p><%= us.getEmail()%></p>
-                            </div>
-                            <div class="type">
-                                <label>Type: </label>
-                                <p><%= us.getType()%></p>
-                            </div>
-                            
-                                 <!--Information base on type-->
-                                 <c:choose>
-                                 <c:when test='<%= (us.getType().equals("Employee"))%>'>
-                                     <div class="employeeId">
-                                        <label>Employee Id: </label>
-                                        <p><%= employee.getEmployeeId()%></p>
-                                    </div>
-                                    <div class="employeeCitizenId">
-                                        <label>Employee Citizen ID: </label>
-                                        <p><%= employee.getCitizenId()%></p>
-                                    </div>
-                                    <div class="employeeDoB">
-                                        <label>Employee DoB: </label>
-                                        <p><%= Generator.getDateTime(employee.getDateOfBirth(), DatePattern.DateForwardSlashPattern)%></p>
-                                    </div>
-                                    <div class="employeePhoneNumber">
-                                        <label>Employee Phone Number: </label>
-                                        <p><%= employee.getPhoneNumber()%></p>
-                                    </div>
-                                    <div class="employeeAddress">
-                                        <label>Employee Address: </label>
-                                        <p><%= employee.getAddress()%></p>
-                                    </div>
-                                    <div class="employeeRole">
-                                        <label>Employee Role: </label>
-                                        <p><%= employee.getRole().getName()%></p>
-                                    </div>
-                                    <div class="employeeJoinDate">
-                                        <label>Employee Join Date: </label>
-                                        <p><%= Generator.getDateTime(employee.getJoinDate(), DatePattern.DateForwardSlashPattern)%></p>
-                                    </div>
-                                    <div class="employeeRetireDate">
-                                        <label>Employee Retire Date: </label>
-                                        <p><%=employee.getRetireDate() == null? "Not retired" : Generator.getDateTime(employee.getRetireDate(), DatePattern.DateForwardSlashPattern)%></p>
-                                    </div>  
-                                 </c:when>
-                                 
-                                 <c:when test='<%= (us.getType().equals("Customer"))%>'>
-                                     <div class="customerId">
-                                        <label>Customer Id: </label>
-                                        <p><%= customer.getCustomerId()%></p>
-                                    </div>
-                                    <div class="customerCreditPoint">
-                                        <label>Customer Credit Point: </label>
-                                        <p><%= customer.getCustomerCreditPoint()%></p>
-                                    </div>
-                                 </c:when>
-                                 </c:choose>
-                    </div>
+                                <label>User ID *</label>
+                                <input type="number" name="txtUserID" readonly="true" value="<%= us.getId()%>" />
+                        </div>
+
+                        <div class="name">
+                            <label>Name *</label>
+                            <input type="text" name="txtName" readonly="true" value="<%= us.getName() == null ? "" : us.getName()%>">
+                        </div>
+                        <div class="username">
+                            <label>Username *</label>
+                            <input type="text" name="txtUsername" readonly="true" value="<%= us.getUsername()%>" />
+                        </div>
+                        <div class="email">
+                            <label>Email *</label>
+                            <input type="text" name="txtEmail" readonly="true" value="<%= us.getEmail()%>" />
+                        </div>
+                        <div class="type">
+                            <label>Type: </label>
+                            <input type="text" name="txtType" readonly="true" value="<%= us.getType()%>" />
+                        </div>
+
+                        <!--Information base on type-->
+                        <c:choose>
+                            <c:when test='<%= (us.getType().equals("Employee"))%>'>
+                                <div class="employeeId">
+                                    <label>Employee ID: </label>
+                                    <input type="text" name="txtEmployeeId" readonly="true" value="<%=employee.getEmployeeId()%>" />
+                                </div>
+                                <div class="employeeCitizenId">
+                                    <label>Employee Citizen ID: </label>
+                                    <input type="text" name="txtEmployeeCitizenId" readonly="true" value="<%=employee.getCitizenId()%>" />
+                                </div>
+                                <div class="employeeDoB">
+                                    <label>Employee DoB: </label>
+                                    <input type="text" name="txtEmployeeDoB" readonly="true" value="<%=Generator.getDateTime(employee.getDateOfBirth(), DatePattern.DateForwardSlashPattern)%>" />
+                                </div>
+                                <div class="employeePhoneNumber">
+                                    <label>Employee Phone Number: </label>
+                                    <input type="text" name="txtEmployeePhoneNumber" readonly="true" value="<%=employee.getPhoneNumber()%>" />
+                                </div>
+                                <div class="employeeAddress">
+                                    <label>Employee Address:</label>
+                                    <input type="text" name="txtEmployeeAddress" readonly="true" value="<%=employee.getAddress()%>" />
+                                </div>
+                                <div class="employeeRole">
+                                    <label>Employee Role: </label>
+                                    <input type="text" name="txtEmployeeRole" readonly="true" value="<%=employee.getRole().getName()%>" />
+                                </div>
+                                <div class="employeeJoinDate">
+                                    <label>Employee Join Date: </label>
+                                    <input type="text" name="txtEmployeeJoinDate" readonly="true" value="<%=Generator.getDateTime(employee.getJoinDate(), DatePattern.DateForwardSlashPattern)%>" />
+                                </div>
+                                <div class="employeeRetireDate">
+                                    <label>Employee Retire Date: </label>
+                                    <input type="text" name="txtEmployeeRetireDate" readonly="true" value="<%=employee.getRetireDate() == null ? "Not retired" : Generator.getDateTime(employee.getRetireDate(), DatePattern.DateForwardSlashPattern)%>" />
+                                </div>  
+                            </c:when>
+
+                            <c:when test='<%= (us.getType().equals("Customer"))%>'>
+                                <div class="customerId">
+                                    <label>Customer Id: </label>
+                                    <input type="text" name="txtCustomerId" readonly="true" value="<%= customer.getCustomerId()%>" />
+                                </div>
+                                <div class="customerCreditPoint">
+                                    <label>Customer Credit Point: </label>
+                                    <input type="text" name="txtCustomerCreditPoint" readonly="true" value="<%= customer.getCustomerCreditPoint()%>" />
+                                </div>
+                            </c:when>
+                        </c:choose>
+                        <form/>
                 </div>
             </div> 
         </div>
@@ -164,7 +175,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 
-       
+
         <!--Jquery Validation-->
         <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
 

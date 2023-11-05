@@ -99,6 +99,7 @@
                                 <c:forEach var="i" begin="0" end="<%= listUser.size() - 1%>">
                                     <%
                                         boolean isDisableUpdate = false;
+                                        boolean isDisableDelete = false;
                                         User us = listUser.get((int) pageContext.getAttribute("i"));
 
                                         if (us.getType().equals("Employee")) {
@@ -106,6 +107,7 @@
                                             Employee employee = employeeDAO.getEmployeeByUserId(us.getId());
                                             if (employee.getRole().getName().equals("Admin")) {
                                                 isDisableUpdate = true;
+                                                isDisableDelete = true;
                                             }
                                         }
 
@@ -126,7 +128,7 @@
                                             <a href="/Admin/User/Update/<%=us.getType().equals("Customer") ? "Customer" : "Employee"%>/ID/<%= us.getId()%>" class="<%= isDisableUpdate ? "disabled" : ""%> <%= us.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0">Update</a>
                                         </td>
                                         <td class="buttonStatus <%= us.isActive() ? "" : "unfaded"%>">
-                                            <a href="/Admin/User/<%= us.isActive() ? "Delete" : "Restore"%>/ID/<%= us.getId()%>/<%= currentUsername%>/" class="<%=us.getUsername().equals(currentUsername) ? "disabled" : ""%> btn btn-outline-<%= us.isActive() ? "danger" : "success"%> rounded-0"> <%= us.isActive() ? "Delete" : "Restore"%></a>
+                                            <a href="/Admin/User/<%= us.isActive() ? "Delete" : "Restore"%>/ID/<%= us.getId()%>/<%= currentUsername%>/" class="<%=us.getUsername().equals(currentUsername) || isDisableDelete ? "disabled" : ""%> btn btn-outline-<%= us.isActive() ? "danger" : "success"%> rounded-0"> <%= us.isActive() ? "Delete" : "Restore"%></a>
                                         </td>
                                     </tr>
                                 </c:forEach>

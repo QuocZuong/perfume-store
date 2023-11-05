@@ -107,8 +107,8 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Sản phẩm</th>
-                                    <th>Số lượng</th>
                                     <th>Hình ảnh</th>
+                                    <th>Số lượng</th>
                                     <th>Đơn giá</th>
                                     <th>Tổng tiền</th>
                                     <th>Trạng thái</th>
