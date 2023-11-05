@@ -1,0 +1,124 @@
+vars: {
+  page-name: OrderListPage
+  controller-name: OrderManagerController
+  omDAO-name: omDAO:OrderManagerDAO
+  orDAO-name: orDAO:OrderDAO
+  voucherDAO-name: voucherDAO:VoucherDAO
+  stkDAO-name: stkDAO:StockDAO
+}
+
+label.style.font-color: black
+
+classes: {
+  text-black: {
+    style: {
+      font-color: black
+    }
+  }
+
+  return arrow: {
+    style: {
+      stroke-dash: 3
+      stroke: black
+      font-color: black
+    }
+  }
+
+  frame: {
+    style: {
+      fill: '#EAEDF0'
+      stroke-width: 1
+    }
+  }
+
+  label right: {
+    style.font-color: black
+  }
+
+  ref: {
+    style.multiple: true
+  }
+}
+
+shape: sequence_diagram
+
+actor: "Order Manager" {
+  shape: image
+  width: 50
+  height: 60
+  icon: https://upload.wikimedia.org/wikipedia/commons/5/5b/Robustness_Diagram_Actor.svg
+}
+
+page: ${page-name}
+controller: ${controller-name}
+omDAO: ${omDAO-name}
+orDAO: ${orDAO-name}
+voucherDAO: ${voucherDAO-name}
+stkDAO: ${stkDAO-name}
+
+db: DB {
+  width: 100
+  height: 50
+  shape: cylinder
+}
+
+alt2: "alt" {
+  class: frame
+
+  If the operation is accepting order: {
+    class: frame
+    controller.doPost.updateOrderStatus -> orDAO.acceptOrder: 7.2.5.1.1. acceptOrder(order, orderManagerId) {class: text-black}
+    orDAO.acceptOrder -> db.acceptOrder: 7.2.5.1.2. executeUpdate() {class: text-black}
+    orDAO.acceptOrder <- db.acceptOrder: 7.2.5.1.3. return int {class: return arrow}
+    controller.doPost.updateOrderStatus <- orDAO.acceptOrder: 7.2.5.1.4. return result {class: return arrow}
+
+    page.view <- controller.doPost.updateOrderStatus: 7.2.5.5. Return result {class: text-black}
+    actor <- page.view: 7.2.5.6. Show the new order list {class: text-black}
+  }
+
+  else2: "else" {
+    class: frame
+
+    controller.doPost.updateOrderStatus -> voucherDAO.getVoucher: 16. getVoucher(id)
+    voucherDAO.getVoucher -> db.getVoucher: 17. executeQuery() {class: text-black}
+    voucherDAO.getVoucher <- db.getVoucher: 18. return ResultSet {class: return arrow}
+    controller.doPost.updateOrderStatus <- voucherDAO.getVoucher: 19. return Voucher {class: return arrow}
+
+    controller.doPost.updateOrderStatus.REF\:\n Handle voucher exist: {
+      class: ref
+      shape: page
+    }
+
+    loop1: "loop" {
+      class: frame
+      While index less than order details list size: {
+        class: frame
+        controller.doPost.updateOrderStatus -> stkDAO.getStock: getStock(productId) {class: text-black}
+        stkDAO.getStock -> db.getStock: 24. executeQuery() {class: text-black}
+        stkDAO.getStock <- db.getStock: 25. return ResultSet {class: return arrow}
+        controller.doPost.updateOrderStatus <- stkDAO.getStock: 26. return Stock {class: return arrow}
+
+        controller.doPost.updateOrderStatus -> stkDAO.updateStock: 27. updateStock(Stock) {class: text-black}
+        stkDAO.updateStock -> db.updateStock: 28. executeUpdate() {class: text-black}
+        stkDAO.updateStock <- db.updateStock: 29. return int {class: return arrow}
+        controller.doPost.updateOrderStatus <- stkDAO.updateStock: 30. return result {class: return arrow}
+
+        opt: "opt" {
+          class: frame
+
+          If false: "result < 1" {
+            class: frame
+
+            page.view2 <- controller.doPost.updateOrderStatus: Return result {class: text-black}
+            actor <- page.view2: 31. Show error {class: text-black}
+          }
+        }
+      }
+    }
+
+    controller.doPost.updateOrderStatus -> orDAO.rejectOrder: rejectOrder(order, orderManagerId) {class: text-black}
+    orDAO.rejectOrder -> db.rejectOrder: 32. executeUpdate() {class: text-black}
+    orDAO.rejectOrder <- db.rejectOrder: 33. return int {class: return arrow}
+    controller.doPost.updateOrderStatus <- orDAO.rejectOrder: 34. return result {class: return arrow}
+  }
+}
