@@ -1,0 +1,91 @@
+vars: {
+  page-name: DeliveryAddressListPage
+  controller-name: CustomerController
+  daDAO-name: daDAO:DeliveryAddressDAO
+  cDao-name: cDAO:CustomerDAO
+}
+
+label.style.font-color: black
+
+classes: {
+  text-black: {
+    style: {
+      font-color: black
+    }
+  }
+
+  return arrow: {
+    style: {
+      stroke-dash: 3
+      stroke: black
+      font-color: black
+    }
+  }
+
+  frame: {
+    style: {
+      fill: '#EAEDF0'
+      stroke-width: 1
+    }
+  }
+
+  label right: {
+    style.font-color: black
+  }
+
+  ref {
+    style.multiple: true
+  }
+}
+
+shape: sequence_diagram
+
+Customer: {
+  shape: image
+  width: 50
+  height: 60
+  icon: https://upload.wikimedia.org/wikipedia/commons/5/5b/Robustness_Diagram_Actor.svg
+}
+
+page: ${page-name}
+controller: ${controller-name}
+cDAO: ${cDao-name}
+daDAO: ${daDAO-name}
+
+db: DB {
+  width: 100
+  height: 50
+  shape: cylinder
+}
+
+Customer -> page.view: 1. Fill all delivery address attribute and\n click on add button {class: text-black}
+page.view -> controller.doPost: 2. doPost() {class: text-black}
+
+# x="652.000000"
+controller.doPost -> controller.doPost.updateCustomerDeliveryAddress: 3. updateCustomerDeliveryAddress(request) {class: text-black}
+controller.doPost.updateCustomerDeliveryAddress -> cDAO.getCustomer: 4. getCustomer(Customername) {class: text-black}
+
+cDAO.getCustomer -> db.getCustomer: 5. executeQuery() {class: text-black}
+cDAO.getCustomer <- db.getCustomer: 6. return ResultSet {class: return arrow}
+
+alt1: "alt" {
+  class: frame
+
+  ResultSet is null: {
+    class: frame
+    controller.doPost.updateCustomerDeliveryAddress <- cDAO.getCustomer: 7. return null {class: return arrow}
+    page.view <- controller.doPost.updateCustomerDeliveryAddress: 7.1. return to page {class: return arrow}
+    Customer <- page.view: 7.2. show error to Customer {class: return arrow}
+  }
+
+  else1: "else" {
+    class: frame
+
+    controller.doPost.updateCustomerDeliveryAddress <- cDAO.getCustomer: 7. return Customer {class: return arrow}
+
+    controller.doPost.updateCustomerDeliveryAddress.REF\:\n Update delivery address {
+      class: ref
+      shape: page
+    }
+  }
+}

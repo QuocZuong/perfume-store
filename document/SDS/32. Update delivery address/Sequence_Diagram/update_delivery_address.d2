@@ -60,7 +60,7 @@ db: DB {
 
 controller.doPost.updateCustomerDeliveryAddress -> daDAO.getDeliveryAdress: 8. getDeliveryAddress(customerId) {class: text-black}
 
-daDAO.getDeliveryAdress -> db.getDeliveryAdress: 9. excecuteQuery() {class: text-black}
+daDAO.getDeliveryAdress -> db.getDeliveryAdress: 9. executeQuery() {class: text-black}
 daDAO.getDeliveryAdress <- db.getDeliveryAdress: 10. return ResultSet {class: return arrow}
 
 alt2: "alt" {
@@ -89,7 +89,7 @@ alt2: "alt" {
         class: frame
         controller.doPost.updateCustomerDeliveryAddress -> daDAO.updateDeliveryAddress: 12. updateDeliveryAddress(DeliveryAddress) {class: text-black}
 
-        daDAO.updateDeliveryAddress -> db.updateDeliveryAddress: 13. excecuteQuery() {class: text-black}
+        daDAO.updateDeliveryAddress -> db.updateDeliveryAddress: 13. executeQuery() {class: text-black}
         daDAO.updateDeliveryAddress <- db.updateDeliveryAddress: 14. return ResultSet {class: return arrow}
 
         alt4: "alt" {

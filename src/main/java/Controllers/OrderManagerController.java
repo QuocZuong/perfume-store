@@ -245,7 +245,6 @@ public class OrderManagerController extends HttpServlet {
         }
     }
 
-    // The link will look like this. /OrderManager/ID/1/Accept
     public int updateOrderStatus(HttpServletRequest request, HttpServletResponse response) {
         String URI = request.getRequestURI();
         String parameters[] = URI.split("/");
