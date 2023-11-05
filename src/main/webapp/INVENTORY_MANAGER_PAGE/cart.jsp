@@ -108,7 +108,7 @@
                                                     <td>
                                                         <h4>Quantity</h4>
                                                         <span>
-                                                            <input type="number" min="1" name="<%= "ProductQuan" + pageContext.getAttribute("i")%>" value="<%= CartQuan%>" /> 
+                                                            <input type="number" min="1" name="<%= "ProductQuan" + pageContext.getAttribute("i")%>" value="<%= CartQuan%>"/> 
                                                         </span>
                                                         <h4>Cost</h4>
                                                         <span>
