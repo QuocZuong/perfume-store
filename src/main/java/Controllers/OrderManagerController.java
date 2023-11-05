@@ -241,7 +241,6 @@ public class OrderManagerController extends HttpServlet {
         }
     }
 
-    // The link will look like this. /OrderManager/ID/1/Accept
     public int updateOrderStatus(HttpServletRequest request, HttpServletResponse response) {
         String URI = request.getRequestURI();
         String parameters[] = URI.split("/");
@@ -389,6 +388,7 @@ public class OrderManagerController extends HttpServlet {
 
             List<OrderDetail> orderDetailList = order.getOrderDetailList();
             List<Product> approvedProductsList = new ArrayList<>();
+            int sumDeductPrice = 0;
 
             // Get the list of all product that is approviate for voucher discount.
             Product p;
@@ -398,12 +398,12 @@ public class OrderManagerController extends HttpServlet {
                 for (int i = 0; i < orderDetailList.size(); i++) {
                     if (v.getApprovedProductId().contains(orderDetailList.get(i).getProductId())) {
                         p = pDAO.getProduct(orderDetailList.get(i).getProductId());
-
                         approvedProductsList.add(p);
+                        sumDeductPrice += p.getStock().getPrice() * v.getDiscountPercent() / 100;
                     }
                 }
+                request.setAttribute("sumDeductPrice", sumDeductPrice);
             }
-
             request.setAttribute("approvedProductsList", approvedProductsList);
 
             System.out.println("Get order detail list");

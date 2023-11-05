@@ -62,7 +62,7 @@ opt1: "opt" {
 
     controller.doPost.updateCustomerDeliveryAddress -> daDAO.getAll: 16. getAll(customerId) {class: text-black}
 
-    daDAO.getAll -> db.getAll: 17. excecuteQuery() {class: text-black}
+    daDAO.getAll -> db.getAll: 17. executeQuery() {class: text-black}
     daDAO.getAll <- db.getAll: 18. return ResultSet {class: return arrow}
 
     controller.doPost.updateCustomerDeliveryAddress <- daDAO.getAll: 19. return a list delivery address {class: return arrow}
@@ -81,7 +81,7 @@ opt1: "opt" {
 
             controller.doPost.updateCustomerDeliveryAddress -> daDAO.updateDeliveryAddress2: 20. updateDeliveryAddress(DeliveryAddress) {class: text-black}
 
-            daDAO.updateDeliveryAddress2 -> db.updateDeliveryAddress2: 21. excecuteQuery() {class: text-black}
+            daDAO.updateDeliveryAddress2 -> db.updateDeliveryAddress2: 21. executeQuery() {class: text-black}
             daDAO.updateDeliveryAddress2 <- db.updateDeliveryAddress2: 22. return ResultSet {class: return arrow}
 
             controller.doPost.updateCustomerDeliveryAddress <- daDAO.updateDeliveryAddress2: 23. return result {class: return arrow}
