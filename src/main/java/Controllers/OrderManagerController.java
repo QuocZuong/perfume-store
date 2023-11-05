@@ -9,8 +9,6 @@ import DAOs.VoucherDAO;
 import Exceptions.AccountDeactivatedException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.InvalidInputException;
-import Exceptions.NotEnoughProductQuantityException;
-import Exceptions.NotEnoughVoucherQuantityException;
 import Exceptions.OperationAddFailedException;
 import Exceptions.OperationEditFailedException;
 import Exceptions.ProductNotFoundException;
@@ -39,8 +37,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class OrderManagerController extends HttpServlet {
