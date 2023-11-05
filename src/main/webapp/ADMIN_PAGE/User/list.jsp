@@ -88,7 +88,6 @@
                                 <td>Type</td>
                                 <td></td>
                                 <td></td>
-                                <td></td>
                                 <td>
                                     <a href="/Admin/User/Add/Employee" class="btn btn-outline-dark rounded-0">Add employee</a>
                                 </td>
@@ -125,9 +124,6 @@
                                         </td>
                                         <td class="<%= us.isActive() ? " " : "faded"%>">
                                             <a href="/Admin/User/Update/<%=us.getType().equals("Customer") ? "Customer" : "Employee"%>/ID/<%= us.getId()%>" class="<%= isDisableUpdate ? "disabled" : ""%> <%= us.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0">Update</a>
-                                        </td>
-                                        <td class="<%= us.isActive() ? " " : "faded"%>">
-                                            <a href="/Admin/User/Detail/ID/<%= us.getId()%>" class="<%= us.isActive() && !us.getType().equals("Admin") ? "" : "disabled"%> btn btn-outline-info rounded-0">Order</a>
                                         </td>
                                         <td class="buttonStatus <%= us.isActive() ? "" : "unfaded"%>">
                                             <a href="/Admin/User/<%= us.isActive() ? "Delete" : "Restore"%>/ID/<%= us.getId()%>/<%= currentUsername%>/" class="<%=us.getUsername().equals(currentUsername) ? "disabled" : ""%> btn btn-outline-<%= us.isActive() ? "danger" : "success"%> rounded-0"> <%= us.isActive() ? "Delete" : "Restore"%></a>
