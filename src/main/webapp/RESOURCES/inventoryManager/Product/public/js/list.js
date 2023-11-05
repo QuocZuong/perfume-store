@@ -2,6 +2,7 @@ const boxes = document.querySelectorAll(".description");
 
 
 let ProductQuantInputs = document.querySelectorAll("input[name^=txtQuantity]");
+console.log(ProductQuantInputs.length);
 for (let i = 0; i < ProductQuantInputs.length; i++) {
     ProductQuantInputs[i].addEventListener("input", function () {
         if (ProductQuantInputs[i].value < 1) {
