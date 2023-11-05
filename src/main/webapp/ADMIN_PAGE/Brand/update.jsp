@@ -65,13 +65,13 @@
                 <div class="container">
                     <div class="row">
 
-                        <!--Execption Handling-->
+                     <!--Execption Handling-->
                     <c:if test='<%= isError%>'>
                         <h1 class="alert alert-danger text-center"> <%= exceptionMessage%></h1>
                     </c:if>
                     <!--Execption Handling-->
 
-                    <h1>Update Product</h1>
+                    <h1>Update Brand</h1>
                     <form action="/Admin/Brand/Update" method="POST" enctype="multipart/form-data">
                         <div class="id">
                             <label class="required">Brand ID</label>

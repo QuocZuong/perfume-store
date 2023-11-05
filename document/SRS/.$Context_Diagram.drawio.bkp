@@ -1,6 +1,6 @@
-<mxfile host="Electron" modified="2023-11-05T13:28:25.449Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.7.5 Chrome/114.0.5735.289 Electron/25.8.1 Safari/537.36" etag="VZb9Fd9Oak1RSDN0kSOk" version="21.7.5" type="device">
+<mxfile host="Electron" modified="2023-11-05T06:37:57.942Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.7.5 Chrome/114.0.5735.289 Electron/25.8.1 Safari/537.36" etag="fTDYikrEYL0Kgvj5MwgJ" version="21.7.5" type="device">
   <diagram id="_5H-L2p9wcAScAushxqT" name="Page-1">
-    <mxGraphModel dx="186" dy="606" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="630" dy="866" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -113,7 +113,7 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="1_D0niRrM3T77huq3_q3-16" value="voucher management" style="endArrow=classic;html=1;rounded=0;fillColor=#FF0000;strokeColor=#000000;strokeWidth=2;entryX=0.57;entryY=0.995;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.348;exitY=-0.011;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="1_D0niRrM3T77huq3_q3-12" target="1_D0niRrM3T77huq3_q3-2" edge="1">
+        <mxCell id="1_D0niRrM3T77huq3_q3-16" value="content editing" style="endArrow=classic;html=1;rounded=0;fillColor=#FF0000;strokeColor=#000000;strokeWidth=2;entryX=0.57;entryY=0.995;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.348;exitY=-0.011;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="1_D0niRrM3T77huq3_q3-12" target="1_D0niRrM3T77huq3_q3-2" edge="1">
           <mxGeometry x="-0.2213" width="50" height="50" relative="1" as="geometry">
             <mxPoint x="1783.76" y="960.2099999999998" as="sourcePoint" />
             <mxPoint x="2058.17" y="800" as="targetPoint" />
@@ -311,19 +311,19 @@
             <mxPoint x="2453.6600000000003" y="500.0799999999999" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="okcAuKA7C-GbNI5R1gDg-1" value="log out" style="endArrow=classic;startArrow=classic;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;fillColor=#FFFF00;entryX=0.664;entryY=0.974;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" edge="1">
+        <mxCell id="okcAuKA7C-GbNI5R1gDg-1" value="log out" style="endArrow=classic;startArrow=classic;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;fillColor=#FFFF00;entryX=0.664;entryY=0.974;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" target="1_D0niRrM3T77huq3_q3-2" edge="1">
           <mxGeometry x="-0.3202" width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="1816" y="960" as="sourcePoint" />
-            <mxPoint x="2083.25" y="791.4200000000001" as="targetPoint" />
+            <mxPoint x="1815" y="960" as="sourcePoint" />
+            <mxPoint x="2094.81" y="796.3700000000001" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="1816" y="930" />
-              <mxPoint x="1896" y="930" />
-              <mxPoint x="2081" y="930" />
+              <mxPoint x="1815" y="930" />
+              <mxPoint x="1895" y="930" />
+              <mxPoint x="2080" y="930" />
             </Array>
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="s82NnTXv2hxICflBj70E-1" value="brand management" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#000000;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.45;entryY=0.999;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="1_D0niRrM3T77huq3_q3-12" target="1_D0niRrM3T77huq3_q3-2" edge="1">
+        <mxCell id="s82NnTXv2hxICflBj70E-1" value="brand management" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#000000;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.45;entryY=0.999;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="1_D0niRrM3T77huq3_q3-12" target="1_D0niRrM3T77huq3_q3-2">
           <mxGeometry x="0.0741" width="50" height="50" relative="1" as="geometry">
             <mxPoint x="1741.2" y="945.0699999999999" as="sourcePoint" />
             <mxPoint x="2010" y="800" as="targetPoint" />
