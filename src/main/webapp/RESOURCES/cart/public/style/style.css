@@ -175,7 +175,7 @@ h1 {
 
 .box .left table tr td:nth-child(3) {
     text-align: right;
-    max-width: 100px;
+    max-width: 120px;
 }
 
 .box .left table tr td:nth-child(3) input {

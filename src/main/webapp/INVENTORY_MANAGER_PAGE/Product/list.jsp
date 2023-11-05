@@ -57,7 +57,6 @@
                 height: 50px;
             }
         </style>
-        <script src="/RESOURCES/inventoryManager/Product/public/js/list.js"></script>
 
 
     </head>
@@ -109,7 +108,7 @@
                                         <td class="<%= pd.isActive() ? " " : "faded"%>"><%= bDAO.getBrand(pd.getBrandId()).getName()%></td>
                                         <td class="<%= pd.isActive() ? " " : "faded"%>"><img src="<%= pd.getImgURL()%>" alt="<%= pd.getName()%>"/></td>
                                         <td class="<%= pd.isActive() ? " " : "faded"%>">
-                                            <input type="number" min="1" name="<%= "txtQuantity" + pd.getId()%>" id="<%="txtQuantity" + pd.getId()%>">
+                                            <input type="number" min="1" name="<%= "txtQuantity" + pd.getId()%>" id="<%="txtQuantity" + pd.getId()%>" oninput="this.value = Math.abs(this.value)">
                                         </td>
                                         <td class="<%= pd.isActive() ? " " : "faded"%>">
                                             <a id="ImportClick<%= pd.getId()%>" href="/InventoryManager/ProductImport/ProductID/<%= pd.getId()%>" class="<%= pd.isActive() ? "" : "disabled"%> btn btn-outline-primary rounded-0 import-click">Add to import cart</a>
@@ -146,23 +145,24 @@
                 <li class="page-item"><a class="page-link" href="/InventoryManager/Product/List/page/${numberOfPage}<%= (request.getQueryString() == null ? "" : "?" + request.getQueryString())%>"><i class="fa-solid fa-angles-right" style="color: #000000;"></i></a></li>
             </ul>
         </nav>
+        <script src="/RESOURCES/inventoryManager/Product/public/js/list.js"></script>
         <script>
-            function changeLink() {
-                let SearchURL = document.getElementById("inputSearch").value;
-                SearchURL = encodeURIComponent(SearchURL);
-                document.getElementById("Search").href = "/InventoryManager/Product/List/page/1?txtSearch=" + SearchURL;
-            }
+                            function changeLink() {
+                                let SearchURL = document.getElementById("inputSearch").value;
+                                SearchURL = encodeURIComponent(SearchURL);
+                                document.getElementById("Search").href = "/InventoryManager/Product/List/page/1?txtSearch=" + SearchURL;
+                            }
 
-            $(".import-click").on("click", function () {
-                let selectedId = this.id;
-                selectedId = selectedId.replace("ImportClick", "");
-                selectedId = "txtQuantity" + selectedId;
-                let quantity = document.getElementById(selectedId).value;
-                if (quantity === null || quantity === "") {
-                    quantity = 1;
-                }
-                this.href = this.href + "/Quantity/" + quantity + "/";
-            });
+                            $(".import-click").on("click", function () {
+                                let selectedId = this.id;
+                                selectedId = selectedId.replace("ImportClick", "");
+                                selectedId = "txtQuantity" + selectedId;
+                                let quantity = document.getElementById(selectedId).value;
+                                if (quantity === null || quantity === "") {
+                                    quantity = 1;
+                                }
+                                this.href = this.href + "/Quantity/" + quantity + "/";
+                            });
         </script>
         <script
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
