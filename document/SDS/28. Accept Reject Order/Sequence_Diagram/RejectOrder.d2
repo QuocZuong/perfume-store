@@ -1,0 +1,117 @@
+vars: {
+  page-name: PendingOrderListPage
+  controller-name: AdminController
+  oDAO-name: oDAO:OrderDAO
+  omDAO-name: omDAO:OrderManagerDAO
+  stkDAO-name: stkDAO:StockDAO
+  vDAO-name: vDAO:VoucherDAO
+}
+
+label.style.font-color: black
+
+classes: {
+  text-black: {
+    style: {
+      font-color: black
+    }
+  }
+
+  return arrow: {
+    style: {
+      stroke-dash: 3
+      stroke: black
+      font-color: black
+    }
+  }
+
+  frame: {
+    style: {
+      fill: '#EAEDF0'
+      stroke-width: 1
+    }
+  }
+
+  label right: {
+    style.font-color: black
+  }
+}
+
+shape: sequence_diagram
+
+user: Order manager {
+  shape: image
+  width: 50
+  height: 60
+  icon: https://upload.wikimedia.org/wikipedia/commons/5/5b/Robustness_Diagram_Actor.svg
+}
+
+page: ${page-name}
+controller: ${controller-name}
+omDAO: ${omDAO-name}
+oDAO: ${oDAO-name}
+stkDAO: ${stkDAO-name}
+vDAO: ${vDAO-name}
+db: DB {
+  width: 100
+  height: 50
+  shape: cylinder
+}
+
+opt: alt {
+  class: frame
+  if operation is reject: {
+    # getVoucher
+    controller.doPost.rejectOrder -> vDAO.getVoucher: 1. getVoucher {class: text-black}
+    vDAO.getVoucher -> db.getVoucher: 2. executeQuery {class: text-black}
+    vDAO.getVoucher <- db.getVoucher: 3. return ResultSet {class: return arrow}
+    controller.doPost.rejectOrder <- vDAO.getVoucher: 4. return Voucher {class: return arrow}
+
+    opt: {
+      class: frame
+      if voucher not null: {
+        class: frame
+        controller.doPost.rejectOrder -> vDAO.updateVoucher: 4.1. updateVoucher {class: text-black}
+        vDAO.updateVoucher -> db.updateVoucher: 4.2. executeQuery {class: text-black}
+        vDAO.updateVoucher <- db.updateVoucher: 4.3. return ResultSet {class: return arrow}
+        controller.doPost.rejectOrder <- vDAO.updateVoucher: 4.5. return number of affected row {class: return arrow}
+      }
+    }
+    loop: {
+      class: frame
+      while index less than order detail list size: {
+        class: frame
+        # get Stock
+        controller.doPost.rejectOrder -> stkDAO.getStock: 5.1. getStock {class: text-black}
+        stkDAO.getStock -> db.getStock: 5.2. executeQuery {class: text-black}
+        stkDAO.getStock <- db.getStock: 5.3. return ResultSet {class: return arrow}
+        controller.doPost.rejectOrder <- stkDAO.getStock: 5.4. return Stock {class: return arrow}
+        # update Stock
+        controller.doPost.rejectOrder -> stkDAO.updateStcok: 5.5. updateStcok {class: text-black}
+        stkDAO.updateStcok -> db.updateStcok: 5.6. executeUpdate {class: text-black}
+        stkDAO.updateStcok <- db.updateStcok: 5.7. return ResultSet {class: return arrow}
+        controller.doPost.rejectOrder <- stkDAO.updateStcok: 5.8. return number of affected rows {class: return arrow}
+      }
+    }
+
+    # rejectOrder
+    controller.doPost.rejectOrder -> oDAO.rejectOrder: 6. reject order {class: text-black}
+    oDAO.rejectOrder -> oDAO.rejectOrder.updateOrder: 7. update order {class: text-black}
+    oDAO.rejectOrder.updateOrder -> db.rejectOrder: 8. executeUpdate {class: text-black}
+    oDAO.rejectOrder.updateOrder <- db.rejectOrder: 9. return ResultSet {class: return arrow}
+    alt3: alt {
+      class: frame
+      affected row = 02: affected row = 0 {
+        class: frame
+        controller.doPost.rejectOrder <- oDAO.rejectOrder.updateOrder: 9.1. return 0 affected row {class: return arrow}
+        page.view <- controller.doPost.rejectOrder: 9.1.1. return to page {class: return arrow}
+        user <- page.view: 9.1.2. show error to user {class: return arrow}
+      }
+      else3: else {
+        class: frame
+        controller.doPost.rejectOrder <- oDAO.rejectOrder.updateOrder: 9.2. return affected row {class: return arrow}
+        page.view <- controller.doPost.rejectOrder: 9.2.1. return to page {class: return arrow}
+        user <- page.view: 9.2.2. return pending order lsit {class: return arrow}
+      }
+    }
+  }
+}

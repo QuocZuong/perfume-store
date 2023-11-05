@@ -1,0 +1,86 @@
+vars: {
+  page-name: PendingOrderListPage
+  controller-name: AdminController
+  oDAO-name: oDAO:OrderDAO
+  omDAO-name: omDAO:OrderManagerDAO
+  stkDAO-name: stkDAO:StockDAO
+  vDAO-name: vDAO:VoucherDAO
+}
+
+label.style.font-color: black
+
+classes: {
+  text-black: {
+    style: {
+      font-color: black
+    }
+  }
+
+  return arrow: {
+    style: {
+      stroke-dash: 3
+      stroke: black
+      font-color: black
+    }
+  }
+
+  frame: {
+    style: {
+      fill: '#EAEDF0'
+      stroke-width: 1
+    }
+  }
+
+  label right: {
+    style.font-color: black
+  }
+}
+
+shape: sequence_diagram
+
+user: Order manager {
+  shape: image
+  width: 50
+  height: 60
+  icon: https://upload.wikimedia.org/wikipedia/commons/5/5b/Robustness_Diagram_Actor.svg
+}
+
+page: ${page-name}
+controller: ${controller-name}
+omDAO: ${omDAO-name}
+oDAO: ${oDAO-name}
+stkDAO: ${stkDAO-name}
+vDAO: ${vDAO-name}
+db: DB {
+  width: 100
+  height: 50
+  shape: cylinder
+}
+
+# user -> page.view: 1. Order manager click accept\n or reject button on the pending order {class: text-black}
+# page.view -> controller.doPost: 2. doPost() {class: text-black}
+opt: opt {
+  class: frame
+  if operation is accept: {
+    class:frame
+    controller.doPost.acceptOrder -> oDAO.acceptOrder: 1. accept order {class: text-black}
+    oDAO.acceptOrder -> oDAO.acceptOrder.updateOrder: 2. update order {class: text-black}
+    oDAO.acceptOrder.updateOrder -> db.acceptOrder: 3. executeUpdate {class: text-black}
+    oDAO.acceptOrder.updateOrder <- db.acceptOrder: 4. return ResultSet {class: return arrow}
+    alt2: alt {
+      class: frame
+      affected row = 0: {
+        class: frame
+        controller.doPost.acceptOrder <- oDAO.acceptOrder.updateOrder: 4.1. return 0 affected row {class: return arrow}
+        page.view <- controller.doPost.acceptOrder: 4.1.1. return to page {class: return arrow}
+        user <- page.view: 4.1.2. show error to user {class: return arrow}
+      }
+      else1: else {
+        class: frame
+        controller.doPost.acceptOrder <- oDAO.acceptOrder.updateOrder: 4.2. return affected row {class: return arrow}
+        page.view <- controller.doPost.acceptOrder: 4.2.1. return to page {class: return arrow}
+        user <- page.view: 4.2.2. return pending order lsit {class: return arrow}
+      }
+    }
+  }
+}
