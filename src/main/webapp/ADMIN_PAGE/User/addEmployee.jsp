@@ -285,12 +285,12 @@
                         },
                         txtPassword: {
                             required: true,
-                            minlength: 6,
+                            minlength: 6
                         },
                         txtEmail: {
                             required: true,
                             email: true,
-                            maxlength: 100,
+                            maxlength: 100
                         },
                         txtCitizenId: {
                             required: true,
@@ -299,20 +299,21 @@
                             maxlength: 20
                         },
                         txtDOB: {
-                            required: true,
+                            required: true
                         },
                         txtPhoneNumber: {
                             required: true,
                             digits: true,
                             maxlength: 10,
-                            minlength: 10,
+                            minlength: 10
                         },
                         txtAddress: {
-                            maxlength: 500,
+                            required:true,
+                            maxlength: 500
                         },
                         txtJoinDate: {
-                            required: true,
-                        },
+                            required: true
+                        }
                     },
                     messages: {
                         txtName: {
@@ -352,6 +353,7 @@
                             minlength: "Số điện thoại phải là 10 chữ số",
                         },
                         txtAddress: {
+                            required: "Địa chỉ không được để trống",
                             maxlength: "Địa chỉ không được vượt quá 500 ký tự.",
                         },
                         txtJoinDate: {
