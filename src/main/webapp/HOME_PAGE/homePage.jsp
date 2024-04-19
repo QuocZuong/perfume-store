@@ -17,9 +17,13 @@
 <%
     Cookie currentUserCookie = (Cookie) pageContext.getAttribute("userCookie", pageContext.SESSION_SCOPE);
     boolean isAdmin = false;
+    boolean isOrderManager = false;
+    boolean isInventoryManager = false;
 
     if (currentUserCookie != null) {
         isAdmin = currentUserCookie.getName().equals("Admin");
+        isOrderManager = currentUserCookie.getName().equals("OrderManager");
+        isInventoryManager = currentUserCookie.getName().equals("InventoryManager");
     }
 
     List<Product> maleProductList = pdao.getBottom9MaleProduct();
@@ -81,6 +85,12 @@
           <c:choose>
             <c:when test='<%= isAdmin%>'>
               <jsp:include page="/NAVBAR/AdminNavbar.jsp"></jsp:include>
+            </c:when>
+            <c:when test='<%= isOrderManager%>'>
+              <jsp:include page="/NAVBAR/OrderManagerNavbar.jsp"></jsp:include>
+            </c:when>
+            <c:when test='<%= isInventoryManager%>'>
+              <jsp:include page="/NAVBAR/InventoryManagerNavbar.jsp"></jsp:include>
             </c:when>
             <c:otherwise>
               <jsp:include page="/NAVBAR/ClientNavbar.jsp"></jsp:include>
