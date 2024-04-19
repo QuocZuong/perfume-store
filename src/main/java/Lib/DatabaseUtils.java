@@ -4,10 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- *
- * @author Acer
- */
 public class DatabaseUtils {
     private static final boolean DEBUG = false;
 

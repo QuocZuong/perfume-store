@@ -23,7 +23,6 @@ import Exceptions.CitizenIDDuplicationException;
 import Exceptions.EmailDuplicationException;
 import Exceptions.InvalidInputException;
 import Exceptions.OperationAddFailedException;
-import Exceptions.OperationDeleteBrandFailedCauseOfExistedProduct;
 import Exceptions.OperationEditFailedException;
 import Exceptions.PhoneNumberDuplicationException;
 import Exceptions.ProductNotFoundException;
@@ -643,7 +642,7 @@ public class AdminController extends HttpServlet {
     private int addProduct(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
         ProductDAO pDAO = new ProductDAO();
-        BrandDAO bDAO = new BrandDAO();
+        BrandDAO brDAO = new BrandDAO();
         String pName = request.getParameter("txtProductName");
         String bName = request.getParameter("txtBrandName");
         int pPrice = Integer.parseInt(request.getParameter("txtProductPrice").replace(",", ""));
@@ -658,7 +657,6 @@ public class AdminController extends HttpServlet {
         // Upload to Imgur database
         String imgURL = ImageUploader.uploadImageToCloud(imgPart);
 
-        BrandDAO brDAO = new BrandDAO();
         // Check if exist brand name
         if (brDAO.getBrand(bName) == null) {
             Brand brand = new Brand();

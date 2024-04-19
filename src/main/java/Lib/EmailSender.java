@@ -1,19 +1,15 @@
 package Lib;
 
 import DAOs.CustomerDAO;
-import DAOs.DeliveryAddressDAO;
 import DAOs.OrderDetailDao;
 import DAOs.ProductDAO;
-import DAOs.UserDAO;
 import Exceptions.ProductNotFoundException;
 import Models.Customer;
-import Models.DeliveryAddress;
 import Models.Order;
 import Models.OrderDetail;
 import Models.Product;
 import Models.User;
 
-import javax.enterprise.context.SessionScoped;
 import javax.mail.*;
 import javax.mail.internet.*;
 
@@ -22,25 +18,15 @@ import org.apache.commons.codec.binary.Base64;
 import com.google.api.services.gmail.model.Message;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
-import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.gmail.Gmail;
-import com.google.auth.http.HttpCredentialsAdapter;
-import com.google.auth.oauth2.AccessToken;
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.api.client.json.JsonFactory;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class EmailSender {
 

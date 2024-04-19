@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Lib;
 
 import jakarta.servlet.http.Part;
@@ -17,10 +13,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-/**
- *
- * @author Acer
- */
 public class ImageUploader {
 
     public static final String IMGUR_API_ENDPOINT = "https://api.imgur.com/3/image";
@@ -29,9 +21,7 @@ public class ImageUploader {
     public static String uploadImageToCloud(Part imagePart) throws IOException {
         String imgURL = "/RESOURCES/images/icons/default-perfume.png";
         File imageFile = convertPartToFile(imagePart);
-        // File imageFile = new File("D:\\Images\\Anime Image\\Untitled.png");
 
-        // File imageFile = new File("D:\\Images\\Anime Image\\Untitled.png");
         // Create URL object
         URL url = new URL(IMGUR_API_ENDPOINT);
         HttpURLConnection URLconn = (HttpURLConnection) url.openConnection();

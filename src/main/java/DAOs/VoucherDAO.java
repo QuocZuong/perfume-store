@@ -19,7 +19,6 @@ import Interfaces.DAOs.IVoucherDAO;
 import Lib.Converter;
 import Lib.DatabaseUtils;
 import Lib.Generator;
-import Models.Admin;
 
 public class VoucherDAO implements IVoucherDAO {
 

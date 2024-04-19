@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Interfaces.DAOs;
 
 import Exceptions.OperationAddFailedException;
@@ -9,10 +5,6 @@ import Exceptions.VoucherCodeDuplication;
 import Models.Voucher;
 import java.util.List;
 
-/**
- *
- * @author Admin
- */
 public interface IVoucherDAO {
 
     public int addVoucher(Voucher v) throws OperationAddFailedException, VoucherCodeDuplication;

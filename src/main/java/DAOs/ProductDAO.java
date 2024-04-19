@@ -15,17 +15,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import Lib.DatabaseUtils;
-import Lib.Generator;
 import Models.Admin;
 import Models.Brand;
 import Models.Stock;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 public class ProductDAO implements IProductDAO {

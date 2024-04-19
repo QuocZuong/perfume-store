@@ -1,7 +1,6 @@
 package DAOs;
 
 import Exceptions.BrandNotFoundException;
-import Exceptions.OperationDeleteBrandFailedCauseOfExistedProduct;
 import Exceptions.OperationEditFailedException;
 import Interfaces.DAOs.IBrandDAO;
 import Models.Brand;
