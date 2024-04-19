@@ -26,6 +26,7 @@ import Models.Role;
 public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
 
     private Connection conn;
+    private final boolean DEBUG = false;
 
     /**
      * Constructs a new {@code CartDAO} object.
@@ -83,7 +84,7 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
     public boolean isAdmin(String username) {
         Employee employee = getEmployee(username);
         return employee != null && employee.getRole().getName().equals("Admin");
-    }
+    } 
 
     public boolean isOrderManager(String username) {
         Employee employee = getEmployee(username);
@@ -382,6 +383,8 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
 
+            if (DEBUG) System.out.printf("Emp password: %s\n", employee.getPassword()); 
+
             ps.setNString(1, employee.getName());
             ps.setString(2, employee.getUsername());
             ps.setString(3, Converter.convertToMD5Hash(employee.getPassword()));
@@ -396,13 +399,28 @@ public class EmployeeDAO extends UserDAO implements IEmployeeDAO {
             } else {
                 ps.setLong(10, employee.getRetireDate());
             }
-            ps.setString(11, employee.getRole().getName());
+            ps.setNString(11, employee.getRole().getName());
 
             result = ps.executeUpdate();
 
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return result;
+    }
+
+    public int addRole(Role role) {
+        int result = -1;
+
+        String sql = "INSERT INTO Employee_Role (Role_Name) VALUES (?)";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, role.getName());
+            result = ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         return result;
     }
 
