@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
 
 public class Converter {
 
+    private static final boolean DEBUG = false;
+
     public static String convertToStringData(
             String pName,
             String bName,
@@ -98,7 +100,8 @@ public class Converter {
             sb.append(String.format("%02x", b & 0xff));
         }
         pwdMD5 = sb.toString();
-        // System.out.println(pwdMD5);
+
+        if (DEBUG) System.out.printf("Stock: %s \n MD5: %s \n", str, pwdMD5);
 
         return pwdMD5;
     }

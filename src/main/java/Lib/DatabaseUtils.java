@@ -9,6 +9,7 @@ import java.sql.SQLException;
  * @author Acer
  */
 public class DatabaseUtils {
+    private static final boolean DEBUG = false;
 
     public static int getLastIndentityOf(String tableName) {
         ResultSet rs;
@@ -19,7 +20,8 @@ public class DatabaseUtils {
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                return rs.getInt("LastID");
+              if (DEBUG) System.out.println("LastID of table " + tableName + " is " + rs.getInt("LastID"));  
+              return rs.getInt("LastID");
             }
 
         } catch (SQLException sQLException) {

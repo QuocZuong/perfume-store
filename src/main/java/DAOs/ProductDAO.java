@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 public class ProductDAO implements IProductDAO {
 
     private final Connection conn;
+    private final boolean debug = false;
 
     public ProductDAO() {
         conn = DB.DBContext.getConnection();
@@ -117,7 +118,7 @@ public class ProductDAO implements IProductDAO {
             sql.append(Table.Product_Img_URL.toString()).append(",");
             sql.append(Table.Product_Description.toString());
             sql.append(")");
-            System.out.println(sql);
+            if (debug) System.out.println(sql);
 
             sql.append(" VALUES(?,?,?,?,?,?,?,?)");
 

@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 public class ImportDetailDAO implements IImportDetailDAO {
 
     private Connection conn;
+    private final boolean debug = false;
 
     public ImportDetailDAO() {
         conn = DB.DBContext.getConnection();
@@ -44,7 +45,7 @@ public class ImportDetailDAO implements IImportDetailDAO {
     public int addAllImportDetailOfImport(List<ImportDetail> arrIpd) {
         String sql = "INSERT INTO [Import_Detail] (Import_ID, Product_ID, Quantity, Cost, Status) VALUES (?, ?, ?, ?, ?)";
         int ImportID = DatabaseUtils.getLastIndentityOf("[Import]");
-        System.out.println("Last id:" + ImportID);
+        if (debug) System.out.println("Last id:" + ImportID);
         int result = 0;
         try {
             if (arrIpd != null && !arrIpd.isEmpty()) {

@@ -15,11 +15,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.webapp.ConverterTag;
-
 public class ImportDAO implements IImportDAO {
 
     private Connection conn;
+    private final boolean debug = false;
 
     public ImportDAO() {
         conn = DB.DBContext.getConnection();
@@ -53,7 +52,8 @@ public class ImportDAO implements IImportDAO {
         } catch (SQLException ex) {
             Logger.getLogger(ImportDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("add import result :" + result);
+
+        if (debug) System.out.println("add import result :" + result);
         return result;
     }
 

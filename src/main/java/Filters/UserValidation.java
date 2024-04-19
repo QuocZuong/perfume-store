@@ -24,7 +24,7 @@ public class UserValidation implements Filter {
     // this value is null, this filter instance is not currently
     // configured.
     private FilterConfig filterConfig = null;
-    private boolean debug = true;
+    private final boolean debug = true;
     private final UserDAO userDAO = new UserDAO();
     private final EmployeeDAO employeeDAO = new EmployeeDAO();
     private final CustomerDAO customerDAO = new CustomerDAO();
@@ -191,7 +191,7 @@ public class UserValidation implements Filter {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("Admin")) {
                     if (!userDAO.isExistUsername(cookie.getValue()) || !employeeDAO.isAdmin(cookie.getValue())) {
-                        System.out.println("thsi is admin delete cookie ");
+                        System.out.println("this is admin, delete cookie ");
                         cookie.setMaxAge(0);
                         cookie.setPath("/");
                         response.addCookie(cookie);
