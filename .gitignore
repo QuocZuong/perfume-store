@@ -1,4 +1,8 @@
 target/
 .DS_Store
+tokens
 db.properties
+auth
+credentials.json
 /nbproject/
+.history
