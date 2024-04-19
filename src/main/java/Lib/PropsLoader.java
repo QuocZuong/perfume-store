@@ -7,6 +7,7 @@ public class PropsLoader {
 
     private Properties props;
     private boolean noData;
+    private final boolean DEBUG = false;
 
     public PropsLoader() {
         props = new Properties();
@@ -22,7 +23,7 @@ public class PropsLoader {
                 filePath = String.format("%s/%s","/opt/tomcat/updated/bin", "db.properties");
             }
 
-            System.out.println("File: " + filePath);
+            if (DEBUG) System.out.println("File: " + filePath);
             FileInputStream in = new FileInputStream(filePath);
 
             props.load(in);
@@ -55,5 +56,13 @@ public class PropsLoader {
 
     public String getPassword() {
         return noData ? "" : props.getProperty("PASSWORD");
+    }
+
+    public String getBotUserName() {
+        return noData ? "" : props.getProperty("EMAIL_BOT_USR");
+    }
+
+    public String getBotPassword() {
+        return noData ? "" : props.getProperty("EMAIL_BOT_PSW");
     }
 }

@@ -12,9 +12,29 @@ import Models.Order;
 import Models.OrderDetail;
 import Models.Product;
 import Models.User;
+
+import javax.enterprise.context.SessionScoped;
 import javax.mail.*;
 import javax.mail.internet.*;
 
+import org.apache.commons.codec.binary.Base64;
+
+import com.google.api.services.gmail.model.Message;
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.services.gmail.Gmail;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.AccessToken;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.api.client.json.JsonFactory;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Properties;
@@ -24,15 +44,15 @@ import java.util.logging.Logger;
 
 public class EmailSender {
 
+    private PropsLoader propsLoader;
+    private final boolean DEBUG = true;
+    private String account; 
+    
     public EmailSender() {
+      propsLoader = new PropsLoader();
+      account = propsLoader.getBotUserName();
     }
 
-    private final String ACCOUNT = "quoczuong2003@gmail.com";
-    private final String PASSWORD = "qvcqfobbvbqbkwxm";
-    /* account back-up 
-       quoczuong@gmail.com
-       blwdycwxviquhbhn
-     */
     // public final String GENERATE_PASSWORD_SUBJECT = "Your account at XXVI Store
     // has been created!";
     public final String GENERATE_PASSWORD_SUBJECT = "Tài khoản của bạn đã được tạo tại trang web XXVI Store";
@@ -49,9 +69,10 @@ public class EmailSender {
             @Override
             public void run() {
                 try {
+                    if (DEBUG) System.out.println("Sending email to " + EmailTo);
                     sendEmail(subject, html);
-                } catch (UnsupportedEncodingException ex) {
-                    Logger.getLogger(EmailSender.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception ex) {
+                  System.out.println(ex);
                 }
             }
         });
@@ -60,29 +81,48 @@ public class EmailSender {
     }
 
     private boolean sendEmail(String subject, String html) throws UnsupportedEncodingException {
-        Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");
+          try {
+            JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
+            HttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+            Credential CRED = OAuth2.getCredential(JSON_FACTORY, HTTP_TRANSPORT);
+      
+            // Create gmail API client
+            Gmail service = new Gmail.Builder(HTTP_TRANSPORT, JSON_FACTORY, CRED)
+                .setApplicationName(OAuth2.APP_NAME)
+                .build();
 
-        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(ACCOUNT, PASSWORD);
-            }
-        });
+            // Create email
+            Properties props = new Properties();
+            Session session = Session.getDefaultInstance(props);
+            MimeMessage message = new MimeMessage(session);
 
-        try {
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(ACCOUNT)); // Set from address of the email
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(EmailTo)); // Set email recipient
+            message.setFrom(new InternetAddress(account)); // Set from address of the email
+            message.setRecipients(javax.mail.Message.RecipientType.TO, InternetAddress.parse(EmailTo)); // Set email recipient
             message.setSubject(MimeUtility.encodeText(subject, "utf-8", "B")); // Set email message subject
             message.setContent(html, "text/html; charset=utf-8");
             message.saveChanges();
-            Transport.send(message); // Send email message
+            
+            // Encode and create a gmail message
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            message.writeTo(buffer);
+
+            byte[] messageBytes = buffer.toByteArray();
+            String encodedMessage = Base64.encodeBase64URLSafeString(messageBytes);
+
+            Message gmailMessage = new Message();
+            gmailMessage.setRaw(encodedMessage);
+
+            // Send the message
+            if (DEBUG) System.out.println("Sending email to " + EmailTo);
+
+            gmailMessage = service.users().messages().send("me", gmailMessage).execute();
+            
             System.out.println("sent email successfully!");
+            System.out.println("Message id: " + gmailMessage.getId());
+            
             return true;
-        } catch (MessagingException e) {
+        } catch (Exception e) {
+            System.out.println(e);
             return false;
         }
     }
@@ -328,7 +368,7 @@ public class EmailSender {
                 + "															<p style=\"margin: 0 0 16px;\">Thông báo này xác nhận rằng mật khẩu của bạn đã được thay đổi\n"
                 + "																trên XXVI STORE. Nếu bạn không thay đổi mật khẩu, vui lòng liên hệ người quản trị\n"
                 + "																website qua email <a href=\"mailto:"
-                + ACCOUNT + "\">" + ACCOUNT + "</a>.\n"
+                + account + "\">" + account + "</a>.\n"
                 + "															</p>\n"
                 + "															<p style=\"margin: 0 0 16px;\">Email này đã được gửi đến <a\n"
                 + "																	href=\"mailto:" + email + "\">" + email + "</a></strong></p>\n"
@@ -433,7 +473,7 @@ public class EmailSender {
                 + "                                                                <p style=\"margin: 0 0 16px;\">Xin chào " + username + ",</p>\n"
                 + "                                                                <p style=\"margin: 0 0 16px;\">Thông báo này xác nhận rằng email của bạn trên XXIV STORE đã được thay đổi thành <strong><a href=\"mailto:" + newEmail + "\">" + newEmail + "</a></strong>.\n"
                 + "                                                                </p>\n"
-                + "                                                                <p style=\"margin: 0 0 16px;\">Nếu bạn không thay đổi email, vui lòng liên hệ Quản trị trang web tại <a href=\"mailto:" + ACCOUNT + "\">" + ACCOUNT + "</a></strong>.</p>\n"
+                + "                                                                <p style=\"margin: 0 0 16px;\">Nếu bạn không thay đổi email, vui lòng liên hệ Quản trị trang web tại <a href=\"mailto:" + account + "\">" + account + "</a></strong>.</p>\n"
                 + "                                                                <p style=\"margin: 0 0 16px;\">Thân ái,\n"
                 + "                                                                    <br>XXVI STORE\n"
                 + "                                                                    <br><a href=\"" + ShopURL + "\">" + ShopURL + "</a>\n"
@@ -534,7 +574,7 @@ public class EmailSender {
                 + "                                                                <p style=\"margin: 0 0 16px;\">Xin chào " + username + ",</p>\n"
                 + "                                                                <p style=\"margin: 0 0 16px;\">Thông báo này xác nhận rằng username của bạn trên XXIV STORE đã được thay đổi thành <strong>" + newUsername + "</strong>.\n"
                 + "                                                                </p>\n"
-                + "                                                                <p style=\"margin: 0 0 16px;\">Nếu bạn không thay đổi username, vui lòng liên hệ Quản trị trang web tại <a href=\"mailto:" + ACCOUNT + "\">" + ACCOUNT + "</a></strong>.</p>\n"
+                + "                                                                <p style=\"margin: 0 0 16px;\">Nếu bạn không thay đổi username, vui lòng liên hệ Quản trị trang web tại <a href=\"mailto:" + account + "\">" + account + "</a></strong>.</p>\n"
                 + "                                                                <p style=\"margin: 0 0 16px;\">Thân ái,\n"
                 + "                                                                    <br>XXVI STORE\n"
                 + "                                                                    <br><a href=\"" + ShopURL + "\">" + ShopURL + "</a>\n"
