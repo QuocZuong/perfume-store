@@ -106,57 +106,62 @@ public class OrderManagerController extends HttpServlet {
             System.out.println("Going Order List: Pending");
             int result = searchOrder(request, SearchType.PENDING);
 
-            if (result == State.Success.value) {
-                request.getRequestDispatcher("/ORDER_MANAGER/Order/pendingList.jsp").forward(request, response);
-            } else if (result == State.Fail.value) {
-                response.sendRedirect(
-                        ORDER_MANAGER_ORDER_LIST_PENDING_URI + ExceptionUtils.generateExceptionQueryString(request));
+            final boolean hasError = ExceptionUtils.extractExceptionQueryString(request.getQueryString()) != null;
+
+            if (!hasError &&  result == State.Fail.value) {
+              response.sendRedirect(
+                      ORDER_MANAGER_ORDER_LIST_PENDING_URI + ExceptionUtils.generateExceptionQueryString(request));
+              return;
             }
-            return;
+            
+            request.getRequestDispatcher("/ORDER_MANAGER/Order/pendingList.jsp").forward(request, response);
         }
 
         if (path.startsWith(ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_URI)
                 || path.startsWith(ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_URI + "/page")) {
             System.out.println("Going Order List: History Work");
             int result = searchOrder(request, SearchType.HISTORY);
+            
+            final boolean hasError = ExceptionUtils.extractExceptionQueryString(request.getQueryString()) != null;
 
-            if (result == State.Success.value) {
-                request.getRequestDispatcher("/ORDER_MANAGER/Order/workingHistoryList.jsp").forward(request, response);
-            } else if (result == State.Fail.value) {
+            if (!hasError && result == State.Success.value) {
                 response.sendRedirect(
                         ORDER_MANAGER_ORDER_LIST_HISTORY_WORK_URI
                         + ExceptionUtils.generateExceptionQueryString(request));
             }
-            return;
+
+            request.getRequestDispatcher("/ORDER_MANAGER/Order/workingHistoryList.jsp").forward(request, response);
         }
 
         if (path.startsWith(ORDER_MANAGER_ORDER_LIST_URI)
                 || path.startsWith(ORDER_MANAGER_ORDER_LIST_URI + "/page")) {
             System.out.println("Going Order List");
-            int result = searchOrder(request, null);
 
-            if (result == State.Success.value) {
-                request.getRequestDispatcher("/ORDER_MANAGER/Order/list.jsp").forward(request, response);
-            } else if (result == State.Fail.value) {
-                response.sendRedirect(
-                        ORDER_MANAGER_ORDER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+            int result = searchOrder(request, null);
+            final boolean hasError = ExceptionUtils.extractExceptionQueryString(request.getQueryString()) != null;
+
+            if (!hasError &&  result == State.Fail.value) {
+              response.sendRedirect(
+                ORDER_MANAGER_ORDER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
+              return;
             }
-            return;
+
+            request.getRequestDispatcher("/ORDER_MANAGER/Order/list.jsp").forward(request, response);
         }
 
         if (path.startsWith(ORDER_MANAGER_ORDER_DETAIL_URI)) {
-            System.out.println("Going Order Detail");
+          System.out.println("Going Order Detail");
 
-            int result = getCustomerOrderDetail(request);
+          int result = getCustomerOrderDetail(request);
+          final boolean hasError = ExceptionUtils.extractExceptionQueryString(request.getQueryString()) != null;
 
-            if (result == State.Success.value) {
-                request.getRequestDispatcher("/ORDER_MANAGER/Order/orderDetail.jsp").forward(request,
-                        response);
-            } else {
-                request.getRequestDispatcher(
-                        "/ORDER_MANAGER/Order/orderDetail.jsp" + ExceptionUtils.generateExceptionQueryString(request));
-            }
-            return;
+          if (!hasError && result == State.Fail.value) {
+            request.getRequestDispatcher(
+                "/ORDER_MANAGER/Order/orderDetail.jsp" + ExceptionUtils.generateExceptionQueryString(request));
+          }
+
+            request.getRequestDispatcher("/ORDER_MANAGER/Order/orderDetail.jsp").forward(request,
+                    response);
         }
 
         // Accept/Rejecting order then redirect to order list
@@ -338,12 +343,6 @@ public class OrderManagerController extends HttpServlet {
 
         List<Order> orderList = oDAO.searchOrder(search);
 
-        if (orderList.isEmpty()) {
-            System.out.println("Empty order list");
-            request.setAttribute("exceptionType", "OrderNotFoundException");
-            return State.Fail.value;
-        }
-
         // Filter out the list
         if (type != null) {
             if (type == SearchType.PENDING) {
@@ -370,6 +369,12 @@ public class OrderManagerController extends HttpServlet {
         request.setAttribute("numberOfPage", numberOfPage);
         request.setAttribute("orderList", orderList);
         request.setAttribute("search", search);
+
+        if (orderList.isEmpty()) {
+            System.out.println("Empty order list");
+            request.setAttribute("exceptionType", "OrderNotFoundException");
+            return State.Fail.value;
+        }
 
         return State.Success.value;
     }
