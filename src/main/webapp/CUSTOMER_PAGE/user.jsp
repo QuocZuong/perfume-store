@@ -455,163 +455,12 @@
     <script src="/RESOURCES/user/public/js/main.js"></script>
 
 
-    <!--VietName Province APU-->
+    <!--VietNam Province APU-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 
-    <script >
-      const host = "https://provinces.open-api.vn/api/";
-      let City = '<%= Tinh%>';
-      let District = '<%= QuanHuyen%>';
-      let Ward = '<%= PhuongXa%>';
-      let DefaultCity = 'Chọn tỉnh thành';
-      let DefaultDistrict = 'Chọn quận huyện';
-      let DefaultWard = 'Chọn phường xã';
-      var callAPI = (api) => {
-        return axios.get(api)
-                .then((response) => {
-                  renderData(response.data, "city");
-                  if (City !== "")
-                  {
-                    $(`select option[value='` + City + `']`).prop("selected", true);
-                    callApiDistrict(host + "p/" + $("#city").find(':selected').data('id') + "?depth=2");
-                  }
-                });
-      };
-      callAPI('https://provinces.open-api.vn/api/?depth=1');
-      var callApiDistrict = (api) => {
-        return axios.get(api)
-                .then((response) => {
-                  renderData(response.data.districts, "district", DefaultDistrict);
-                  if (District !== "")
-                  {
-                    $(`select option[value='` + District + `']`).prop("selected", true);
-                    callApiWard(host + "d/" + $("#district").find(':selected').data('id') + "?depth=2");
-                  }
-                });
-      };
-      var callApiWard = (api) => {
-        return axios.get(api)
-                .then((response) => {
-                  renderData(response.data.wards, "ward", DefaultWard);
-                  if (Ward !== "")
-                  {
-                    $(`select option[value='` + Ward + `']`).prop("selected", true);
-                  }
-                });
-      };
-      var renderData = (array, select, msg = DefaultCity) => {
-        let row = ' <option disable value="">' + msg + '</option>';
-        array.forEach((e) => {
-          let code = e.code;
-          let name = e.name;
-          row += `<option data-id="` + code + `" value="` + name + `">` + name + `</option>`;
-        });
-        document.querySelector("#" + select).innerHTML = row;
-      };
-
-      function resetData(select, msg = DefaultCity) {
-        let row = '<option disable value="">' + msg + '</option>';
-        document.querySelector("#" + select).innerHTML = row;
-      }
-
-
-      $("#city").change(() => {
-        resetData("district", DefaultDistrict);
-        resetData("ward", DefaultWard);
-        callApiDistrict(host + "p/" + $("#city").find(':selected').data('id') + "?depth=2");
-        printResult();
-      });
-      $("#district").change(() => {
-        resetData("ward", DefaultWard);
-        callApiWard(host + "d/" + $("#district").find(':selected').data('id') + "?depth=2");
-        printResult();
-      });
-      $("#ward").change(() => {
-        printResult();
-      });
-
-      var printResult = () => {
-        if ($("#district").find(':selected').data('id') != "" && $("#city").find(':selected').data('id') != "" &&
-                $("#ward").find(':selected').data('id') != "") {
-
-          let city = $("#city option:selected").text();
-          let district = $("#district option:selected").text();
-          let ward = $("#ward option:selected").text();
-          let sp = " - ";
-          let result = (city === DefaultCity ? "" : city);
-          result += (district === DefaultDistrict ? "" : sp + district);
-          result += (ward === DefaultWard ? "" : sp + ward);
-          if (city !== DefaultCity && district !== DefaultDistrict && ward !== DefaultWard) {
-            $("#result").text(result);
-            console.log("update value success");
-            $("input#txtAddress").val(result);
-          } else {
-            $("#result").text("");
-            console.log("update value null");
-            $("input#txtAddress").val("");
-          }
-        }
-      };
-
-      // This script is used to handle changing address in address list
-      $(document).ready(function () {
-
-        let city = "";
-        let district = "";
-        let ward = "";
-        let phoneNumber = "";
-        let addressId = "";
-        let status = "";
-        let receiver = "";
-
-        $('.delivery-address-item').click(function (e) {
-
-          const target = $(this);
-
-          city = target.attr('data-address-city');
-          district = target.attr('data-address-district');
-          ward = target.attr('data-address-ward');
-          phoneNumber = target.attr('data-phone-number');
-          addressId = target.attr('data-address-id');
-          status = target.attr('data-status');
-          receiverName = target.attr('data-receiver-name');
-
-          // debugging
-          console.log({city, district, ward, phoneNumber, addressId, status, receiver});
-
-          $('.delivery-address-item').removeClass('active');
-          target.addClass('active');
-
-          changeAddress(city, district, ward, phoneNumber, status, receiverName);
-        });
-
-        async function changeAddress(city, district, ward, phoneNumber, status, receiverName) {
-          $(`select[id='city'] > option[selected]`).prop("selected", false);
-          $(`select[id='district'] > option[selected]`).prop("selected", false);
-          $(`select[id='ward'] > option[selected]`).prop("selected", false);
-
-          $(`select[id='city'] > option[value*='` + city + `']`).prop("selected", true);
-          await callApiDistrict(host + "p/" + $("#city").find(':selected').data('id') + "?depth=2");
-          await printResult();
-
-          $(`select[id='district'] > option[value*='` + district + `']`).prop("selected", true);
-          await callApiWard(host + "d/" + $("#district").find(':selected').data('id') + "?depth=2");
-          await printResult();
-
-          $(`select[id='ward'] > option[value*='` + ward + `']`).prop("selected", true);
-          await printResult();
-
-          $('#txtPhoneNumber').val(phoneNumber);
-          $('#txtAddressId').val(addressId);
-          $('#txtStatus').val(status);
-          $('#txtStatus').prop('checked', status === "Default");
-          $('#txtReceiverName').val(receiverName);
-        }
-
-      });
-    </script>
-
+    <script src="/RESOURCES/user/public/js/addressAPI.js" data-province="<%= Tinh %>" data-district="<%= QuanHuyen %>" data-ward="<%= PhuongXa %>"></script>
+    <script src="/RESOURCES/user/public/js/addressUpdator.js"></script>
 
     <!--Jquery Validation-->
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
@@ -716,6 +565,7 @@
 
       // Validation for delivery address form
       $(document).ready(function () {
+        // Regex method
         $.validator.addMethod("regex", function (value, element, regex) {
           return regex.test(value);
         }, "Wrong input.");

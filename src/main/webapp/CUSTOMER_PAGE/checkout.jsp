@@ -165,10 +165,10 @@
                 </div>
             </div>
 
-            <div class="row mt-5 bottom">
+            <%-- <div class="row mt-5 bottom">
                 <p>Cảm ơn bạn đã đặt hàng tại XXIV STORE. Để hoàn tất đặt hàng bạn vui lòng chuyển khoản
                     trước 100% giá trị đón hàng.<br/> Thông tin chuyển khoản sẽ hiện lên khi bạn hoàn tất việc đặt hàng.</p>
-            </div>
+            </div> --%>
 
             <div class="row">
                 <div class="col-md-12 register">
@@ -237,91 +237,8 @@
         <!--VietName Province APU-->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
-
-        <script >
-            const host = "https://provinces.open-api.vn/api/";
-            let City = '<%= Tinh%>';
-            let District = '<%= QuanHuyen%>';
-            let Ward = '<%= PhuongXa%>';
-            let DefaultCity = 'Chọn tỉnh thành';
-            let DefaultDistrict = 'Chọn quận huyện';
-            let DefaultWard = 'Chọn phường xã';
-            var callAPI = (api) => {
-                return axios.get(api)
-                        .then((response) => {
-                            renderData(response.data, "city");
-                        });
-            };
-            callAPI('https://provinces.open-api.vn/api/?depth=1');
-            var callApiDistrict = (api) => {
-                return axios.get(api)
-                        .then((response) => {
-                            renderData(response.data.districts, "district", DefaultDistrict);
-                        });
-            };
-            var callApiWard = (api) => {
-                return axios.get(api)
-                        .then((response) => {
-                            renderData(response.data.wards, "ward", DefaultWard);
-                        });
-            };
-            var renderData = (array, select, msg = DefaultCity) => {
-                let row = ' <option disable value="">' + msg + '</option>';
-                array.forEach((e) => {
-                    let code = e.code;
-                    let name = e.name;
-                    row += `<option data-id="` + code + `" value="` + name + `">` + name + `</option>`;
-                });
-                document.querySelector("#" + select).innerHTML = row;
-            };
-
-            function resetData(select, msg = DefaultCity) {
-                let row = '<option disable value="">' + msg + '</option>';
-                document.querySelector("#" + select).innerHTML = row;
-            }
-
-
-            $("#city").change(() => {
-                resetData("district", DefaultDistrict);
-                resetData("ward", DefaultWard);
-                callApiDistrict(host + "p/" + $("#city").find(':selected').data('id') + "?depth=2");
-                printResult();
-            });
-            $("#district").change(() => {
-                resetData("ward", DefaultWard);
-                callApiWard(host + "d/" + $("#district").find(':selected').data('id') + "?depth=2");
-                printResult();
-            });
-            $("#ward").change(() => {
-                printResult();
-            });
-            var printResult = () => {
-                if ($("#district").find(':selected').data('id') != "" && $("#city").find(':selected').data('id') != "" &&
-                        $("#ward").find(':selected').data('id') != "") {
-
-                    let city = $("#city option:selected").text();
-                    let district = $("#district option:selected").text();
-                    let ward = $("#ward option:selected").text();
-
-                    let sp = " - ";
-                    let result = (city === DefaultCity ? "" : city);
-                    result += (district === DefaultDistrict ? "" : sp + district);
-                    result += (ward === DefaultWard ? "" : sp + ward);
-
-                    if (city !== DefaultCity && district !== DefaultDistrict && ward !== DefaultWard) {
-                        $("#result").text(result);
-                        console.log("update value success");
-                        $("input#txtNewAddress").val(result);
-                    } else {
-                        $("#result").text("");
-                        console.log("update value null");
-                        $("input#txtNewAddress").val("");
-                    }
-                }
-            };
-        </script>
-
-
+        <script src="/RESOURCES/user/public/js/addressAPI.js" is-checking-out="true"></script>
+    
         <!--Jquery Validation-->
         <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
         <script>
@@ -382,13 +299,13 @@
                     $("input#txtPhone").rules("add", {
                         required: true,
                         messages: {
-                            required: "Thiếu số điện thoại mặc định vui lòng cập nhật hoặc chọn giao bằng số điện thoại khác"
+                            required: "Thiếu số điện thoại mặc định. Vui lòng cập nhật hoặc chọn giao bằng số điện thoại khác"
                         }
                     });
                     $("input#txtAddress").rules("add", {
                         required: true,
                         messages: {
-                            required: "Thiếu địa chỉ mặc định vui lòng cập nhật hoặc chọn giao bằng địa chỉ khác"
+                            required: "Thiếu địa chỉ mặc định. Vui lòng cập nhật hoặc chọn giao bằng địa chỉ khác"
                         }
                     });
 
@@ -416,10 +333,10 @@
                         required: true,
                         maxlength: 10,
                         minlength: 10,
-                        number: true,
+                        regex: /(^$|^0[1-9][\d]{8}$)/,
                         messages: {
                             required: "Vui lòng nhập số điện thoại",
-                            number: "Số điện thoại không hợp lệ",
+                            regex: "Số điện thoại không hợp lệ",
                             maxlength: "Số điện thoại phải là 10 chữ số",
                             minlength: "Số điện thoại phải là 10 chữ số"
                         }
