@@ -1,4 +1,4 @@
-<sup>Created: **19-06-2023** *22:55:09*</sup>
+<!-- <sup>Created: **19-06-2023** *22:55:09*</sup> -->
 
 
 ERD
@@ -567,74 +567,206 @@ ADD FOREIGN KEY (ProductID) REFERENCES Product(ID);
 
 #### Trigger, stored Procedure
 ```sql
---RETURN PRODUCT PRICE
+use [projectPRJ]
+
 GO
-CREATE OR ALTER FUNCTION GetProductPrice(@ProductID INT)
-RETURNS INT
-AS   
-BEGIN  
-    DECLARE @OUT INT;
-	SET @OUT = (SELECT Product.Price FROM Product WHERE Product.ID = @ProductID)
-	RETURN @OUT
-END;
+--addEmployee(role, Employee)
 
-
-
---INSERT TO CART
-GO
-CREATE OR ALTER PROC INSERT_TO_CART @ClientID INT, @ProductID INT, @BuyQuantity INT
+CREATE OR ALTER PROCEDURE Insert_Employee
+    @User_Name nvarchar(50),
+    @User_Username varchar(50),
+    @User_Password varchar(32),
+    @User_Email varchar(100),
+    @Employee_Citizen_ID nvarchar(20),
+    @Employee_Dob BIGINT,
+    @Employee_Phone_Number varchar(10),
+    @Employee_Address nvarchar(max),
+    @Employee_Join_Date BIGINT,
+    @Employee_Retire_Date BIGINT,
+    @Role nvarchar(100)
 AS
 BEGIN
-	DECLARE @count INT = 0,
-			@PriceProduct INT;
-	SET @count = (SELECT COUNT(*) FROM Cart WHERE Cart.ClientID = @ClientID AND Cart.ProductID = @ProductID);
-	SET	@PriceProduct = dbo.GetProductPrice(@ProductID);
-	IF @count = 0 
+    -- Insert into table User first
+    INSERT INTO [User]
+        (
+        [User_Name],
+        User_Username,
+        User_Password,
+        User_Email,
+        User_Type
+        )
+    VALUES(
+            @User_Name,
+            @User_Username,
+            @User_Password,
+            @User_Email,
+            'Employee'
+	)
+
+    -- Get the userID which has just been generated
+    DECLARE @UserID int = (
+		 Select TOP 1
+        [User].[User_ID]
+    from [User]
+    ORDER BY [User].[User_ID] DESC
+	);
+
+    -- Get the roleId from the role name
+    DECLARE @RoleID int = (
+		SELECT Role_ID
+    FROM Employee_Role
+    WHERE Role_Name = @Role
+	);
+
+    IF @RoleID IS NULL
+    BEGIN
+        INSERT INTO Employee_Role
+            (Role_Name)
+        VALUES(@Role);
+
+        SET @RoleID = (
+		    
+            SELECT Role_ID
+        FROM Employee_Role
+        WHERE Role_Name = @Role
+	  );
+    END
+
+
+    -- Insert into table Employee
+    INSERT INTO [Employee]
+        (
+        [User_ID],
+        Employee_Citizen_ID,
+        Employee_DoB,
+        Employee_Phone_Number,
+        Employee_Address,
+        Employee_Role,
+        Employee_Join_Date,
+        Employee_Retire_Date
+        )
+    VALUES(
+            @UserID,
+            @Employee_Citizen_ID,
+            @Employee_Dob,
+            @Employee_Phone_Number,
+            @Employee_Address,
+            @RoleID,
+            @Employee_Join_Date,
+            @Employee_Retire_Date
+	)
+
+    -- Get the userID which has just been generated
+    DECLARE @empID int = (
+		 Select TOP 1
+        [Employee].[Employee_ID]
+    from [Employee]
+    ORDER BY [Employee].[Employee_ID] DESC
+	);
+
+    -- Insert into each table
+    IF @Role = 'Admin'
 	BEGIN
-		INSERT INTO Cart (ClientID, ProductID, Quantity) VALUES(@ClientID, @ProductID, @BuyQuantity);
-	END
-	IF @count != 0
+        Insert Into [Admin]
+            (Employee_ID)
+        VALUES(@empID);
+    END
+	ELSE IF @Role = 'Order Manager'
 	BEGIN
-		UPDATE Cart 
-		SET Quantity = @BuyQuantity
-		WHERE Cart.ClientID = @ClientID AND Cart.ProductID = @ProductID
-	END
-	UPDATE Cart
-	SET Price = @PriceProduct, [Sum] = @BuyQuantity * @PriceProduct
-	WHERE Cart.ClientID = @ClientID AND Cart.ProductID = @ProductID
+        Insert Into [Order_Manager]
+            (Employee_ID)
+        VALUES(@empID);
+    END
+	ELSE IF @Role = 'Inventory Manager'
+	BEGIN
+        Insert Into [Inventory_Manager]
+            (Employee_ID)
+        VALUES(@empID);
+    END
+
+
 END
 
---ADD ORDER DETAIL TRIGGER
 GO
-CREATE or alter TRIGGER AddOrderDetailTrigger ON [Order]
-AFTER INSERT
-AS 
-BEGIN 
-	declare @OrderID int,
-			@ClientID int,
-			@Sum int,
-			@Date Date;
-	select	@OrderID = inserted.ID,
-			@ClientID = inserted.ClientID,
-			@Sum = inserted.[Sum],
-			@Date = inserted.[Date]
-	from inserted
-	--INSERT TO OrderDetail
-	INSERT INTO OrderDetail(OrderID, ProductID, Quantity, Price, [Sum])
-		SELECT 
-			[Order].ID as OrderID, 
-			Cart.ProductID as ProductID, 
-			Cart.Quantity as Quantity, 
-			Cart.Price as Price, 
-			Cart.[Sum] as [Sum] 
-		FROM Cart, [Order] 
-		WHERE Cart.ClientID = [Order].ClientID AND [Order].ID = @OrderID
-	--Update Product Quantity in Product
-	UPDATE Product SET Quantity = Product.Quantity - (SELECT Cart.Quantity FROM Cart WHERE Cart.ProductID = Product.ID AND Cart.ClientID = @ClientID)
-	WHERE Product.ID IN (SELECT Cart.ProductID FROM Cart WHERE Cart.ClientID = @ClientID)
-	--DELETE Cart 
-	DELETE FROM Cart WHERE Cart.ClientID = @ClientID
-end
+--addCustomer()
+
+CREATE OR ALTER PROCEDURE Insert_Customer
+    @User_Name nvarchar(50),
+    @User_Username varchar(50),
+    @User_Password varchar(32),
+    @User_Email varchar(100),
+    @Customer_Credit_Point int
+AS
+BEGIN
+    -- Insert into table User first
+    INSERT INTO [User]
+        (
+        [User_Name],
+        User_Username,
+        User_Password,
+        User_Email,
+        User_Type
+        )
+    VALUES(
+            @User_Name,
+            @User_Username,
+            @User_Password,
+            @User_Email,
+            'Customer'
+	 )
+
+    -- Get the userID which has just been generated
+    DECLARE @UserID int = (
+		 Select TOP 1
+        [User].[User_ID]
+    from [User]
+    ORDER BY [User].[User_ID] DESC
+	 );
+
+    -- Insert into table Customer
+    INSERT INTO Customer
+        ([User_ID], Customer_Credit_Point)
+    VALUES(@UserID, @Customer_Credit_Point)
+
+END
+ GO
+
+
+GO
+CREATE OR ALTER PROC INSERT_CART_ITEM
+    @Customer_ID INT,
+    @Product_ID INT,
+    @Buy_Quantity INT,
+    @Price INT,
+    @Sum INT
+AS
+BEGIN
+    DECLARE @count INT = 0
+    -- Check if the product is existed in customer's cart
+    SET @count = (
+		SELECT COUNT(*)
+    FROM CartItem
+    WHERE 
+		CartItem.Customer_ID = @Customer_ID AND
+        CartItem.Product_ID = @Product_ID
+	);
+    -- If product isn't exist, insert like normal
+    IF @count = 0 
+	BEGIN
+        INSERT INTO CartItem
+            (Customer_ID, Product_ID, Quantity, Price, [Sum])
+        VALUES(@Customer_ID, @Product_ID, @Buy_Quantity, @Price, @Sum);
+    END
+    -- If product is exist, update the quantity
+    IF @count != 0
+	BEGIN
+        UPDATE CartItem 
+		SET Quantity = @Buy_Quantity,
+			Price = @Price,
+			[Sum] = @Sum
+		WHERE CartItem.Customer_ID = @Customer_ID AND CartItem.Product_ID = @Product_ID
+    END
+END
 ```
 
 
