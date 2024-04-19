@@ -46,7 +46,7 @@
             }
 
             .nav .iconPage {
-                margin-left: -235px;
+                /* margin-left: -235px; */
             }
 
             .nav .account {

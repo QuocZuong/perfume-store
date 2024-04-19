@@ -23,7 +23,7 @@ public class Employee extends User {
         super.setId(user.getId());
         super.setName(user.getName());
         super.setUsername(user.getUsername());
-        super.setPassword(user.getUsername());
+        super.setPassword(user.getPassword());
         super.setEmail(user.getEmail());
         super.setActive(user.isActive());
         super.setType(user.getType());

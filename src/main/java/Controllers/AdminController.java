@@ -134,6 +134,8 @@ public class AdminController extends HttpServlet {
         }
     }
 
+    private final boolean DEBUG = true;
+
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -231,11 +233,24 @@ public class AdminController extends HttpServlet {
         // ---------------------------- ORDER SECTION ----------------------------
         if (path.startsWith(ADMIN_ORDER_LIST_URI)
                 || path.startsWith(ADMIN_ORDER_LIST_URI + "/page")) {
+
+            if (DEBUG) {
+              System.out.println("Exception from query string:" + ExceptionUtils.extractExceptionQueryString(request.getQueryString()));
+              System.out.println("Request URI:" + request.getRequestURI());
+              System.out.println("Request queryString:" + request.getQueryString());
+            };
+            
             int result = searchOrder(request);
+
+            if (ExceptionUtils.extractExceptionQueryString(request.getQueryString()) != null) {
+              request.getRequestDispatcher("/ADMIN_PAGE/Order/list.jsp").forward(request, response);
+              return;
+            }
 
             if (result == State.Success.value) {
                 request.getRequestDispatcher("/ADMIN_PAGE/Order/list.jsp").forward(request, response);
             } else if (result == State.Fail.value) {
+                if (DEBUG) System.out.println("Order list empty. Send redirect to new link: " + ADMIN_ORDER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
                 response.sendRedirect(ADMIN_ORDER_LIST_URI + ExceptionUtils.generateExceptionQueryString(request));
             }
 
@@ -247,6 +262,11 @@ public class AdminController extends HttpServlet {
                 || path.startsWith(ADMIN_VOUCHER_LIST_URI + "/page")) {
             int result = searchVoucher(request);
 
+            if (ExceptionUtils.extractExceptionQueryString(request.getQueryString()) != null) {
+                request.getRequestDispatcher("/ADMIN_PAGE/Voucher/list.jsp").forward(request, response);
+              return;
+            }
+            
             if (result == State.Success.value) {
                 request.getRequestDispatcher("/ADMIN_PAGE/Voucher/list.jsp").forward(request, response);
             } else if (result == State.Fail.value) {
@@ -364,18 +384,17 @@ public class AdminController extends HttpServlet {
         // ---------------------------- IMPORT SECTION ----------------------------
         if (path.startsWith(ADMIN_IMPORT_STORE)
                 || path.startsWith(ADMIN_IMPORT_STORE + "/page")) {
-            int result = -1;
-            if (!path.endsWith("?errAccNF=true") && !path.endsWith("?errImpNF")) {
-                result = searchImportDetail(request);
-            }
-            if (result == State.Success.value) {
-                request.getRequestDispatcher("/ADMIN_PAGE/User/bringImportToStock.jsp").forward(request, response);
-            } else if (result == State.Fail.value) {
+            
+            final int result = searchImportDetail(request);
+            final boolean hasExceptionQuery = ExceptionUtils.extractExceptionQueryString(request.getQueryString()) != null;
+            
+            // If exception query is not generated and the current result is fail, generate it.
+            if (!hasExceptionQuery && result == State.Fail.value) {
                 response.sendRedirect(ADMIN_IMPORT_STORE + ExceptionUtils.generateExceptionQueryString(request));
-            } else if (result == -1) {
-                response.sendRedirect(ADMIN_IMPORT_STORE);
+                return;
             }
 
+            request.getRequestDispatcher("/ADMIN_PAGE/User/bringImportToStock.jsp").forward(request, response);
             return;
         }
 
@@ -1152,19 +1171,27 @@ public class AdminController extends HttpServlet {
 
         List<Order> orderList = oDAO.searchOrder(search);
 
+        int numberOfPage = (orderList.size() / rows) + (orderList.size() % rows == 0 ? 0 : 1);
+        orderList = Generator.pagingList(orderList, page, rows);
+
+        if (DEBUG) {
+          System.out.println("Setting attribute for order list");
+          System.out.println("Page: " + page);
+          System.out.println("Number of page: " + numberOfPage);
+          System.out.println("Order list: " + orderList);
+          System.out.println("Search: " + search);
+        }
+        
+        request.setAttribute("page", page);
+        request.setAttribute("numberOfPage", numberOfPage);
+        request.setAttribute("orderList", orderList);
+        request.setAttribute("search", search);
+
         if (orderList.isEmpty()) {
             System.out.println("Empty order list");
             request.setAttribute("exceptionType", "OrderNotFoundException");
             return State.Fail.value;
         }
-
-        int numberOfPage = (orderList.size() / rows) + (orderList.size() % rows == 0 ? 0 : 1);
-        orderList = Generator.pagingList(orderList, page, rows);
-
-        request.setAttribute("page", page);
-        request.setAttribute("numberOfPage", numberOfPage);
-        request.setAttribute("orderList", orderList);
-        request.setAttribute("search", search);
 
         return State.Success.value;
     }
@@ -1184,12 +1211,6 @@ public class AdminController extends HttpServlet {
         }
         List<Voucher> voucherList = vDAO.getAllVoucher();
 
-        if (voucherList.isEmpty()) {
-            System.out.println("Empty voucher list");
-            request.setAttribute("exceptionType", "VoucherNotFoundException");
-            return State.Fail.value;
-        }
-
         int numberOfPage = (voucherList.size() / rows) + (voucherList.size() % rows == 0 ? 0 : 1);
         voucherList = Generator.pagingList(voucherList, page, rows);
 
@@ -1197,6 +1218,12 @@ public class AdminController extends HttpServlet {
         request.setAttribute("numberOfPage", numberOfPage);
         request.setAttribute("voucherList", voucherList);
         request.setAttribute("search", search);
+
+        if (voucherList.isEmpty()) {
+            System.out.println("Empty voucher list");
+            request.setAttribute("exceptionType", "VoucherNotFoundException");
+            return State.Fail.value;
+        }
 
         return State.Success.value;
     }
@@ -1566,8 +1593,9 @@ public class AdminController extends HttpServlet {
                 es.sendEmailByThread(es.CHANGE_USERNAME_NOTFICATION, es.changeUsernameNotification(uUsername));
             }
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            if (DEBUG) System.out.println(e);
         }
+        
         System.out.println("update account with ID " + userForUpdate.getId() + " successfully");
 
         return true;
@@ -2068,40 +2096,52 @@ public class AdminController extends HttpServlet {
         admin.setPassword(newPassword);
         admin.setEmail(email);
 
+        if (DEBUG) System.out.println("Updating admin's information");
         int result = adDAO.updateUser(admin);
         if (result != 1) {
             request.setAttribute("exceptionType", ExceptionUtils.ExceptionType.OperationEditFailedException.toString());
             return false;
         }
         // Update cookie
+        if (DEBUG) System.out.println("Updating admin's cookies");
         Cookie c = ((Cookie) request.getSession().getAttribute("userCookie"));
         c.setValue(username);
         c.setPath("/");
         response.addCookie(c);
+        
         // Sending mail
+        
         try {
+            if (DEBUG) System.out.println("Sending mail");
             EmailSender es = new EmailSender();
+          
+            if (DEBUG) System.out.println("Detecting password changes: " + isChangedPassword);
             if (isChangedPassword) {
                 System.out.println("Detect password change");
                 System.out.println("sending mail changing password");
                 es.setEmailTo(email);
                 es.sendEmailByThread(es.CHANGE_PASSWORD_NOTFICATION, es.changePasswordNotifcation(admin));
             }
+
+            if (DEBUG) System.out.println("Detecting email changes: " + isChangedEmail);
             if (isChangedEmail) {
                 System.out.println("Detect email change");
                 System.out.println("sending mail changing email");
                 es.setEmailTo(oldEmail);
                 es.sendEmailByThread(es.CHANGE_EMAIL_NOTFICATION, es.changeEmailNotification(email));
             }
+
+            if (DEBUG) System.out.println("Detecting username changes: " + isChangedUsername);
             if (isChangedUsername) {
                 System.out.println("Detect username change");
                 System.out.println("sending mail changing username");
                 es.setEmailTo(email);
                 es.sendEmailByThread(es.CHANGE_USERNAME_NOTFICATION, es.changeUsernameNotification(username));
             }
-
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            if (DEBUG) System.out.println("Detecting changes done");
+        } catch (Exception e) {
+          if (DEBUG) System.out.println("Exception occurs in updating admin information");
+           System.out.println(e); 
         }
 
         System.out.println("update account with ID " + admin.getId() + " successfully");
@@ -2325,16 +2365,12 @@ public class AdminController extends HttpServlet {
         String username = currentUserCookie.getValue();
         Admin ad = adDAO.getAdmin(username);
 
-        if (ad == null) {
-            System.out.println("Unknow Username to view import detail");
-            request.setAttribute("exceptionType", "AccountNotFoundException");
-            return State.Fail.value;
-        }
         String URI = request.getRequestURI();
         String data[] = URI.split("/");
         int page = 1;
         int rows = 20;
         String search = request.getParameter("txtSearch");
+
         for (int i = 0; i < data.length; i++) {
             if (data[i].equals("page")) {
                 page = Integer.parseInt(data[i + 1]);
@@ -2342,17 +2378,26 @@ public class AdminController extends HttpServlet {
         }
         List<ImportDetail> importDetailList = ipDetailDAO.searchImportDetail(search);
         // importDetailList = ipDetailDAO.fillterImportDetail();
-        if (importDetailList.isEmpty()) {
-            System.out.println("Empty import detail list");
-            request.setAttribute("exceptionType", "ImportNotFoundException");
-            return State.Fail.value;
-        }
+        
         int numberOfPage = (importDetailList.size() / rows) + (importDetailList.size() % rows == 0 ? 0 : 1);
         importDetailList = Generator.pagingList(importDetailList, page, rows);
         request.setAttribute("page", page);
         request.setAttribute("numberOfPage", numberOfPage);
         request.setAttribute("importDetailList", importDetailList);
         request.setAttribute("search", search);
+        
+        if (ad == null) {
+            System.out.println("Unknow Username to view import detail");
+            request.setAttribute("exceptionType", "AccountNotFoundException");
+            return State.Fail.value;
+        }
+
+        if (importDetailList.isEmpty()) {
+            System.out.println("Empty import detail list");
+            request.setAttribute("exceptionType", "ImportNotFoundException");
+            return State.Fail.value;
+        }
+
         return State.Success.value;
     }
 

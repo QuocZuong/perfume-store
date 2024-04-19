@@ -241,8 +241,8 @@ public class CustomerController extends HttpServlet {
                 return;
             }
 
-            if (request.getParameter("btnAddAddress") != null
-                    && request.getParameter("btnAddAddress").equals("Submit")) {
+            if (request.getParameter(BTN_ADD_DELIVERY_ADDRESS) != null
+                    && request.getParameter(BTN_ADD_DELIVERY_ADDRESS).equals("Submit")) {
                 System.out.println("Going add address");
                 if (addCustomerDeliveryAddress(request) > 0) {
                     response.sendRedirect(CUSTOMER_USER_URI);
@@ -252,8 +252,8 @@ public class CustomerController extends HttpServlet {
                 return;
             }
 
-            if (request.getParameter("btnDeleteAddress") != null
-                    && request.getParameter("btnDeleteAddress").equals("Submit")) {
+            if (request.getParameter(BTN_DELETE_DELIVERY_ADDRESS) != null
+                    && request.getParameter(BTN_DELETE_DELIVERY_ADDRESS).equals("Submit")) {
                 System.out.println("Going delete delivery address");
                 int result = deleteCustomerDeliveryAddress(request);
 
@@ -379,6 +379,11 @@ public class CustomerController extends HttpServlet {
         da.setReceiverName(receiverName);
         da.setCreateAt(Generator.getCurrentTimeFromEpochMilli());
         da.setModifiedAt(da.getCreateAt());
+
+        // If there is no default address, set the new address to default
+        if (daDAO.getAll(customerID).isEmpty()) {
+            da.setStatus("Default");
+        }
 
         // If the address is set to default, set all other addresses to non-default
         if (da.getStatus().equals("Default")) {
