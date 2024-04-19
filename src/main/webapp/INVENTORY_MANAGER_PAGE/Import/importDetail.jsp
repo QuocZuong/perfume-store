@@ -143,65 +143,6 @@
                         </div>
                     </div>
 
-
-                    <div class="row">
-                        <div class="col-md-12 register">
-                            <h1>Đăng ký thành viên để nhận khuyến mại</h1>
-                            <p>Theo dõi chúng tôi để nhận thêm nhiều ưu đãi</p>
-                            <form action="/home/subscribe" method="POST">
-                                <input type="text" name="txtEmailSubscribe" id="" placeholder="nhập email" required="true">
-                                <button type="submit" name="submitEmailBtn" value="Submit" class="enter">ĐĂNG KÝ</button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12 social">
-                            <a href=""><img src="/RESOURCES/images/icons/instagram.png" alt=""></a>
-                            <a href=""><img src="/RESOURCES/images/icons/facebook.png" alt=""></a>
-                            <a href=""><img src="/RESOURCES/images/icons/youtube.png" alt=""></a>
-                            <a href=""><img src="/RESOURCES/images/icons/location-pin.png" alt=""></a>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12 footer">
-                            <div>
-                                <h2>xxiv store</h2>
-                                <ul>
-                                    <li><a href="">ưu đãi thành viên</a></li>
-                                    <li><a href="">tài khoản</a></li>
-                                    <li><a href="">tuyển dụng</a></li>
-                                </ul>
-                            </div>
-                            <div>
-                                <h2>chính sách bán hàng</h2>
-                                <ul>
-                                    <li><a href="">phương thức vận chuyển</a></li>
-                                    <li><a href="">câu hỏi thường gặp</a></li>
-                                    <li><a href="">điều khoản và điện kiện sử dụng</a></li>
-                                    <li><a href="">điều khoản và điều kiện bán hàng</a></li>
-                                    <li><a href="">thông báo pháp lý</a></li>
-                                </ul>
-                            </div>
-                            <div>
-                                <h2>thông tin chung</h2>
-                                <ul>
-                                    <li><a href="">giới thiệu</a></li>
-                                    <li><a href="">blog</a></li>
-                                    <li><a href="">liên hệ</a></li>
-                                    <li><a href="">sản phẩm</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12 copyright">
-                            <p>&copy; xxiv 2023 | all right reserved</p>
-                        </div>
-                    </div>
-
                 </div>
 
                 <script src="/RESOURCES/user/public/js/order_detail.js"></script>
@@ -254,6 +195,8 @@
                         });
                     });
                 </script>
+              
+                <script src="/RESOURCES/admin/nav/public/js/navbar.js"></script> 
                 </body>
 
                 </html>
