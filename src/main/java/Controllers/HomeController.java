@@ -102,7 +102,7 @@ public class HomeController extends HttpServlet {
         EmailSender es = new EmailSender();
         es.setEmailTo(emailTo);
         String html = es.getEmailSubscribe();
-        String subject = "ĐĂNG KÝ NHẬN TIN TỪ Affordable STORE THÀNH CÔNG!";
+        String subject = "ĐĂNG KÝ NHẬN TIN TỪ AFFORDABLE STORE THÀNH CÔNG!";
         try {
             es.sendEmailByThread(subject, html);
         } catch (UnsupportedEncodingException ex) {
