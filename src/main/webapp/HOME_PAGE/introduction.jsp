@@ -58,7 +58,7 @@
             <div class="row main">
 
                 <div class="col-md-12 content">
-                    <h1>XXIV team</h1>
+                    <h1>Affordable team</h1>
                     <div class="row group">
                         <img src="/RESOURCES/images/icons/brainstorm.png" alt="">
                         <div class="text">
@@ -908,7 +908,7 @@
         <div class="row">
                 <div class="col-md-12 footer">
                     <div>
-                        <h2>XXIV store</h2>
+                        <h2>Affordable store</h2>
                         <ul>
                             <li><a href="">Ưu đãi thành viên</a></li>
                             <li><a href="">Tài khoản</a></li>

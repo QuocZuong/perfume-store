@@ -221,7 +221,7 @@
                                                 </button>
                                                 <div class="open">
                                                     <p>
-                                                        XXIV Store miễn phí ship với tất cả các đơn hàng toàn
+                                                        Affordable Store miễn phí ship với tất cả các đơn hàng toàn
                                                         quốc.
                                                     </p>
                                                 </div>
@@ -235,7 +235,7 @@
                                                     <p>Chính sách đổi trả sản phẩm:</p>
                                                     <ul>
                                                         <li>
-                                                            XXIV Store hỗ trợ đổi trả sản phẩm trong vòng 3 ngày
+                                                            Affordable Store hỗ trợ đổi trả sản phẩm trong vòng 3 ngày
                                                             kể từ khi nhận hàng.
                                                         </li>
                                                         <li>

@@ -257,7 +257,7 @@
               <img src="/RESOURCES/images/icons/free-ship.svg" alt="">
               <h4>Free ship toàn quốc
               </h4>
-              <p>XXIV áp dụng freeship cho tất cả các khách hàng trên toàn quốc. Chúng tôi chưa áp dụng hình thức giao hàng quốc tế tại thời điểm này</p>
+              <p>Affordable áp dụng freeship cho tất cả các khách hàng trên toàn quốc. Chúng tôi chưa áp dụng hình thức giao hàng quốc tế tại thời điểm này</p>
             </div>
             <div class="advantage">
               <img src="/RESOURCES/images/icons/gift.svg" alt="">
@@ -322,7 +322,7 @@
       <div class="row">
         <div class="col-md-12 footer">
           <div>
-            <h2>XXIV store</h2>
+            <h2>Affordable store</h2>
             <ul>
               <li><a href="">Ưu đãi thành viên</a></li>
               <li><a href="">Tài khoản</a></li>
