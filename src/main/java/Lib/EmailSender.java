@@ -39,14 +39,14 @@ public class EmailSender {
       account = propsLoader.getBotUserName();
     }
 
-    // public final String GENERATE_PASSWORD_SUBJECT = "Your account at XXVI Store
+    // public final String GENERATE_PASSWORD_SUBJECT = "Your account at Affordable Store
     // has been created!";
-    public final String GENERATE_PASSWORD_SUBJECT = "Tài khoản của bạn đã được tạo tại trang web XXVI Store";
-    public final String CHANGE_PASSWORD_NOTFICATION = "[XXVI STORE] Mật khẩu đã thay đổi";
-    public final String CHANGE_EMAIL_NOTFICATION = "[XXVI STORE] Địa chỉ email đã đổi";
-    public final String CHANGE_USERNAME_NOTFICATION = "[XXVI STORE] Username đã đổi";
-    public final String FORGOT_PASSWORD_NOTFICATION = "[XXVI STORE] Mật khẩu tạm thời đã được tạo";
-    public final String EXPORT_RECEIPT_NOTFICATION = "[XXVI STORE] Xuất hoá đơn thành công";
+    public final String GENERATE_PASSWORD_SUBJECT = "Tài khoản của bạn đã được tạo tại trang web Affordable Store";
+    public final String CHANGE_PASSWORD_NOTFICATION = "[Affordable STORE] Mật khẩu đã thay đổi";
+    public final String CHANGE_EMAIL_NOTFICATION = "[Affordable STORE] Địa chỉ email đã đổi";
+    public final String CHANGE_USERNAME_NOTFICATION = "[Affordable STORE] Username đã đổi";
+    public final String FORGOT_PASSWORD_NOTFICATION = "[Affordable STORE] Mật khẩu tạm thời đã được tạo";
+    public final String EXPORT_RECEIPT_NOTFICATION = "[Affordable STORE] Xuất hoá đơn thành công";
 
     private String EmailTo;
 
@@ -121,7 +121,7 @@ public class EmailSender {
                 + "<html lang=\"vi\">\n"
                 + "	<head>\n"
                 + "		<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n"
-                + "		<title>XXVI STORE</title>\n"
+                + "		<title>Affordable STORE</title>\n"
                 + "	</head>\n"
                 + "	<body leftmargin=\"0\" marginwidth=\"0\" topmargin=\"0\" marginheight=\"0\" offset=\"0\" style=\"padding: 0;\">\n"
                 + "		<div id=\"wrapper\" dir=\"ltr\" style=\"background-color: #f7f7f7; margin: 0; padding: 70px 0; width: 100%; -webkit-text-size-adjust: none;\">\n"
@@ -137,7 +137,7 @@ public class EmailSender {
                 + "									<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" id=\"template_header\" style='background-color: #000000db; color: #ffffff; border-bottom: 0; font-weight: bold; line-height: 100%; vertical-align: middle; font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; border-radius: 3px 3px 0 0;'>\n"
                 + "										<tr>\n"
                 + "											<td id=\"header_wrapper\" style=\"padding: 36px 48px; display: block;\">\n"
-                + "												<h1 style='font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; font-size: 30px; font-weight: 300; line-height: 150%; margin: 0; text-align: left; text-shadow: 0 1px 0 #5691ab; color: #ffffff; background-color: inherit;'>Chào mừng tới XXVI STORE</h1>\n"
+                + "												<h1 style='font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; font-size: 30px; font-weight: 300; line-height: 150%; margin: 0; text-align: left; text-shadow: 0 1px 0 #5691ab; color: #ffffff; background-color: inherit;'>Chào mừng tới Affordable STORE</h1>\n"
                 + "											</td>\n"
                 + "										</tr>\n"
                 + "									</table>\n"
@@ -159,7 +159,7 @@ public class EmailSender {
                 + "<p style=\"margin: 0 0 16px;\">Xin chào "
                 + username
                 + ",</p>\n"
-                + "<p style=\"margin: 0 0 16px;\">Cảm ơn bạn đã tạo tài khoản ở XXVI STORE. Tên tài khoản của bạn là <strong>"
+                + "<p style=\"margin: 0 0 16px;\">Cảm ơn bạn đã tạo tài khoản ở Affordable STORE. Tên tài khoản của bạn là <strong>"
                 + username
                 + "</strong>. Bạn có thể truy cập trang tài khoản để xem đơn hàng, đổi mật khẩu, và nhiều thứ khác tại: <a href=\""
                 + ClientURL + "\" style=\"color: #2c7596; font-weight: normal; text-decoration: underline;\">"
@@ -191,7 +191,7 @@ public class EmailSender {
                 + "									<table border=\"0\" cellpadding=\"10\" cellspacing=\"0\" width=\"100%\">\n"
                 + "										<tr>\n"
                 + "											<td colspan=\"2\" valign=\"middle\" id=\"credit\" style='border-radius: 6px; border: 0; color: #8a8a8a; font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; font-size: 12px; line-height: 150%; text-align: center; padding: 24px 0;'>\n"
-                + "												<p style=\"margin: 0 0 16px;\">XXVI STORE</p>\n"
+                + "												<p style=\"margin: 0 0 16px;\">Affordable STORE</p>\n"
                 + "											</td>\n"
                 + "										</tr>\n"
                 + "									</table>\n"
@@ -215,7 +215,7 @@ public class EmailSender {
                 + "<html lang=\"vi\">\n"
                 + "	<head>\n"
                 + "		<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n"
-                + "		<title>XXVI STORE</title>\n"
+                + "		<title>Affordable STORE</title>\n"
                 + "	</head>\n"
                 + "	<body leftmargin=\"0\" marginwidth=\"0\" topmargin=\"0\" marginheight=\"0\" offset=\"0\" style=\"padding: 0;\">\n"
                 + "		<div id=\"wrapper\" dir=\"ltr\" style=\"background-color: #f7f7f7; margin: 0; padding: 70px 0; width: 100%; -webkit-text-size-adjust: none;\">\n"
@@ -253,7 +253,7 @@ public class EmailSender {
                 + "<p style=\"margin: 0 0 16px;\">Xin chào "
                 + username
                 + ",</p>\n"
-                + "<p style=\"margin: 0 0 16px;\">Lấy lại mật khẩu thành công XXVI STORE. Mật khẩu tạm thời cho tài khoản <strong>"
+                + "<p style=\"margin: 0 0 16px;\">Lấy lại mật khẩu thành công Affordable STORE. Mật khẩu tạm thời cho tài khoản <strong>"
                 + username
                 + "</strong> của bạn là <strong>" + newPassword + "</strong> . Bạn có thể dùng mật khẩu tạm thời này để đăng nhập vào Affordable STORE."
                 + "\n"
@@ -281,7 +281,7 @@ public class EmailSender {
                 + "									<table border=\"0\" cellpadding=\"10\" cellspacing=\"0\" width=\"100%\">\n"
                 + "										<tr>\n"
                 + "											<td colspan=\"2\" valign=\"middle\" id=\"credit\" style='border-radius: 6px; border: 0; color: #8a8a8a; font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; font-size: 12px; line-height: 150%; text-align: center; padding: 24px 0;'>\n"
-                + "												<p style=\"margin: 0 0 16px;\">XXVI STORE</p>\n"
+                + "												<p style=\"margin: 0 0 16px;\">Affordable STORE</p>\n"
                 + "											</td>\n"
                 + "										</tr>\n"
                 + "									</table>\n"
@@ -308,7 +308,7 @@ public class EmailSender {
                 + "\n"
                 + "<head>\n"
                 + "	<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n"
-                + "	<title>XXVI STORE</title>\n"
+                + "	<title>Affordable STORE</title>\n"
                 + "</head>\n"
                 + "\n"
                 + "<body leftmargin=\"0\" marginwidth=\"0\" topmargin=\"0\" marginheight=\"0\" offset=\"0\" style=\"padding: 0;\">\n"
@@ -352,7 +352,7 @@ public class EmailSender {
                 + "\n"
                 + "															<p style=\"margin: 0 0 16px;\">Xin chào " + username + ",</p>\n"
                 + "															<p style=\"margin: 0 0 16px;\">Thông báo này xác nhận rằng mật khẩu của bạn đã được thay đổi\n"
-                + "																trên XXVI STORE. Nếu bạn không thay đổi mật khẩu, vui lòng liên hệ người quản trị\n"
+                + "																trên Affordable STORE. Nếu bạn không thay đổi mật khẩu, vui lòng liên hệ người quản trị\n"
                 + "																website qua email <a href=\"mailto:"
                 + account + "\">" + account + "</a>.\n"
                 + "															</p>\n"
@@ -360,7 +360,7 @@ public class EmailSender {
                 + "																	href=\"mailto:" + email + "\">" + email + "</a></strong></p>\n"
                 + "\n"
                 + "															<p style=\"margin: 0 0 16px;\">Thân ái,\n"
-                + "																<br>XXVI STORE\n"
+                + "																<br>Affordable STORE\n"
                 + "																<br><a href=\"" + ShopURL + "\">"
                 + ShopURL + "</a>\n"
                 + "															</p>\n"
@@ -388,7 +388,7 @@ public class EmailSender {
                 + "									<tr>\n"
                 + "										<td colspan=\"2\" valign=\"middle\" id=\"credit\"\n"
                 + "											style='border-radius: 6px; border: 0; color: #8a8a8a; font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; font-size: 12px; line-height: 150%; text-align: center; padding: 24px 0;'>\n"
-                + "											<p style=\"margin: 0 0 16px;\">XXVI STORE</p>\n"
+                + "											<p style=\"margin: 0 0 16px;\">Affordable STORE</p>\n"
                 + "										</td>\n"
                 + "									</tr>\n"
                 + "								</table>\n"
@@ -461,7 +461,7 @@ public class EmailSender {
                 + "                                                                </p>\n"
                 + "                                                                <p style=\"margin: 0 0 16px;\">Nếu bạn không thay đổi email, vui lòng liên hệ Quản trị trang web tại <a href=\"mailto:" + account + "\">" + account + "</a></strong>.</p>\n"
                 + "                                                                <p style=\"margin: 0 0 16px;\">Thân ái,\n"
-                + "                                                                    <br>XXVI STORE\n"
+                + "                                                                    <br>Affordable STORE\n"
                 + "                                                                    <br><a href=\"" + ShopURL + "\">" + ShopURL + "</a>\n"
                 + "                                                                </p>\n"
                 + "                                                            </div>\n"
@@ -488,7 +488,7 @@ public class EmailSender {
                 + "                                        <tr>\n"
                 + "                                            <td colspan=\"2\" valign=\"middle\" id=\"credit\"\n"
                 + "                                                style='border-radius: 6px; border: 0; color: #8a8a8a; font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; font-size: 12px; line-height: 150%; text-align: center; padding: 24px 0;'>\n"
-                + "                                                <p style=\"margin: 0 0 16px;\">XXVI STORE</p>\n"
+                + "                                                <p style=\"margin: 0 0 16px;\">Affordable STORE</p>\n"
                 + "                                            </td>\n"
                 + "                                        </tr>\n"
                 + "                                    </table>\n"
@@ -562,7 +562,7 @@ public class EmailSender {
                 + "                                                                </p>\n"
                 + "                                                                <p style=\"margin: 0 0 16px;\">Nếu bạn không thay đổi username, vui lòng liên hệ Quản trị trang web tại <a href=\"mailto:" + account + "\">" + account + "</a></strong>.</p>\n"
                 + "                                                                <p style=\"margin: 0 0 16px;\">Thân ái,\n"
-                + "                                                                    <br>XXVI STORE\n"
+                + "                                                                    <br>Affordable STORE\n"
                 + "                                                                    <br><a href=\"" + ShopURL + "\">" + ShopURL + "</a>\n"
                 + "                                                                </p>\n"
                 + "                                                            </div>\n"
@@ -589,7 +589,7 @@ public class EmailSender {
                 + "                                        <tr>\n"
                 + "                                            <td colspan=\"2\" valign=\"middle\" id=\"credit\"\n"
                 + "                                                style='border-radius: 6px; border: 0; color: #8a8a8a; font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; font-size: 12px; line-height: 150%; text-align: center; padding: 24px 0;'>\n"
-                + "                                                <p style=\"margin: 0 0 16px;\">XXVI STORE</p>\n"
+                + "                                                <p style=\"margin: 0 0 16px;\">Affordable STORE</p>\n"
                 + "                                            </td>\n"
                 + "                                        </tr>\n"
                 + "                                    </table>\n"
@@ -638,7 +638,7 @@ public class EmailSender {
                 + "                                            <td id=\"header_wrapper\" style=\"padding: 36px 48px; display: block;\">\n"
                 + "                                                <h1\n"
                 + "                                                    style='font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; font-size: 30px; font-weight: 300; line-height: 150%; margin: 0; text-align: left; text-shadow: 0 1px 0 #5691ab; color: #ffffff; background-color: inherit;'>\n"
-                + "                                                   ĐĂNG KÝ NHẬN TIN TỪ XXVI STORE THÀNH CÔNG!</h1>\n"
+                + "                                                   ĐĂNG KÝ NHẬN TIN TỪ Affordable STORE THÀNH CÔNG!</h1>\n"
                 + "                                            </td>\n"
                 + "                                        </tr>\n"
                 + "                                    </table>\n"
@@ -663,7 +663,7 @@ public class EmailSender {
                 + "                                                                </p>\n"
                 + "                                                                <p style=\"margin: 0 0 16px;\">Mọi tin tức và khuyến mãi sẽ được chúng mình gửi đến bạn sớm nhất có thể.</p>\n"
                 + "                                                                <p style=\"margin: 0 0 16px;\">Thân ái,\n"
-                + "                                                                    <br>XXVI STORE\n"
+                + "                                                                    <br>Affordable STORE\n"
                 + "                                                                    <br><a href=\"" + ShopURL + "\">" + ShopURL + "</a>\n"
                 + "                                                                </p>\n"
                 + "                                                            </div>\n"
@@ -690,7 +690,7 @@ public class EmailSender {
                 + "                                        <tr>\n"
                 + "                                            <td colspan=\"2\" valign=\"middle\" id=\"credit\"\n"
                 + "                                                style='border-radius: 6px; border: 0; color: #8a8a8a; font-family: \"Helvetica Neue\", Helvetica, Roboto, Arial, sans-serif; font-size: 12px; line-height: 150%; text-align: center; padding: 24px 0;'>\n"
-                + "                                                <p style=\"margin: 0 0 16px;\">XXVI STORE</p>\n"
+                + "                                                <p style=\"margin: 0 0 16px;\">Affordable STORE</p>\n"
                 + "                                            </td>\n"
                 + "                                        </tr>\n"
                 + "                                    </table>\n"
