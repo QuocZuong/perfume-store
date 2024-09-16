@@ -5,7 +5,6 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>JSP Page</title>
         <style>
-
             .nav {
                 display: flex;
                 justify-content: space-between;
@@ -114,10 +113,6 @@
                 margin-top: 30px;
                 height: 180px !important;
             }
-
-
-
-
         </style>
     </head>
     <body>
@@ -128,7 +123,7 @@
             <!-- This link to shop servlet file. DO NOT MODIFY the link -->
             <li><a href="/Product/List">Sản phẩm</a></li>
         </ul>
-        <a href="/" class="iconPage"><img src="/RESOURCES/images/icons/icon.webp" alt="" height="64" /></a>
+        <a href="/" class="iconPage"><img src="/RESOURCES/images/icons/icon.png" alt="" height="64" /></a>
 
         <div class="account">
             <button class="droppown-btn bg-transparent border-0" id="product-dropdown-btn">

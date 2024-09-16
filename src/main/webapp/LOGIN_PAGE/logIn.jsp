@@ -30,7 +30,7 @@
             href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond&family=Josefin+Sans:wght@200&family=Josefin+Slab&display=swap"
             rel="stylesheet">
         <link rel="stylesheet" href="/RESOURCES/logIn/public/style/style.css">
-        <link rel="icon" href="/RESOURCES/images/icons/icon.webp">
+        <link rel="icon" href="/RESOURCES/images/icons/icon.png">
         <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css"
               rel="stylesheet" type="text/css" />
         <title>Đăng nhập</title>

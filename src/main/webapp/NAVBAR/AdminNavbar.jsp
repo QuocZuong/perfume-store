@@ -1,19 +1,18 @@
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <style>
-            .nav .account #product-dropdown-btn + ul{
+            .nav .account #product-dropdown-btn + ul {
                 visibility: hidden;
             }
 
-            .nav .account #user-dropdown-btn + ul{
+            .nav .account #user-dropdown-btn + ul {
                 visibility: hidden;
             }
 
-            .drop-down-show{
+            .drop-down-show {
                 visibility: visible !important;
             }
 
@@ -148,7 +147,7 @@
             <!-- This link to shop servlet file. DO NOT MODIFY the link -->
             <li><a href="/Product/List">Sản phẩm</a></li>
         </ul>
-        <a href="/" class="iconPage"><img src="/RESOURCES/images/icons/icon.webp" alt="" height="64" /></a>
+        <a href="/" class="iconPage"><img src="/RESOURCES/images/icons/icon.png" alt="" height="64" /></a>
 
         <div class="account">
             <button class="droppown-btn bg-transparent border-0" id="product-dropdown-btn">
@@ -163,7 +162,7 @@
             <button class="droppown-btn bg-transparent border-0" id="user-dropdown-btn">
                 <img src="/RESOURCES/images/icons/group.png" alt="" />
             </button>
-            <ul class="shadow position-absolute align-items-start ps-1 pt-2 pb-2" >
+            <ul class="shadow position-absolute align-items-start ps-1 pt-2 pb-2">
                 <li class="py-2 text-dark"><a href="/Admin/User/List">Danh sách người dùng</a></li>
                 <li class="py-2 text-dark"><a href="/Admin/EmployeeActivityLog/Admin">Hoạt động admin</a></li>
                 <li class="py-2 text-dark"><a href="/Admin/EmployeeActivityLog/OrderManager">Hoạt động order manager</a></li>
@@ -172,6 +171,5 @@
 
             <a href="/Admin/User"><img src="/RESOURCES/images/icons/user.png" alt="" /></a>
         </div>
-        
     </body>
 </html>

@@ -48,7 +48,7 @@
             href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond&family=Josefin+Sans:wght@200&family=Josefin+Slab&display=swap"
             rel="stylesheet">
         <link rel="stylesheet" href="/RESOURCES/shop/public/style/style.css" type="text/css">
-        <link rel="icon" href="/RESOURCES/images/icons/icon.webp">
+        <link rel="icon" href="/RESOURCES/images/icons/icon.png">
         <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css"
               rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
@@ -74,7 +74,7 @@
                         <!-- This link to shop servlet file. DO NOT MODIFY the link -->
                         <li><a href="/Product/List">sản phẩm</a></li>
                     </ul>
-                    <a href="/"><img src="/RESOURCES/images/icons/icon.webp" alt=""
+                    <a href="/"><img src="/RESOURCES/images/icons/icon.png" alt=""
                                      height="64"></a>
 
                     <!-- This is search function -->                                     

@@ -1,19 +1,8 @@
-<%@page import="Lib.ExceptionUtils"%>
-<%@page import="Models.Employee"%>
-<%@page import="DAOs.ProductDAO"%>
-<%@page import="DAOs.BrandDAO"%>
-<%@page import="Models.User"%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib  uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
-
-<%! String Tinh, QuanHuyen, PhuongXa;%>
-
-<%    // Handling execption
-    String queryString = request.getQueryString();
-    boolean isErr = ExceptionUtils.isWebsiteError(queryString);
-    String exeptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
-%>
+<%@page import="Lib.ExceptionUtils"%> <%@page import="Models.Employee"%> <%@page import="DAOs.ProductDAO"%> <%@page import="DAOs.BrandDAO"%>
+<%@page import="Models.User"%> <%@page contentType="text/html" pageEncoding="UTF-8"%> <%@ taglib uri="http://java.sun.com/jsp/jstl/core"
+prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%> <%! String Tinh, QuanHuyen, PhuongXa;%> <% // Handling
+execption String queryString = request.getQueryString(); boolean isErr = ExceptionUtils.isWebsiteError(queryString); String exeptionMessage
+= ExceptionUtils.getMessageFromExceptionQueryString(queryString); %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -26,22 +15,18 @@
             rel="stylesheet"
             integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
             crossorigin="anonymous"
-            />
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
             href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond&family=Josefin+Sans:wght@200&family=Josefin+Slab&display=swap"
             rel="stylesheet"
-            />
-        <link
-            href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css"
-            rel="stylesheet"
-            type="text/css"
-            />
+        />
+        <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css" rel="stylesheet" type="text/css" />
 
         <!--Custom Style-->
         <link rel="stylesheet" href="/RESOURCES/admin/user/public/style/update.css" />
-        <link rel="icon" href="/RESOURCES/images/icons/icon.webp" />
+        <link rel="icon" href="/RESOURCES/images/icons/icon.png" />
         <script src="/RESOURCES/plugin/jquery-3.7.1.min.js"></script>
         <script src="/RESOURCES/plugin/jquery-validation-1.19.5/dist/jquery.validate.min.js"></script>
         <style>
@@ -73,11 +58,11 @@
             <div class="row">
                 <div class="col-md-12 nav">
                     <jsp:include page="/NAVBAR/AdminNavbar.jsp"></jsp:include>
-                    </div>
                 </div>
+            </div>
 
-                <div class="row">
-                    <!--Execption Handling-->
+            <div class="row">
+                <!--Execption Handling-->
                 <c:if test="<%=isErr%>">
                     <h1 class="alert alert-danger text-center"><%=exeptionMessage%></h1>
                 </c:if>
@@ -89,7 +74,7 @@
                     <form action="/Admin/User/Add/Employee" method="POST" id="addEmployee">
                         <div class="name">
                             <label>Name *</label>
-                            <input type="text" name="txtName">
+                            <input type="text" name="txtName" />
                         </div>
                         <div class="username">
                             <label>Username *</label>
@@ -101,7 +86,7 @@
                         </div>
                         <div class="email">
                             <label>Email *</label>
-                            <input type="text" name="txtEmail"/>
+                            <input type="text" name="txtEmail" />
                         </div>
                         <div class="role">
                             <label>Role *</label>
@@ -117,11 +102,11 @@
                         </div>
                         <div class="dateOfBirth">
                             <label>Date of birth *</label>
-                            <input type="date" name="txtDOB"/>
+                            <input type="date" name="txtDOB" />
                         </div>
                         <div class="phone">
                             <label>Phone Number *</label>
-                            <input type="text" name="txtPhoneNumber">
+                            <input type="text" name="txtPhoneNumber" />
                         </div>
                         <div class="address">
                             <label>Address *</label>
@@ -137,20 +122,13 @@
                                 <option value="" selected>Chọn phường xã</option>
                             </select>
                             <br />
-                            <input
-                                type="text"
-                                name="txtAddress"
-                                id="txtAddress"
-                                readonly="true"
-                                />
+                            <input type="text" name="txtAddress" id="txtAddress" readonly="true" />
                         </div>
                         <div class="joinDate">
                             <label>Join date *</label>
-                            <input type="date" name="txtJoinDate"/>
+                            <input type="date" name="txtJoinDate" />
                         </div>
-                        <button type="submit" name="btnAddEmployee" value="Submit" class="btnAddEmployee mb-3">
-                            Add Employee
-                        </button>
+                        <button type="submit" name="btnAddEmployee" value="Submit" class="btnAddEmployee mb-3">Add Employee</button>
                         <br />
                     </form>
                 </div>
@@ -167,7 +145,12 @@
 
         <!--VietName Province APU-->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
-        <script src="/RESOURCES/user/public/js/addressAPI.js" data-province="<%= Tinh %>" data-district="<%= QuanHuyen %>" data-ward="<%= PhuongXa %>"></script>
+        <script
+            src="/RESOURCES/user/public/js/addressAPI.js"
+            data-province="<%= Tinh %>"
+            data-district="<%= QuanHuyen %>"
+            data-ward="<%= PhuongXa %>"
+        ></script>
 
         <!--Jquery Validation-->
 
@@ -176,67 +159,69 @@
                 //                $.validator.addMethod("regex", function (value, regex) {
                 //                    return regex.test(value);
                 //                }, "Wrong input.");
-                $.validator.addMethod("atLeastOneLetter", function (value, element) {
-                    // Use a regular expression to check if the value contains at least one alphabet letter
-                    return /[A-Za-z]/.test(value);
-                }, "Phải có ký tự chữ cái.");
+                $.validator.addMethod(
+                    "atLeastOneLetter",
+                    function (value, element) {
+                        // Use a regular expression to check if the value contains at least one alphabet letter
+                        return /[A-Za-z]/.test(value);
+                    },
+                    "Phải có ký tự chữ cái.",
+                );
 
                 $("#addEmployee").validate({
                     rules: {
                         txtName: {
                             required: true,
                             maxlength: 50,
-                            atLeastOneLetter: true
+                            atLeastOneLetter: true,
                         },
                         txtUsername: {
                             required: true,
                             maxlength: 50,
-                            atLeastOneLetter: true
+                            atLeastOneLetter: true,
                         },
                         txtPassword: {
                             required: true,
-                            minlength: 6
+                            minlength: 6,
                         },
                         txtEmail: {
                             required: true,
                             email: true,
-                            maxlength: 100
+                            maxlength: 100,
                         },
                         txtCitizenId: {
                             required: true,
                             digits: true,
                             minlength: 9,
-                            maxlength: 20
+                            maxlength: 20,
                         },
                         txtDOB: {
-                            required: true
+                            required: true,
                         },
                         txtPhoneNumber: {
                             required: true,
                             digits: true,
                             maxlength: 10,
-                            minlength: 10
+                            minlength: 10,
                         },
                         txtAddress: {
-                            required:true,
-                            maxlength: 500
+                            required: true,
+                            maxlength: 500,
                         },
                         txtJoinDate: {
-                            required: true
-                        }
+                            required: true,
+                        },
                     },
                     messages: {
                         txtName: {
                             required: "Tên không được để trống.",
                             maxlength: "Tên không được vượt quá 50 ký tự.",
-                            atLeastOneLetter: "Tên không hợp lệ."
-
+                            atLeastOneLetter: "Tên không hợp lệ.",
                         },
                         txtUsername: {
                             required: "Tên đăng nhập không được để trống.",
                             maxlength: "Tên đăng nhập không được vượt quá 50 ký tự.",
-                            atLeastOneLetter: "Username không hợp lệ."
-
+                            atLeastOneLetter: "Username không hợp lệ.",
                         },
                         txtPassword: {
                             required: "Mật khẩu không được để trống.",
@@ -251,7 +236,7 @@
                             required: "Số CMND không được để trống.",
                             digits: "Số CMND không hợp lệ",
                             minlength: "Số CMND phải có ít nhất 9 ký tự.",
-                            maxlength: "Số CMND không được vượt quá 20 ký tự."
+                            maxlength: "Số CMND không được vượt quá 20 ký tự.",
                         },
                         txtDOB: {
                             required: "Ngày tháng năm sinh không được để trống",

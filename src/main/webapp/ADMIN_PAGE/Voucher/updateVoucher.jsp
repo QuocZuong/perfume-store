@@ -68,7 +68,7 @@
         <link rel="stylesheet" href="/RESOURCES/admin/user/public/style/update.css" />
         <link rel="stylesheet" href="/RESOURCES/admin/voucher/public/style/list.css" />
 
-        <link rel="icon" href="/RESOURCES/images/icons/icon.webp" />
+        <link rel="icon" href="/RESOURCES/images/icons/icon.png" />
         <script src="/RESOURCES/plugin/jquery-3.7.1.min.js"></script>
         <script src="/RESOURCES/plugin/jquery-validation-1.19.5/dist/jquery.validate.min.js"></script>
         <style>

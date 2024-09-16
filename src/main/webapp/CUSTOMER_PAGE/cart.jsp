@@ -52,7 +52,7 @@
             rel="stylesheet"
             />
         <link rel="stylesheet" href="/RESOURCES/cart/public/style/style.css" />
-        <link rel="icon" href="/RESOURCES/images/icons/icon.webp" />
+        <link rel="icon" href="/RESOURCES/images/icons/icon.png" />
         <link
             href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css"
             rel="stylesheet"

@@ -7,15 +7,15 @@
         <title>Order Manager Navbar</title>
 
         <style>
-            .nav .account #product-dropdown-btn + ul{
+            .nav .account #product-dropdown-btn + ul {
                 visibility: hidden;
             }
 
-            .nav .account #user-dropdown-btn + ul{
+            .nav .account #user-dropdown-btn + ul {
                 visibility: hidden;
             }
 
-            .drop-down-show{
+            .drop-down-show {
                 visibility: visible !important;
             }
 
@@ -42,7 +42,7 @@
             <li><a href="/home/brand">Thương hiệu</a></li>
             <li><a href="/Product/List">Sản phẩm</a></li>
         </ul>
-        <a href="/" class="iconPage"><img src="/RESOURCES/images/icons/icon.webp" alt="" height="64" /></a>
+        <a href="/" class="iconPage"><img src="/RESOURCES/images/icons/icon.png" alt="" height="64" /></a>
 
         <div class="account">
             <button class="droppown-btn bg-transparent border-0" id="product-dropdown-btn">
@@ -55,6 +55,5 @@
 
             <a href="/OrderManager/User"><img src="/RESOURCES/images/icons/user.png" alt="" /></a>
         </div>
-
     </body>
 </html>

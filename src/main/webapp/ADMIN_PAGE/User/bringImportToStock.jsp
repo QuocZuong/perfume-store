@@ -54,7 +54,7 @@
               rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
         <script src="https://kit.fontawesome.com/49a22e2b99.js" crossorigin="anonymous"></script>
-        <link rel="icon" href="/RESOURCES/images/icons/icon.webp">
+        <link rel="icon" href="/RESOURCES/images/icons/icon.png">
 
         <link rel="stylesheet" href="/RESOURCES/admin/order/public/style/list.css">
         <style>

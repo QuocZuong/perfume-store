@@ -1,24 +1,9 @@
-<%@page import="Lib.ExceptionUtils"%>
-<%@page import="Models.Customer"%>
-<%@page import="Models.Employee"%>
-<%@page import="DAOs.ProductDAO"%>
-<%@page import="DAOs.BrandDAO"%>
-<%@page import="Models.User"%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib  uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
-
-<%! Customer customer;%>
-<%! String Tinh, QuanHuyen, PhuongXa;%>
-<%
-    customer = (Customer) request.getAttribute("CustomerUpdate");
-%>
-
-<%    // Handling execption
-    String queryString = request.getQueryString();
-    boolean isErr = ExceptionUtils.isWebsiteError(queryString);
-    String exeptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString);
-%>
+<%@page import="Lib.ExceptionUtils"%> <%@page import="Models.Customer"%> <%@page import="Models.Employee"%> <%@page
+import="DAOs.ProductDAO"%> <%@page import="DAOs.BrandDAO"%> <%@page import="Models.User"%> <%@page contentType="text/html"
+pageEncoding="UTF-8"%> <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> <%@ taglib
+uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%> <%! Customer customer;%> <%! String Tinh, QuanHuyen, PhuongXa;%> <% customer =
+(Customer) request.getAttribute("CustomerUpdate"); %> <% // Handling execption String queryString = request.getQueryString(); boolean isErr
+= ExceptionUtils.isWebsiteError(queryString); String exeptionMessage = ExceptionUtils.getMessageFromExceptionQueryString(queryString); %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -31,22 +16,18 @@
             rel="stylesheet"
             integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
             crossorigin="anonymous"
-            />
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
             href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond&family=Josefin+Sans:wght@200&family=Josefin+Slab&display=swap"
             rel="stylesheet"
-            />
-        <link
-            href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css"
-            rel="stylesheet"
-            type="text/css"
-            />
+        />
+        <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css" rel="stylesheet" type="text/css" />
 
         <!--Custom Style-->
         <link rel="stylesheet" href="/RESOURCES/admin/user/public/style/update.css" />
-        <link rel="icon" href="/RESOURCES/images/icons/icon.webp" />
+        <link rel="icon" href="/RESOURCES/images/icons/icon.png" />
         <script src="/RESOURCES/plugin/jquery-3.7.1.min.js"></script>
         <script src="/RESOURCES/plugin/jquery-validation-1.19.5/dist/jquery.validate.min.js"></script>
         <style>
@@ -78,11 +59,11 @@
             <div class="row">
                 <div class="col-md-12 nav">
                     <jsp:include page="/NAVBAR/AdminNavbar.jsp"></jsp:include>
-                    </div>
                 </div>
+            </div>
 
-                <div class="row">
-                    <!--Execption Handling-->
+            <div class="row">
+                <!--Execption Handling-->
                 <c:if test="<%=isErr%>">
                     <h1 class="alert alert-danger text-center"><%=exeptionMessage%></h1>
                 </c:if>
@@ -199,10 +180,10 @@
             });
             var printResult = () => {
                 if (
-                        $("#district").find(":selected").data("id") != "" &&
-                        $("#city").find(":selected").data("id") != "" &&
-                        $("#ward").find(":selected").data("id") != ""
-                        ) {
+                    $("#district").find(":selected").data("id") != "" &&
+                    $("#city").find(":selected").data("id") != "" &&
+                    $("#ward").find(":selected").data("id") != ""
+                ) {
                     let city = $("#city option:selected").text();
                     let district = $("#district option:selected").text();
                     let ward = $("#ward option:selected").text();
@@ -234,131 +215,130 @@
                     rules: {
                         txtName: {
                             required: true,
-                            maxlength: 50
+                            maxlength: 50,
                         },
                         txtUsername: {
                             required: true,
-                            maxlength: 50
+                            maxlength: 50,
                         },
                         txtPassword: {
                             required: true,
-                            minlength: 6
+                            minlength: 6,
                         },
                         txtEmail: {
                             required: true,
                             email: true,
-                            maxlength: 100
+                            maxlength: 100,
                         },
                         txtCitizenId: {
                             required: true,
-                            maxlength: 20
+                            maxlength: 20,
                         },
                         txtDOB: {
-                            required: true
+                            required: true,
                         },
                         txtPhoneNumber: {
                             required: true,
                             digits: true,
                             maxlength: 10,
-                            minlength: 10
+                            minlength: 10,
                         },
                         txtAddress: {
-                            maxlength: 500
+                            maxlength: 500,
                         },
                         txtJoinDate: {
-                            required: true
+                            required: true,
                         },
                     },
                     messages: {
                         txtName: {
                             required: "Tên không được để trống.",
-                            maxlength: "Tên không được vượt quá 50 ký tự."
+                            maxlength: "Tên không được vượt quá 50 ký tự.",
                         },
                         txtUsername: {
                             required: "Tên đăng nhập không được để trống.",
-                            maxlength: "Tên đăng nhập không được vượt quá 50 ký tự."
+                            maxlength: "Tên đăng nhập không được vượt quá 50 ký tự.",
                         },
                         txtPassword: {
                             required: "Mật khẩu không được để trống.",
-                            minlength: "Mật khẩu phải có ít nhất 6 ký tự."
+                            minlength: "Mật khẩu phải có ít nhất 6 ký tự.",
                         },
                         txtEmail: {
                             required: "Email không được để trống.",
                             email: "Email không hợp lệ.",
-                            maxlength: "Email không được vượt quá 100 ký tự."
+                            maxlength: "Email không được vượt quá 100 ký tự.",
                         },
                         txtCitizenId: {
                             required: "Số CMND không được để trống.",
-                            maxlength: "Số CMND không được vượt quá 20 ký tự."
+                            maxlength: "Số CMND không được vượt quá 20 ký tự.",
                         },
                         txtDOB: {
-                            required: "Ngày tháng năm sinh không được để trống"
+                            required: "Ngày tháng năm sinh không được để trống",
                         },
                         txtPhoneNumber: {
                             required: "Số điện thoại không được để trống",
                             digits: "Số điện thoại không hợp lệ",
                             maxlength: "Số điện thoại phải là 10 chữ số",
-                            minlength: "Số điện thoại phải là 10 chữ số"
+                            minlength: "Số điện thoại phải là 10 chữ số",
                         },
                         txtAddress: {
-                            maxlength: "Địa chỉ không được vượt quá 500 ký tự."
+                            maxlength: "Địa chỉ không được vượt quá 500 ký tự.",
                         },
                         txtJoinDate: {
-                            required: "Ngày tham gia không được để trống."
-                        }
-                    }
+                            required: "Ngày tham gia không được để trống.",
+                        },
+                    },
                 });
             });
         </script>
 
         <script>
-            const typeSelect = document.querySelector('.typeSelect');
+            const typeSelect = document.querySelector(".typeSelect");
 
-            const role = document.querySelector('.role');
-            const citizenId = document.querySelector('.citizenId');
-            const dateOfBirth = document.querySelector('.dateOfBirth');
-            const phone = document.querySelector('.phone');
-            const address = document.querySelector('.address');
-            const joinDate = document.querySelector('.joinDate');
-            const retireDate = document.querySelector('.retireDate');
+            const role = document.querySelector(".role");
+            const citizenId = document.querySelector(".citizenId");
+            const dateOfBirth = document.querySelector(".dateOfBirth");
+            const phone = document.querySelector(".phone");
+            const address = document.querySelector(".address");
+            const joinDate = document.querySelector(".joinDate");
+            const retireDate = document.querySelector(".retireDate");
 
-            typeSelect.addEventListener('change', function () {
+            typeSelect.addEventListener("change", function () {
                 if (typeSelect.value === "Employee") {
-                    citizenId.classList.remove('hidden');
-                    role.classList.remove('hidden');
-                    dateOfBirth.classList.remove('hidden');
-                    phone.classList.remove('hidden');
-                    address.classList.remove('hidden');
-                    joinDate.classList.remove('hidden');
-                    retireDate.classList.remove('hidden');
-
+                    citizenId.classList.remove("hidden");
+                    role.classList.remove("hidden");
+                    dateOfBirth.classList.remove("hidden");
+                    phone.classList.remove("hidden");
+                    address.classList.remove("hidden");
+                    joinDate.classList.remove("hidden");
+                    retireDate.classList.remove("hidden");
                 } else {
-                    citizenId.classList.add('hidden');
-                    role.classList.add('hidden');
-                    dateOfBirth.classList.add('hidden');
-                    phone.classList.add('hidden');
-                    address.classList.add('hidden');
-                    joinDate.classList.add('hidden');
-                    retireDate.classList.add('hidden');
+                    citizenId.classList.add("hidden");
+                    role.classList.add("hidden");
+                    dateOfBirth.classList.add("hidden");
+                    phone.classList.add("hidden");
+                    address.classList.add("hidden");
+                    joinDate.classList.add("hidden");
+                    retireDate.classList.add("hidden");
                 }
             });
 
             if (typeSelect.value === "Employee") {
-                citizenId.classList.remove('hidden');
-                role.classList.remove('hidden');
-                dateOfBirth.classList.remove('hidden');
-                phone.classList.remove('hidden');
-                address.classList.remove('hidden');
-                joinDate.classList.remove('hidden');
-                retireDate.classList.remove('hidden');
+                citizenId.classList.remove("hidden");
+                role.classList.remove("hidden");
+                dateOfBirth.classList.remove("hidden");
+                phone.classList.remove("hidden");
+                address.classList.remove("hidden");
+                joinDate.classList.remove("hidden");
+                retireDate.classList.remove("hidden");
             } else {
-                citizenId.classList.add('hidden');
-                role.classList.add('hidden');
-                dateOfBirth.classList.add('hidden');
-                phone.classList.add('hidden');
-                address.classList.add('hidden');
-                joinDate.classList.add('hidden');
-                retireDate.classList.add('hidden');
+                citizenId.classList.add("hidden");
+                role.classList.add("hidden");
+                dateOfBirth.classList.add("hidden");
+                phone.classList.add("hidden");
+                address.classList.add("hidden");
+                joinDate.classList.add("hidden");
+                retireDate.classList.add("hidden");
             }
         </script>
     </body>

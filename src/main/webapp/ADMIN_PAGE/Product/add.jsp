@@ -38,7 +38,7 @@
 
         <!--Custom Style-->
         <link rel="stylesheet" href="/RESOURCES/admin/product/public/style/add.css">
-        <link rel="icon" href="/RESOURCES/images/icons/icon.webp">
+        <link rel="icon" href="/RESOURCES/images/icons/icon.png">
 
         <style>
             label.error{
