@@ -89,14 +89,14 @@
                             <p id="brandName"><%= brand.getName()%></p>
                             <h1 id="productName"><%= name%></h1>
                             <span id="productPrice"><%= Converter.covertIntergerToMoney(price)%><span>đ</span></span>
-                            <div>
+<!--                            <div>
                                 <img src="/RESOURCES/images/icons/sex.png" alt="">
                                 <span id="gender"><%= gender%></span>
-                            </div>
-                            <div>
+                            </div>-->
+<!--                            <div>
                                 <p id="volume">Dung tích</p>
                                 <span><%= volume%>ml</span>
-                            </div>
+                            </div>-->
                             <form action="/Customer/addToCart" method="POST">
                                 <input type="number" name="ProductQuantity" id="" value="1" >
                                 <input type="hidden" name="ProductID" value="<%= id%>">
@@ -117,7 +117,7 @@
                             <div class="description">
                                 <hr>
                                 <h1 id="descriptionTitle">Mô tả</h1>
-                                <label for="">Tone hương</label>
+                                <!--<label for="">Tone hương</label>-->
                                 <p id="tone"><%= smell%></p>
                                 <br>
                                 <p id="descriptionDetail">

@@ -1,8 +1,11 @@
 <%@page import="Lib.ExceptionUtils"%> <%@page import="Models.Employee"%> <%@page import="DAOs.ProductDAO"%> <%@page import="DAOs.BrandDAO"%>
 <%@page import="Models.User"%> <%@page contentType="text/html" pageEncoding="UTF-8"%> <%@ taglib uri="http://java.sun.com/jsp/jstl/core"
-prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%> <%! String Tinh, QuanHuyen, PhuongXa;%> <% // Handling
-execption String queryString = request.getQueryString(); boolean isErr = ExceptionUtils.isWebsiteError(queryString); String exeptionMessage
-= ExceptionUtils.getMessageFromExceptionQueryString(queryString); %>
+prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%> <%! String Tinh, QuanHuyen, PhuongXa;%> 
+<% // Handling execption 
+    String queryString = request.getQueryString();
+    boolean isErr = ExceptionUtils.isWebsiteError(queryString);
+    String exeptionMessage
+            = ExceptionUtils.getMessageFromExceptionQueryString(queryString);%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -15,13 +18,13 @@ execption String queryString = request.getQueryString(); boolean isErr = Excepti
             rel="stylesheet"
             integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
             crossorigin="anonymous"
-        />
+            />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
             href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond&family=Josefin+Sans:wght@200&family=Josefin+Slab&display=swap"
             rel="stylesheet"
-        />
+            />
         <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css" rel="stylesheet" type="text/css" />
 
         <!--Custom Style-->
@@ -58,11 +61,11 @@ execption String queryString = request.getQueryString(); boolean isErr = Excepti
             <div class="row">
                 <div class="col-md-12 nav">
                     <jsp:include page="/NAVBAR/AdminNavbar.jsp"></jsp:include>
+                    </div>
                 </div>
-            </div>
 
-            <div class="row">
-                <!--Execption Handling-->
+                <div class="row">
+                    <!--Execption Handling-->
                 <c:if test="<%=isErr%>">
                     <h1 class="alert alert-danger text-center"><%=exeptionMessage%></h1>
                 </c:if>
@@ -147,9 +150,9 @@ execption String queryString = request.getQueryString(); boolean isErr = Excepti
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
         <script
             src="/RESOURCES/user/public/js/addressAPI.js"
-            data-province="<%= Tinh %>"
-            data-district="<%= QuanHuyen %>"
-            data-ward="<%= PhuongXa %>"
+            data-province="<%= Tinh%>"
+            data-district="<%= QuanHuyen%>"
+            data-ward="<%= PhuongXa%>"
         ></script>
 
         <!--Jquery Validation-->
@@ -160,13 +163,13 @@ execption String queryString = request.getQueryString(); boolean isErr = Excepti
                 //                    return regex.test(value);
                 //                }, "Wrong input.");
                 $.validator.addMethod(
-                    "atLeastOneLetter",
-                    function (value, element) {
-                        // Use a regular expression to check if the value contains at least one alphabet letter
-                        return /[A-Za-z]/.test(value);
-                    },
-                    "Phải có ký tự chữ cái.",
-                );
+                        "atLeastOneLetter",
+                        function (value, element) {
+                            // Use a regular expression to check if the value contains at least one alphabet letter
+                            return /[A-Za-z]/.test(value);
+                        },
+                        "Phải có ký tự chữ cái.",
+                        );
 
                 $("#addEmployee").validate({
                     rules: {

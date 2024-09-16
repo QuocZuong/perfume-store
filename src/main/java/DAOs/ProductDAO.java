@@ -406,7 +406,7 @@ public class ProductDAO implements IProductDAO {
                     + "WHERE p.Brand_ID = b.Brand_ID\n"
                     + "AND stk.Product_ID = p.Product_ID\n"
                     + "AND (p.[Product_Name] LIKE ? OR b.Brand_Name LIKE ?)\n"
-                    + "ORDER BY p.Product_ID";
+                    + "ORDER BY p.Product_ID DESC";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setNString(1, search);
             ps.setNString(2, search);

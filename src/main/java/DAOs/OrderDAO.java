@@ -220,7 +220,7 @@ public class OrderDAO implements IOrderDAO {
     @Override
     public List<Order> getOrderByCustomerId(int customerId) {
 
-        if (customerId <= 0) {
+        if (customerId < 0) {
             throw new IllegalArgumentException("Customer ID must be greater than 0");
         }
 
@@ -242,7 +242,7 @@ public class OrderDAO implements IOrderDAO {
     }
 
     public Order getOrderByOrderId(int orderId) {
-        if (orderId <= 0) {
+        if (orderId < 0) {
             throw new IllegalArgumentException("Order ID must be greater than 0");
         }
 

@@ -139,7 +139,7 @@ public class ProductController extends HttpServlet {
         List<Product> searchProductList;
         List<Product> filteredProductList;
         int numberOfPages;
-        int rows = 20;
+        int rows = 12;
         try {
             searchProductList = pDAO.searchProduct(search);
 

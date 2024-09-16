@@ -146,11 +146,11 @@
 
           <div class="col-md-12 product">
             <h1>Sản phẩm nổi bật</h1>
-            <div class="classify">
+<!--            <div class="classify">
               <button class="btnMan">Nước hoa nam</button>
               <button class="btnWoman">Nước hoa nữ</button>
               <button class="btnUnisex">Unisex</button>
-            </div>
+            </div>-->
 
             <div class="item man active">
 
@@ -171,7 +171,7 @@
                     <div class="card">
                       <img src="<%= imgUrl%>" alt="<%= name%>" class="product-img">
                       <span class="product-brand"><%= brand%></span>
-                      <hr>
+                      <!--<hr>-->
                       <span class="product-name"><%= name%></span>
                       <span class="product-price"><%= price%> <span>đ</span></span>
                     </div>

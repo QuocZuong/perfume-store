@@ -346,8 +346,9 @@ h1{
 
 .main .products .product img{
     width: 220px;
-    height: 240px;
+    height: 260px;
     transition: transform 2.5s ease;
+    object-fit: cover
 }
 
 .main .products .product img:hover{

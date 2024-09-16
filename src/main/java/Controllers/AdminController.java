@@ -1448,6 +1448,14 @@ public class AdminController extends HttpServlet {
             imgURL = ImageUploader.uploadImageToCloud(imagePart);
         }
 
+        // Check if exist brand name
+        if (bDAO.getBrand(bName) == null) {
+            Brand brand = new Brand();
+            brand.setName(bName);
+            bDAO.addBrand(brand);
+        }
+        
+        
         Product product = new Product();
         product.setId(pID);
         product.setName(pName);
