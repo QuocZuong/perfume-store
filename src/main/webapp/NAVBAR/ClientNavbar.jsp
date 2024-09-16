@@ -13,7 +13,7 @@
             <!-- This link to shop servlet file. DO NOT MODIFY the link -->
             <li><a href="/Product/List">Sản phẩm</a></li>
         </ul>
-        <a href="/" class="iconPage"><img src="/RESOURCES/images/icons/icon.png" alt="" height="64" /></a>
+<!--        <a href="/" class="iconPage"><img src="/RESOURCES/images/icons/icon.png" alt="" height="64" /></a>-->
         <div class="account">
             <a href="/Customer/User"><img src="/RESOURCES/images/icons/user.png" alt="" /></a>
             <a href="/Customer/Cart"><img src="/RESOURCES/images/icons/cart.png" alt="" /></a>
