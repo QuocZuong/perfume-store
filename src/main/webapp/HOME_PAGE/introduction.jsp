@@ -63,13 +63,13 @@
                         <img src="/RESOURCES/images/icons/brainstorm.png" alt="">
                         <div class="text">
                             <h4>Group 2</h4>
-                            <p>Tại xxiv chúng mình luôn đặt chất lượng và lòng tin với khách hàng lên hàng đầu. cũng vì một phần có gia đình và bạn bè đang ở pháp, chính tay lựa chọn từ store nên xxiv tự tin 100% hàng chính hãng. bọn mình sẽ không cam kết bán giá rẻ nhất và cạnh tranh với các bên khác mà chỉ cam kết sẽ bán giá tốt nhất chúng mình có thể. những sản phẩm chúng mình tư vấn và giới thiệu đều là các sản phẩm đã trực tiếp sử dụng và trải nghiệm để đưa ra lời khuyên thực tế giúp các khách hàng hài lòng.</p>
+                            <p>Tại Affordable chúng mình luôn đặt chất lượng và lòng tin với khách hàng lên hàng đầu. cũng vì một phần có gia đình và bạn bè đang ở pháp, chính tay lựa chọn từ store nên Affordable tự tin 100% hàng chính hãng. bọn mình sẽ không cam kết bán giá rẻ nhất và cạnh tranh với các bên khác mà chỉ cam kết sẽ bán giá tốt nhất chúng mình có thể. những sản phẩm chúng mình tư vấn và giới thiệu đều là các sản phẩm đã trực tiếp sử dụng và trải nghiệm để đưa ra lời khuyên thực tế giúp các khách hàng hài lòng.</p>
                         </div>
                     </div>
                     <div class="row story">
                         <div class="text">
-                            <h4>Câu chuyện về xxiv store</h4>
-                            <p>Tại xxiv chúng mình luôn đặt chất lượng và lòng tin với khách hàng lên hàng đầu. cũng vì một phần có gia đình và bạn bè đang ở pháp, chính tay lựa chọn từ store nên xxiv tự tin 100% hàng chính hãng. bọn mình sẽ không cam kết bán giá rẻ nhất và cạnh tranh với các bên khác mà chỉ cam kết sẽ bán giá tốt nhất chúng mình có thể. những sản phẩm chúng mình tư vấn và giới thiệu đều là các sản phẩm đã trực tiếp sử dụng và trải nghiệm để đưa ra lời khuyên thực tế giúp các khách hàng hài lòng.</p>
+                            <h4>Câu chuyện về Affordable store</h4>
+                            <p>Tại Affordable chúng mình luôn đặt chất lượng và lòng tin với khách hàng lên hàng đầu. cũng vì một phần có gia đình và bạn bè đang ở pháp, chính tay lựa chọn từ store nên Affordable tự tin 100% hàng chính hãng. bọn mình sẽ không cam kết bán giá rẻ nhất và cạnh tranh với các bên khác mà chỉ cam kết sẽ bán giá tốt nhất chúng mình có thể. những sản phẩm chúng mình tư vấn và giới thiệu đều là các sản phẩm đã trực tiếp sử dụng và trải nghiệm để đưa ra lời khuyên thực tế giúp các khách hàng hài lòng.</p>
                         </div>
                         <img src="/RESOURCES/images/icons/introduce.webp" alt="">
 
@@ -77,17 +77,17 @@
                     <div class="row story2">
                         <img src="/RESOURCES/images/icons/introduce2.png" alt="">
                         <div class="text">
-                            <p>Tại xxiv chúng mình luôn đặt chất lượng và lòng tin với khách hàng lên hàng đầu. cũng vì một phần có gia đình và bạn bè đang ở pháp, chính tay lựa chọn từ store nên xxiv tự tin 100% hàng chính hãng. bọn mình sẽ không cam kết bán giá rẻ nhất và cạnh tranh với các bên khác mà chỉ cam kết sẽ bán giá tốt nhất chúng mình có thể. những sản phẩm chúng mình tư vấn và giới thiệu đều là các sản phẩm đã trực tiếp sử dụng và trải nghiệm để đưa ra lời khuyên thực tế giúp các khách hàng hài lòng.</p>
+                            <p>Tại Affordable chúng mình luôn đặt chất lượng và lòng tin với khách hàng lên hàng đầu. cũng vì một phần có gia đình và bạn bè đang ở pháp, chính tay lựa chọn từ store nên Affordable tự tin 100% hàng chính hãng. bọn mình sẽ không cam kết bán giá rẻ nhất và cạnh tranh với các bên khác mà chỉ cam kết sẽ bán giá tốt nhất chúng mình có thể. những sản phẩm chúng mình tư vấn và giới thiệu đều là các sản phẩm đã trực tiếp sử dụng và trải nghiệm để đưa ra lời khuyên thực tế giúp các khách hàng hài lòng.</p>
                         </div>
                     </div>
                     <div class="row thanks">
                         <div class="text">
-                            <h1>Cảm ơn các bạn rất nhiều vì đã tin tưởng và lựa chọn xxiv.</h1>
-                            <p>Các bạn có thể đến với xxiv, tâm sự với chúng mình, cùng chia sẻ cảm nhận của các bạn về các
+                            <h1>Cảm ơn các bạn rất nhiều vì đã tin tưởng và lựa chọn Affordable.</h1>
+                            <p>Các bạn có thể đến với Affordable, tâm sự với chúng mình, cùng chia sẻ cảm nhận của các bạn về các
                                 loại nước hoa bạn thích. với các bạn đang đắn đo hay sử dụng lần đầu cũng đừng ngại nhé,
                                 mình sẽ cố gắng trả lời các bạn nhiều nhất, review sản phẩm tốt nhất để các bạn chọn được
                                 hương thơm ưng ý nhất.
-                                xxiv love you!</p>
+                                Affordable love you!</p>
                         </div>
                     </div>
                 </div>
@@ -939,7 +939,7 @@
 
         <div class="row">
             <div class="col-md-12 copyright">
-                <p>&copy; xxiv 2023 | all right reserved</p>
+                <p>&copy; Affordable 2023 | all right reserved</p>
             </div>
         </div>
 

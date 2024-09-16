@@ -70,12 +70,10 @@
           <video id="bg-video" autoplay loop muted>
             <source src="/RESOURCES/videos/header.mp4" type="video/mp4">
           </video>
-          <h1>xxiv store</h1>
+          <h1>Affordable</h1>
           <h2>You deserve to be happy</h2>
           <button>FOLLOW ME</button>
-          <p>Chào mừng các bạn đến với XXIII store - một tiệm nước hoa
-            nho nhỏ lấy cảm hứng từ những con người có cảm xúc đặc
-            biệt với hương thơm mê hoặc.</p>
+          <p>Chào mừng các bạn đến với Affordable <br/> nơi lan toả nghệ thuật</p>
         </div>
       </div>
 
@@ -103,7 +101,7 @@
 
       <div class="row">
         <div class="col-md-12 brand">
-          <h1>Thương hiệu nổi tiếng</h2>
+          <h1>Nhãn hàng nổi tiếng</h2>
 
             <div class="logo">
               <a href="/Product/List/BrandID/22"><img
@@ -246,7 +244,7 @@
       <div class="row">
         <div class="col-md-12 reason">
           <hr>
-          <h1>Tại sao chọn xxiv store</h1>
+          <h1>Tại sao chọn Affordable store</h1>
           <div class="listReason">
             <div class="advantage">
               <img src="/RESOURCES/images/icons/grommet-icons_shield-security.svg" alt="">
@@ -275,7 +273,7 @@
 
       <div class="row no-gutters">
         <div class="theme ">
-          <img src="/RESOURCES/images/icons/perfumeStore.jpg">
+          <img src="/RESOURCES/images/icons/banner.jpg">
         </div>
       </div>
 
@@ -302,7 +300,7 @@
       <div class="row">
         <div class="col-md-12 contact">
           <hr>
-          <h1>xxiv store</h1>
+          <h1>Affordable store</h1>
           <div>
             <img src="/RESOURCES/images/icons/location-pin.png">
             <p>Số 25 Ngõ Thái Hà, Đống Đa, Hà Nội | 525/44 Tô Hiến Thành, P14, Q10, TP. Hồ Chí Minh</p>
@@ -311,7 +309,7 @@
             <img src="/RESOURCES/images/icons/smartphone.png">
             <p>090 721 9889| 093 194 8668</p>
             <img src="/RESOURCES/images/icons/email.png" class="mail-icon">
-            <p>xxiv.fragrance@gmail.com</p>
+            <p>Affordable.fragrance@gmail.com</p>
           </div>
           <div>
             <p>Giờ mở cửa: Các ngày trong tuần từ 9:00 - 21:00</p>
@@ -355,7 +353,7 @@
 
       <div class="row">
         <div class="col-md-12 copyright">
-          <p>&copy; xxiv 2023 | all right reserved</p>
+          <p>&copy; Affordable 2023 | all right reserved</p>
         </div>
       </div>
 

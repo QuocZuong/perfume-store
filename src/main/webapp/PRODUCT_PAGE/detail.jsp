@@ -177,7 +177,7 @@
             <div class="row">
                 <div class="col-md-12 footer">
                     <div>
-                        <h2>xxiv store</h2>
+                        <h2>Affordable store</h2>
                         <ul>
                             <li><a href="">ưu đãi thành viên</a></li>
                             <li><a href="">tài khoản</a></li>
@@ -208,7 +208,7 @@
 
             <div class="row">
                 <div class="col-md-12 copyright">
-                    <p>&copy; xxiv 2023 | all rigth reserved</p>
+                    <p>&copy; Affordable 2023 | all rigth reserved</p>
                 </div>
             </div>
 

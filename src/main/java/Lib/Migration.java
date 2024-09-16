@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Migration {
-  private static final boolean clearDb = true;
-  private static final boolean insertRole = true;
-  private static final boolean insertBrand = true;
+  private static final boolean clearDb = false;
+  private static final boolean insertRole = false;
+  private static final boolean insertBrand = false;
   private static final boolean insertProduct = true;
 
   public static boolean clearTables(String[] tables) {
